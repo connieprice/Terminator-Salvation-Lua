@@ -1,0 +1,25 @@
+local L0_0, L1_1, L2_2
+L0_0 = {}
+PredefinedUnits = L0_0
+L0_0 = PredefinedUnits
+L1_1 = {}
+L2_2 = {}
+L2_2.script_name = "character_slot1"
+L2_2.type_name = "he_character_john_connor"
+L2_2.id = -1
+L1_1.character_slot1 = L2_2
+L2_2 = {}
+L2_2.script_name = "character_slot2"
+L2_2.type_name = "he_character_blair"
+L2_2.id = -2
+L1_1.character_slot2 = L2_2
+L0_0.manual_name_ids = L1_1
+L0_0 = PredefinedUnits
+L1_1 = {}
+L2_2 = {}
+L2_2.player_slot = 1
+L1_1.john_connor = L2_2
+L2_2 = {}
+L2_2.player_slot = 2
+L1_1.blair = L2_2
+L0_0.unit_order_type_name_exceptions = L1_1

@@ -1,0 +1,1 @@
+SoundEnvironmentManager = SoundEnvironmentManager or class(CoreSoundEnvironmentManager)
