@@ -1,0 +1,1 @@
+FiniteStateMachineState = FiniteStateMachineState or class()

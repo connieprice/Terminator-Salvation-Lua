@@ -1,0 +1,15 @@
+local L0_0, L1_1
+L0_0 = {}
+RailOptimizedUnits = L0_0
+L0_0 = RailOptimizedUnits
+L1_1 = {}
+L1_1.john_connor = "john_connor_rail_opt"
+L1_1.blair = "blair_rail_opt"
+L1_1.survivalist_male_01 = "survivalist_male_01_opt"
+L1_1.survivalist_male_02 = "survivalist_male_02_opt"
+L1_1.survivalist_male_03 = "survivalist_male_03_opt"
+L1_1.survivalist_male_04 = "survivalist_male_04_opt"
+L1_1.survivalist_female_01 = "survivalist_female_01_opt"
+L1_1.survivalist_female_02 = "survivalist_female_02_opt"
+L1_1.survivalist_female_03 = "survivalist_female_03_opt"
+L0_0.optimized_unit_translation = L1_1

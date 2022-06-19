@@ -1,0 +1,11 @@
+require("ai/common/CommonAiSetup")
+require("ai/humans/HumansAiSetup")
+require("ai/machines/MachinesAiSetup")
+require("units/data/AiGraphData/AiGraphDataSetup")
+require("ai/AiGroups")
+AiSetup = AiSetup or class()
+function AiSetup.init(A0_0)
+	CommonAiSetup:init()
+	HumansAiSetup:init()
+	MachinesAiSetup:init()
+end
