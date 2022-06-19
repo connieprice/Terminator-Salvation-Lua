@@ -1,149 +1,95 @@
-AMRailFlyerStart = AMRailFlyerStart or class(CoreActionElement)
-function AMRailFlyerStart.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
-	if A0_0._mode == "spawn" or A0_0._mode == "" then
+if not AMRailFlyerStart then
+	AMRailFlyerStart = class(CoreActionElement)
+end
+AMRailFlyerStart.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+	if l_1_0._mode == "spawn" or l_1_0._mode == "" then
 		World:preload_unit("flyer")
-		managers.unit_scripting:define_unit(A0_0._name, "no_group")
+		managers.unit_scripting:define_unit(l_1_0._name, "no_group")
 	end
 end
-function AMRailFlyerStart.activate_now(A0_3)
-	if A0_3._mode == "spawn" then
-		A0_3:_spawn()
-	elseif A0_3._mode == "despawn" then
-		A0_3:_despawn()
-	elseif A0_3._mode == "kill" then
-		A0_3:_kill()
+
+AMRailFlyerStart.activate_now = function(l_2_0)
+	if l_2_0._mode == "spawn" then
+		l_2_0:_spawn()
+	elseif l_2_0._mode == "despawn" then
+		l_2_0:_despawn()
+	elseif l_2_0._mode == "kill" then
+		l_2_0:_kill()
 	else
-		A0_3:_spawn()
+		l_2_0:_spawn()
 	end
 end
-function AMRailFlyerStart._remove(A0_4)
-	local L1_5
-	L1_5 = managers
-	L1_5 = L1_5.unit_scripting
-	L1_5 = L1_5.get_unit_by_name
-	L1_5 = L1_5(L1_5, A0_4._name)
-	if alive(L1_5) then
-		World:delete_unit(managers.unit_scripting:get_unit_by_name(A0_4._name))
+
+AMRailFlyerStart._remove = function(l_3_0)
+	local l_3_1 = managers.unit_scripting:get_unit_by_name(l_3_0._name)
+	if alive(l_3_1) then
+		World:delete_unit(managers.unit_scripting:get_unit_by_name(l_3_0._name))
 	end
-	A0_4:deactivate_now()
+	l_3_0:deactivate_now()
 end
-function AMRailFlyerStart._kill(A0_6)
-	local L1_7
-	L1_7 = managers
-	L1_7 = L1_7.unit_scripting
-	L1_7 = L1_7.get_unit_by_name
-	L1_7 = L1_7(L1_7, A0_6._name)
-	if alive(L1_7) then
-		L1_7:damage():set_fully_damaged()
+
+AMRailFlyerStart._kill = function(l_4_0)
+	local l_4_1 = managers.unit_scripting:get_unit_by_name(l_4_0._name)
+	if alive(l_4_1) then
+		l_4_1:damage():set_fully_damaged()
 	end
-	A0_6:deactivate_now()
+	l_4_0:deactivate_now()
 end
-function AMRailFlyerStart._despawn(A0_8)
-	local L1_9
-	L1_9 = managers
-	L1_9 = L1_9.unit_scripting
-	L1_9 = L1_9.get_unit_by_name
-	L1_9 = L1_9(L1_9, A0_8._name)
-	if alive(L1_9) then
-		managers.unit_scripting:get_unit_by_name(A0_8._name):set_slot(0)
+
+AMRailFlyerStart._despawn = function(l_5_0)
+	local l_5_1 = managers.unit_scripting:get_unit_by_name(l_5_0._name)
+	if alive(l_5_1) then
+		local l_5_2 = managers.unit_scripting:get_unit_by_name(l_5_0._name)
+		l_5_2:set_slot(0)
 	end
-	A0_8:deactivate_now()
+	l_5_0:deactivate_now()
 end
-function AMRailFlyerStart._spawn(A0_10)
-	local L1_11, L2_12, L3_13, L4_14
-	L1_11 = World
-	L2_12 = L1_11
-	L1_11 = L1_11.spawn_unit
-	L3_13 = "flyer"
-	L4_14 = A0_10.position
-	L1_11 = L1_11(L2_12, L3_13, L4_14, A0_10.rotation)
-	L3_13 = L1_11
-	L2_12 = L1_11.effects
-	L2_12 = L2_12(L3_13)
-	L3_13 = L2_12
-	L2_12 = L2_12.use_simple_effects
-	L4_14 = true
-	L2_12(L3_13, L4_14)
-	L3_13 = L1_11
-	L2_12 = L1_11.control
-	L2_12 = L2_12(L3_13)
-	L3_13 = L2_12
-	L2_12 = L2_12.set_ai_controlled
-	L2_12(L3_13)
-	L3_13 = L1_11
-	L2_12 = L1_11.ai_data
-	L2_12 = L2_12(L3_13)
-	L4_14 = A0_10
-	L3_13 = A0_10.setup_rail_flier
-	L3_13(L4_14, L1_11, L2_12)
-	L4_14 = L1_11
-	L3_13 = L1_11.ai_nerve_system
-	L3_13 = L3_13(L4_14)
-	L4_14 = L3_13
-	L3_13 = L3_13.setup
-	L3_13(L4_14, "rail")
-	L4_14 = L1_11
-	L3_13 = L1_11.damage_data
-	L3_13 = L3_13(L4_14)
-	if L3_13 then
-		L4_14 = tweak_data
-		L4_14 = L4_14.rail
-		L4_14 = L4_14.enemy
-		L4_14 = L4_14.flyer
-		if L4_14 then
-			L4_14 = ""
-			if managers.player_slot:number_of_occupied_slots() == 2 then
-				L4_14 = "_COOP"
-			end
-			L3_13.health = tweak_data.rail.enemy.flyer["HEALTH" .. L4_14] or tweak_data.rail.enemy.flyer.HEALTH
+
+AMRailFlyerStart._spawn = function(l_6_0)
+	local l_6_1 = World:spawn_unit("flyer", l_6_0.position, l_6_0.rotation)
+	l_6_1:effects():use_simple_effects(true)
+	l_6_1:control():set_ai_controlled()
+	local l_6_2 = l_6_1:ai_data()
+	l_6_0:setup_rail_flier(l_6_1, l_6_2)
+	l_6_1:ai_nerve_system():setup("rail")
+	local l_6_3 = l_6_1:damage_data()
+	if l_6_3 and tweak_data.rail.enemy.flyer then
+		local l_6_4 = ""
+		if managers.player_slot:number_of_occupied_slots() == 2 then
+			l_6_4 = "_COOP"
+		end
+		if not tweak_data.rail.enemy.flyer["HEALTH" .. l_6_4] then
+			l_6_3.health = tweak_data.rail.enemy.flyer.HEALTH
 		end
 	end
-	L4_14 = L2_12._combat
-	L4_14.targets = {}
-	L4_14 = L2_12._move
-	L4_14._closest_track = A0_10.closest_track
-	L2_12.no_max_fire_velocity = true
-	L4_14 = L2_12._move
-	L4_14.displacement = Vector3(0, 0, 0)
-	L4_14 = A0_10.displacement_x
-	if L4_14 ~= nil then
-		L4_14 = L2_12._move
-		L4_14.displacement = L2_12._move.displacement:with_x(A0_10.displacement_x * 100)
+	l_6_2._combat.targets = {}
+	l_6_2._move._closest_track = l_6_0.closest_track
+	l_6_2.no_max_fire_velocity = true
+	l_6_2._move.displacement = Vector3(0, 0, 0)
+	if l_6_0.displacement_x ~= nil then
+		l_6_2._move.displacement = l_6_2._move.displacement:with_x(l_6_0.displacement_x * 100)
 	end
-	L4_14 = A0_10.displacement_y
-	if L4_14 ~= nil then
-		L4_14 = L2_12._move
-		L4_14.displacement = L2_12._move.displacement:with_z(A0_10.displacement_y * 100)
+	if l_6_0.displacement_y ~= nil then
+		l_6_2._move.displacement = l_6_2._move.displacement:with_z(l_6_0.displacement_y * 100)
 	end
-	A0_10._unit = L1_11
-	L4_14 = A0_10.deactivate_now
-	L4_14(A0_10)
-	L4_14 = managers
-	L4_14 = L4_14.unit_scripting
-	L4_14 = L4_14.register_unit
-	L4_14(L4_14, A0_10._name, L1_11)
+	l_6_0._unit = l_6_1
+	l_6_0:deactivate_now()
+	managers.unit_scripting:register_unit(l_6_0._name, l_6_1)
 end
-function AMRailFlyerStart.setup_rail_flier(A0_15, A1_16, A2_17)
-	local L3_18, L4_19
-	L3_18 = A0_15.waypoints
-	A2_17.default_waypoints = L3_18
-	L3_18 = A0_15.speed
-	A2_17.default_speed = L3_18
-	L3_18 = A0_15.loop_waypoints
-	A2_17.default_loop_waypoints = L3_18
-	L3_18 = A0_15.waypoint_pause_time
-	A2_17.default_waypoint_pause_time = L3_18
-	A2_17.default_threat_behavior = "ignore"
-	A2_17.allowed_to_move_and_shoot = true
-	L3_18 = A2_17.input
-	L3_18.enemy_slot_mask = "rail_vehicles"
-	L3_18 = A0_15.target_distance
-	if L3_18 == nil then
-		A0_15.target_distance = 40
+
+AMRailFlyerStart.setup_rail_flier = function(l_7_0, l_7_1, l_7_2)
+	l_7_2.default_waypoints = l_7_0.waypoints
+	l_7_2.default_speed = l_7_0.speed
+	l_7_2.default_loop_waypoints = l_7_0.loop_waypoints
+	l_7_2.default_waypoint_pause_time = l_7_0.waypoint_pause_time
+	l_7_2.default_threat_behavior = "ignore"
+	l_7_2.allowed_to_move_and_shoot = true
+	l_7_2.input.enemy_slot_mask = "rail_vehicles"
+	if l_7_0.target_distance == nil then
+		l_7_0.target_distance = 40
 	end
-	L3_18 = A2_17.input
-	L4_19 = A0_15.target_distance
-	L4_19 = L4_19 * 100
-	L3_18.target_range = L4_19
+	l_7_2.input.target_range = l_7_0.target_distance * 100
 end
+
+

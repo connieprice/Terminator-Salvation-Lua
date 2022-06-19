@@ -1,10 +1,15 @@
 require("units/DestroyableBodyDamage")
-DestroyedSequenceBodyDamage = DestroyedSequenceBodyDamage or class(DestroyableBodyDamage)
-function DestroyedSequenceBodyDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7, A8_8)
-	DestroyableBodyDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7)
-	A0_0._destroyed_sequence_name = A8_8
+if not DestroyedSequenceBodyDamage then
+	DestroyedSequenceBodyDamage = class(DestroyableBodyDamage)
 end
-function DestroyedSequenceBodyDamage.destroyed(A0_9)
-	DestroyableBodyDamage.destroyed(A0_9)
-	managers.sequence:run_sequence_simple(A0_9._destroyed_sequence_name, A0_9._unit)
+DestroyedSequenceBodyDamage.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7, l_1_8)
+	DestroyableBodyDamage.init(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7)
+	l_1_0._destroyed_sequence_name = l_1_8
 end
+
+DestroyedSequenceBodyDamage.destroyed = function(l_2_0)
+	DestroyableBodyDamage.destroyed(l_2_0)
+	managers.sequence:run_sequence_simple(l_2_0._destroyed_sequence_name, l_2_0._unit)
+end
+
+

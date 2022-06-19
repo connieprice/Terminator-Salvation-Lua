@@ -1,34 +1,43 @@
 require("shared/scheduler/Operation")
-RaycastOperation = RaycastOperation or class(Operation)
-function RaycastOperation.init(A0_0, A1_1, A2_2, A3_3)
-	assert(#A1_1 >= 2)
-	A0_0._positions = A1_1
-	A0_0._slot_mask = A2_2
-	A0_0._ignore_units = A3_3
-	A0_0.ray = nil
+if not RaycastOperation then
+	RaycastOperation = class(Operation)
 end
-function RaycastOperation.start(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9, L6_10, L7_11
-	for L5_9, L6_10 in L2_6(L3_7) do
-		if L1_5 then
-			L7_11 = nil
-			if A0_4._ignore_units then
-				L7_11 = World:raycast("ray", L1_5, L6_10, "slot_mask", A0_4._slot_mask, "ignore_unit", A0_4._ignore_units)
-			else
-				L7_11 = World:raycast("ray", L1_5, L6_10, "slot_mask", A0_4._slot_mask)
+RaycastOperation.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	local l_1_4 = assert
+	l_1_4(#l_1_1 >= 2)
+	l_1_0._positions = l_1_1
+	l_1_0._slot_mask = l_1_2
+	l_1_0._ignore_units = l_1_3
+	l_1_0.ray = nil
+end
+
+RaycastOperation.start = function(l_2_0)
+	local l_2_1, l_2_4, l_2_5, l_2_6, l_2_7, l_2_9, l_2_10 = nil
+	for i_0,i_1 in ipairs(l_2_0._positions) do
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_2_1 then
+			if l_2_0._ignore_units then
+				do return end
 			end
-			if L7_11 then
-				A0_4.ray = L7_11
-				return
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if nil then
 			end
+			l_2_0.ray = nil
+			return 
 		end
-		L1_5 = L6_10
+		l_2_1 = i_1
 	end
 end
-function RaycastOperation.update(A0_12, A1_13)
+
+RaycastOperation.update = function(l_3_0, l_3_1)
 end
-function RaycastOperation.done(A0_14)
-	local L1_15
-	L1_15 = true
-	return L1_15
+
+RaycastOperation.done = function(l_4_0)
+	return true
 end
+
+

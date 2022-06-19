@@ -1,40 +1,52 @@
-ControllerWrapperPC = ControllerWrapperPC or class(CoreControllerWrapperPC)
-function ControllerWrapperPC.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7)
-	local L8_8
-	L8_8 = Input
-	L8_8 = L8_8.create_virtual_controller
-	L8_8 = L8_8(L8_8, "empty_gamepad")
-	A0_0._input_released_cache = {}
-	CoreControllerWrapperPC.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, L8_8)
+if not ControllerWrapperPC then
+	ControllerWrapperPC = class(CoreControllerWrapperPC)
 end
-function ControllerWrapperPC.get_modified_axis(A0_9, A1_10, A2_11, A3_12)
-	if A2_11:get_controller_id() ~= "mouse" and A3_12:length() == 0 then
-		A3_12 = Vector3(0, 0, 0)
-		A0_9._current_lerp_axis_map[A1_10] = A3_12
-		return A3_12
+ControllerWrapperPC.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7)
+	local l_1_8 = Input:create_virtual_controller("empty_gamepad")
+	l_1_0._input_released_cache = {}
+	CoreControllerWrapperPC.init(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_8)
+end
+
+ControllerWrapperPC.get_modified_axis = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	if l_2_2:get_controller_id() ~= "mouse" and l_2_3:length() == 0 then
+		l_2_3 = Vector3(0, 0, 0)
+		l_2_0._current_lerp_axis_map[l_2_1] = l_2_3
+		return l_2_3
 	else
-		return CoreControllerWrapperPC.get_modified_axis(A0_9, A1_10, A2_11, A3_12)
+		local l_2_4 = CoreControllerWrapperPC.get_modified_axis
+		local l_2_5 = l_2_0
+		local l_2_6 = l_2_1
+		local l_2_7 = l_2_2
+		local l_2_8 = l_2_3
+		return l_2_4(l_2_5, l_2_6, l_2_7, l_2_8)
 	end
 end
-function ControllerWrapperPC.get_input_released(A0_13, A1_14)
-	local L2_15
-	L2_15 = A0_13._input_released_cache
-	L2_15 = L2_15[A1_14]
-	if L2_15 == nil then
-		if A0_13._connection_map[A1_14] then
-			L2_15 = A0_13._enabled and A0_13._virtual_controller and A0_13:get_connection_enabled(A1_14) and A0_13._virtual_controller:released(A1_14) or false
-			L2_15 = not not L2_15
+
+ControllerWrapperPC.get_input_released = function(l_3_0, l_3_1)
+	if l_3_0._connection_map[l_3_1] then
+		if not l_3_0._enabled or not l_3_0._virtual_controller or not l_3_0:get_connection_enabled(l_3_1) or not l_3_0._virtual_controller:released(l_3_1) then
+			local l_3_4 = not not (l_3_0._input_released_cache[l_3_1] ~= nil or false)
 		else
-			Application:error(A0_13:to_string() .. " No controller input binded to connection \"" .. tostring(A1_14) .. "\".")
-			L2_15 = false
+			Application:error(l_3_0:to_string() .. " No controller input binded to connection \"" .. tostring(l_3_1) .. "\".")
+			local l_3_5, l_3_6 = false
 		end
-		A0_13._input_released_cache[A1_14] = L2_15
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_3_0._input_released_cache[l_3_1] = l_3_5
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		return l_3_5
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	return L2_15
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 27 
 end
-function ControllerWrapperPC.reset_cache(A0_16, A1_17)
-	if (not A1_17 or TimerManager:wall():time() > A0_16._reset_cache_time) and next(A0_16._input_released_cache) then
-		A0_16._input_released_cache = {}
+
+ControllerWrapperPC.reset_cache = function(l_4_0, l_4_1)
+	local l_4_2 = TimerManager:wall():time()
+	if (not l_4_1 or l_4_0._reset_cache_time < l_4_2) and next(l_4_0._input_released_cache) then
+		l_4_0._input_released_cache = {}
 	end
-	CoreControllerWrapper.reset_cache(A0_16, A1_17)
+	CoreControllerWrapper.reset_cache(l_4_0, l_4_1)
 end
+
+

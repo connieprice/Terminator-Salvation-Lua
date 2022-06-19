@@ -1,6 +1,10 @@
 require("units/beings/player/camera/PlayerCameraState")
-PlayerCameraLeavingCover = PlayerCameraLeavingCover or class(PlayerCameraState)
-function PlayerCameraLeavingCover.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraLeavingCover)
-	A0_0:_set_camera_name("onground")
+if not PlayerCameraLeavingCover then
+	PlayerCameraLeavingCover = class(PlayerCameraState)
 end
+PlayerCameraLeavingCover.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraLeavingCover)
+	l_1_0:_set_camera_name("onground")
+end
+
+

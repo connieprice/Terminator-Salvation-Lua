@@ -1,299 +1,361 @@
-CoreCutsceneCast = CoreCutsceneCast or class()
-CoreCutsceneCast.FLOAT_ERROR_TIME_COMPENSATION = 1.0E-5
-function CoreCutsceneCast.prime(A0_0, A1_1)
-	local L2_2
-	L2_2 = assert
-	L2_2(A1_1 and A1_1:is_valid(), "Attempting to prime invalid cutscene.")
-	L2_2 = true
-	A0_0:_actor_units_in_cutscene(A1_1, L2_2)
-	A0_0:_animation_blob_controller(A1_1, L2_2)
+if not CoreCutsceneCast then
+	CoreCutsceneCast = class()
 end
-function CoreCutsceneCast.unload(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8
-	for L4_7, L5_8 in L1_4(L2_5) do
-		if L5_8 ~= false and alive(L5_8) then
-			if L5_8:is_playing() then
-				L5_8:stop()
+CoreCutsceneCast.FLOAT_ERROR_TIME_COMPENSATION = 1e-005
+CoreCutsceneCast.prime = function(l_1_0, l_1_1)
+	local l_1_2 = assert
+	do
+		if l_1_1 then
+			l_1_2(l_1_1:is_valid(), "Attempting to prime invalid cutscene.")
+		end
+		l_1_2 = true
+		l_1_0:_actor_units_in_cutscene(l_1_1, l_1_2)
+		l_1_0:_animation_blob_controller(l_1_1, l_1_2)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreCutsceneCast.unload = function(l_2_0)
+	local l_2_4, l_2_5, l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_11, l_2_12, l_2_13, l_2_14, l_2_15, l_2_16, l_2_17, l_2_18, l_2_19, l_2_20, l_2_21, l_2_22, l_2_23, l_2_24, l_2_25 = nil
+	if not l_2_0._animation_blob_controllers then
+		for i_0,i_1 in pairs({}) do
+		end
+		if i_1 ~= false and alive(i_1) then
+			if i_1:is_playing() then
+				i_1:stop()
 			end
-			L5_8:destroy()
+			i_1:destroy()
 		end
 	end
-	A0_3._animation_blob_controllers = nil
-	for L4_7, L5_8 in L1_4(L2_5) do
-		if alive(L5_8) then
-			World:delete_unit(L5_8)
+	l_2_0._animation_blob_controllers = nil
+	if not l_2_0._spawned_units then
+		for i_0,i_1 in pairs({}) do
+		end
+		if alive(i_1) then
+			World:delete_unit(i_1)
 		end
 	end
-	A0_3._spawned_units = nil
-	if L1_4 then
-		L1_4(L2_5, L3_6)
+	if alive(l_2_0.__root_unit) then
+		World:delete_unit(l_2_0.__root_unit)
 	end
-	A0_3.__root_unit = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function CoreCutsceneCast.is_ready(A0_9, A1_10)
-	return (A1_10 and A0_9:_animation_blob_controller(A1_10)) == nil or (A1_10 and A0_9:_animation_blob_controller(A1_10)):ready()
+
+CoreCutsceneCast.is_ready = function(l_3_0, l_3_1)
+	if not l_3_1 or l_3_0:_animation_blob_controller(l_3_1) ~= nil then
+		local l_3_3 = nil
+		return l_3_0:_animation_blob_controller(l_3_1):ready()
+	end
 end
-function CoreCutsceneCast.set_timer(A0_11, A1_12)
-	local L2_13, L3_14, L4_15, L5_16, L6_17
-	for L5_16, L6_17 in L2_13(L3_14) do
-		if alive(L6_17) then
-			L6_17:set_timer(A1_12)
-			L6_17:set_animation_timer(A1_12)
+
+CoreCutsceneCast.set_timer = function(l_4_0, l_4_1)
+	local l_4_5, l_4_6, l_4_7, l_4_8, l_4_9, l_4_10, l_4_11, l_4_12, l_4_13, l_4_14 = nil
+	if not l_4_0._spawned_units then
+		for i_0,i_1 in pairs({}) do
 		end
-	end
-end
-function CoreCutsceneCast.set_cutscene_visible(A0_18, A1_19, A2_20)
-	local L3_21, L4_22, L5_23, L6_24, L7_25
-	for L6_24, L7_25 in L3_21(L4_22) do
-		if A1_19:has_unit(L6_24, true) then
-			A0_18:_set_unit_and_children_visible(L7_25, A2_20 and A0_18:unit_visible(L6_24))
-		end
-	end
-end
-function CoreCutsceneCast.set_unit_visible(A0_26, A1_27, A2_28)
-	local L3_29, L4_30
-	L3_29 = not A2_28
-	A2_28 = not L3_29
-	L3_29 = A0_26._hidden_units
-	L3_29 = L3_29 or {}
-	A0_26._hidden_units = L3_29
-	L3_29 = A0_26._hidden_units
-	L3_29 = L3_29[A1_27]
-	L3_29 = not L3_29
-	if A2_28 ~= L3_29 then
-		L4_30 = A0_26._hidden_units
-		L4_30[A1_27] = not A2_28 or nil
-		L4_30 = A0_26.unit
-		L4_30 = L4_30(A0_26, A1_27)
-		if L4_30 then
-			A0_26:_set_unit_and_children_visible(L4_30, A2_28)
+		if alive(i_1) then
+			i_1:set_timer(l_4_1)
+			i_1:set_animation_timer(l_4_1)
 		end
 	end
 end
-function CoreCutsceneCast.unit_visible(A0_31, A1_32)
-	local L2_33
-	L2_33 = A0_31._hidden_units
-	if L2_33 then
-		L2_33 = A0_31._hidden_units
-		L2_33 = L2_33[A1_32]
-	end
-	L2_33 = L2_33 == nil
-	return L2_33
-end
-function CoreCutsceneCast.unit(A0_34, A1_35)
-	local L2_36
-	L2_36 = A0_34._spawned_units
-	if L2_36 then
-		L2_36 = A0_34._spawned_units
-		L2_36 = L2_36[A1_35]
-	end
-	return L2_36
-end
-function CoreCutsceneCast.actor_unit(A0_37, A1_38, A2_39)
-	if A0_37:unit(A1_38) and A2_39:has_unit(A1_38) then
-		return (A0_37:unit(A1_38))
-	else
-		return A0_37:_actor_units_in_cutscene(A2_39)[A1_38]
-	end
-end
-function CoreCutsceneCast.unit_names(A0_40)
-	return A0_40._spawned_units and table.map_keys(A0_40._spawned_units) or {}
-end
-function CoreCutsceneCast.evaluate_cutscene_at_time(A0_41, A1_42, A2_43)
-	local L3_44, L4_45, L5_46, L6_47, L7_48, L8_49, L9_50, L10_51, L11_52, L12_53, L13_54
-	L3_44 = A0_41._last_evaluated_cutscene
-	L3_44 = L3_44 or A1_42
-	A0_41._last_evaluated_cutscene = L3_44
-	L3_44 = A0_41._last_evaluated_cutscene
-	if A1_42 ~= L3_44 then
-		L4_45 = A0_41
-		L3_44 = A0_41._stop_animations_on_actor_units_in_cutscene
-		L3_44(L4_45, L5_46)
-	end
-	L4_45 = A1_42
-	L3_44 = A1_42.find_spawned_orientation_unit
-	L3_44 = L3_44(L4_45)
-	if L3_44 then
-		L4_45 = A0_41._root_unit
-		L4_45 = L4_45(L5_46)
-		L4_45 = L4_45.parent
-		L4_45 = L4_45(L5_46)
-		if L4_45 ~= L3_44 then
-			L4_45 = A0_41._reparent_to_locator_unit
-			L8_49 = A0_41
-			L13_54 = L7_48(L8_49)
-			L4_45(L5_46, L6_47, L7_48, L8_49, L9_50, L10_51, L11_52, L12_53, L13_54, L7_48(L8_49))
+
+CoreCutsceneCast.set_cutscene_visible = function(l_5_0, l_5_1, l_5_2)
+	local l_5_6, l_5_7, l_5_8, l_5_9, l_5_10 = nil
+	if not l_5_0._spawned_units then
+		for i_0,i_1 in pairs({}) do
+		end
+		if l_5_1:has_unit(i_0, true) then
+			local l_5_13 = l_5_0:_set_unit_and_children_visible
+			if l_5_2 then
+				l_5_13(l_5_0, l_5_12, l_5_0:unit_visible(l_5_11))
+			end
 		end
 	end
-	L4_45 = A0_41._animation_blob_controller
-	L4_45 = L4_45(L5_46, L6_47)
-	if L4_45 then
-		if L5_46 then
-			if not L5_46 then
-				function L8_49(A0_55)
-					local L1_56
-					L1_56 = A0_55
-					return L1_56, _UPVALUE0_:blend_set_for_unit(A0_55)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreCutsceneCast.set_unit_visible = function(l_6_0, l_6_1, l_6_2)
+	l_6_2 = not not l_6_2
+	if not l_6_0._hidden_units then
+		l_6_0._hidden_units = {}
+	end
+	local l_6_3 = not l_6_0._hidden_units[l_6_1]
+	if l_6_2 ~= l_6_3 then
+		local l_6_4 = l_6_0._hidden_units
+		if l_6_2 then
+			local l_6_5 = nil
+			l_6_5 = l_6_5
+		end
+		l_6_4[l_6_1] = l_6_5
+		l_6_4, l_6_5 = l_6_0:unit, l_6_0
+		l_6_4 = l_6_4(l_6_5, l_6_1)
+	if l_6_4 then
+		end
+		l_6_5(l_6_0, l_6_4, l_6_2)
+	end
+end
+
+CoreCutsceneCast.unit_visible = function(l_7_0, l_7_1)
+	return l_7_0._hidden_units and l_7_0._hidden_units[l_7_1] == nil
+end
+
+CoreCutsceneCast.unit = function(l_8_0, l_8_1)
+	if l_8_0._spawned_units then
+		return l_8_0._spawned_units[l_8_1]
+	end
+end
+
+CoreCutsceneCast.actor_unit = function(l_9_0, l_9_1, l_9_2)
+	local l_9_3 = l_9_0:unit(l_9_1)
+	if l_9_3 and l_9_2:has_unit(l_9_1) then
+		return l_9_3
+	end
+	do return end
+	return l_9_0:_actor_units_in_cutscene(l_9_2)[l_9_1]
+end
+
+CoreCutsceneCast.unit_names = function(l_10_0)
+	if not l_10_0._spawned_units or not table.map_keys(l_10_0._spawned_units) then
+		return {}
+	end
+end
+
+CoreCutsceneCast.evaluate_cutscene_at_time = function(l_11_0, l_11_1, l_11_2)
+	l_11_0._last_evaluated_cutscene = l_11_0._last_evaluated_cutscene or l_11_1
+	if l_11_1 ~= l_11_0._last_evaluated_cutscene then
+		l_11_0:_stop_animations_on_actor_units_in_cutscene(l_11_0._last_evaluated_cutscene)
+	end
+	local l_11_3 = l_11_1:find_spawned_orientation_unit()
+	if l_11_3 and l_11_0:_root_unit():parent() ~= l_11_3 then
+		l_11_0:_reparent_to_locator_unit(l_11_3, l_11_0:_root_unit())
+	end
+	local l_11_4 = l_11_0:_animation_blob_controller(l_11_1)
+	if l_11_4 and l_11_4:ready() then
+		if not l_11_4:is_playing() then
+			local l_11_5 = l_11_0:_actor_units_in_cutscene(l_11_1)
+			local l_11_6 = table.remap(l_11_5, function(l_12_0)
+				-- upvalues: l_11_1
+				return l_12_0, l_11_1:blend_set_for_unit(l_12_0)
+      end)
+			l_11_4:play(l_11_5, l_11_6)
+			l_11_4:pause()
+		end
+		l_11_4:set_time(l_11_2 + l_11_0.FLOAT_ERROR_TIME_COMPENSATION)
+	end
+	do return end
+	local l_11_10, l_11_11 = pairs, l_11_0:_actor_units_in_cutscene(l_11_1)
+	l_11_10 = l_11_10(l_11_11)
+	for i_0,i_1 in l_11_10 do
+		local l_11_12 = l_11_1:animation_for_unit(l_11_8)
+		if l_11_12 then
+			local l_11_13 = l_11_9:anim_state_machine()
+			if not l_11_13:enabled() then
+				l_11_13:set_enabled(true)
+			if not l_11_0:_state_machine_is_playing_raw_animation(l_11_13, l_11_12) then
 				end
-				L8_49 = L4_45
-				L9_50 = L5_46
-				L10_51 = L6_47
-				L7_48(L8_49, L9_50, L10_51)
-				L8_49 = L4_45
-				L7_48(L8_49)
+				l_11_13:play_raw(l_11_12)
 			end
-			L5_46(L6_47, L7_48)
-		end
-	else
-		L8_49 = A1_42
-		L13_54 = L6_47(L7_48, L8_49)
-		for L8_49, L9_50 in L5_46(L6_47, L7_48, L8_49, L9_50, L10_51, L11_52, L12_53, L13_54, L6_47(L7_48, L8_49)) do
-			L11_52 = A1_42
-			L10_51 = A1_42.animation_for_unit
-			L12_53 = L8_49
-			L10_51 = L10_51(L11_52, L12_53)
-			if L10_51 then
-				L12_53 = L9_50
-				L11_52 = L9_50.anim_state_machine
-				L11_52 = L11_52(L12_53)
-				L13_54 = L11_52
-				L12_53 = L11_52.enabled
-				L12_53 = L12_53(L13_54)
-				if not L12_53 then
-					L13_54 = L11_52
-					L12_53 = L11_52.set_enabled
-					L12_53(L13_54, true)
-					L13_54 = A0_41
-					L12_53 = A0_41._state_machine_is_playing_raw_animation
-					L12_53 = L12_53(L13_54, L11_52, L10_51)
-					if not L12_53 then
-						L13_54 = L11_52
-						L12_53 = L11_52.play_raw
-						L12_53(L13_54, L10_51)
-					end
-				end
-				L13_54 = A1_42
-				L12_53 = A1_42.duration
-				L12_53 = L12_53(L13_54)
-				if L12_53 == 0 then
-					L13_54 = 0
-				else
-					L13_54 = L13_54 or A2_43 / L12_53
-				end
-				L11_52:set_parameter(L10_51, "t", L13_54)
+			local l_11_14 = l_11_1:duration()
+			if l_11_14 ~= 0 or not 0 then
+				local l_11_15, l_11_16 = l_11_2 / l_11_14
 			end
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_11_13:set_parameter(l_11_12, "t", l_11_15)
 		end
 	end
-	A0_41._last_evaluated_cutscene = A1_42
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	l_11_0._last_evaluated_cutscene = l_11_1
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreCutsceneCast.evaluate_object_at_time(A0_57, A1_58, A2_59, A3_60, A4_61)
-	local L5_62, L6_63, L7_64
-	L5_62 = assert
-	L7_64 = A1_58
-	L6_63 = A1_58.is_optimized
-	L6_63 = L6_63(L7_64)
-	L7_64 = "Currently only supported with optimized cutscenes."
-	L5_62(L6_63, L7_64)
-	L6_63 = A0_57
-	L5_62 = A0_57._animation_blob_controller
-	L7_64 = A1_58
-	L5_62 = L5_62(L6_63, L7_64)
-	L6_63 = alive
-	L7_64 = L5_62
-	L6_63 = L6_63(L7_64)
-	if L6_63 then
-		L7_64 = L5_62
-		L6_63 = L5_62.ready
-		L6_63 = L6_63(L7_64)
-		if L6_63 then
-			L7_64 = L5_62
-			L6_63 = L5_62.is_playing
-			L6_63 = L6_63(L7_64)
-			if L6_63 then
-				L6_63 = A2_59
-				L7_64 = A3_60
-				L6_63 = L6_63 .. L7_64
-				L7_64 = A0_57.FLOAT_ERROR_TIME_COMPENSATION
-				L7_64 = A4_61 + L7_64
-				return L5_62:position(L6_63, L7_64), L5_62:rotation(L6_63, L7_64)
-			end
-		end
+
+CoreCutsceneCast.evaluate_object_at_time = function(l_12_0, l_12_1, l_12_2, l_12_3, l_12_4)
+	assert(l_12_1:is_optimized(), "Currently only supported with optimized cutscenes.")
+	local l_12_5 = l_12_0:_animation_blob_controller(l_12_1)
+	if alive(l_12_5) and l_12_5:ready() and l_12_5:is_playing() then
+		local l_12_6 = l_12_2 .. l_12_3
+		local l_12_7 = l_12_4 + l_12_0.FLOAT_ERROR_TIME_COMPENSATION
+		return l_12_5:position(l_12_6, l_12_7), l_12_5:rotation(l_12_6, l_12_7)
 	else
-		L6_63 = Vector3
-		L7_64 = 0
-		L6_63 = L6_63(L7_64, 0, 0)
-		L7_64 = Rotation
-		L7_64 = L7_64()
-		return L6_63, L7_64, L7_64()
+		return Vector3(0, 0, 0), Rotation()
 	end
 end
-function CoreCutsceneCast.spawn_unit(A0_65, A1_66, A2_67)
-	local L3_68, L4_69
-	L3_68 = UnitDatabase
-	L4_69 = L3_68
-	L3_68 = L3_68.get_unit_data
-	L3_68 = L3_68(L4_69, A2_67)
-	if L3_68 then
-		L4_69 = cat_print
-		L4_69("cutscene", string.format("[CoreCutsceneCast] Spawning \"%s\" named \"%s\".", A2_67, A1_66))
-		L4_69 = World
-		L4_69 = L4_69.effect_manager
-		L4_69 = L4_69(L4_69)
-		L4_69 = L4_69.set_spawns_enabled
-		L4_69(L4_69, false)
-		L4_69 = World
-		L4_69 = L4_69.spawn_unit
-		L4_69 = L4_69(L4_69, A2_67, Vector3(0, 0, 0), Rotation())
+
+CoreCutsceneCast.spawn_unit = function(l_13_0, l_13_1, l_13_2)
+	local l_13_3 = UnitDatabase:get_unit_data(l_13_2)
+	if l_13_3 then
+		cat_print("cutscene", string.format("[CoreCutsceneCast] Spawning \"%s\" named \"%s\".", l_13_2, l_13_1))
+		World:effect_manager():set_spawns_enabled(false)
+		local l_13_4 = World:spawn_unit(l_13_2, Vector3(0, 0, 0), Rotation())
 		World:effect_manager():set_spawns_enabled(true)
-		L4_69:set_timer(managers.cutscene:timer())
-		L4_69:set_animation_timer(managers.cutscene:timer())
-		A0_65:_reparent_to_locator_unit(A0_65:_root_unit(), L4_69)
-		A0_65:_set_unit_and_children_visible(L4_69, false)
-		L4_69:set_animation_lod(1, 100000, 10000000, 10000000)
-		if L4_69:cutscene() and L4_69:cutscene().setup then
-			L4_69:cutscene():setup()
+		l_13_4:set_timer(managers.cutscene:timer())
+		l_13_4:set_animation_timer(managers.cutscene:timer())
+		l_13_0:_reparent_to_locator_unit(l_13_0:_root_unit(), l_13_4)
+		l_13_0:_set_unit_and_children_visible(l_13_4, false)
+		l_13_4:set_animation_lod(1, 100000, 10000000, 10000000)
+		if l_13_4:cutscene() and l_13_4:cutscene().setup then
+			l_13_4:cutscene():setup()
 		end
-		if L4_69:anim_state_machine() then
-			L4_69:anim_state_machine():set_enabled(false)
+		if l_13_4:anim_state_machine() then
+			l_13_4:anim_state_machine():set_enabled(false)
 		end
-		managers.cutscene:actor_database():append_unit_info(L4_69)
-		A0_65._spawned_units = A0_65._spawned_units or {}
-		A0_65._spawned_units[A1_66] = L4_69
-		return L4_69
+		managers.cutscene:actor_database():append_unit_info(l_13_4)
+		if not l_13_0._spawned_units then
+			l_13_0._spawned_units = {}
+		end
+		l_13_0._spawned_units[l_13_1] = l_13_4
+		return l_13_4
 	else
-		L4_69 = error
-		L4_69("Unit type \"" .. tostring(A2_67) .. "\" not found.")
+		error("Unit type \"" .. tostring(l_13_2) .. "\" not found.")
 	end
 end
-function CoreCutsceneCast.delete_unit(A0_70, A1_71)
-	local L2_72
-	L2_72 = A0_70.unit
-	L2_72 = L2_72(A0_70, A1_71)
-	if L2_72 and alive(L2_72) then
-		World:delete_unit(L2_72)
+
+CoreCutsceneCast.delete_unit = function(l_14_0, l_14_1)
+	local l_14_2 = l_14_0:unit(l_14_1)
+	if l_14_2 and alive(l_14_2) then
+		local l_14_3 = l_14_2:name()
+		World:delete_unit(l_14_2)
 	end
-	if A0_70._spawned_units then
-		A0_70._spawned_units[A1_71] = nil
+	if l_14_0._spawned_units then
+		l_14_0._spawned_units[l_14_1] = nil
 	end
-	if A0_70._hidden_units then
-		A0_70._hidden_units[A1_71] = nil
+	if l_14_0._hidden_units then
+		l_14_0._hidden_units[l_14_1] = nil
 	end
-	return L2_72 ~= nil
+	return l_14_2 ~= nil
 end
-function CoreCutsceneCast.rename_unit(A0_73, A1_74, A2_75)
-	if A0_73:unit(A1_74) then
-		A0_73._spawned_units[A1_74] = nil
-		A0_73._spawned_units[A2_75] = A0_73:unit(A1_74)
-		if A0_73._hidden_units and A0_73._hidden_units[A1_74] then
-			A0_73._hidden_units[A1_74] = nil
-			A0_73._hidden_units[A2_75] = true
+
+CoreCutsceneCast.rename_unit = function(l_15_0, l_15_1, l_15_2)
+	local l_15_3 = l_15_0:unit(l_15_1)
+	if l_15_3 then
+		l_15_0._spawned_units[l_15_1] = nil
+		l_15_0._spawned_units[l_15_2] = l_15_3
+		if l_15_0._hidden_units and l_15_0._hidden_units[l_15_1] then
+			l_15_0._hidden_units[l_15_1] = nil
+			l_15_0._hidden_units[l_15_2] = true
 		end
 		return true
 	end
 	return false
 end
-function CoreCutsceneCast._stop_animations_on_actor_units_in_cutscene(A0_76, A1_77)
-	if A0_76:_animation_blob_controller(A1_77) then
-		A0_76:_animation_blob_controller(A1_77):stop()
+
+CoreCutsceneCast._stop_animations_on_actor_units_in_cutscene = function(l_16_0, l_16_1)
+	local l_16_2 = l_16_0:_animation_blob_controller(l_16_1)
+	if l_16_2 then
+		l_16_2:stop()
 	else
-		for 
+		local l_16_6, l_16_7 = pairs, l_16_0:_actor_units_in_cutscene(l_16_1)
+		l_16_6 = l_16_6(l_16_7)
+		for i_0,i_1 in l_16_6 do
+			local l_16_8 = l_16_5:anim_state_machine()
+			if l_16_8 then
+				l_16_8:set_enabled(false)
+			end
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+CoreCutsceneCast._state_machine_is_playing_raw_animation = function(l_17_0, l_17_1, l_17_2)
+	local l_17_3 = table.collect(l_17_1:config():states(), function(l_18_0)
+		local l_18_1, l_18_2 = l_18_0:name, l_18_0
+		return l_18_1(l_18_2)
+  end)
+	if table.contains(l_17_3, l_17_2) then
+		return l_17_1:is_playing(l_17_2)
+	end
+end
+
+CoreCutsceneCast._reparent_to_locator_unit = function(l_18_0, l_18_1, l_18_2)
+	local l_18_3 = assert(l_18_1:get_object("locator"), "Parent does not have an Object named \"locator\".")
+	l_18_2:unlink()
+	l_18_1:link(l_18_3:name(), l_18_2, l_18_2:orientation_object():name())
+end
+
+CoreCutsceneCast._set_unit_and_children_visible = function(l_19_0, l_19_1, l_19_2, l_19_3)
+	l_19_1:set_visible(l_19_2)
+	l_19_1:set_enabled(l_19_2)
+	if not l_19_3 then
+		if not l_19_0._spawned_units then
+			l_19_3 = table.remap({}, function(l_20_0, l_20_1)
+		return l_20_1, true
+  end)
+		end
+		local l_19_7, l_19_8 = ipairs, l_19_1:children()
+		l_19_7 = l_19_7(l_19_8)
+		for i_0,i_1 in l_19_7 do
+			if not l_19_3[l_19_6] then
+				l_19_0:_set_unit_and_children_visible(l_19_6, l_19_2, l_19_3)
+			end
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 15 
+end
+
+CoreCutsceneCast._animation_blob_controller = function(l_20_0, l_20_1, l_20_2)
+	if l_20_1:animation_blobs() == nil then
+		return nil
+	end
+	if not l_20_0._animation_blob_controllers then
+		l_20_0._animation_blob_controllers = {}
+	end
+	local l_20_3 = l_20_0._animation_blob_controllers[l_20_1]
+	if l_20_3 == nil then
+		if not l_20_2 then
+			Application:error("The cutscene \"" .. l_20_1:name() .. "\" was not preloaded, causing a performance spike.")
+		end
+		l_20_3 = CutScene:load(l_20_1:animation_blobs())
+		l_20_0._animation_blob_controllers[l_20_1] = l_20_3
+	end
+	return l_20_3
+end
+
+CoreCutsceneCast._actor_units_in_cutscene = function(l_21_0, l_21_1, l_21_2)
+	if not l_21_0._spawned_units then
+		l_21_0._spawned_units = {}
+	end
+	local l_21_3 = {}
+	local l_21_7, l_21_8 = pairs, l_21_1:controlled_unit_types()
+	l_21_7 = l_21_7(l_21_8)
+	for i_0,i_1 in l_21_7 do
+		local l_21_9 = l_21_0._spawned_units[l_21_5]
+		if l_21_9 == nil then
+			if l_21_2 and UnitDatabase:get_unit_data(l_21_6) ~= nil then
+				World:preload_unit(l_21_6)
+			end
+			l_21_9 = l_21_0:spawn_unit(l_21_5, l_21_6)
+		else
+			if not alive(l_21_9) then
+				cat_print("debug", string.format("[CoreCutsceneCast] Zombie Unit detected! Actor \"%s\" of unit type \"%s\" in cutscene \"%s\".", l_21_5, l_21_6, l_21_1:name()))
+				l_21_9 = nil
+			end
+		else
+			local l_21_10 = assert
+			l_21_10(l_21_9:name() == l_21_6, "Named unit type mismatch.")
+		end
+		l_21_3[l_21_5] = l_21_9
+	end
+	return l_21_3
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreCutsceneCast._root_unit = function(l_22_0)
+	if l_22_0.__root_unit == nil then
+		l_22_0.__root_unit = World:spawn_unit("locator", Vector3(0, 0, 0), Rotation())
+	end
+	return l_22_0.__root_unit
+end
+
+

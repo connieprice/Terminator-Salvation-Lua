@@ -1,110 +1,113 @@
 require("shared/camera/SharedCamera")
 require("shared/Queue")
-FollowCamera = FollowCamera or class(SharedCamera)
-function FollowCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0._max_speed_factor = 0.3
-	A0_0._speed_factor = 25
-	A0_0:_reset()
+if not FollowCamera then
+	FollowCamera = class(SharedCamera)
 end
-function FollowCamera.parse_parameters(A0_2, A1_3)
-	SharedCamera.parse_parameters(A0_2, A1_3)
-	if A1_3.speed_factor then
-		A0_2._speed_factor = tonumber(A1_3.speed_factor)
+FollowCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._max_speed_factor = 0.3
+	l_1_0._speed_factor = 25
+	l_1_0:_reset()
+end
+
+FollowCamera.parse_parameters = function(l_2_0, l_2_1)
+	SharedCamera.parse_parameters(l_2_0, l_2_1)
+	if l_2_1.speed_factor then
+		l_2_0._speed_factor = tonumber(l_2_1.speed_factor)
 	end
-	if A1_3.max_speed_factor then
-		A0_2._max_speed_factor = tonumber(A1_3.max_speed_factor)
+	if l_2_1.max_speed_factor then
+		l_2_0._max_speed_factor = tonumber(l_2_1.max_speed_factor)
 	end
 end
-function FollowCamera.update(A0_4, A1_5, A2_6, A3_7, A4_8)
-	local L5_9, L6_10, L7_11, L8_12
-	L6_10 = A3_7
-	L7_11 = A3_7
-	L8_12 = A0_4._prev_parent_position
-	if L8_12 then
-		L7_11 = A0_4._prev_parent_position
+
+FollowCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+	local l_3_5 = nil
+	local l_3_6 = l_3_3
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_3_0._prev_parent_position then
+		local l_3_7 = nil
 	end
-	L8_12 = L6_10 - L7_11
-	if L8_12:length() > 0 then
-		if A0_4._velocity then
-			A0_4._velocity = A0_4._velocity + L8_12 * A0_4._speed_factor * A2_6
-			if 0 < (L8_12 * A0_4._max_speed_factor / A2_6).x then
-				A0_4._velocity = A0_4._velocity:with_x(math.min(A0_4._velocity.x, (L8_12 * A0_4._max_speed_factor / A2_6).x))
+	local l_3_8 = nil
+	if l_3_6 - l_3_3:length() > 0 then
+		local l_3_9 = nil
+		local l_3_10 = l_3_8 / l_3_6 - l_3_3:length()
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_3_0._velocity then
+			if l_3_8 * l_3_0._max_speed_factor / l_3_2.x > 0 then
+				l_3_0._velocity = l_3_0._velocity:with_x(math.min(l_3_0._velocity.x, l_3_8 * l_3_0._max_speed_factor / l_3_2.x))
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
 			else
-				A0_4._velocity = A0_4._velocity:with_x(math.max(A0_4._velocity.x, (L8_12 * A0_4._max_speed_factor / A2_6).x))
+				l_3_0._velocity = l_3_0._velocity:with_x(math.max(l_3_0._velocity.x, l_3_8 * l_3_0._max_speed_factor / l_3_2.x))
 			end
-			if 0 < (L8_12 * A0_4._max_speed_factor / A2_6).y then
-				A0_4._velocity = A0_4._velocity:with_y(math.min(A0_4._velocity.y, (L8_12 * A0_4._max_speed_factor / A2_6).y))
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			if l_3_8 * l_3_0._max_speed_factor / l_3_2.y > 0 then
+				l_3_0._velocity = l_3_0._velocity:with_y(math.min(l_3_0._velocity.y, l_3_8 * l_3_0._max_speed_factor / l_3_2.y))
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
 			else
-				A0_4._velocity = A0_4._velocity:with_y(math.max(A0_4._velocity.y, (L8_12 * A0_4._max_speed_factor / A2_6).y))
+				l_3_0._velocity = l_3_0._velocity:with_y(math.max(l_3_0._velocity.y, l_3_8 * l_3_0._max_speed_factor / l_3_2.y))
 			end
-			if 0 < (L8_12 * A0_4._max_speed_factor / A2_6).z then
-				A0_4._velocity = A0_4._velocity:with_z(math.min(A0_4._velocity.z, (L8_12 * A0_4._max_speed_factor / A2_6).z))
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			if l_3_8 * l_3_0._max_speed_factor / l_3_2.z > 0 then
+				l_3_0._velocity = l_3_0._velocity:with_z(math.min(l_3_0._velocity.z, l_3_8 * l_3_0._max_speed_factor / l_3_2.z))
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
 			else
-				A0_4._velocity = A0_4._velocity:with_z(math.max(A0_4._velocity.z, (L8_12 * A0_4._max_speed_factor / A2_6).z))
+				l_3_0._velocity = l_3_0._velocity:with_z(math.max(l_3_0._velocity.z, l_3_8 * l_3_0._max_speed_factor / l_3_2.z))
 			end
 		else
-			A0_4._velocity = L8_12 / A2_6
+			l_3_0._velocity = l_3_8 / l_3_2
 		end
-		L5_9 = L7_11 + A0_4._velocity * A2_6
+		l_3_5 = l_3_7 + l_3_0._velocity * l_3_2
 	else
-		L5_9 = L6_10
+		l_3_5 = l_3_6
 	end
-	A0_4:set_local_position((L5_9 - A3_7):rotate_with(A4_8:inverse()))
-	A0_4:set_local_rotation(Rotation())
-	SharedCamera.update(A0_4, A1_5, A2_6, A3_7, A4_8)
-	A0_4._prev_parent_position = A0_4:position()
+	l_3_0:set_local_position(l_3_5 - l_3_3:rotate_with(l_3_4:inverse()))
+	l_3_0:set_local_rotation(Rotation())
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+	l_3_0._prev_parent_position = l_3_0:position()
 end
-function FollowCamera.on_activate(A0_13, A1_14)
-	if A1_14 then
-		A0_13:_reset()
+
+FollowCamera.on_activate = function(l_4_0, l_4_1)
+	if l_4_1 then
+		l_4_0:_reset()
 	end
 end
-function FollowCamera._reset(A0_15)
-	local L1_16, L2_17
-	A0_15._velocity = nil
-	A0_15._prev_parent_position = nil
-	L2_17 = A0_15
-	L1_16 = A0_15.set_local_position
-	L1_16(L2_17, Vector3())
-	L2_17 = A0_15
-	L1_16 = A0_15.set_local_rotation
-	L1_16(L2_17, Rotation())
+
+FollowCamera._reset = function(l_5_0)
+	l_5_0._velocity = nil
+	l_5_0._prev_parent_position = nil
+	l_5_0:set_local_position(Vector3())
+	l_5_0:set_local_rotation(Rotation())
 end
-function FollowCamera.debug_render(A0_18, A1_19, A2_20)
-	local L3_21, L4_22, L5_23, L6_24, L7_25, L8_26, L9_27
-	L3_21 = Draw
-	L4_22 = L3_21
-	L3_21 = L3_21.brush
-	L3_21 = L3_21(L4_22)
-	L4_22 = 5
-	L5_23 = Color
-	L6_24 = 0
-	L7_25 = 0
-	L8_26 = 1
-	L5_23 = L5_23(L6_24, L7_25, L8_26)
-	L6_24 = Color
-	L7_25 = 1
-	L8_26 = 0
-	L9_27 = 0
-	L6_24 = L6_24(L7_25, L8_26, L9_27)
-	L7_25 = Color
-	L8_26 = 1
-	L9_27 = 1
-	L7_25 = L7_25(L8_26, L9_27, 1)
-	L9_27 = A0_18
-	L8_26 = A0_18.position
-	L8_26 = L8_26(L9_27)
-	L9_27 = A0_18.position
-	L9_27 = L9_27(A0_18)
-	if A0_18._parent_camera then
-		L9_27 = A0_18._parent_camera:position()
+
+FollowCamera.debug_render = function(l_6_0, l_6_1, l_6_2)
+	local l_6_3 = Draw:brush()
+	local l_6_4 = 5
+	local l_6_5 = Color(0, 0, 1)
+	local l_6_6 = Color(1, 0, 0)
+	local l_6_7 = Color(1, 1, 1)
+	local l_6_8 = l_6_0:position()
+	local l_6_9 = l_6_0:position()
+	if l_6_0._parent_camera then
+		l_6_9 = l_6_0._parent_camera:position()
 	end
-	L3_21:set_color(L5_23)
-	L3_21:sphere(L9_27, L4_22)
-	L3_21:set_color(L7_25)
-	L3_21:line(L8_26, L9_27)
-	L3_21:set_color(L7_25)
-	L3_21:set_color(L6_24)
-	L3_21:sphere(L8_26, L4_22)
+	l_6_3:set_color(l_6_5)
+	l_6_3:sphere(l_6_9, l_6_4)
+	l_6_3:set_color(l_6_7)
+	l_6_3:line(l_6_8, l_6_9)
+	l_6_3:set_color(l_6_7)
+	l_6_3:set_color(l_6_6)
+	l_6_3:sphere(l_6_8, l_6_4)
 end
+
+

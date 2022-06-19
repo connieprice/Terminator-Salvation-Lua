@@ -12,377 +12,390 @@ core:require_module("CoreSongExporter")
 core:require_module("CoreClass")
 core:require_module("CoreEvent")
 TOOLHUB_NAME = "Music Editor"
-CoreMusicEditor2 = CoreMusicEditor2 or CoreClass.class()
-function CoreMusicEditor2.init(A0_0)
-	A0_0._song_project = nil
-	A0_0._database = ProjectDatabase
-	A0_0:_create_main_frame()
+if not CoreMusicEditor2 then
+	CoreMusicEditor2 = CoreClass.class()
 end
-function CoreMusicEditor2._create_main_frame(A0_1)
-	local L1_2, L2_3, L3_4, L4_5, L5_6
-	L1_2 = EWS
-	L2_3 = L1_2
-	L1_2 = L1_2.Frame
-	L3_4 = TOOLHUB_NAME
-	L4_5 = Vector3
-	L5_6 = 100
-	L4_5 = L4_5(L5_6, 400, 0)
-	L5_6 = Vector3
-	L5_6 = L5_6(690, 470, 0)
-	L1_2 = L1_2(L2_3, L3_4, L4_5, L5_6, "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
-	A0_1._frame = L1_2
-	L1_2 = EWS
-	L2_3 = L1_2
-	L1_2 = L1_2.BoxSizer
-	L3_4 = "VERTICAL"
-	L1_2 = L1_2(L2_3, L3_4)
-	L2_3 = EWS
-	L3_4 = L2_3
-	L2_3 = L2_3.SplitterWindow
-	L4_5 = A0_1._frame
-	L5_6 = ""
-	L2_3 = L2_3(L3_4, L4_5, L5_6, "")
-	L3_4 = EWS
-	L4_5 = L3_4
-	L3_4 = L3_4.SplitterWindow
-	L5_6 = L2_3
-	L3_4 = L3_4(L4_5, L5_6, "", "")
-	L4_5 = EWS
-	L5_6 = L4_5
-	L4_5 = L4_5.SplitterWindow
-	L4_5 = L4_5(L5_6, L3_4, "", "")
-	L5_6 = EWS
-	L5_6 = L5_6.Notebook
-	L5_6 = L5_6(L5_6, A0_1._frame, "", "")
-	A0_1:_create_menu(A0_1._frame)
-	A0_1._met = {}
-	A0_1._met.startstop = CoreStartStopBox.StartStopBox:new({parent = L5_6})
-	A0_1._met.modecrossfade = CoreModeCrossfadeBox.ModeCrossfadeBox:new({parent = L5_6})
-	A0_1._met.modetiming = CoreModeTimingBox.ModeTimingBox:new({parent = L5_6})
-	A0_1._met.songcrossfade = CoreSongCrossfadeBox.SongCrossfadeBox:new({parent = L5_6})
-	A0_1._met.marker_edit = CoreMarkerEditBox.MarkerEditBox:new({parent = L3_4})
-	A0_1._met.markers = CoreMarkersBox.MarkersBox:new({
-		parent = L2_3,
-		marker_edit = A0_1._met.marker_edit,
-		modecrossfade = A0_1._met.modecrossfade,
-		main_redraw_cb = CoreEvent.callback(A0_1, A0_1, "_global_redraw")
-	})
-	A0_1._met.clips = CoreClipsBox.ClipsBox:new({
-		parent = L4_5,
-		markers = A0_1._met.markers,
-		marker_edit = A0_1._met.marker_edit
-	})
-	A0_1._met.modes = CoreModesBox.ModesBox:new({
-		parent = L4_5,
-		clips = A0_1._met.clips,
-		markers = A0_1._met.markers,
-		startstop = A0_1._met.startstop,
-		modetiming = A0_1._met.modetiming,
-		songcrossfade = A0_1._met.songcrossfade
-	})
-	L2_3:split_vertically(L3_4, A0_1._met.markers.panel, "")
-	L2_3:set_minimum_pane_size(50)
-	L2_3:set_sash_gravity(1)
-	L2_3:set_sash_position(550, true)
-	L3_4:split_horizontally(L4_5, A0_1._met.marker_edit.panel, "")
-	L3_4:set_minimum_pane_size(100)
-	L3_4:set_sash_gravity(1)
-	L3_4:set_sash_position(140, true)
-	L4_5:split_vertically(A0_1._met.modes.panel, A0_1._met.clips.panel, "")
-	L4_5:set_minimum_pane_size(50)
-	L4_5:set_sash_position(110, true)
-	L5_6:add_page(A0_1._met.startstop.panel, "Mode Start/Stop", true)
-	L5_6:add_page(A0_1._met.modecrossfade.panel, "Mode Change", false)
-	L5_6:add_page(A0_1._met.modetiming.panel, "Mode Timing", false)
-	L5_6:add_page(A0_1._met.songcrossfade.panel, "Song Change", false)
-	L1_2:add(L2_3, 1, 0, "EXPAND")
-	L1_2:add(L5_6, 0, 0, "EXPAND")
-	A0_1._frame:set_sizer(L1_2)
-	A0_1._frame:set_visible(true)
+CoreMusicEditor2.init = function(l_1_0)
+	l_1_0._song_project = nil
+	l_1_0._database = ProjectDatabase
+	l_1_0:_create_main_frame()
 end
-function CoreMusicEditor2._create_menu(A0_7, A1_8)
-	local L2_9, L3_10
-	L2_9 = EWS
-	L3_10 = L2_9
-	L2_9 = L2_9.Menu
-	L2_9 = L2_9(L3_10, "")
-	L3_10 = L2_9.append_item
-	L3_10(L2_9, "NEW", "New\tCtrl+N", "")
-	L3_10 = L2_9.append_item
-	L3_10(L2_9, "OPEN", "Open\tCtrl+O", "")
-	L3_10 = L2_9.append_item
-	L3_10(L2_9, "SAVE", "Save (and Export)\tCtrl+S", "")
-	L3_10 = L2_9.append_item
-	L3_10(L2_9, "SAVE_AS", "Save As (and Export)", "")
-	L3_10 = L2_9.append_item
-	L3_10(L2_9, "EXIT", "Exit", "")
-	L3_10 = EWS
-	L3_10 = L3_10.Menu
-	L3_10 = L3_10(L3_10, "")
-	A0_7.edit_menu = L3_10
-	L3_10 = A0_7.edit_menu
-	L3_10 = L3_10.append_item
-	L3_10(L3_10, "UNDO", "Undo\tCtrl+Z", "")
-	L3_10 = A0_7.edit_menu
-	L3_10 = L3_10.append_item
-	L3_10(L3_10, "REDO", "Redo\tCtrl+Y", "")
-	L3_10 = A0_7.edit_menu
-	L3_10 = L3_10.set_enabled
-	L3_10(L3_10, "UNDO", false)
-	L3_10 = A0_7.edit_menu
-	L3_10 = L3_10.set_enabled
-	L3_10(L3_10, "REDO", false)
-	L3_10 = EWS
-	L3_10 = L3_10.MenuBar
-	L3_10 = L3_10(L3_10)
-	L3_10:append(L2_9, "File")
-	L3_10:append(A0_7.edit_menu, "Edit")
-	A1_8:set_menu_bar(L3_10)
-	A1_8:connect("NEW", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_new"), "")
-	A1_8:connect("OPEN", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_open"), "")
-	A1_8:connect("SAVE", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_save"), "")
-	A1_8:connect("SAVE_AS", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_save_as"), "")
-	A1_8:connect("EXIT", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_close"), "")
-	A1_8:connect("", "EVT_CLOSE_WINDOW", CoreEvent.callback(A0_7, A0_7, "_on_close"), "")
-	A1_8:connect("UNDO", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_undo"), "")
-	A1_8:connect("REDO", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_7, A0_7, "_on_redo"), "")
+
+CoreMusicEditor2._create_main_frame = function(l_2_0)
+	l_2_0._frame = EWS:Frame(TOOLHUB_NAME, Vector3(100, 400, 0), Vector3(690, 470, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
+	local l_2_1 = EWS:BoxSizer("VERTICAL")
+	local l_2_2 = EWS:SplitterWindow(l_2_0._frame, "", "")
+	local l_2_3 = EWS:SplitterWindow(l_2_2, "", "")
+	local l_2_4 = EWS:SplitterWindow(l_2_3, "", "")
+	local l_2_5 = EWS:Notebook(l_2_0._frame, "", "")
+	l_2_0:_create_menu(l_2_0._frame)
+	l_2_0._met = {}
+	local l_2_6 = l_2_0._met
+	local l_2_7, l_2_8 = CoreStartStopBox.StartStopBox:new, CoreStartStopBox.StartStopBox
+	local l_2_9 = {}
+	l_2_9.parent = l_2_5
+	l_2_7 = l_2_7(l_2_8, l_2_9)
+	l_2_6.startstop = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreModeCrossfadeBox
+	l_2_7 = l_2_7.ModeCrossfadeBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_5}
+	l_2_6.modecrossfade = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreModeTimingBox
+	l_2_7 = l_2_7.ModeTimingBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_5}
+	l_2_6.modetiming = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreSongCrossfadeBox
+	l_2_7 = l_2_7.SongCrossfadeBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_5}
+	l_2_6.songcrossfade = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreMarkerEditBox
+	l_2_7 = l_2_7.MarkerEditBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_3}
+	l_2_6.marker_edit = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreMarkersBox
+	l_2_7 = l_2_7.MarkersBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_2, marker_edit = l_2_0._met.marker_edit, modecrossfade = l_2_0._met.modecrossfade, main_redraw_cb = CoreEvent.callback(l_2_0, l_2_0, "_global_redraw")}
+	l_2_6.markers = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreClipsBox
+	l_2_7 = l_2_7.ClipsBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_4, markers = l_2_0._met.markers, marker_edit = l_2_0._met.marker_edit}
+	l_2_6.clips = l_2_7
+	l_2_6 = l_2_0._met
+	l_2_7 = CoreModesBox
+	l_2_7 = l_2_7.ModesBox
+	l_2_7, l_2_8 = l_2_7:new, l_2_7
+	l_2_7, l_2_9 = l_2_7(l_2_8, l_2_9), {parent = l_2_4, clips = l_2_0._met.clips, markers = l_2_0._met.markers, startstop = l_2_0._met.startstop, modetiming = l_2_0._met.modetiming, songcrossfade = l_2_0._met.songcrossfade}
+	l_2_6.modes = l_2_7
+	l_2_6, l_2_7 = l_2_2:split_vertically, l_2_2
+	l_2_8 = l_2_3
+	l_2_9 = l_2_0._met
+	l_2_9 = l_2_9.markers
+	l_2_9 = l_2_9.panel
+	l_2_6(l_2_7, l_2_8, l_2_9, "")
+	l_2_6, l_2_7 = l_2_2:set_minimum_pane_size, l_2_2
+	l_2_8 = 50
+	l_2_6(l_2_7, l_2_8)
+	l_2_6, l_2_7 = l_2_2:set_sash_gravity, l_2_2
+	l_2_8 = 1
+	l_2_6(l_2_7, l_2_8)
+	l_2_6, l_2_7 = l_2_2:set_sash_position, l_2_2
+	l_2_8 = 550
+	l_2_9 = true
+	l_2_6(l_2_7, l_2_8, l_2_9)
+	l_2_6, l_2_7 = l_2_3:split_horizontally, l_2_3
+	l_2_8 = l_2_4
+	l_2_9 = l_2_0._met
+	l_2_9 = l_2_9.marker_edit
+	l_2_9 = l_2_9.panel
+	l_2_6(l_2_7, l_2_8, l_2_9, "")
+	l_2_6, l_2_7 = l_2_3:set_minimum_pane_size, l_2_3
+	l_2_8 = 100
+	l_2_6(l_2_7, l_2_8)
+	l_2_6, l_2_7 = l_2_3:set_sash_gravity, l_2_3
+	l_2_8 = 1
+	l_2_6(l_2_7, l_2_8)
+	l_2_6, l_2_7 = l_2_3:set_sash_position, l_2_3
+	l_2_8 = 140
+	l_2_9 = true
+	l_2_6(l_2_7, l_2_8, l_2_9)
+	l_2_6, l_2_7 = l_2_4:split_vertically, l_2_4
+	l_2_8 = l_2_0._met
+	l_2_8 = l_2_8.modes
+	l_2_8 = l_2_8.panel
+	l_2_9 = l_2_0._met
+	l_2_9 = l_2_9.clips
+	l_2_9 = l_2_9.panel
+	l_2_6(l_2_7, l_2_8, l_2_9, "")
+	l_2_6, l_2_7 = l_2_4:set_minimum_pane_size, l_2_4
+	l_2_8 = 50
+	l_2_6(l_2_7, l_2_8)
+	l_2_6, l_2_7 = l_2_4:set_sash_position, l_2_4
+	l_2_8 = 110
+	l_2_9 = true
+	l_2_6(l_2_7, l_2_8, l_2_9)
+	l_2_6, l_2_7 = l_2_5:add_page, l_2_5
+	l_2_8 = l_2_0._met
+	l_2_8 = l_2_8.startstop
+	l_2_8 = l_2_8.panel
+	l_2_9 = "Mode Start/Stop"
+	l_2_6(l_2_7, l_2_8, l_2_9, true)
+	l_2_6, l_2_7 = l_2_5:add_page, l_2_5
+	l_2_8 = l_2_0._met
+	l_2_8 = l_2_8.modecrossfade
+	l_2_8 = l_2_8.panel
+	l_2_9 = "Mode Change"
+	l_2_6(l_2_7, l_2_8, l_2_9, false)
+	l_2_6, l_2_7 = l_2_5:add_page, l_2_5
+	l_2_8 = l_2_0._met
+	l_2_8 = l_2_8.modetiming
+	l_2_8 = l_2_8.panel
+	l_2_9 = "Mode Timing"
+	l_2_6(l_2_7, l_2_8, l_2_9, false)
+	l_2_6, l_2_7 = l_2_5:add_page, l_2_5
+	l_2_8 = l_2_0._met
+	l_2_8 = l_2_8.songcrossfade
+	l_2_8 = l_2_8.panel
+	l_2_9 = "Song Change"
+	l_2_6(l_2_7, l_2_8, l_2_9, false)
+	l_2_6, l_2_7 = l_2_1:add, l_2_1
+	l_2_8 = l_2_2
+	l_2_9 = 1
+	l_2_6(l_2_7, l_2_8, l_2_9, 0, "EXPAND")
+	l_2_6, l_2_7 = l_2_1:add, l_2_1
+	l_2_8 = l_2_5
+	l_2_9 = 0
+	l_2_6(l_2_7, l_2_8, l_2_9, 0, "EXPAND")
+	l_2_6 = l_2_0._frame
+	l_2_6, l_2_7 = l_2_6:set_sizer, l_2_6
+	l_2_8 = l_2_1
+	l_2_6(l_2_7, l_2_8)
+	l_2_6 = l_2_0._frame
+	l_2_6, l_2_7 = l_2_6:set_visible, l_2_6
+	l_2_8 = true
+	l_2_6(l_2_7, l_2_8)
 end
-function CoreMusicEditor2.close(A0_11)
-	if A0_11._frame then
-		A0_11._frame:destroy()
+
+CoreMusicEditor2._create_menu = function(l_3_0, l_3_1)
+	local l_3_2 = EWS:Menu("")
+	l_3_2:append_item("NEW", "New\tCtrl+N", "")
+	l_3_2:append_item("OPEN", "Open\tCtrl+O", "")
+	l_3_2:append_item("SAVE", "Save (and Export)\tCtrl+S", "")
+	l_3_2:append_item("SAVE_AS", "Save As (and Export)", "")
+	l_3_2:append_item("EXIT", "Exit", "")
+	l_3_0.edit_menu = EWS:Menu("")
+	l_3_0.edit_menu:append_item("UNDO", "Undo\tCtrl+Z", "")
+	l_3_0.edit_menu:append_item("REDO", "Redo\tCtrl+Y", "")
+	l_3_0.edit_menu:set_enabled("UNDO", false)
+	l_3_0.edit_menu:set_enabled("REDO", false)
+	local l_3_3 = EWS:MenuBar()
+	l_3_3:append(l_3_2, "File")
+	l_3_3:append(l_3_0.edit_menu, "Edit")
+	l_3_1:set_menu_bar(l_3_3)
+	l_3_1:connect("NEW", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_new"), "")
+	l_3_1:connect("OPEN", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_open"), "")
+	l_3_1:connect("SAVE", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_save"), "")
+	l_3_1:connect("SAVE_AS", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_save_as"), "")
+	l_3_1:connect("EXIT", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_close"), "")
+	l_3_1:connect("", "EVT_CLOSE_WINDOW", CoreEvent.callback(l_3_0, l_3_0, "_on_close"), "")
+	l_3_1:connect("UNDO", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_undo"), "")
+	l_3_1:connect("REDO", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_redo"), "")
+end
+
+CoreMusicEditor2.close = function(l_4_0)
+	if l_4_0._frame then
+		l_4_0._frame:destroy()
 	end
-	A0_11._song_project = nil
+	l_4_0._song_project = nil
 end
-function CoreMusicEditor2.set_position(A0_12, A1_13)
-	if A0_12._frame then
-		A0_12._frame:set_position(A1_13)
+
+CoreMusicEditor2.set_position = function(l_5_0, l_5_1)
+	if l_5_0._frame then
+		l_5_0._frame:set_position(l_5_1)
 	end
 end
-function CoreMusicEditor2.update(A0_14, A1_15, A2_16)
-	if A0_14._song_project_browser and A0_14._song_project_browser:update(A1_15, A2_16) then
-		A0_14._song_project_browser = nil
-		A0_14._frame:set_focus()
+
+CoreMusicEditor2.update = function(l_6_0, l_6_1, l_6_2)
+	if l_6_0._song_project_browser and l_6_0._song_project_browser:update(l_6_1, l_6_2) then
+		l_6_0._song_project_browser = nil
+		l_6_0._frame:set_focus()
 	end
 end
-function CoreMusicEditor2._global_redraw(A0_17, A1_18)
-	A0_17._met.modes:global_redraw(A1_18)
-	A0_17._met.clips:global_redraw(A1_18)
-	A0_17._met.markers:global_redraw(A1_18)
-	A0_17._met.marker_edit:global_redraw(A1_18)
-	A0_17._met.startstop:global_redraw(A1_18)
-	A0_17._met.modecrossfade:global_redraw(A1_18)
-	A0_17._met.modetiming:global_redraw(A1_18)
-	A0_17._met.songcrossfade:global_redraw(A1_18)
+
+CoreMusicEditor2._global_redraw = function(l_7_0, l_7_1)
+	l_7_0._met.modes:global_redraw(l_7_1)
+	l_7_0._met.clips:global_redraw(l_7_1)
+	l_7_0._met.markers:global_redraw(l_7_1)
+	l_7_0._met.marker_edit:global_redraw(l_7_1)
+	l_7_0._met.startstop:global_redraw(l_7_1)
+	l_7_0._met.modecrossfade:global_redraw(l_7_1)
+	l_7_0._met.modetiming:global_redraw(l_7_1)
+	l_7_0._met.songcrossfade:global_redraw(l_7_1)
 end
-function CoreMusicEditor2._on_close(A0_19)
-	if A0_19:_ok_loose_data() then
+
+CoreMusicEditor2._on_close = function(l_8_0)
+	if l_8_0:_ok_loose_data() then
 		managers.toolhub:close(TOOLHUB_NAME)
 	end
 end
-function CoreMusicEditor2._on_new(A0_20)
-	if A0_20:_ok_loose_data() then
-		A0_20._song_project = CoreSongProject.SongProject:new({
-			song_modified_cb = CoreEvent.callback(A0_20, A0_20, "_on_song_project_modified")
-		})
-		A0_20._open_entry = nil
-		A0_20:_on_song_project_modified()
-		A0_20:_global_redraw(A0_20._song_project)
+
+CoreMusicEditor2._on_new = function(l_9_0)
+	if l_9_0:_ok_loose_data() then
+		local l_9_1, l_9_2 = CoreSongProject.SongProject:new, CoreSongProject.SongProject
+		local l_9_3 = {}
+		l_9_3.song_modified_cb = CoreEvent.callback(l_9_0, l_9_0, "_on_song_project_modified")
+		l_9_1 = l_9_1(l_9_2, l_9_3)
+		l_9_0._song_project = l_9_1
+		l_9_0._open_entry = nil
+		l_9_1, l_9_2 = l_9_0:_on_song_project_modified, l_9_0
+		l_9_1(l_9_2)
+		l_9_1, l_9_2 = l_9_0:_global_redraw, l_9_0
+		l_9_3 = l_9_0._song_project
+		l_9_1(l_9_2, l_9_3)
 	end
 end
-function CoreMusicEditor2._on_open(A0_21)
-	if A0_21:_ok_loose_data() then
-		A0_21._song_project_browser = _G.CoreDBDialog:new("song_project", A0_21, A0_21._open_song_project, A0_21._database)
+
+CoreMusicEditor2._on_open = function(l_10_0)
+	if l_10_0:_ok_loose_data() then
+		l_10_0._song_project_browser = _G.CoreDBDialog:new("song_project", l_10_0, l_10_0._open_song_project, l_10_0._database)
 	end
 end
-function CoreMusicEditor2._open_song_project(A0_22)
-	A0_22._open_entry = A0_22._song_project_browser:get_value()
-	assert(A0_22._open_entry:valid())
-	A0_22._song_project = CoreSongProject.SongProject:new({
-		node = A0_22._database:load_node(A0_22._open_entry),
-		song_modified_cb = CoreEvent.callback(A0_22, A0_22, "_on_song_project_modified")
-	})
-	A0_22:_on_song_project_modified()
-	A0_22:_global_redraw(A0_22._song_project)
+
+CoreMusicEditor2._open_song_project = function(l_11_0)
+	l_11_0._open_entry = l_11_0._song_project_browser:get_value()
+	assert(l_11_0._open_entry:valid())
+	local l_11_1 = l_11_0._database:load_node(l_11_0._open_entry)
+	local l_11_2, l_11_3 = CoreSongProject.SongProject:new, CoreSongProject.SongProject
+	local l_11_4 = {}
+	l_11_4.node = l_11_1
+	l_11_4.song_modified_cb = CoreEvent.callback(l_11_0, l_11_0, "_on_song_project_modified")
+	l_11_2 = l_11_2(l_11_3, l_11_4)
+	l_11_0._song_project = l_11_2
+	l_11_2, l_11_3 = l_11_0:_on_song_project_modified, l_11_0
+	l_11_2(l_11_3)
+	l_11_2, l_11_3 = l_11_0:_global_redraw, l_11_0
+	l_11_4 = l_11_0._song_project
+	l_11_2(l_11_3, l_11_4)
 end
-function CoreMusicEditor2._ok_loose_data(A0_23)
-	if A0_23._song_project then
-		if A0_23._song_project:get_number_undo() > 0 or 0 < A0_23._song_project:get_number_redo() then
-			return EWS:MessageDialog(A0_23._frame, "You have unsaved changes, continue and loose information?", "Unsaved Data", ""):show_modal() == "ID_OK"
-		end
+
+CoreMusicEditor2._ok_loose_data = function(l_12_0)
+	if not l_12_0._song_project or l_12_0._song_project:get_number_undo() <= 0 and l_12_0._song_project:get_number_redo() > 0 then
+		local l_12_9 = nil
+		local l_12_10 = nil
+		return EWS:MessageDialog(l_12_0._frame, "You have unsaved changes, continue and loose information?", "Unsaved Data", ""):show_modal() == "ID_OK"
 	end
 	return true
 end
-function CoreMusicEditor2._on_save(A0_24)
-	local L1_25
-	L1_25 = A0_24._song_project
-	if L1_25 then
-		L1_25 = A0_24._open_entry
-		if L1_25 == nil then
-			L1_25 = A0_24._on_save_as
-			L1_25(A0_24)
-		else
-			L1_25 = A0_24._song_project
-			L1_25 = L1_25.get_song
-			L1_25 = L1_25(L1_25)
-			A0_24._database:save_node(L1_25, A0_24._open_entry)
-			A0_24._database:save()
-			A0_24._song_project:clear_undo()
-			A0_24:_export()
+
+CoreMusicEditor2._on_save = function(l_13_0)
+	if l_13_0._song_project then
+		if l_13_0._open_entry == nil then
+			l_13_0:_on_save_as()
 		end
-	end
-end
-function CoreMusicEditor2._on_save_as(A0_26)
-	local L1_27, L2_28, L3_29
-	L1_27 = A0_26._song_project
-	if L1_27 then
-		L1_27 = ""
-		L2_28 = A0_26._open_entry
-		if L2_28 then
-			L2_28 = A0_26._open_entry
-			L3_29 = L2_28
-			L2_28 = L2_28.name
-			L2_28 = L2_28(L3_29)
-			L1_27 = L2_28
-		end
-		L2_28 = false
-		while not L2_28 do
-			L3_29 = EWS
-			L3_29 = L3_29.get_text_from_user
-			L3_29 = L3_29(L3_29, A0_26._frame, "Enter new Song Project name:", "Save as", L1_27, Vector3(-1, -1, 0), true)
-			L1_27 = L3_29
-			if L1_27 == nil or L1_27 == "" then
-				return
-			end
-			L3_29 = "OBS!\n"
-			L3_29 = L3_29 .. "For each Song Project there will be a Song\n"
-			L3_29 = L3_29 .. "with the same name created when the Song project is Exported.\n"
-			if A0_26._database:has("song_project", L1_27) then
-				L3_29 = string.format([[
-%s
-Song Project '%s' already exist in database, overwrite?
-]], L3_29, L1_27)
-			end
-			if A0_26._database:has("song", L1_27) then
-				L3_29 = string.format([[
-%s
-Song '%s' already exist in database, overwrite on Export?
-]], L3_29, L1_27)
-			end
-			if true then
-				if EWS:MessageDialog(A0_26._frame, L3_29, "Overwrite?", ""):show_modal() == "ID_OK" then
-					L2_28 = true
-				end
-			else
-				L2_28 = true
-			end
-		end
-		L3_29 = A0_26._database
-		L3_29 = L3_29.has
-		L3_29 = L3_29(L3_29, "song_project", L1_27)
-		if L3_29 then
-			L3_29 = A0_26._database
-			L3_29 = L3_29.lookup
-			L3_29 = L3_29(L3_29, "song_project", L1_27)
-			A0_26._open_entry = L3_29
-		else
-			L3_29 = A0_26._database
-			L3_29 = L3_29.add
-			L3_29 = L3_29(L3_29, "song_project", L1_27, {}, "xml")
-			A0_26._open_entry = L3_29
-		end
-		L3_29 = A0_26._song_project
-		L3_29 = L3_29.get_song
-		L3_29 = L3_29(L3_29)
-		A0_26._database:save_node(L3_29, A0_26._open_entry)
-		A0_26._database:save()
-		A0_26._song_project:clear_undo()
-		A0_26:_export()
-	end
-end
-function CoreMusicEditor2._export(A0_30)
-	local L1_31, L2_32, L3_33, L4_34, L5_35, L6_36, L7_37, L8_38, L9_39, L10_40
-	L1_31 = A0_30._open_entry
-	L2_32 = L1_31
-	L1_31 = L1_31.name
-	L1_31 = L1_31(L2_32)
-	L2_32 = nil
-	L3_33 = A0_30._database
-	L4_34 = L3_33
-	L3_33 = L3_33.has
-	L5_35 = "song"
-	L3_33 = L3_33(L4_34, L5_35, L6_36)
-	if L3_33 then
-		L3_33 = A0_30._database
-		L4_34 = L3_33
-		L3_33 = L3_33.lookup
-		L5_35 = "song"
-		L3_33 = L3_33(L4_34, L5_35, L6_36)
-		L2_32 = L3_33
 	else
-		L3_33 = A0_30._database
-		L4_34 = L3_33
-		L3_33 = L3_33.add
-		L5_35 = "song"
-		L3_33 = L3_33(L4_34, L5_35, L6_36, L7_37, L8_38)
-		L2_32 = L3_33
+		local l_13_1 = l_13_0._song_project:get_song()
+		l_13_0._database:save_node(l_13_1, l_13_0._open_entry)
+		l_13_0._database:save()
+		l_13_0._song_project:clear_undo()
+		l_13_0:_export()
 	end
-	L3_33 = CoreSongExporter
-	L3_33 = L3_33.SongExporter
-	L4_34 = L3_33
-	L3_33 = L3_33.new
-	L5_35 = A0_30._song_project
-	L3_33 = L3_33(L4_34, L5_35, L6_36)
-	L5_35 = L3_33
-	L4_34 = L3_33.export
-	L4_34 = L4_34(L5_35, L6_36)
-	if L4_34 then
-		L5_35 = #L4_34
-		if L5_35 > 0 then
-			L5_35 = [[
-Your Song was saved, but not Exported. Please Correct the following problems and try again:
+end
 
-]]
-			for L9_39, L10_40 in L6_36(L7_37) do
-				L5_35 = L5_35 .. L9_39 .. ":" .. L10_40 .. [[
-
-
-]]
-			end
-			L9_39 = L5_35
-			L10_40 = "Export Error"
-			L6_36(L7_37)
+CoreMusicEditor2._on_save_as = function(l_14_0)
+	if l_14_0._song_project then
+		local l_14_1 = ""
+		if l_14_0._open_entry then
+			l_14_1 = l_14_0._open_entry:name()
 		end
+		while 1 do
+			local l_14_2 = false
+			while 1 do
+				while 1 do
+					if not l_14_2 then
+						l_14_1 = EWS:get_text_from_user(l_14_0._frame, "Enter new Song Project name:", "Save as", l_14_1, Vector3(-1, -1, 0), true)
+						if l_14_1 == nil or l_14_1 == "" then
+							return 
+						end
+						local l_14_3 = "OBS!\n"
+						l_14_3 = l_14_3 .. "For each Song Project there will be a Song\n"
+						l_14_3 = l_14_3 .. "with the same name created when the Song project is Exported.\n"
+						local l_14_4 = false
+						if l_14_0._database:has("song_project", l_14_1) then
+							l_14_3 = string.format("%s\nSong Project '%s' already exist in database, overwrite?\n", l_14_3, l_14_1)
+							l_14_4 = true
+						end
+						if l_14_0._database:has("song", l_14_1) then
+							l_14_3 = string.format("%s\nSong '%s' already exist in database, overwrite on Export?\n", l_14_3, l_14_1)
+							l_14_4 = true
+						end
+						if l_14_4 and EWS:MessageDialog(l_14_0._frame, l_14_3, "Overwrite?", ""):show_modal() == "ID_OK" then
+							l_14_2 = true
+						end
+					end
+					l_14_2 = true
+				end
+				if l_14_0._database:has("song_project", l_14_1) then
+					l_14_0._open_entry = l_14_0._database:lookup("song_project", l_14_1)
+				else
+					l_14_0._open_entry = l_14_0._database:add("song_project", l_14_1, {}, "xml")
+				end
+				local l_14_5 = l_14_0._song_project:get_song()
+				l_14_0._database:save_node(l_14_5, l_14_0._open_entry)
+				l_14_0._database:save()
+				l_14_0._song_project:clear_undo()
+				l_14_0:_export()
+			end
+			 -- WARNING: missing end command somewhere! Added here
+		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
 end
-function CoreMusicEditor2._on_undo(A0_41)
-	if A0_41._song_project ~= nil then
-		A0_41._song_project:undo()
-		A0_41:_global_redraw()
+
+CoreMusicEditor2._export = function(l_15_0)
+	local l_15_9, l_15_10, l_15_11 = nil
+	local l_15_1 = (l_15_0._open_entry:name())
+	local l_15_2 = nil
+	if l_15_0._database:has("song", l_15_1) then
+		l_15_2 = l_15_0._database:lookup("song", l_15_1)
+	else
+		l_15_2 = l_15_0._database:add("song", l_15_1, {}, "xml")
+	end
+	local l_15_3 = CoreSongExporter.SongExporter:new(l_15_0._song_project, l_15_0._database)
+	local l_15_4 = l_15_3:export(l_15_2)
+	if l_15_4 and #l_15_4 > 0 then
+		local l_15_5 = "Your Song was saved, but not Exported. Please Correct the following problems and try again:\n\n"
+		for i_0,i_1 in pairs(l_15_4) do
+			l_15_5 = l_15_5 .. i_0 .. ":" .. i_1 .. "\n\n"
+		end
+		EWS:MessageDialog(l_15_0._frame, l_15_5, "Export Error", ""):show_modal()
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function CoreMusicEditor2._on_redo(A0_42)
-	if A0_42._song_project ~= nil then
-		A0_42._song_project:redo()
-		A0_42:_global_redraw()
+
+CoreMusicEditor2._on_undo = function(l_16_0)
+	if l_16_0._song_project ~= nil then
+		l_16_0._song_project:undo()
+		l_16_0:_global_redraw()
 	end
 end
-function CoreMusicEditor2._on_song_project_modified(A0_43)
-	local L1_44, L2_45, L3_46, L4_47
-	L1_44 = false
-	L2_45 = false
-	L3_46 = "<new song project>"
-	L4_47 = ""
-	if A0_43._song_project ~= nil then
-		L1_44 = A0_43._song_project:get_number_undo() > 0
-		L2_45 = 0 < A0_43._song_project:get_number_redo()
+
+CoreMusicEditor2._on_redo = function(l_17_0)
+	if l_17_0._song_project ~= nil then
+		l_17_0._song_project:redo()
+		l_17_0:_global_redraw()
 	end
-	if A0_43._open_entry then
-		L3_46 = A0_43._open_entry:name()
-	end
-	if L1_44 or L2_45 then
-		L4_47 = "*"
-	end
-	A0_43.edit_menu:set_enabled("UNDO", L1_44)
-	A0_43.edit_menu:set_enabled("REDO", L2_45)
-	A0_43._frame:set_title(string.format("%s - [%s%s]", TOOLHUB_NAME, L4_47, L3_46))
 end
+
+CoreMusicEditor2._on_song_project_modified = function(l_18_0)
+	local l_18_1 = false
+	local l_18_2 = false
+	local l_18_3 = "<new song project>"
+	local l_18_4 = ""
+	if l_18_0._song_project:get_number_undo() <= 0 then
+		l_18_1 = l_18_0._song_project == nil
+	end
+	l_18_2 = l_18_0._song_project:get_number_redo() > 0
+	if l_18_0._open_entry then
+		l_18_3 = l_18_0._open_entry:name()
+	end
+	if l_18_1 or l_18_2 then
+		l_18_4 = "*"
+	end
+	l_18_0.edit_menu:set_enabled("UNDO", l_18_1)
+	l_18_0.edit_menu:set_enabled("REDO", l_18_2)
+	l_18_0._frame:set_title(string.format("%s - [%s%s]", TOOLHUB_NAME, l_18_4, l_18_3))
+end
+
+

@@ -1,115 +1,61 @@
 require("menu/loading_screen/LevelLoadingScreen")
 require("menu/loading_screen/MenuLoadingScreen")
-LoadingScreenTest = LoadingScreenTest or class()
-function LoadingScreenTest.init(A0_0, A1_1)
-	local L2_2, L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11
-	L2_2 = World
-	L2_2 = L2_2.find_units_quick
-	L6_6 = L5_5
-	L7_7 = "all"
-	L11_11 = L5_5(L6_6, L7_7)
-	L2_2 = L2_2(L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L5_5(L6_6, L7_7))
-	for L6_6, L7_7 in L3_3(L4_4) do
-		L9_9 = L7_7
-		L8_8 = L7_7.set_slot
-		L10_10 = 0
-		L8_8(L9_9, L10_10)
+if not LoadingScreenTest then
+	LoadingScreenTest = class()
+end
+LoadingScreenTest.init = function(l_1_0, l_1_1)
+	local l_1_6, l_1_7 = World:find_units_quick, World
+	l_1_6 = l_1_6(l_1_7, "all", managers.slot:get_mask("all"))
+	local l_1_2 = nil
+	l_1_7 = pairs
+	l_1_2 = l_1_6
+	l_1_7 = l_1_7(l_1_2)
+	for i_0,i_1 in l_1_7 do
+		l_1_5:set_slot(0)
 	end
-	L6_6 = Vector3
-	L7_7 = 0
-	L8_8 = 0
-	L9_9 = 0
-	L6_6 = L6_6(L7_7, L8_8, L9_9)
-	L7_7 = Rotation
-	L8_8 = 0
-	L9_9 = 0
-	L10_10 = 0
-	L11_11 = L7_7(L8_8, L9_9, L10_10)
-	L6_6 = "pivot_low"
-	L6_6 = L3_3
-	L7_7 = "Point_high"
-	L6_6 = {}
-	L6_6.head = L3_3
-	L6_6.low_pivot = L4_4
-	L6_6.high_pivot = L5_5
-	L7_7 = World
-	L8_8 = L7_7
-	L7_7 = L7_7.create_camera
-	L7_7 = L7_7(L8_8)
-	L8_8 = Application
-	L9_9 = L8_8
-	L8_8 = L8_8.create_scene_viewport
-	L10_10 = 0
-	L11_11 = 0
-	L8_8 = L8_8(L9_9, L10_10, L11_11, 1, 1)
-	A0_0._viewport = L8_8
-	L8_8 = A0_0._viewport
-	L9_9 = L8_8
-	L8_8 = L8_8.set_camera
-	L10_10 = L7_7
-	L8_8(L9_9, L10_10)
-	L8_8 = A0_0._viewport
-	L9_9 = L8_8
-	L8_8 = L8_8.set_active
-	L10_10 = true
-	L8_8(L9_9, L10_10)
-	L8_8 = {
-		L9_9,
-		[4] = L10_10(L11_11, "move")
-	}
-	L9_9 = managers
-	L9_9 = L9_9.menu
-	L10_10 = L9_9
-	L9_9 = L9_9._get_rotation_controller_info
-	L11_11 = "look"
-	L9_9 = L9_9(L10_10, L11_11)
-	L10_10 = managers
-	L10_10 = L10_10.menu
-	L11_11 = L10_10
-	L10_10 = L10_10._get_rotation_controller_info
-	L11_11 = L10_10(L11_11, "move")
-	;({
-		L9_9,
-		[4] = L10_10(L11_11, "move")
-	})[2] = L10_10
-	;({
-		L9_9,
-		[4] = L10_10(L11_11, "move")
-	})[3] = L11_11
-	L9_9 = tweak_data
-	L10_10 = L9_9
-	L9_9 = L9_9.safe_rect
-	L9_9 = L9_9(L10_10)
-	L10_10 = A0_0._viewport
-	L11_11 = L10_10
-	L10_10 = L10_10.set_environment
-	L10_10(L11_11, "loading_screen")
-	L10_10 = A0_0._viewport
-	L11_11 = L10_10
-	L10_10 = L10_10.set_dof
-	L10_10(L11_11, loading_screen_tweak_data.DOF_AMOUNT, loading_screen_tweak_data.DOF_NEAR_MIN, loading_screen_tweak_data.DOF_NEAR_MAX, loading_screen_tweak_data.DOF_FAR_MIN, loading_screen_tweak_data.DOF_FAR_MAX)
-	L10_10 = Overlay
-	L11_11 = L10_10
-	L10_10 = L10_10.newgui
-	L10_10 = L10_10(L11_11)
-	L11_11 = L10_10.create_screen_workspace
-	L11_11 = L11_11(L10_10)
-	A0_0._loading_screen = LevelLoadingScreen:new(L6_6, L7_7, L11_11, function()
-		local L0_12, L1_13
-		L0_12 = 0
-		return L0_12
-	end, L8_8, L9_9)
+	l_1_0._viewport:set_camera(World:create_camera())
+	l_1_0._viewport:set_active(true)
+	local l_1_8 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_1_9 = managers.menu:_get_rotation_controller_info("look"):safe_rect()
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._viewport:set_environment()
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._viewport:set_dof("loading_screen".DOF_AMOUNT, loading_screen_tweak_data.DOF_NEAR_MIN, loading_screen_tweak_data.DOF_NEAR_MAX, loading_screen_tweak_data.DOF_FAR_MIN, loading_screen_tweak_data.DOF_FAR_MAX)
+	local l_1_10 = Overlay:newgui()
+	do
+		local l_1_11 = l_1_10:create_screen_workspace()
+		l_1_0._loading_screen = LevelLoadingScreen:new({head = World:spawn_unit("loading_head", Vector3(0, 0, 0), Rotation(0, 0, 0)), low_pivot = World:spawn_unit("loading_head", Vector3(0, 0, 0), Rotation(0, 0, 0)):get_object("pivot_low"), high_pivot = World:spawn_unit("loading_head", Vector3(0, 0, 0), Rotation(0, 0, 0)):get_object("Point_high")}, World:create_camera(), l_1_11, function()
+		return 0
+  end, l_1_8, l_1_9)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function LoadingScreenTest.destroy(A0_14)
-	A0_14._loading_screen:destroy()
+
+LoadingScreenTest.destroy = function(l_2_0)
+	l_2_0._loading_screen:destroy()
 end
-function LoadingScreenTest.stop(A0_15)
-	A0_15._loading_screen:fade_down()
+
+LoadingScreenTest.stop = function(l_3_0)
+	l_3_0._loading_screen:fade_down()
 end
-function LoadingScreenTest.fade_down_done(A0_16)
-	return A0_16._loading_screen:fade_down_done()
+
+LoadingScreenTest.fade_down_done = function(l_4_0)
+	local l_4_1, l_4_2 = l_4_0._loading_screen:fade_down_done, l_4_0._loading_screen
+	return l_4_1(l_4_2)
 end
-function LoadingScreenTest.update(A0_17, A1_18)
-	managers.viewport:set_active_vp(A0_17._viewport)
-	A0_17._loading_screen:update(A1_18)
+
+LoadingScreenTest.update = function(l_5_0, l_5_1)
+	managers.viewport:set_active_vp(l_5_0._viewport)
+	l_5_0._loading_screen:update(l_5_1)
 end
+
+

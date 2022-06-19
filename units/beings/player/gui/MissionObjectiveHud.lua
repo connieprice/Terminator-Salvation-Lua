@@ -1,37 +1,44 @@
 require("units/beings/player/gui/HudPlayerObjective")
 require("units/beings/player/gui/TopToBottomHudElementStack")
-MissionObjectiveHud = MissionObjectiveHud or class()
-function MissionObjectiveHud.init(A0_0, A1_1)
-	local L2_2
-	L2_2 = 2
-	A0_0._mission_objective_stack = TopToBottomHudElementStack:new(A1_1, L2_2)
+if not MissionObjectiveHud then
+	MissionObjectiveHud = class()
+end
+MissionObjectiveHud.init = function(l_1_0, l_1_1)
+	local l_1_2 = 2
+	l_1_0._mission_objective_stack = TopToBottomHudElementStack:new(l_1_1, l_1_2)
 	Localizer:load("data/strings/mission_objectives.xml")
-	A0_0._hud_objectives = {}
+	l_1_0._hud_objectives = {}
 end
-function MissionObjectiveHud.destroy(A0_3)
-	local L1_4
+
+MissionObjectiveHud.destroy = function(l_2_0)
 end
-function MissionObjectiveHud.update(A0_5, A1_6, A2_7)
-	local L3_8, L4_9, L5_10, L6_11, L7_12, L8_13
-	for L6_11, L7_12 in L3_8(L4_9) do
-		L8_13 = A0_5._hud_objectives
-		L8_13 = L8_13[L7_12:objective():id()]
-		if not L8_13 then
-			L8_13 = HudPlayerObjective:new(A0_5._mission_objective_stack, L7_12, A0_5._use_small_font)
-			A0_5._hud_objectives[L7_12:objective():id()] = L8_13
+
+MissionObjectiveHud.update = function(l_3_0, l_3_1, l_3_2)
+	local l_3_6, l_3_7, l_3_8, l_3_9, l_3_10, l_3_11, l_3_12, l_3_13, l_3_15, l_3_16, l_3_18, l_3_19 = nil
+	for i_0,i_1 in pairs(l_3_2) do
+		if not l_3_0._hud_objectives[i_1:objective():id()] then
+			local l_3_20 = HudPlayerObjective:new(l_3_0._mission_objective_stack, i_1, l_3_0._use_small_font)
+			l_3_0._hud_objectives[l_3_17:objective():id()] = l_3_20
 		end
-		L8_13:update()
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_3_20:update()
 	end
-	L3_8(L4_9, L5_10)
+	l_3_0._mission_objective_stack:update(l_3_1)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function MissionObjectiveHud.use_small_font(A0_14)
-	local L1_15
-	A0_14._use_small_font = true
+
+MissionObjectiveHud.use_small_font = function(l_4_0)
+	l_4_0._use_small_font = true
 end
-function MissionObjectiveHud.use_normal_font(A0_16)
-	local L1_17
-	A0_16._use_small_font = false
+
+MissionObjectiveHud.use_normal_font = function(l_5_0)
+	l_5_0._use_small_font = false
 end
-function MissionObjectiveHud.use_top_align(A0_18, A1_19)
-	A0_18._mission_objective_stack:use_top_align(A1_19)
+
+MissionObjectiveHud.use_top_align = function(l_6_0, l_6_1)
+	l_6_0._mission_objective_stack:use_top_align(l_6_1)
 end
+
+

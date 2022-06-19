@@ -1,19 +1,25 @@
-SceneTrigger = SceneTrigger or class(CoreTriggerBase)
-function SceneTrigger.init(A0_0, A1_1, A2_2, A3_3)
-	CoreTriggerBase.init(A0_0, A1_1, A2_2, A3_3)
-	if A0_0._mode == "voice_line_started" then
-		managers.scene_trigger:add_start_line_trigger(A0_0)
-	elseif A0_0._mode == "voice_line_completed" then
-		managers.scene_trigger:add_end_line_trigger(A0_0)
+if not SceneTrigger then
+	SceneTrigger = class(CoreTriggerBase)
+end
+SceneTrigger.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	CoreTriggerBase.init(l_1_0, l_1_1, l_1_2, l_1_3)
+	if l_1_0._mode == "voice_line_started" then
+		managers.scene_trigger:add_start_line_trigger(l_1_0)
+	elseif l_1_0._mode == "voice_line_completed" then
+		managers.scene_trigger:add_end_line_trigger(l_1_0)
 	end
 end
-function SceneTrigger.destroy(A0_4)
-	if A0_4._mode == "voice_line_started" then
-		managers.scene_trigger:remove_start_line_trigger(A0_4)
-	elseif A0_4._mode == "voice_line_completed" then
-		managers.scene_trigger:remove_end_line_trigger(A0_4)
+
+SceneTrigger.destroy = function(l_2_0)
+	if l_2_0._mode == "voice_line_started" then
+		managers.scene_trigger:remove_start_line_trigger(l_2_0)
+	elseif l_2_0._mode == "voice_line_completed" then
+		managers.scene_trigger:remove_end_line_trigger(l_2_0)
 	end
 end
-function SceneTrigger.line_spoken(A0_5)
-	A0_5._user:trigger_activated(A0_5._id, 1)
+
+SceneTrigger.line_spoken = function(l_3_0)
+	l_3_0._user:trigger_activated(l_3_0._id, 1)
 end
+
+

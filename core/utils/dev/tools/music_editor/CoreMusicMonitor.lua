@@ -4,479 +4,509 @@ core:require_module("CoreClass")
 core:require_module("CoreEvent")
 core:require_module("CoreCode")
 TOOLHUB_NAME = "Music Monitor"
-CoreMusicMonitor = CoreMusicMonitor or CoreClass.class()
-function CoreMusicMonitor.init(A0_0)
-	A0_0._database = ProjectDatabase
-	A0_0:_create_main_frame()
+if not CoreMusicMonitor then
+	CoreMusicMonitor = CoreClass.class()
 end
-function CoreMusicMonitor._create_main_frame(A0_1)
-	local L1_2, L2_3, L3_4, L4_5
-	L1_2 = {}
-	A0_1._met = L1_2
-	L1_2 = EWS
-	L2_3 = L1_2
-	L1_2 = L1_2.Frame
-	L3_4 = TOOLHUB_NAME
-	L4_5 = Vector3
-	L4_5 = L4_5(100, 400, 0)
-	L1_2 = L1_2(L2_3, L3_4, L4_5, Vector3(900, 350, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
-	A0_1._frame = L1_2
-	L1_2 = EWS
-	L2_3 = L1_2
-	L1_2 = L1_2.Panel
-	L3_4 = A0_1._frame
-	L4_5 = ""
-	L1_2 = L1_2(L2_3, L3_4, L4_5, "")
-	L3_4 = A0_1
-	L2_3 = A0_1._create_menu
-	L4_5 = A0_1._frame
-	L2_3(L3_4, L4_5)
-	L2_3 = A0_1._met
-	L3_4 = LuaHelperBox
-	L4_5 = L3_4
-	L3_4 = L3_4.new
-	L3_4 = L3_4(L4_5, {parent = L1_2})
-	L2_3.lua_helper = L3_4
-	L2_3 = A0_1._met
-	L3_4 = NowPlayingApiBox
-	L4_5 = L3_4
-	L3_4 = L3_4.new
-	L3_4 = L3_4(L4_5, {parent = L1_2})
-	L2_3.now_playing = L3_4
-	L2_3 = A0_1._met
-	L3_4 = LoadAndSaveApiBox
-	L4_5 = L3_4
-	L3_4 = L3_4.new
-	L3_4 = L3_4(L4_5, {
-		parent = L1_2,
-		lua_helper = A0_1._met.lua_helper
-	})
-	L2_3.loadandsave = L3_4
-	L2_3 = A0_1._met
-	L3_4 = PitchApiBox
-	L4_5 = L3_4
-	L3_4 = L3_4.new
-	L3_4 = L3_4(L4_5, {
-		parent = L1_2,
-		lua_helper = A0_1._met.lua_helper
-	})
-	L2_3.pitch_api = L3_4
-	L2_3 = A0_1._met
-	L3_4 = MixerApiBox
-	L4_5 = L3_4
-	L3_4 = L3_4.new
-	L3_4 = L3_4(L4_5, {
-		parent = L1_2,
-		database = A0_1._database,
-		lua_helper = A0_1._met.lua_helper
-	})
-	L2_3.mixer_api = L3_4
-	L2_3 = A0_1._met
-	L3_4 = GameplayApiBox
-	L4_5 = L3_4
-	L3_4 = L3_4.new
-	L3_4 = L3_4(L4_5, {
-		parent = L1_2,
-		database = A0_1._database,
-		mixer_api = A0_1._met.mixer_api,
-		lua_helper = A0_1._met.lua_helper
-	})
-	L2_3.gameplay_api = L3_4
-	L2_3 = EWS
-	L3_4 = L2_3
-	L2_3 = L2_3.BoxSizer
-	L4_5 = "VERTICAL"
-	L2_3 = L2_3(L3_4, L4_5)
-	L4_5 = L2_3
-	L3_4 = L2_3.add
-	L3_4(L4_5, A0_1._met.pitch_api.box_sizer, 0, 0, "EXPAND")
-	L4_5 = L2_3
-	L3_4 = L2_3.add
-	L3_4(L4_5, A0_1._met.now_playing.box_sizer, 1, 0, "EXPAND")
-	L3_4 = EWS
-	L4_5 = L3_4
-	L3_4 = L3_4.BoxSizer
-	L3_4 = L3_4(L4_5, "HORIZONTAL")
-	L4_5 = L3_4.add
-	L4_5(L3_4, A0_1._met.gameplay_api.box_sizer, 0, 0, "EXPAND")
-	L4_5 = L3_4.add
-	L4_5(L3_4, A0_1._met.loadandsave.box_sizer, 1, 0, "EXPAND")
-	L4_5 = L3_4.add
-	L4_5(L3_4, A0_1._met.mixer_api.box_sizer, 0, 0, "EXPAND")
-	L4_5 = L3_4.add
-	L4_5(L3_4, L2_3, 1, 0, "EXPAND")
-	L4_5 = EWS
-	L4_5 = L4_5.BoxSizer
-	L4_5 = L4_5(L4_5, "VERTICAL")
-	L4_5:add(L3_4, 0, 0, "EXPAND")
-	L4_5:add(A0_1._met.lua_helper.box_sizer, 1, 0, "EXPAND")
-	L1_2:set_sizer(L4_5)
-	A0_1._frame:set_visible(true)
-	A0_1:_set_enabled(true)
+CoreMusicMonitor.init = function(l_1_0)
+	l_1_0._database = ProjectDatabase
+	l_1_0:_create_main_frame()
 end
-function CoreMusicMonitor._create_menu(A0_6, A1_7)
-	local L2_8, L3_9
-	L2_8 = EWS
-	L3_9 = L2_8
-	L2_8 = L2_8.Menu
-	L2_8 = L2_8(L3_9, "")
-	L3_9 = L2_8.append_item
-	L3_9(L2_8, "REFRESH", "Refresh", "")
-	L3_9 = L2_8.append_item
-	L3_9(L2_8, "EXIT", "Exit", "")
-	L3_9 = EWS
-	L3_9 = L3_9.MenuBar
-	L3_9 = L3_9(L3_9)
-	L3_9:append(L2_8, "File")
-	A1_7:set_menu_bar(L3_9)
-	A1_7:connect("REFRESH", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_6, A0_6, "_on_refresh"), "")
-	A1_7:connect("EXIT", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(A0_6, A0_6, "_on_close"), "")
-	A1_7:connect("", "EVT_CLOSE_WINDOW", CoreEvent.callback(A0_6, A0_6, "_on_close"), "")
+
+CoreMusicMonitor._create_main_frame = function(l_2_0)
+	l_2_0._met = {}
+	l_2_0._frame = EWS:Frame(TOOLHUB_NAME, Vector3(100, 400, 0), Vector3(900, 350, 0), "FRAME_FLOAT_ON_PARENT,DEFAULT_FRAME_STYLE", Global.frame)
+	local l_2_1 = EWS:Panel(l_2_0._frame, "", "")
+	l_2_0:_create_menu(l_2_0._frame)
+	local l_2_2 = l_2_0._met
+	local l_2_3, l_2_4 = LuaHelperBox:new, LuaHelperBox
+	local l_2_5 = {}
+	l_2_5.parent = l_2_1
+	l_2_3 = l_2_3(l_2_4, l_2_5)
+	l_2_2.lua_helper = l_2_3
+	l_2_2 = l_2_0._met
+	l_2_3 = NowPlayingApiBox
+	l_2_3, l_2_4 = l_2_3:new, l_2_3
+	l_2_3, l_2_5 = l_2_3(l_2_4, l_2_5), {parent = l_2_1}
+	l_2_2.now_playing = l_2_3
+	l_2_2 = l_2_0._met
+	l_2_3 = LoadAndSaveApiBox
+	l_2_3, l_2_4 = l_2_3:new, l_2_3
+	l_2_3, l_2_5 = l_2_3(l_2_4, l_2_5), {parent = l_2_1, lua_helper = l_2_0._met.lua_helper}
+	l_2_2.loadandsave = l_2_3
+	l_2_2 = l_2_0._met
+	l_2_3 = PitchApiBox
+	l_2_3, l_2_4 = l_2_3:new, l_2_3
+	l_2_3, l_2_5 = l_2_3(l_2_4, l_2_5), {parent = l_2_1, lua_helper = l_2_0._met.lua_helper}
+	l_2_2.pitch_api = l_2_3
+	l_2_2 = l_2_0._met
+	l_2_3 = MixerApiBox
+	l_2_3, l_2_4 = l_2_3:new, l_2_3
+	l_2_3, l_2_5 = l_2_3(l_2_4, l_2_5), {parent = l_2_1, database = l_2_0._database, lua_helper = l_2_0._met.lua_helper}
+	l_2_2.mixer_api = l_2_3
+	l_2_2 = l_2_0._met
+	l_2_3 = GameplayApiBox
+	l_2_3, l_2_4 = l_2_3:new, l_2_3
+	l_2_3, l_2_5 = l_2_3(l_2_4, l_2_5), {parent = l_2_1, database = l_2_0._database, mixer_api = l_2_0._met.mixer_api, lua_helper = l_2_0._met.lua_helper}
+	l_2_2.gameplay_api = l_2_3
+	l_2_2 = EWS
+	l_2_2, l_2_3 = l_2_2:BoxSizer, l_2_2
+	l_2_4 = "VERTICAL"
+	l_2_2 = l_2_2(l_2_3, l_2_4)
+	l_2_3, l_2_4 = l_2_2:add, l_2_2
+	l_2_5 = l_2_0._met
+	l_2_5 = l_2_5.pitch_api
+	l_2_5 = l_2_5.box_sizer
+	l_2_3(l_2_4, l_2_5, 0, 0, "EXPAND")
+	l_2_3, l_2_4 = l_2_2:add, l_2_2
+	l_2_5 = l_2_0._met
+	l_2_5 = l_2_5.now_playing
+	l_2_5 = l_2_5.box_sizer
+	l_2_3(l_2_4, l_2_5, 1, 0, "EXPAND")
+	l_2_3 = EWS
+	l_2_3, l_2_4 = l_2_3:BoxSizer, l_2_3
+	l_2_5 = "HORIZONTAL"
+	l_2_3 = l_2_3(l_2_4, l_2_5)
+	l_2_4, l_2_5 = l_2_3:add, l_2_3
+	l_2_4(l_2_5, l_2_0._met.gameplay_api.box_sizer, 0, 0, "EXPAND")
+	l_2_4, l_2_5 = l_2_3:add, l_2_3
+	l_2_4(l_2_5, l_2_0._met.loadandsave.box_sizer, 1, 0, "EXPAND")
+	l_2_4, l_2_5 = l_2_3:add, l_2_3
+	l_2_4(l_2_5, l_2_0._met.mixer_api.box_sizer, 0, 0, "EXPAND")
+	l_2_4, l_2_5 = l_2_3:add, l_2_3
+	l_2_4(l_2_5, l_2_2, 1, 0, "EXPAND")
+	l_2_4 = EWS
+	l_2_4, l_2_5 = l_2_4:BoxSizer, l_2_4
+	l_2_4 = l_2_4(l_2_5, "VERTICAL")
+	l_2_5(l_2_4, l_2_3, 0, 0, "EXPAND")
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_5(l_2_4, l_2_0._met.lua_helper.box_sizer, 1, 0, "EXPAND")
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_5(l_2_1, l_2_4)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_5(l_2_5, true)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_5(l_2_0, true)
 end
-function CoreMusicMonitor.close(A0_10)
-	if A0_10._frame then
-		A0_10._frame:destroy()
+
+CoreMusicMonitor._create_menu = function(l_3_0, l_3_1)
+	local l_3_2 = EWS:Menu("")
+	l_3_2:append_item("REFRESH", "Refresh", "")
+	l_3_2:append_item("EXIT", "Exit", "")
+	local l_3_3 = EWS:MenuBar()
+	l_3_3:append(l_3_2, "File")
+	l_3_1:set_menu_bar(l_3_3)
+	l_3_1:connect("REFRESH", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_refresh"), "")
+	l_3_1:connect("EXIT", "EVT_COMMAND_MENU_SELECTED", CoreEvent.callback(l_3_0, l_3_0, "_on_close"), "")
+	l_3_1:connect("", "EVT_CLOSE_WINDOW", CoreEvent.callback(l_3_0, l_3_0, "_on_close"), "")
+end
+
+CoreMusicMonitor.close = function(l_4_0)
+	if l_4_0._frame then
+		l_4_0._frame:destroy()
 	end
-	A0_10._song_project = nil
+	l_4_0._song_project = nil
 end
-function CoreMusicMonitor.set_position(A0_11, A1_12)
-	if A0_11._frame then
-		A0_11._frame:set_position(A1_12)
+
+CoreMusicMonitor.set_position = function(l_5_0, l_5_1)
+	if l_5_0._frame then
+		l_5_0._frame:set_position(l_5_1)
 	end
 end
-function CoreMusicMonitor.update(A0_13, A1_14, A2_15)
-	if A0_13._met.pitch_api then
-		A0_13._met.pitch_api:update(A1_14, A2_15)
+
+CoreMusicMonitor.update = function(l_6_0, l_6_1, l_6_2)
+	if l_6_0._met.pitch_api then
+		l_6_0._met.pitch_api:update(l_6_1, l_6_2)
 	end
-	if A0_13._met.now_playing then
-		A0_13._met.now_playing:update(A1_14, A2_15)
+	if l_6_0._met.now_playing then
+		l_6_0._met.now_playing:update(l_6_1, l_6_2)
 	end
-	if A0_13._met.loadandsave then
-		A0_13._met.loadandsave:update(A1_14, A2_15)
+	if l_6_0._met.loadandsave then
+		l_6_0._met.loadandsave:update(l_6_1, l_6_2)
 	end
 end
-function CoreMusicMonitor._set_enabled(A0_16, A1_17)
-	A0_16._met.lua_helper:set_enabled(A1_17)
-	A0_16._met.mixer_api:set_enabled(A1_17)
-	A0_16._met.gameplay_api:set_enabled(A1_17)
-	A0_16:redraw()
+
+CoreMusicMonitor._set_enabled = function(l_7_0, l_7_1)
+	l_7_0._met.lua_helper:set_enabled(l_7_1)
+	l_7_0._met.mixer_api:set_enabled(l_7_1)
+	l_7_0._met.gameplay_api:set_enabled(l_7_1)
+	l_7_0:redraw()
 end
-function CoreMusicMonitor.redraw(A0_18)
-	A0_18._met.lua_helper:redraw()
-	A0_18._met.mixer_api:redraw()
-	A0_18._met.gameplay_api:redraw()
+
+CoreMusicMonitor.redraw = function(l_8_0)
+	l_8_0._met.lua_helper:redraw()
+	l_8_0._met.mixer_api:redraw()
+	l_8_0._met.gameplay_api:redraw()
 end
-function CoreMusicMonitor._on_close(A0_19)
+
+CoreMusicMonitor._on_close = function(l_9_0)
 	managers.toolhub:close(TOOLHUB_NAME)
 end
-function CoreMusicMonitor._on_refresh(A0_20)
+
+CoreMusicMonitor._on_refresh = function(l_10_0)
 	managers.music:reload_songs(song_name)
-	A0_20:redraw()
+	l_10_0:redraw()
 end
-LuaHelperBox = LuaHelperBox or CoreClass.class()
-function LuaHelperBox.init(A0_21, ...)
-	local L2_23
-	L2_23 = CoreKeywordArguments
-	L2_23 = L2_23.KeywordArguments
-	L2_23 = L2_23.new
-	L2_23 = L2_23(L2_23, ...)
-	A0_21._ews_parent = L2_23:mandatory_object("parent")
-	L2_23:assert_all_consumed()
-	A0_21.gameplay_text = EWS:StaticText(A0_21._ews_parent, "", "", "")
-	A0_21.box_sizer = EWS:StaticBoxSizer(A0_21._ews_parent, "VERTICAL", "Lua Helper")
-	A0_21.box_sizer:add(EWS:StaticText(A0_21._ews_parent, "In LUA write:", "", ""), 0, 0, "")
-	A0_21.box_sizer:add(A0_21.gameplay_text, 0, 10, "")
-	A0_21:redraw()
+
+if not LuaHelperBox then
+	LuaHelperBox = CoreClass.class()
 end
-function LuaHelperBox.set_enabled(A0_24, A1_25)
+LuaHelperBox.init = function(l_11_0, ...)
+	l_11_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_11_0.gameplay_text = EWS:StaticText(l_11_0._ews_parent, "", "", "")
+	l_11_0.box_sizer = EWS:StaticBoxSizer(l_11_0._ews_parent, "VERTICAL", "Lua Helper")
+	l_11_0.box_sizer:add(EWS:StaticText(l_11_0._ews_parent, "In LUA write:", "", ""), 0, 0, "")
+	l_11_0.box_sizer:add(l_11_0.gameplay_text, 0, 10, "")
+	l_11_0:redraw()
 end
-function LuaHelperBox.redraw(A0_26)
-	local L1_27
+
+LuaHelperBox.set_enabled = function(l_12_0, l_12_1)
 end
-function LuaHelperBox.set_help_text(A0_28, A1_29)
-	A0_28.gameplay_text:set_value(A1_29)
+
+LuaHelperBox.redraw = function(l_13_0)
 end
-LoadAndSaveApiBox = LoadAndSaveApiBox or CoreClass.class()
-function LoadAndSaveApiBox.init(A0_30, ...)
-	local L2_32, L3_33
-	L2_32 = CoreKeywordArguments
-	L2_32 = L2_32.KeywordArguments
-	L3_33 = L2_32
-	L2_32 = L2_32.new
-	L2_32 = L2_32(L3_33, ...)
-	L3_33 = L2_32.mandatory_object
-	L3_33 = L3_33(L2_32, "parent")
-	A0_30._ews_parent = L3_33
-	L3_33 = L2_32.mandatory_object
-	L3_33 = L3_33(L2_32, "lua_helper")
-	A0_30._lua_helper = L3_33
-	L3_33 = L2_32.assert_all_consumed
-	L3_33(L2_32)
-	L3_33 = EWS
-	L3_33 = L3_33.Button
-	L3_33 = L3_33(L3_33, A0_30._ews_parent, "save", "", "")
-	A0_30.save_button = L3_33
-	L3_33 = EWS
-	L3_33 = L3_33.Button
-	L3_33 = L3_33(L3_33, A0_30._ews_parent, "load", "", "")
-	A0_30.load_button = L3_33
-	L3_33 = EWS
-	L3_33 = L3_33.StaticText
-	L3_33 = L3_33(L3_33, A0_30._ews_parent, "", "", "")
-	A0_30._text = L3_33
-	L3_33 = A0_30.save_button
-	L3_33 = L3_33.connect
-	L3_33(L3_33, "", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(A0_30, A0_30, "_on_save"), "")
-	L3_33 = A0_30.load_button
-	L3_33 = L3_33.connect
-	L3_33(L3_33, "", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(A0_30, A0_30, "_on_load"), "")
-	L3_33 = {}
-	A0_30._data = L3_33
-	L3_33 = EWS
-	L3_33 = L3_33.FlexGridSizer
-	L3_33 = L3_33(L3_33, 2, 2, 5, 5)
-	L3_33:add(A0_30.save_button, 0, 0, "")
-	L3_33:add(A0_30.load_button, 0, 0, "")
-	L3_33:add(A0_30._text, 0, 0, "")
-	A0_30.box_sizer = EWS:StaticBoxSizer(A0_30._ews_parent, "VERTICAL", "Load And Save API")
-	A0_30.box_sizer:add(L3_33, 0, 0, "")
+
+LuaHelperBox.set_help_text = function(l_14_0, l_14_1)
+	l_14_0.gameplay_text:set_value(l_14_1)
 end
-function LoadAndSaveApiBox.set_enabled(A0_34, A1_35)
-	A0_34.save_button:set_enabled(A1_35)
-	A0_34.load_button:set_enabled(A1_35)
+
+if not LoadAndSaveApiBox then
+	LoadAndSaveApiBox = CoreClass.class()
 end
-function LoadAndSaveApiBox.update(A0_36, A1_37, A2_38)
-	local L3_39
-	L3_39 = A0_36._data
-	L3_39 = L3_39.MusicManager
-	if L3_39 then
-		L3_39 = A0_36._data
-		L3_39 = L3_39.MusicManager
-		L3_39 = L3_39.mode_name
-		if L3_39 then
-			L3_39 = A0_36._data
-			L3_39 = L3_39.MusicManager
-			L3_39 = L3_39.song_name
-			if L3_39 then
-				L3_39 = string
-				L3_39 = L3_39.format
-				L3_39 = L3_39([[
-saved:
-song = '%s'
-mode = '%s']], A0_36._data.MusicManager.song_name, A0_36._data.MusicManager.mode_name)
-				A0_36._text:set_value(L3_39)
-			end
-		end
+LoadAndSaveApiBox.init = function(l_15_0, ...)
+	l_15_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	l_15_0._lua_helper = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("lua_helper")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_15_0.save_button = EWS:Button(l_15_0._ews_parent, "save", "", "")
+	l_15_0.load_button = EWS:Button(l_15_0._ews_parent, "load", "", "")
+	l_15_0._text = EWS:StaticText(l_15_0._ews_parent, "", "", "")
+	l_15_0.save_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_15_0, l_15_0, "_on_save"), "")
+	l_15_0.load_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_15_0, l_15_0, "_on_load"), "")
+	l_15_0._data = {}
+	local l_15_2 = nil
+	EWS:FlexGridSizer(2, 2, 5, 5):add(l_15_0.save_button, 0, 0, "")
+	EWS:FlexGridSizer(2, 2, 5, 5):add(l_15_0.load_button, 0, 0, "")
+	EWS:FlexGridSizer(2, 2, 5, 5):add(l_15_0._text, 0, 0, "")
+	l_15_0.box_sizer = EWS:StaticBoxSizer(l_15_0._ews_parent, "VERTICAL", "Load And Save API")
+	l_15_0.box_sizer:add(EWS:FlexGridSizer(2, 2, 5, 5), 0, 0, "")
+end
+
+LoadAndSaveApiBox.set_enabled = function(l_16_0, l_16_1)
+	l_16_0.save_button:set_enabled(l_16_1)
+	l_16_0.load_button:set_enabled(l_16_1)
+end
+
+LoadAndSaveApiBox.update = function(l_17_0, l_17_1, l_17_2)
+	if l_17_0._data.MusicManager and l_17_0._data.MusicManager.mode_name and l_17_0._data.MusicManager.song_name then
+		local l_17_3 = string.format("saved:\nsong = '%s'\nmode = '%s'", l_17_0._data.MusicManager.song_name, l_17_0._data.MusicManager.mode_name)
+		l_17_0._text:set_value(l_17_3)
 	else
-		L3_39 = A0_36._text
-		L3_39 = L3_39.set_value
-		L3_39(L3_39, "~ nothing saved ~")
+		l_17_0._text:set_value("~ nothing saved ~")
 	end
 end
-function LoadAndSaveApiBox._on_save(A0_40)
-	A0_40._lua_helper:set_help_text("managers.music:save(data)")
-	managers.music:save(A0_40._data)
+
+LoadAndSaveApiBox._on_save = function(l_18_0)
+	l_18_0._lua_helper:set_help_text("managers.music:save(data)")
+	managers.music:save(l_18_0._data)
 end
-function LoadAndSaveApiBox._on_load(A0_41)
-	A0_41._lua_helper:set_help_text("managers.music:load(data)")
-	managers.music:load(A0_41._data)
+
+LoadAndSaveApiBox._on_load = function(l_19_0)
+	l_19_0._lua_helper:set_help_text("managers.music:load(data)")
+	managers.music:load(l_19_0._data)
 end
-NowPlayingApiBox = NowPlayingApiBox or CoreClass.class()
-function NowPlayingApiBox.init(A0_42, ...)
-	local L2_44
-	L2_44 = CoreKeywordArguments
-	L2_44 = L2_44.KeywordArguments
-	L2_44 = L2_44.new
-	L2_44 = L2_44(L2_44, ...)
-	A0_42._ews_parent = L2_44:mandatory_object("parent")
-	L2_44:assert_all_consumed()
-	A0_42._text = EWS:StaticText(A0_42._ews_parent, "", "", "")
-	A0_42.box_sizer = EWS:StaticBoxSizer(A0_42._ews_parent, "HORIZONTAL", "Get Now Playing API")
-	A0_42.box_sizer:add(A0_42._text, 0, 0, "")
+
+if not NowPlayingApiBox then
+	NowPlayingApiBox = CoreClass.class()
 end
-function NowPlayingApiBox.set_enabled(A0_45, A1_46)
-	A0_45._text:set_enabled(A1_46)
+NowPlayingApiBox.init = function(l_20_0, ...)
+	l_20_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_20_0._text = EWS:StaticText(l_20_0._ews_parent, "", "", "")
+	l_20_0.box_sizer = EWS:StaticBoxSizer(l_20_0._ews_parent, "HORIZONTAL", "Get Now Playing API")
+	l_20_0.box_sizer:add(l_20_0._text, 0, 0, "")
 end
-function NowPlayingApiBox.update(A0_47, A1_48, A2_49)
-	local L3_50, L4_51, L5_52, L6_53, L7_54, L8_55, L9_56
-	L3_50 = managers
-	L3_50 = L3_50.music
-	L4_51 = L3_50
-	L3_50 = L3_50.player
-	L3_50 = L3_50(L4_51)
-	L4_51 = L3_50
-	L3_50 = L3_50.get_now_playing
-	L3_50 = L3_50(L4_51)
-	if L3_50 then
-		L4_51 = ""
-		for L8_55, L9_56 in L5_52(L6_53) do
-			if type(L9_56) == "number" then
-				L4_51 = L4_51 .. string.format("%s = %3.3f\n", L8_55, L9_56)
+
+NowPlayingApiBox.set_enabled = function(l_21_0, l_21_1)
+	l_21_0._text:set_enabled(l_21_1)
+end
+
+NowPlayingApiBox.update = function(l_22_0, l_22_1, l_22_2)
+	local l_22_8, l_22_9, l_22_10, l_22_11, l_22_12, l_22_13, l_22_14, l_22_15 = nil
+	local l_22_3 = managers.music:player():get_now_playing()
+	if l_22_3 then
+		local l_22_4 = ""
+		for i_0,i_1 in pairs(l_22_3) do
+			if type(i_1) == "number" then
+				l_22_4 = l_22_4 .. string.format("%s = %3.3f\n", i_0, i_1)
 			else
-				L4_51 = L4_51 .. string.format("%s = %s\n", L8_55, L9_56)
+				l_22_4 = l_22_4 .. string.format("%s = %s\n", i_0, i_1)
 			end
 		end
-		L5_52(L6_53, L7_54)
+		l_22_0._text:set_value(l_22_4)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	else
-		L4_51 = A0_47._text
-		L4_51 = L4_51.set_value
-		L4_51(L5_52, L6_53)
+		l_22_4 = l_22_0._text
+		l_22_4(l_22_4, "~ no info available ~")
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-PitchApiBox = PitchApiBox or CoreClass.class()
-function PitchApiBox.init(A0_57, ...)
-	local L2_59
-	L2_59 = CoreKeywordArguments
-	L2_59 = L2_59.KeywordArguments
-	L2_59 = L2_59.new
-	L2_59 = L2_59(L2_59, ...)
-	A0_57._ews_parent = L2_59:mandatory_object("parent")
-	A0_57._lua_helper = L2_59:mandatory_object("lua_helper")
-	L2_59:assert_all_consumed()
-	A0_57._text = EWS:StaticText(A0_57._ews_parent, "pitch", "", "")
-	A0_57._slider = EWS:Slider(A0_57._ews_parent, 100, 0, 200, "", "")
-	A0_57.box_sizer = EWS:StaticBoxSizer(A0_57._ews_parent, "HORIZONTAL", "Player Pitch API")
-	A0_57.box_sizer:add(A0_57._text, 0, 0, "")
-	A0_57.box_sizer:add(A0_57._slider, 0, 0, "")
-	A0_57._pitch = 1
-	managers.music:player():set_pitch(A0_57._pitch)
+
+if not PitchApiBox then
+	PitchApiBox = CoreClass.class()
 end
-function PitchApiBox.set_enabled(A0_60, A1_61)
-	A0_60._text:set_enabled(A1_61)
-	A0_60._slider:set_enabled(A1_61)
+PitchApiBox.init = function(l_23_0, ...)
+	l_23_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	l_23_0._lua_helper = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("lua_helper")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_23_0._text = EWS:StaticText(l_23_0._ews_parent, "pitch", "", "")
+	l_23_0._slider = EWS:Slider(l_23_0._ews_parent, 100, 0, 200, "", "")
+	l_23_0.box_sizer = EWS:StaticBoxSizer(l_23_0._ews_parent, "HORIZONTAL", "Player Pitch API")
+	l_23_0.box_sizer:add(l_23_0._text, 0, 0, "")
+	l_23_0.box_sizer:add(l_23_0._slider, 0, 0, "")
+	l_23_0._pitch = 1
+	managers.music:player():set_pitch(l_23_0._pitch)
 end
-function PitchApiBox.update(A0_62, A1_63, A2_64)
-	if A0_62._pitch ~= A0_62._slider:get_value() / 100 then
-		A0_62._pitch = A0_62._slider:get_value() / 100
-		A0_62._lua_helper:set_help_text(string.format("managers.music:player():set_pitch( %3.3f )", A0_62._pitch))
-		managers.music:player():set_pitch(A0_62._pitch)
+
+PitchApiBox.set_enabled = function(l_24_0, l_24_1)
+	l_24_0._text:set_enabled(l_24_1)
+	l_24_0._slider:set_enabled(l_24_1)
+end
+
+PitchApiBox.update = function(l_25_0, l_25_1, l_25_2)
+	local l_25_3 = l_25_0._slider:get_value() / 100
+	if l_25_0._pitch ~= l_25_3 then
+		l_25_0._pitch = l_25_3
+		l_25_0._lua_helper:set_help_text(string.format("managers.music:player():set_pitch( %3.3f )", l_25_0._pitch))
+		managers.music:player():set_pitch(l_25_0._pitch)
 	end
 end
-MixerApiBox = MixerApiBox or CoreClass.class()
-function MixerApiBox.init(A0_65, ...)
-	local L2_67, L3_68
-	L2_67 = CoreKeywordArguments
-	L2_67 = L2_67.KeywordArguments
-	L3_68 = L2_67
-	L2_67 = L2_67.new
-	L2_67 = L2_67(L3_68, ...)
-	L3_68 = L2_67.mandatory_object
-	L3_68 = L3_68(L2_67, "parent")
-	A0_65._ews_parent = L3_68
-	L3_68 = L2_67.mandatory_object
-	L3_68 = L3_68(L2_67, "lua_helper")
-	A0_65._lua_helper = L3_68
-	L3_68 = L2_67.mandatory_object
-	L3_68 = L3_68(L2_67, "database")
-	A0_65._database = L3_68
-	L3_68 = L2_67.assert_all_consumed
-	L3_68(L2_67)
-	L3_68 = EWS
-	L3_68 = L3_68.Button
-	L3_68 = L3_68(L3_68, A0_65._ews_parent, "reg mixer", "", "")
-	A0_65.reg_mixer_button = L3_68
-	L3_68 = EWS
-	L3_68 = L3_68.Button
-	L3_68 = L3_68(L3_68, A0_65._ews_parent, "unreg mixer", "", "")
-	A0_65.unreg_mixer_button = L3_68
-	L3_68 = EWS
-	L3_68 = L3_68.ComboBox
-	L3_68 = L3_68(L3_68, A0_65._ews_parent, "", "", "")
-	A0_65.set_mode_combo = L3_68
-	L3_68 = A0_65.reg_mixer_button
-	L3_68 = L3_68.connect
-	L3_68(L3_68, "", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(A0_65, A0_65, "_on_reg_mixer"), "")
-	L3_68 = A0_65.unreg_mixer_button
-	L3_68 = L3_68.connect
-	L3_68(L3_68, "", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(A0_65, A0_65, "_on_unreg_mixer"), "")
-	L3_68 = EWS
-	L3_68 = L3_68.FlexGridSizer
-	L3_68 = L3_68(L3_68, 20, 2, 5, 5)
-	A0_65.mixer_grid = L3_68
-	L3_68 = {}
-	A0_65.text_table = L3_68
-	L3_68 = {}
-	A0_65.slider_table = L3_68
-	L3_68 = EWS
-	L3_68 = L3_68.FlexGridSizer
-	L3_68 = L3_68(L3_68, 2, 2, 5, 5)
-	L3_68:add(A0_65.reg_mixer_button, 0, 0, "")
-	L3_68:add(A0_65.set_mode_combo, 0, 10, "")
-	L3_68:add(A0_65.unreg_mixer_button, 0, 0, "")
-	L3_68:add(EWS:StaticText(A0_65._ews_parent, "~ uses the mode above ~", "", ""), 0, 10, "")
-	A0_65.box_sizer = EWS:StaticBoxSizer(A0_65._ews_parent, "VERTICAL", "Sub Mode Mixer API")
-	A0_65.box_sizer:add(L3_68, 0, 0, "")
-	A0_65.box_sizer:add(A0_65.mixer_grid, 0, 0, "")
-	A0_65:redraw()
+
+if not MixerApiBox then
+	MixerApiBox = CoreClass.class()
 end
-function MixerApiBox.set_enabled(A0_69, A1_70)
-	A0_69.reg_mixer_button:set_enabled(A1_70)
-	A0_69.unreg_mixer_button:set_enabled(A1_70)
+MixerApiBox.init = function(l_26_0, ...)
+	l_26_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	l_26_0._lua_helper = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("lua_helper")
+	l_26_0._database = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("database")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_26_0.reg_mixer_button = EWS:Button(l_26_0._ews_parent, "reg mixer", "", "")
+	l_26_0.unreg_mixer_button = EWS:Button(l_26_0._ews_parent, "unreg mixer", "", "")
+	l_26_0.set_mode_combo = EWS:ComboBox(l_26_0._ews_parent, "", "", "")
+	l_26_0.reg_mixer_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_26_0, l_26_0, "_on_reg_mixer"), "")
+	l_26_0.unreg_mixer_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_26_0, l_26_0, "_on_unreg_mixer"), "")
+	l_26_0.mixer_grid = EWS:FlexGridSizer(20, 2, 5, 5)
+	l_26_0.text_table = {}
+	l_26_0.slider_table = {}
+	local l_26_2 = nil
+	EWS:FlexGridSizer(2, 2, 5, 5):add(l_26_0.reg_mixer_button, 0, 0, "")
+	EWS:FlexGridSizer(2, 2, 5, 5):add(l_26_0.set_mode_combo, 0, 10, "")
+	EWS:FlexGridSizer(2, 2, 5, 5):add(l_26_0.unreg_mixer_button, 0, 0, "")
+	EWS:FlexGridSizer(2, 2, 5, 5):add(EWS:StaticText(l_26_0._ews_parent, "~ uses the mode above ~", "", ""), 0, 10, "")
+	l_26_0.box_sizer = EWS:StaticBoxSizer(l_26_0._ews_parent, "VERTICAL", "Sub Mode Mixer API")
+	l_26_0.box_sizer:add(EWS:FlexGridSizer(2, 2, 5, 5), 0, 0, "")
+	l_26_0.box_sizer:add(l_26_0.mixer_grid, 0, 0, "")
+	l_26_0:redraw()
 end
-function MixerApiBox.redraw(A0_71)
-	local L1_72
+
+MixerApiBox.set_enabled = function(l_27_0, l_27_1)
+	l_27_0.reg_mixer_button:set_enabled(l_27_1)
+	l_27_0.unreg_mixer_button:set_enabled(l_27_1)
 end
-function MixerApiBox.song_selected(A0_73, A1_74)
-	local L2_75, L3_76, L4_77, L5_78, L6_79, L7_80, L8_81
-	L5_78 = A1_74
-	if L2_75 then
-		L2_75(L3_76)
-		L5_78 = A1_74
-		L8_81 = L3_76(L4_77, L5_78)
-		for L5_78, L6_79 in L2_75(L3_76, L4_77, L5_78, L6_79, L7_80, L8_81, L3_76(L4_77, L5_78)) do
-			L7_80 = A0_73.set_mode_combo
-			L8_81 = L7_80
-			L7_80 = L7_80.append
-			L7_80(L8_81, L6_79)
+
+MixerApiBox.redraw = function(l_28_0)
+end
+
+MixerApiBox.song_selected = function(l_29_0, l_29_1)
+	if l_29_0._database:has("song", l_29_1) then
+		l_29_0.set_mode_combo:clear()
+		local l_29_5, l_29_6 = ipairs, managers.music:get_modes(l_29_1)
+		l_29_5 = l_29_5(l_29_6)
+		for i_0,i_1 in l_29_5 do
+			l_29_0.set_mode_combo:append(l_29_4)
 		end
-		L2_75(L3_76)
-		for L5_78, L6_79 in L2_75(L3_76) do
-			L8_81 = L6_79
-			L7_80 = L6_79.destroy
-			L7_80(L8_81)
+		l_29_0.mixer_grid:clear()
+		for i_0,i_1 in pairs(l_29_0.text_table) do
+			i_1:destroy()
 		end
-		for L5_78, L6_79 in L2_75(L3_76) do
-			L8_81 = L6_79
-			L7_80 = L6_79.destroy
-			L7_80(L8_81)
+		for i_0,i_1 in pairs(l_29_0.slider_table) do
+			i_1:destroy()
 		end
-		A0_73.text_table = L2_75
-		A0_73.slider_table = L2_75
-		L5_78 = A1_74
-		L8_81 = L3_76(L4_77, L5_78)
-		for L5_78, L6_79 in L2_75(L3_76, L4_77, L5_78, L6_79, L7_80, L8_81, L3_76(L4_77, L5_78)) do
-			L7_80 = EWS
-			L8_81 = L7_80
-			L7_80 = L7_80.StaticText
-			L7_80 = L7_80(L8_81, A0_73._ews_parent, L6_79, "", "")
-			L8_81 = EWS
-			L8_81 = L8_81.Slider
-			L8_81 = L8_81(L8_81, A0_73._ews_parent, 0, 0, 100, "", "")
-			A0_73.text_table[L6_79] = L7_80
-			A0_73.slider_table[L6_79] = L8_81
-			A0_73.mixer_grid:add(L7_80, 0, 10, "")
-			A0_73.mixer_grid:add(L8_81, 0, 10, "")
+		l_29_0.text_table = {}
+		l_29_0.slider_table = {}
+		for i_0,i_1 in ipairs(managers.music:get_modes(l_29_1)) do
+			local l_29_7 = EWS:StaticText(l_29_0._ews_parent, i_1, "", "")
+			local l_29_8 = EWS:Slider(l_29_0._ews_parent, 0, 0, 100, "", "")
+			l_29_0.text_table[i_1] = l_29_7
+			l_29_0.slider_table[i_1] = l_29_8
+			l_29_0.mixer_grid:add(l_29_7, 0, 10, "")
+			l_29_0.mixer_grid:add(l_29_8, 0, 10, "")
 		end
-		L2_75(L3_76)
+		l_29_0._ews_parent:layout()
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function MixerApiBox._on_reg_mixer(A0_82)
-	local L1_83
-	L1_83 = A0_82.set_mode_combo
-	L1_83 = L1_83.get_value
-	L1_83 = L1_83(L1_83)
-	A0_82._lua_helper:set_help_text(string.format("managers.music:player():register_sub_mode_mixer_cb( \"%s\", <your_callback>)", L1_83))
-	managers.music:player():register_sub_mode_mixer_cb(L1_83, CoreEvent.callback(A0_82, A0_82, "_mixer_cb"))
+
+MixerApiBox._on_reg_mixer = function(l_30_0)
+	local l_30_1 = l_30_0.set_mode_combo:get_value()
+	l_30_0._lua_helper:set_help_text(string.format("managers.music:player():register_sub_mode_mixer_cb( \"%s\", <your_callback>)", l_30_1))
+	managers.music:player():register_sub_mode_mixer_cb(l_30_1, CoreEvent.callback(l_30_0, l_30_0, "_mixer_cb"))
 end
-function MixerApiBox._on_unreg_mixer(A0_84)
-	local L1_85
-	L1_85 = A0_84.set_mode_combo
-	L1_85 = L1_85.get_value
-	L1_85 = L1_85(L1_85)
-	A0_84._lua_helper:set_help_text(string.format("managers.music:player():unregister_sub_mode_mixer_cb( \"%s\" )", L1_85))
-	managers.music:player():unregister_sub_mode_mixer_cb(L1_85)
+
+MixerApiBox._on_unreg_mixer = function(l_31_0)
+	local l_31_1 = l_31_0.set_mode_combo:get_value()
+	l_31_0._lua_helper:set_help_text(string.format("managers.music:player():unregister_sub_mode_mixer_cb( \"%s\" )", l_31_1))
+	managers.music:player():unregister_sub_mode_mixer_cb(l_31_1)
 end
-function MixerApiBox._mixer_cb(A0_86)
-	local L1_87
-	L1_87 = {}
-	for 
+
+MixerApiBox._mixer_cb = function(l_32_0)
+	local l_32_5, l_32_6, l_32_7, l_32_8 = nil
+	local l_32_1 = {}
+	for i_0,i_1 in pairs(l_32_0.slider_table) do
+		if i_1:get_value() > 0 then
+			l_32_1[l_32_9] = i_1:get_value() / 100
+		end
+	end
+	l_32_0._lua_helper:set_help_text("<your_callback> returned table:\n" .. CoreCode.ascii_table(l_32_1))
+	return l_32_1
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+if not GameplayApiBox then
+	GameplayApiBox = CoreClass.class()
+end
+GameplayApiBox.init = function(l_33_0, ...)
+	l_33_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	l_33_0._mixer_api = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("mixer_api")
+	l_33_0._lua_helper = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("lua_helper")
+	l_33_0._database = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("database")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_33_0.play_now_button = EWS:Button(l_33_0._ews_parent, "play_now", "", "")
+	l_33_0.play_nice_button = EWS:Button(l_33_0._ews_parent, "play_nice", "", "")
+	l_33_0.set_mode_button = EWS:Button(l_33_0._ews_parent, "set_mode", "", "")
+	l_33_0.stop_now_button = EWS:Button(l_33_0._ews_parent, "stop_now", "", "")
+	l_33_0.stop_nice_button = EWS:Button(l_33_0._ews_parent, "stop_nice", "", "")
+	l_33_0.pause_button = EWS:Button(l_33_0._ews_parent, "pause", "", "")
+	l_33_0.resume_button = EWS:Button(l_33_0._ews_parent, "resume", "", "")
+	l_33_0.song_name_combo = EWS:ComboBox(l_33_0._ews_parent, "", "", "")
+	l_33_0.set_mode_combo = EWS:ComboBox(l_33_0._ews_parent, "", "", "")
+	l_33_0.mode_prio_spin = EWS:SpinCtrl(l_33_0._ews_parent, 1, "", "")
+	l_33_0.mode_prio_spin:set_range(1, 100)
+	l_33_0.play_now_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_play_now"), "")
+	l_33_0.play_nice_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_play_nice"), "")
+	l_33_0.set_mode_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_set_mode"), "")
+	l_33_0.stop_now_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_stop_now"), "")
+	l_33_0.stop_nice_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_stop_nice"), "")
+	l_33_0.pause_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_pause"), "")
+	l_33_0.resume_button:connect("", "EVT_COMMAND_BUTTON_CLICKED", CoreEvent.callback(l_33_0, l_33_0, "_on_resume"), "")
+	l_33_0.song_name_combo:connect("", "EVT_COMMAND_TEXT_UPDATED", CoreEvent.callback(l_33_0, l_33_0, "_on_song_selected"), "")
+	local l_33_2 = nil
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.play_now_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.song_name_combo, 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.play_nice_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(EWS:StaticText(l_33_0._ews_parent, "~ uses the song above ~", "", ""), 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.set_mode_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.set_mode_combo, 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(EWS:StaticText(l_33_0._ews_parent, "~ set_mode prio ~", "", ""), 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.mode_prio_spin, 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.stop_now_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(EWS:StaticText(l_33_0._ews_parent, "", "", ""), 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.stop_nice_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(EWS:StaticText(l_33_0._ews_parent, "", "", ""), 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.pause_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(EWS:StaticText(l_33_0._ews_parent, "", "", ""), 0, 10, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(l_33_0.resume_button, 0, 0, "")
+	EWS:FlexGridSizer(8, 2, 5, 5):add(EWS:StaticText(l_33_0._ews_parent, "", "", ""), 0, 10, "")
+	l_33_0.box_sizer = EWS:StaticBoxSizer(l_33_0._ews_parent, "VERTICAL", "Song Playback API")
+	l_33_0.box_sizer:add(EWS:FlexGridSizer(8, 2, 5, 5), 0, 0, "")
+	l_33_0:redraw()
+end
+
+GameplayApiBox.set_enabled = function(l_34_0, l_34_1)
+	l_34_0.play_now_button:set_enabled(l_34_1)
+	l_34_0.play_nice_button:set_enabled(l_34_1)
+	l_34_0.set_mode_button:set_enabled(l_34_1)
+	l_34_0.stop_now_button:set_enabled(l_34_1)
+	l_34_0.stop_nice_button:set_enabled(l_34_1)
+	l_34_0.pause_button:set_enabled(l_34_1)
+	l_34_0.resume_button:set_enabled(l_34_1)
+	l_34_0.song_name_combo:set_enabled(l_34_1)
+	l_34_0.set_mode_combo:set_enabled(l_34_1)
+end
+
+GameplayApiBox.redraw = function(l_35_0)
+	l_35_0.song_name_combo:clear()
+	local l_35_4, l_35_5 = ipairs, l_35_0._database:all(false, "song")
+	l_35_4 = l_35_4(l_35_5)
+	for i_0,i_1 in l_35_4 do
+		local l_35_6 = l_35_3:name()
+		l_35_0.song_name_combo:append(l_35_6)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+GameplayApiBox._on_play_now = function(l_36_0)
+	local l_36_1 = l_36_0.song_name_combo:get_value()
+	l_36_0._lua_helper:set_help_text(string.format("managers.music:player():play_now( \"%s\" )", l_36_1))
+	managers.music:reload_songs(l_36_1)
+	managers.music:player():play_now(l_36_1)
+end
+
+GameplayApiBox._on_play_nice = function(l_37_0)
+	local l_37_1 = l_37_0.song_name_combo:get_value()
+	l_37_0._lua_helper:set_help_text(string.format("managers.music:player():play_nice( \"%s\" )", l_37_1))
+	managers.music:reload_songs(l_37_1)
+	managers.music:player():play_nice(l_37_1)
+end
+
+GameplayApiBox._on_set_mode = function(l_38_0)
+	local l_38_1 = l_38_0.set_mode_combo:get_value()
+	local l_38_2 = l_38_0.mode_prio_spin:get_value()
+	l_38_0._lua_helper:set_help_text(string.format("managers.music:player():set_mode( \"%s\", %d )", l_38_1, l_38_2))
+	managers.music:player():set_mode(l_38_1, l_38_2)
+end
+
+GameplayApiBox._on_stop_now = function(l_39_0)
+	l_39_0._lua_helper:set_help_text("managers.music:player():stop_now()")
+	managers.music:player():stop_now()
+end
+
+GameplayApiBox._on_stop_nice = function(l_40_0)
+	l_40_0._lua_helper:set_help_text("managers.music:player():stop_nice()")
+	managers.music:player():stop_nice()
+end
+
+GameplayApiBox._on_pause = function(l_41_0)
+	l_41_0._lua_helper:set_help_text("managers.music:player():pause()")
+	managers.music:player():pause()
+end
+
+GameplayApiBox._on_resume = function(l_42_0)
+	l_42_0._lua_helper:set_help_text("managers.music:player():resume()")
+	managers.music:player():resume()
+end
+
+GameplayApiBox._on_song_selected = function(l_43_0)
+	local l_43_1 = l_43_0.song_name_combo:get_value()
+	l_43_0._mixer_api:song_selected(l_43_1)
+	l_43_0.set_mode_combo:clear()
+	local l_43_5, l_43_6 = ipairs, managers.music:get_modes(l_43_1)
+	l_43_5 = l_43_5(l_43_6)
+	for i_0,i_1 in l_43_5 do
+		l_43_0.set_mode_combo:append(l_43_4)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

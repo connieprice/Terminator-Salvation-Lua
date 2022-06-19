@@ -1,123 +1,148 @@
-local L0_0
-L0_0 = require
-L0_0("shared/camera/SharedCamera")
-L0_0 = mvector3
-L0_0 = L0_0.lerp
-BlendCamera = BlendCamera or class(SharedCamera)
-function BlendCamera.init(A0_1, A1_2)
-	SharedCamera.init(A0_1, A1_2)
+require("shared/camera/SharedCamera")
+local l_0_0 = mvector3.lerp
+local l_0_1 = mvector3.rotate_with
+local l_0_2 = mvector3.subtract
+local l_0_3 = mrotation.slerp
+local l_0_4 = mrotation.set_zero
+local l_0_5 = mrotation.multiply
+if not BlendCamera then
+	BlendCamera = class(SharedCamera)
 end
-function BlendCamera.on_activate(A0_3, A1_4)
-	if A0_3._source_camera then
-		A0_3._source_camera:set_active(A1_4)
+BlendCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+end
+
+BlendCamera.on_activate = function(l_2_0, l_2_1)
+	if l_2_0._source_camera then
+		l_2_0._source_camera:set_active(l_2_1)
 	end
-	if A0_3._target_camera then
-		A0_3._target_camera:set_active(A1_4)
+	if l_2_0._target_camera then
+		l_2_0._target_camera:set_active(l_2_1)
 	end
 end
-function BlendCamera.default_dof()
-	local L0_5, L1_6
-	L0_5 = 1000000
-	L1_6 = {}
-	L1_6.amount = 0
-	L1_6.near_min = 0
-	L1_6.near_max = 0
-	L1_6.far_min = L0_5
-	L1_6.far_max = L0_5
-	return L1_6
+
+local l_0_6 = function(l_3_0, l_3_1, l_3_2)
+	assert(l_3_0)
+	assert(l_3_1)
+	assert(l_3_2)
+	return l_3_0 * (1 - l_3_2) + l_3_1 * l_3_2
 end
-function BlendCamera.update(A0_7, A1_8, A2_9, A3_10, A4_11)
-	local L5_12, L6_13, L7_14, L8_15, L9_16, L10_17, L11_18
-	L5_12 = A0_7._source_camera
-	L6_13 = A0_7._target_camera
-	if not L5_12 or not L6_13 then
-		return
+
+local l_0_7 = function(l_4_0, l_4_1, l_4_2)
+	if not l_4_0 then
+		local l_4_3 = l_4_1
+	elseif not l_4_1 then
+		do return end
 	end
-	L7_14 = A0_7._factor
-	L9_16 = A4_11
-	L8_15 = A4_11.inverse
-	L8_15 = L8_15(L9_16)
-	L9_16 = _UPVALUE0_
-	L10_17 = A0_7._local_position
-	L11_18 = L5_12.position
-	L11_18 = L11_18(L5_12)
-	L9_16(L10_17, L11_18, L6_13:position(), L7_14)
-	L9_16 = _UPVALUE1_
-	L10_17 = A0_7._local_position
-	L11_18 = L8_15
-	L9_16(L10_17, L11_18)
-	L9_16 = _UPVALUE2_
-	L10_17 = A0_7._local_position
-	L11_18 = A3_10
-	L9_16(L10_17, L11_18)
-	L9_16 = Rotation
-	L9_16 = L9_16()
-	L10_17 = _UPVALUE3_
-	L11_18 = L9_16
-	L10_17(L11_18, L5_12:rotation(), L6_13:rotation(), L7_14)
-	L10_17 = _UPVALUE4_
-	L11_18 = A0_7._local_rotation
-	L10_17(L11_18)
-	L10_17 = _UPVALUE5_
-	L11_18 = A0_7._local_rotation
-	L10_17(L11_18, L8_15)
-	L10_17 = _UPVALUE5_
-	L11_18 = A0_7._local_rotation
-	L10_17(L11_18, L9_16)
-	L10_17 = _UPVALUE6_
-	L11_18 = L5_12.camera_fov
-	L11_18 = L11_18(L5_12)
-	L10_17 = L10_17(L11_18, L6_13:camera_fov(), L7_14)
-	A0_7._fov = L10_17
-	L11_18 = L5_12
-	L10_17 = L5_12.camera_dof
-	L10_17 = L10_17(L11_18)
-	L11_18 = L6_13.camera_dof
-	L11_18 = L11_18(L6_13)
-	L10_17 = L10_17 or BlendCamera.default_dof()
-	L11_18 = L11_18 or BlendCamera.default_dof()
-	A0_7.dof = {}
-	A0_7.dof.amount = _UPVALUE7_(L10_17.amount, L11_18.amount, L7_14)
-	A0_7.dof.near_min = _UPVALUE7_(L10_17.near_min, L11_18.near_min, L7_14)
-	A0_7.dof.near_max = _UPVALUE7_(L10_17.near_max, L11_18.near_max, L7_14)
-	A0_7.dof.far_min = _UPVALUE7_(L10_17.far_min, L11_18.far_min, L7_14)
-	A0_7.dof.far_max = _UPVALUE7_(L10_17.far_max, L11_18.far_max, L7_14)
-	if L6_13._constraints_rot and L5_12._constraints_rot then
-		A0_7._constraints_rot = L5_12._constraints_rot:slerp(L6_13._constraints_rot, A0_7._factor)
-	end
-	if L6_13._constraints_yaw and L5_12._constraints_yaw then
-		A0_7._constraints_yaw = math.lerp(L5_12._constraints_yaw, L6_13._constraints_yaw, A0_7._factor)
-	end
-	if L6_13._constraints_pitch and L5_12._constraints_pitch then
-		A0_7._constraints_pitch = math.lerp(L5_12._constraints_pitch, L6_13._constraints_pitch, A0_7._factor)
-	end
-	SharedCamera.update(A0_7, A1_8, A2_9, A3_10, A4_11)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	return l_4_0
 end
-function BlendCamera.set_source_camera(A0_19, A1_20)
-	if A1_20 == A0_19._source_camera then
-		return
-	end
-	if A0_19._source_camera and A0_19:is_active() then
-		A0_19._source_camera:set_active(false)
-	end
-	if A0_19:is_active() then
-		A1_20:set_active(true)
-	end
-	A0_19._source_camera = A1_20
-	A0_19._fov = A1_20:camera_fov()
+
+BlendCamera.default_dof = function()
+	local l_5_0 = 1000000
+	local l_5_1 = {}
+	l_5_1.amount = 0
+	l_5_1.near_min = 0
+	l_5_1.near_max = 0
+	l_5_1.far_min = l_5_0
+	l_5_1.far_max = l_5_0
+	return l_5_1
 end
-function BlendCamera.set_target_camera(A0_21, A1_22)
-	if A1_22 == A0_21._target_camera then
-		return
+
+BlendCamera.update = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	-- upvalues: l_0_0 , l_0_1 , l_0_2 , l_0_3 , l_0_4 , l_0_5 , l_0_7 , l_0_6
+	local l_6_5 = l_6_0._source_camera
+	local l_6_6 = l_6_0._target_camera
+	if not l_6_5 or not l_6_6 then
+		return 
 	end
-	if A0_21._target_camera and A0_21:is_active() then
-		A0_21._target_camera:set_active(false)
+	local l_6_7 = l_6_0._factor
+	local l_6_8 = l_6_4:inverse()
+	l_0_0(l_6_0._local_position, l_6_5:position(), l_6_6:position(), l_6_7)
+	l_0_1(l_6_0._local_position, l_6_8)
+	l_0_2(l_6_0._local_position, l_6_3)
+	local l_6_9 = Rotation()
+	l_0_3(l_6_9, l_6_5:rotation(), l_6_6:rotation(), l_6_7)
+	l_0_4(l_6_0._local_rotation)
+	l_0_5(l_6_0._local_rotation, l_6_8)
+	l_0_5(l_6_0._local_rotation, l_6_9)
+	l_6_0._fov = l_0_7(l_6_5:camera_fov(), l_6_6:camera_fov(), l_6_7)
+	if not l_6_5:camera_dof() then
+		local l_6_10, l_6_12, l_6_13, l_6_15, l_6_17, l_6_18, l_6_20, l_6_22, l_6_23, l_6_25, l_6_27, l_6_28, l_6_30, l_6_32, l_6_33, l_6_35, l_6_37, l_6_39, l_6_41, l_6_43 = BlendCamera.default_dof(), l_6_6:camera_dof()
 	end
-	if A0_21:is_active() then
-		A1_22:set_active(true)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if not l_6_12 then
+		local l_6_11, l_6_14, l_6_16, l_6_19, l_6_21, l_6_24, l_6_26, l_6_29, l_6_31, l_6_34, l_6_36, l_6_38, l_6_40, l_6_42, l_6_44 = , BlendCamera.default_dof()
 	end
-	A0_21._target_camera = A1_22
+	l_6_0.dof = {}
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0.dof.amount = l_0_6(l_6_11.amount, l_6_14.amount, l_6_7)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0.dof.near_min = l_0_6(l_6_11.near_min, l_6_14.near_min, l_6_7)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0.dof.near_max = l_0_6(l_6_11.near_max, l_6_14.near_max, l_6_7)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0.dof.far_min = l_0_6(l_6_11.far_min, l_6_14.far_min, l_6_7)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0.dof.far_max = l_0_6(l_6_11.far_max, l_6_14.far_max, l_6_7)
+	if l_6_6._constraints_rot and l_6_5._constraints_rot then
+		l_6_0._constraints_rot = l_6_5._constraints_rot:slerp(l_6_6._constraints_rot, l_6_0._factor)
+	end
+	if l_6_6._constraints_yaw and l_6_5._constraints_yaw then
+		l_6_0._constraints_yaw = math.lerp(l_6_5._constraints_yaw, l_6_6._constraints_yaw, l_6_0._factor)
+	end
+	if l_6_6._constraints_pitch and l_6_5._constraints_pitch then
+		l_6_0._constraints_pitch = math.lerp(l_6_5._constraints_pitch, l_6_6._constraints_pitch, l_6_0._factor)
+	end
+	SharedCamera.update(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
 end
-function BlendCamera.set_factor(A0_23, A1_24)
-	A0_23._factor = A1_24
+
+BlendCamera.set_source_camera = function(l_7_0, l_7_1)
+	if l_7_1 == l_7_0._source_camera then
+		return 
+	end
+	if l_7_0._source_camera and l_7_0:is_active() then
+		l_7_0._source_camera:set_active(false)
+	end
+	if l_7_0:is_active() then
+		l_7_1:set_active(true)
+	end
+	l_7_0._source_camera = l_7_1
+	l_7_0._fov = l_7_1:camera_fov()
 end
+
+BlendCamera.set_target_camera = function(l_8_0, l_8_1)
+	if l_8_1 == l_8_0._target_camera then
+		return 
+	end
+	if l_8_0._target_camera and l_8_0:is_active() then
+		l_8_0._target_camera:set_active(false)
+	end
+	if l_8_0:is_active() then
+		l_8_1:set_active(true)
+	end
+	l_8_0._target_camera = l_8_1
+end
+
+BlendCamera.set_factor = function(l_9_0, l_9_1)
+	l_9_0._factor = l_9_1
+end
+
+

@@ -1,35 +1,40 @@
 require("managers/actionmanagers/AiMachineSpawn")
-AMFlyerStart = AMFlyerStart or class(AiMachineSpawn)
-function AMFlyerStart.init(A0_0, A1_1, A2_2)
-	AiUnitSpawn.init(A0_0, A1_1, A2_2)
-	A0_0:setup("flyer")
+if not AMFlyerStart then
+	AMFlyerStart = class(AiMachineSpawn)
 end
-function AMFlyerStart._setup_ai(A0_3, A1_4)
-	local L2_5
-	L2_5 = A0_3.brain_name
-	if L2_5 == "rail" then
-		L2_5 = A0_3.setup_rail_flier
-		L2_5(A0_3, A1_4)
+AMFlyerStart.init = function(l_1_0, l_1_1, l_1_2)
+	AiUnitSpawn.init(l_1_0, l_1_1, l_1_2)
+	l_1_0:setup("flyer")
+end
+
+AMFlyerStart._setup_ai = function(l_2_0, l_2_1)
+	if l_2_0.brain_name == "rail" then
+		l_2_0:setup_rail_flier(l_2_1)
 	else
-		L2_5 = A1_4.ai_data
-		L2_5 = L2_5(A1_4)
-		L2_5.default_speed = A0_3.speed
+		l_2_1:ai_data().default_speed = l_2_0.speed
 	end
-	L2_5 = A0_3.brain_name
-	L2_5 = L2_5 or FlyerStartHubElementData.brain_names[1]
-	A1_4:ai_nerve_system():setup(L2_5)
-	if not A0_3.units then
-		return
+	if not l_2_0.brain_name then
+		local l_2_2, l_2_3, l_2_4, l_2_5, l_2_6 = FlyerStartHubElementData.brain_names[1]
 	end
-	A0_3:_apply_behavior_options(A1_4)
-	A1_4:base():set_search_light_enabled(A0_3.search_lights)
-	AiMachineSpawn._setup_ai(A0_3, A1_4)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1:ai_nerve_system():setup(l_2_2)
+	if not l_2_0.units then
+		return 
+	end
+	l_2_0:_apply_behavior_options(l_2_1)
+	l_2_1:base():set_search_light_enabled(l_2_0.search_lights)
+	AiMachineSpawn._setup_ai(l_2_0, l_2_1)
 end
-function AMFlyerStart.setup_rail_flier(A0_6, A1_7)
-	A1_7:ai_data().default_speed = A0_6.speed or 3
-	A1_7:ai_data().input.enemy_slot_mask = "rail_vehicles"
-	if A0_6.target_range == nil then
-		A0_6.target_range = 40
+
+AMFlyerStart.setup_rail_flier = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_1:ai_data()
+	l_3_2.default_speed = l_3_0.speed or 3
+	l_3_2.input.enemy_slot_mask = "rail_vehicles"
+	if l_3_0.target_range == nil then
+		l_3_0.target_range = 40
 	end
-	A1_7:ai_data().input.target_range = A0_6.target_range * 100
+	l_3_2.input.target_range = l_3_0.target_range * 100
 end
+
+

@@ -1,63 +1,90 @@
-PlayerManager = PlayerManager or class()
-function PlayerManager.init(A0_0)
-	A0_0._player_units = {}
+if not PlayerManager then
+	PlayerManager = class()
 end
-function PlayerManager.players(A0_1)
-	local L1_2
-	L1_2 = A0_1._player_units
-	return L1_2
+PlayerManager.init = function(l_1_0)
+	l_1_0._player_units = {}
 end
-function PlayerManager.is_unit_human_player(A0_3, A1_4)
-	local L2_5
-	L2_5 = A0_3.is_player
-	L2_5 = L2_5(A0_3, A1_4)
-	if not L2_5 then
-		L2_5 = false
-		return L2_5
+
+PlayerManager.players = function(l_2_0)
+	return l_2_0._player_units
+end
+
+PlayerManager.is_unit_human_player = function(l_3_0, l_3_1)
+	if not l_3_0:is_player(l_3_1) then
+		return false
 	end
-	L2_5 = A1_4
-	return A0_3:is_human_player(L2_5)
+	local l_3_2 = l_3_1
+	local l_3_3, l_3_4 = l_3_0:is_human_player, l_3_0
+	local l_3_5 = l_3_2
+	return l_3_3(l_3_4, l_3_5)
 end
-function PlayerManager.is_player(A0_6, A1_7)
-	local L2_8
-	L2_8 = A0_6._player_units
-	L2_8 = L2_8[A1_7:key()]
-	L2_8 = L2_8 ~= nil
-	return L2_8
+
+PlayerManager.is_player = function(l_4_0, l_4_1)
+	return l_4_0._player_units[l_4_1:key()] ~= nil
 end
-function PlayerManager.is_human_player(A0_9, A1_10)
-	assert(A0_9._player_units[A1_10:key()])
-	return A1_10:control():is_human_controlled()
+
+PlayerManager.is_human_player = function(l_5_0, l_5_1)
+	local l_5_5 = assert
+	local l_5_4 = l_5_0._player_units
+	l_5_4 = l_5_4[l_5_1:key()]
+	l_5_5(l_5_4)
+	l_5_5, l_5_4 = l_5_1:control, l_5_1
+	l_5_5 = l_5_5(l_5_4)
+	l_5_5, l_5_4 = l_5_5:is_human_controlled, l_5_5
+	local l_5_2, l_5_3 = nil
+	return l_5_5(l_5_4)
 end
-function PlayerManager.human_players(A0_11)
-	return (TableAlgorithms.copy_if(A0_11._player_units, function(A0_12)
-		return _UPVALUE0_:is_human_player(A0_12)
-	end))
+
+PlayerManager.human_players = function(l_6_0)
+	return TableAlgorithms.copy_if(l_6_0._player_units, function(l_7_0)
+		-- upvalues: l_6_0
+		local l_7_1, l_7_2 = l_6_0:is_human_player, l_6_0
+		local l_7_3 = l_7_0
+		return l_7_1(l_7_2, l_7_3)
+  end)
 end
-function PlayerManager.register_player_unit(A0_13, A1_14)
-	A0_13._player_units[A1_14:key()] = A1_14
+
+PlayerManager.register_player_unit = function(l_7_0, l_7_1)
+	l_7_0._player_units[l_7_1:key()] = l_7_1
 end
-function PlayerManager.unregister_player_unit(A0_15, A1_16)
-	A0_15._player_units[A1_16:key()] = nil
+
+PlayerManager.unregister_player_unit = function(l_8_0, l_8_1)
+	l_8_0._player_units[l_8_1:key()] = nil
 end
-function PlayerManager.distance_to_closest_human_player(A0_17, A1_18)
-	return A0_17:closest_player_info(A0_17:human_players(), A1_18).distance
+
+PlayerManager.distance_to_closest_human_player = function(l_9_0, l_9_1)
+	return l_9_0:closest_player_info(l_9_0:human_players(), l_9_1).distance
 end
-function PlayerManager.distance_to_closest_player(A0_19, A1_20)
-	return A0_19:closest_player_info(A0_19:players(), A1_20).distance
+
+PlayerManager.distance_to_closest_player = function(l_10_0, l_10_1)
+	return l_10_0:closest_player_info(l_10_0:players(), l_10_1).distance
 end
-function PlayerManager.closest_human_player(A0_21, A1_22)
-	return A0_21:closest_player_info(A0_21:human_players(), A1_22).player
+
+PlayerManager.closest_human_player = function(l_11_0, l_11_1)
+	return l_11_0:closest_player_info(l_11_0:human_players(), l_11_1).player
 end
-function PlayerManager.closest_player(A0_23, A1_24)
-	return A0_23:closest_player_info(A0_23:players(), A1_24).player
+
+PlayerManager.closest_player = function(l_12_0, l_12_1)
+	return l_12_0:closest_player_info(l_12_0:players(), l_12_1).player
 end
-function PlayerManager.closest_human_player_info(A0_25, A1_26)
+
+PlayerManager.closest_human_player_info = function(l_13_0, l_13_1)
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function PlayerManager.closest_player_info(A0_27, A1_28, A2_29)
-	local L3_30, L4_31
-	L3_30 = assert
-	L4_31 = A2_29
-	L3_30(L4_31)
-	L3_30, L4_31 = nil, nil
-	for 
+
+PlayerManager.closest_player_info = function(l_14_0, l_14_1, l_14_2)
+	local l_14_8, l_14_9, l_14_10, l_14_11 = nil
+	assert(l_14_2)
+	local l_14_3, l_14_4 = nil, nil
+	for i_0,i_1 in pairs(l_14_1) do
+		if not l_14_3 or mvector3.distance(l_14_2, i_1:position()) < l_14_3 then
+			l_14_3 = mvector3.distance(l_14_2, i_1:position())
+			l_14_4 = i_1
+		end
+	end
+	return {distance = l_14_3, player = l_14_4}
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

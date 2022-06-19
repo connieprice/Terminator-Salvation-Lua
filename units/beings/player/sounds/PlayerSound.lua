@@ -1,17 +1,22 @@
 require("units/sound/FootstepSound")
-PlayerSound = PlayerSound or class()
-function PlayerSound.init(A0_0, A1_1)
-	local L2_2
-	A0_0._unit = A1_1
-	L2_2 = {}
-	L2_2.left = "LeftToeBase"
-	L2_2.right = "RightToeBase"
-	A0_0._footstep_sound = FootstepSound:new(A1_1, L2_2)
-	managers.action_event:register_listener(A0_0, A1_1, A1_1)
+if not PlayerSound then
+	PlayerSound = class()
 end
-function PlayerSound.destroy(A0_3)
-	managers.action_event:unregister_listener(A0_3)
+PlayerSound.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	local l_1_2 = {}
+	l_1_2.left = "LeftToeBase"
+	l_1_2.right = "RightToeBase"
+	l_1_0._footstep_sound = FootstepSound:new(l_1_1, l_1_2)
+	managers.action_event:register_listener(l_1_0, l_1_1, l_1_1)
 end
-function PlayerSound.unit_footstep(A0_4, A1_5, A2_6, A3_7)
-	A0_4._footstep_sound:footstep(A2_6, A3_7)
+
+PlayerSound.destroy = function(l_2_0)
+	managers.action_event:unregister_listener(l_2_0)
 end
+
+PlayerSound.unit_footstep = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	l_3_0._footstep_sound:footstep(l_3_2, l_3_3)
+end
+
+

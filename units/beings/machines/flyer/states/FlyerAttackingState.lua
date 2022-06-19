@@ -1,38 +1,52 @@
 require("units/beings/machines/flyer/states/FlyerState")
-FlyerAttackingState = FlyerAttackingState or class(FlyerState)
-function FlyerAttackingState.init(A0_0, A1_1)
-	FlyerState.init(A0_0, A1_1)
-	A0_0._enemy_data = A1_1:enemy_data()
-	A0_0._input = A1_1:input()
+if not FlyerAttackingState then
+	FlyerAttackingState = class(FlyerState)
 end
-function FlyerAttackingState.enter(A0_2)
-	A0_2._enemy_data.is_firing = true
+FlyerAttackingState.init = function(l_1_0, l_1_1)
+	FlyerState.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_1:enemy_data()
+	l_1_0._input = l_1_1:input()
 end
-function FlyerAttackingState.leave(A0_3)
-	A0_3._enemy_data.is_firing = false
+
+FlyerAttackingState.enter = function(l_2_0)
+	l_2_0._enemy_data.is_firing = true
 end
-function FlyerAttackingState.update(A0_4, A1_5)
-	local L2_6, L3_7
-	L2_6 = A0_4._base
-	L3_7 = L2_6
-	L2_6 = L2_6.check_fully_damaged
-	L2_6 = L2_6(L3_7)
-	if L2_6 then
-		return L2_6
+
+FlyerAttackingState.leave = function(l_3_0)
+	l_3_0._enemy_data.is_firing = false
+end
+
+FlyerAttackingState.update = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._base:check_fully_damaged()
+	if l_4_2 then
+		return l_4_2
 	end
-	L3_7 = A0_4._unit
-	if A0_4._enemy_data.is_stunned then
-		return FlyerStunState:new(L3_7, "attack")
-	elseif A0_4._enemy_data.self_destroying then
-		return FlyerSelfDestroyingState:new(L3_7)
-	elseif not A0_4._enemy_data.attacking then
-		return FlyerNormalState:new(L3_7)
+	local l_4_3 = l_4_0._unit
+	local l_4_4 = l_4_0._input
+	local l_4_5 = l_4_0._enemy_data
+	if l_4_5.is_stunned then
+		local l_4_6, l_4_7 = FlyerStunState:new, FlyerStunState
+		local l_4_8 = l_4_3
+		local l_4_9, l_4_13, l_4_17 = "attack"
+		return l_4_6(l_4_7, l_4_8, l_4_9)
+	elseif l_4_5.self_destroying then
+		local l_4_10, l_4_11 = FlyerSelfDestroyingState:new, FlyerSelfDestroyingState
+		local l_4_12 = l_4_3
+		return l_4_10(l_4_11, l_4_12)
+	elseif not l_4_5.attacking then
+		local l_4_14, l_4_15 = FlyerNormalState:new, FlyerNormalState
+		local l_4_16 = l_4_3
+		return l_4_14(l_4_15, l_4_16)
 	end
-	if A0_4._enemy_data.stun_requested then
-		L3_7:play_redirect("stun")
-	elseif A0_4._input:self_destroy() then
-		L3_7:play_redirect("self_destroy")
+	if l_4_5.stun_requested then
+		l_4_3:play_redirect("stun")
 	else
-		L3_7:play_redirect("offense")
+		if l_4_4:self_destroy() then
+			l_4_3:play_redirect("self_destroy")
+		end
+	else
+		l_4_3:play_redirect("offense")
 	end
 end
+
+

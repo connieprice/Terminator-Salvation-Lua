@@ -1,103 +1,125 @@
 require("mission_objective/AssignedMissionObjective")
 require("mission_objective/MissionObjectiveTimerManager")
-AssignedMissionObjectiveManager = AssignedMissionObjectiveManager or class()
-function AssignedMissionObjectiveManager.init(A0_0)
-	A0_0._active_objectives = {}
-	A0_0._name_to_callback_object = {}
-	A0_0._callback_object_to_name = {}
-	A0_0._timer_manager = MissionObjectiveTimerManager:new()
+if not AssignedMissionObjectiveManager then
+	AssignedMissionObjectiveManager = class()
+end
+AssignedMissionObjectiveManager.init = function(l_1_0)
+	l_1_0._active_objectives = {}
+	l_1_0._name_to_callback_object = {}
+	l_1_0._callback_object_to_name = {}
+	l_1_0._timer_manager = MissionObjectiveTimerManager:new()
 	if Application:editor() == true then
-		A0_0._in_debug_mode = true
+		l_1_0._in_debug_mode = true
 	end
 end
-function AssignedMissionObjectiveManager.destroy(A0_1)
-	local L1_2
+
+AssignedMissionObjectiveManager.destroy = function(l_2_0)
 end
-function AssignedMissionObjectiveManager.set_assigned_objectives(A0_3, A1_4)
-	A0_3._active_objectives = A1_4
+
+AssignedMissionObjectiveManager.set_assigned_objectives = function(l_3_0, l_3_1)
+	l_3_0._active_objectives = l_3_1
 end
-function AssignedMissionObjectiveManager.has_assigned_objectives(A0_5)
-	return not TableAlgorithms.is_empty(A0_5._active_objectives)
+
+AssignedMissionObjectiveManager.has_assigned_objectives = function(l_4_0)
+	return not TableAlgorithms.is_empty(l_4_0._active_objectives)
 end
-function AssignedMissionObjectiveManager.assigned_objectives(A0_6)
-	local L1_7
-	L1_7 = A0_6._active_objectives
-	return L1_7
+
+AssignedMissionObjectiveManager.assigned_objectives = function(l_5_0)
+	return l_5_0._active_objectives
 end
-function AssignedMissionObjectiveManager.start_objective(A0_8, A1_9, A2_10, A3_11)
-	local L4_12, L5_13, L6_14, L7_15, L8_16
-	L5_13 = A1_9
-	L4_12 = A1_9.id
-	L4_12 = L4_12(L5_13)
-	L5_13 = assert
-	L6_14 = L4_12
-	L5_13(L6_14)
-	L5_13 = assert
-	L6_14 = TableAlgorithms
-	L6_14 = L6_14.is_empty
-	L7_15 = A0_8._active_objectives
-	L6_14 = L6_14(L7_15)
-	L7_15 = "Trying to activate a new Mission Objective ("
-	L8_16 = L4_12
-	L7_15 = L7_15 .. L8_16 .. ") when another is still active!"
-	L5_13(L6_14, L7_15)
-	L5_13 = assert
-	L6_14 = A0_8._active_objectives
-	L6_14 = L6_14[L4_12]
-	L6_14 = L6_14 == nil
-	L7_15 = "Mission objective '"
-	L8_16 = L4_12
-	L7_15 = L7_15 .. L8_16 .. "' is already an active objective!"
-	L5_13(L6_14, L7_15)
-	L5_13 = AssignedMissionObjective
-	L6_14 = L5_13
-	L5_13 = L5_13.new
-	L7_15 = A1_9
-	L5_13 = L5_13(L6_14, L7_15)
-	L7_15 = A1_9
-	L6_14 = A1_9.time
-	L6_14 = L6_14(L7_15)
-	if L6_14 then
-		L6_14 = A0_8._name_to_callback_object
-		L6_14 = L6_14[L4_12]
-		L8_16 = A1_9
-		L7_15 = A1_9.time
-		L7_15 = L7_15(L8_16)
-		if A3_11 and A3_11 > 0 then
-			L7_15 = A3_11
+
+AssignedMissionObjectiveManager.start_objective = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	local l_6_4 = l_6_1:id()
+	assert(l_6_4)
+	assert(TableAlgorithms.is_empty(l_6_0._active_objectives), "Trying to activate a new Mission Objective (" .. l_6_4 .. ") when another is still active!")
+	local l_6_5 = assert
+	l_6_5(l_6_0._active_objectives[l_6_4] == nil, "Mission objective '" .. l_6_4 .. "' is already an active objective!")
+	l_6_5 = AssignedMissionObjective
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_1:time() then
+		local l_6_8 = l_6_0._name_to_callback_object[l_6_4]
+		local l_6_9 = l_6_1:time()
+		if l_6_3 and l_6_3 > 0 then
+			l_6_9 = l_6_3
 		end
-		L8_16 = A0_8._timer_manager
-		L8_16 = L8_16.add_objective_timer
-		L8_16 = L8_16(L8_16, L4_12, L6_14, L7_15)
-		L5_13:set_timer(L8_16)
+		local l_6_10 = l_6_0._timer_manager:add_objective_timer(l_6_4, l_6_8, l_6_9)
+		l_6_5:set_timer(l_6_10)
 	end
-	L6_14 = assert
-	L7_15 = A0_8._active_objectives
-	L7_15 = L7_15[L4_12]
-	L7_15 = L7_15 == nil
-	L6_14(L7_15)
-	L6_14 = A0_8._active_objectives
-	L6_14[L4_12] = L5_13
-	return L5_13
+	local l_6_11 = assert
+	l_6_11(l_6_0._active_objectives[l_6_4] == nil)
+	l_6_11 = l_6_0._active_objectives
+	l_6_11[l_6_4] = l_6_5
+	return l_6_5
 end
-function AssignedMissionObjectiveManager.update(A0_17, A1_18)
-	A0_17._timer_manager:update(A1_18)
+
+AssignedMissionObjectiveManager.update = function(l_7_0, l_7_1)
+	l_7_0._timer_manager:update(l_7_1)
 end
-function AssignedMissionObjectiveManager.complete_objective(A0_19, A1_20)
-	local L2_21
-	L2_21 = assert
-	L2_21(A1_20)
-	L2_21 = A0_19._active_objectives
-	L2_21 = L2_21[A1_20]
-	if L2_21 == nil and A0_19._in_debug_mode then
-		return
+
+AssignedMissionObjectiveManager.complete_objective = function(l_8_0, l_8_1)
+	assert(l_8_1)
+	local l_8_2 = l_8_0._active_objectives[l_8_1]
+	if l_8_2 == nil and l_8_0._in_debug_mode then
+		return 
 	end
-	assert(L2_21, "Mission objective '" .. A1_20 .. "' is not an active objective!")
-	L2_21:mark_as_completed()
-	if L2_21:timer() then
-		A0_19._timer_manager:remove_objective_timer(L2_21:timer())
+	assert(l_8_2, "Mission objective '" .. l_8_1 .. "' is not an active objective!")
+	l_8_2:mark_as_completed()
+	if l_8_2:timer() then
+		l_8_0._timer_manager:remove_objective_timer(l_8_2:timer())
 	end
-	A0_19._active_objectives[A1_20] = nil
+	l_8_0._active_objectives[l_8_1] = nil
 end
-function AssignedMissionObjectiveManager.objectives_assigned_to(A0_22, A1_23)
-	for 
+
+AssignedMissionObjectiveManager.objectives_assigned_to = function(l_9_0, l_9_1)
+	local l_9_6, l_9_7, l_9_8, l_9_9, l_9_10, l_9_11 = nil
+	local l_9_2 = {}
+	for i_0,i_1 in pairs(l_9_0._active_objectives) do
+		if l_9_0:_assigned_to_unit(i_1:objective():assigned_to(), l_9_1) then
+			l_9_2[i_1:objective():name()] = i_1
+		end
+	end
+	return l_9_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+AssignedMissionObjectiveManager._assigned_to_unit = function(l_10_0, l_10_1, l_10_2)
+	if not l_10_1 == "all" then
+		if l_10_1 == "character_slot_1" then
+			local l_10_5 = l_10_0:_slot_matches(1, l_10_2)
+		end
+	else
+		if not false then
+			if l_10_1 == "character_slot_2" then
+				local l_10_6 = l_10_0:_slot_matches(2, l_10_2)
+			end
+		else
+			return false
+		end
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 17 
+end
+
+AssignedMissionObjectiveManager._slot_matches = function(l_11_0, l_11_1, l_11_2)
+	local l_11_3 = managers.player_slot:slot(l_11_1)
+	do
+		return not l_11_3 or l_11_3:spawned_unit() == l_11_2
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+AssignedMissionObjectiveManager.remove_timer_callback_object = function(l_12_0, l_12_1)
+	local l_12_2 = l_12_0._callback_object_to_name[l_12_1]
+	l_12_0._name_to_callback_object[l_12_2] = nil
+	l_12_0._callback_object_to_name[l_12_1] = nil
+end
+
+AssignedMissionObjectiveManager.add_timer_callback_object = function(l_13_0, l_13_1, l_13_2)
+	l_13_0._name_to_callback_object[l_13_1] = l_13_2
+	l_13_0._callback_object_to_name[l_13_2] = l_13_1
+end
+
+

@@ -1,30 +1,36 @@
 require("units/beings/machines/walker/states/WalkerState")
 require("units/beings/machines/walker/states/WalkerOnGround")
-WalkerStunned = WalkerStunned or class(WalkerState)
-function WalkerStunned.init(A0_0)
-	local L1_1
-	L1_1 = WalkerState
-	L1_1 = L1_1.init
-	L1_1(A0_0)
-	L1_1 = A0_0._unit
-	A0_0._stun_state = StunState:new(L1_1, "exit_stun", walker_tweak_data.STUN_TIME)
-	A0_0._enemy_data = L1_1:enemy_data()
-	A0_0._stun_state:enter()
-	A0_0._base:_set_can_move(false)
-	A0_0._base:_set_can_fire(false)
+if not WalkerStunned then
+	WalkerStunned = class(WalkerState)
 end
-function WalkerStunned.exit(A0_2)
-	A0_2._stun_state:leave()
-	A0_2._base:_set_can_move(true)
-	A0_2._base:_set_can_fire(true)
+WalkerStunned.init = function(l_1_0)
+	WalkerState.init(l_1_0)
+	local l_1_1 = l_1_0._unit
+	l_1_0._stun_state = StunState:new(l_1_1, "exit_stun", walker_tweak_data.STUN_TIME)
+	l_1_0._enemy_data = l_1_1:enemy_data()
+	l_1_0._stun_state:enter()
+	local l_1_2 = l_1_0._base
+	l_1_2:_set_can_move(false)
+	l_1_2:_set_can_fire(false)
 end
-function WalkerStunned.update(A0_3, A1_4)
-	if not A0_3._stun_state:update(A1_4) then
-		A0_3._stun_state_done = true
+
+WalkerStunned.exit = function(l_2_0)
+	l_2_0._stun_state:leave()
+	local l_2_1 = l_2_0._base
+	l_2_1:_set_can_move(true)
+	l_2_1:_set_can_fire(true)
+end
+
+WalkerStunned.update = function(l_3_0, l_3_1)
+	if not l_3_0._stun_state:update(l_3_1) then
+		l_3_0._stun_state_done = true
 	end
 end
-function WalkerStunned.transition(A0_5)
-	if A0_5._stun_state_done then
+
+WalkerStunned.transition = function(l_4_0)
+	if l_4_0._stun_state_done then
 		return WalkerOnGround
 	end
 end
+
+

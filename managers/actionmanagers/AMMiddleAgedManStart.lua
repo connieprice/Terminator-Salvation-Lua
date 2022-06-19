@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMMiddleAgedManStart = AMMiddleAgedManStart or class(AMNpcStart)
-AMMiddleAgedManStart.unit_type = "middle_aged_man"
-function AMMiddleAgedManStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMMiddleAgedManStart.unit_type)
+if not AMMiddleAgedManStart then
+	AMMiddleAgedManStart = class(AMNpcStart)
 end
+AMMiddleAgedManStart.unit_type = "middle_aged_man"
+AMMiddleAgedManStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMMiddleAgedManStart.unit_type)
+end
+
+

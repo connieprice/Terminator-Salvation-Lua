@@ -1,28 +1,30 @@
-AssignedMissionObjective = AssignedMissionObjective or class()
-function AssignedMissionObjective.init(A0_0, A1_1)
-	assert(A1_1)
-	A0_0._objective = A1_1
-	A0_0._is_completed = false
+if not AssignedMissionObjective then
+	AssignedMissionObjective = class()
 end
-function AssignedMissionObjective.mark_as_completed(A0_2)
-	local L1_3
-	A0_2._is_completed = true
+AssignedMissionObjective.init = function(l_1_0, l_1_1)
+	assert(l_1_1)
+	l_1_0._objective = l_1_1
+	l_1_0._is_completed = false
 end
-function AssignedMissionObjective.is_completed(A0_4)
-	local L1_5
-	L1_5 = A0_4._is_completed
-	return L1_5
+
+AssignedMissionObjective.mark_as_completed = function(l_2_0)
+	l_2_0._is_completed = true
 end
-function AssignedMissionObjective.objective(A0_6)
-	local L1_7
-	L1_7 = A0_6._objective
-	return L1_7
+
+AssignedMissionObjective.is_completed = function(l_3_0)
+	return l_3_0._is_completed
 end
-function AssignedMissionObjective.set_timer(A0_8, A1_9)
-	A0_8._timer = A1_9
+
+AssignedMissionObjective.objective = function(l_4_0)
+	return l_4_0._objective
 end
-function AssignedMissionObjective.timer(A0_10)
-	local L1_11
-	L1_11 = A0_10._timer
-	return L1_11
+
+AssignedMissionObjective.set_timer = function(l_5_0, l_5_1)
+	l_5_0._timer = l_5_1
 end
+
+AssignedMissionObjective.timer = function(l_6_0)
+	return l_6_0._timer
+end
+
+

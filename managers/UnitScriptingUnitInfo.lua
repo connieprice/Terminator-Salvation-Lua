@@ -1,54 +1,68 @@
-UnitScriptingUnitInfo = UnitScriptingUnitInfo or class()
-function UnitScriptingUnitInfo.init(A0_0, A1_1)
-	A0_0._name = A1_1
-	A0_0._unit = nil
-	A0_0._death_callbacks = {}
-	A0_0._registered = false
+if not UnitScriptingUnitInfo then
+	UnitScriptingUnitInfo = class()
 end
-function UnitScriptingUnitInfo.destroy(A0_2)
-	local L1_3
+UnitScriptingUnitInfo.init = function(l_1_0, l_1_1)
+	l_1_0._name = l_1_1
+	l_1_0._unit = nil
+	l_1_0._death_callbacks = {}
+	l_1_0._registered = false
 end
-function UnitScriptingUnitInfo.register_unit(A0_4, A1_5)
-	A0_4._unit = A1_5
-	A0_4._registered = true
+
+UnitScriptingUnitInfo.destroy = function(l_2_0)
 end
-function UnitScriptingUnitInfo.unregister(A0_6)
-	local L1_7
-	A0_6._unit = nil
-	A0_6._registered = false
+
+UnitScriptingUnitInfo.register_unit = function(l_3_0, l_3_1)
+	l_3_0._unit = l_3_1
+	l_3_0._registered = true
 end
-function UnitScriptingUnitInfo.registered(A0_8)
-	local L1_9
-	L1_9 = A0_8._registered
-	return L1_9
+
+UnitScriptingUnitInfo.unregister = function(l_4_0)
+	l_4_0._unit = nil
+	l_4_0._registered = false
 end
-function UnitScriptingUnitInfo.add_death_callback(A0_10, A1_11)
-	table.insert(A0_10._death_callbacks, A1_11)
+
+UnitScriptingUnitInfo.registered = function(l_5_0)
+	return l_5_0._registered
 end
-function UnitScriptingUnitInfo.unit_dead(A0_12)
-	local L1_13, L2_14, L3_15, L4_16, L5_17
-	for L4_16, L5_17 in L1_13(L2_14) do
-		L5_17()
+
+UnitScriptingUnitInfo.add_death_callback = function(l_6_0, l_6_1)
+	table.insert(l_6_0._death_callbacks, l_6_1)
+end
+
+UnitScriptingUnitInfo.unit_dead = function(l_7_0)
+	local l_7_4, l_7_5, l_7_6, l_7_7 = nil
+	for i_0,i_1 in ipairs(l_7_0._death_callbacks) do
+		i_1()
 	end
 end
-function UnitScriptingUnitInfo.unit(A0_18)
-	if type(A0_18._unit) == "function" then
-		return A0_18._unit()
+
+UnitScriptingUnitInfo.unit = function(l_8_0)
+	local l_8_2 = type
+	l_8_2 = l_8_2(l_8_0._unit)
+	if l_8_2 == "function" then
+		l_8_2 = l_8_0._unit
+		local l_8_1 = nil
+		return l_8_2()
 	else
-		return A0_18._unit
+		l_8_2 = l_8_0._unit
+		return l_8_2
 	end
 end
-function UnitScriptingUnitInfo.name(A0_19)
-	local L1_20
-	L1_20 = A0_19._name
-	return L1_20
+
+UnitScriptingUnitInfo.name = function(l_9_0)
+	return l_9_0._name
 end
-function UnitScriptingUnitInfo.active(A0_21)
-	if type(A0_21._unit) == "function" then
+
+UnitScriptingUnitInfo.active = function(l_10_0)
+	if type(l_10_0._unit) == "function" then
 		return true
-	elseif not A0_21._registered then
+	elseif not l_10_0._registered then
 		return true
 	else
-		return alive(A0_21._unit)
+		local l_10_1 = alive
+		local l_10_2 = l_10_0._unit
+		return l_10_1(l_10_2)
 	end
 end
+
+

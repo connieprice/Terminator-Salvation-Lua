@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMResistanceFemale05Start = AMResistanceFemale05Start or class(AMNpcStart)
-AMResistanceFemale05Start.unit_type = "resistance_female_05"
-function AMResistanceFemale05Start.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMResistanceFemale05Start.unit_type)
+if not AMResistanceFemale05Start then
+	AMResistanceFemale05Start = class(AMNpcStart)
 end
+AMResistanceFemale05Start.unit_type = "resistance_female_05"
+AMResistanceFemale05Start.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMResistanceFemale05Start.unit_type)
+end
+
+

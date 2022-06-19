@@ -1,70 +1,65 @@
 require("units/weapons/WeaponUtilities")
 require("units/weapons/GenericWeapon")
-M249Machinegun = M249Machinegun or class(GenericWeapon)
-function M249Machinegun.init(A0_0, A1_1)
-	GenericWeapon.init(A0_0, A1_1)
-	assert(A0_0._reload_unit)
-	A0_0._reload = World:spawn_unit(A0_0._reload_unit, A1_1:position(), A1_1:rotation())
-	A0_0:reload_attach()
+if not M249Machinegun then
+	M249Machinegun = class(GenericWeapon)
 end
-function M249Machinegun.destroy(A0_2)
-	GenericWeapon.destroy(A0_2)
-	if alive(A0_2._reload) then
-		A0_2._reload:set_slot(0)
+M249Machinegun.init = function(l_1_0, l_1_1)
+	GenericWeapon.init(l_1_0, l_1_1)
+	assert(l_1_0._reload_unit)
+	l_1_0._reload = World:spawn_unit(l_1_0._reload_unit, l_1_1:position(), l_1_1:rotation())
+	l_1_0:reload_attach()
+end
+
+M249Machinegun.destroy = function(l_2_0)
+	GenericWeapon.destroy(l_2_0)
+	if alive(l_2_0._reload) then
+		l_2_0._reload:set_slot(0)
 	end
-	A0_2._reload = nil
+	l_2_0._reload = nil
 end
-function M249Machinegun.setup(A0_3, A1_4)
-	GenericWeapon.setup(A0_3, A1_4)
+
+M249Machinegun.setup = function(l_3_0, l_3_1)
+	GenericWeapon.setup(l_3_0, l_3_1)
 end
-function M249Machinegun.fire(A0_5, A1_6)
-	local L2_7, L3_8, L4_9
-	L2_7 = A0_5._wdata
-	L2_7 = L2_7._bullets_in_clip
-	L3_8 = 0
-	if L2_7 > 12 then
-		L4_9 = math
-		L4_9 = L4_9.random
-		L4_9 = L4_9(0, 1)
-		L3_8 = L4_9 * 0.2
+
+M249Machinegun.fire = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._wdata._bullets_in_clip
+	local l_4_3 = 0
+	if l_4_2 > 12 then
+		l_4_3 = math.random(0, 1) * 0.2
 	else
-		L4_9 = math
-		L4_9 = L4_9.max
-		L4_9 = L4_9(0, 3 - A0_5._wdata._bullets_in_clip * 0.2)
-		L3_8 = L4_9
+		l_4_3 = math.max(0, 3 - l_4_0._wdata._bullets_in_clip * 0.2)
 	end
-	L4_9 = math
-	L4_9 = L4_9.min
-	L4_9 = L4_9(L3_8 + 0.2, 3)
-	A0_5._reload:anim_set_time("fire", L3_8)
-	A0_5._reload:anim_play_to("fire", L4_9)
-	GenericWeapon.fire(A0_5, A1_6)
+	local l_4_4 = math.min(l_4_3 + 0.2, 3)
+	l_4_0._reload:anim_set_time("fire", l_4_3)
+	l_4_0._reload:anim_play_to("fire", l_4_4)
+	GenericWeapon.fire(l_4_0, l_4_1)
 end
-function M249Machinegun.reload_release(A0_10)
-	local L1_11, L2_12
-	L1_11 = 3
-	L2_12 = A0_10._reload
-	L2_12 = L2_12.anim_set_time
-	L2_12(L2_12, "fire", L1_11)
-	L2_12 = 3
-	A0_10._reload:anim_play_to("fire", L2_12)
-	assert(A0_10._user_unit)
-	A0_10._user_unit:link("a_weapon_left_back", A0_10._reload, A0_10._reload:orientation_object():name())
+
+M249Machinegun.reload_release = function(l_5_0)
+	local l_5_1 = 3
+	l_5_0._reload:anim_set_time("fire", l_5_1)
+	local l_5_2 = 3
+	l_5_0._reload:anim_play_to("fire", l_5_2)
+	assert(l_5_0._user_unit)
+	l_5_0._user_unit:link("a_weapon_left_back", l_5_0._reload, l_5_0._reload:orientation_object():name())
 end
-function M249Machinegun.reload_attach(A0_13)
-	local L1_14, L2_15
-	L1_14 = 0
-	L2_15 = A0_13._reload
-	L2_15 = L2_15.anim_set_time
-	L2_15(L2_15, "fire", L1_14)
-	L2_15 = 0
-	A0_13._reload:anim_play_to("fire", L2_15)
-	A0_13._unit:link(A0_13._reload_attachment, A0_13._reload, A0_13._reload:orientation_object():name())
-	A0_13._reload:set_visible(true)
+
+M249Machinegun.reload_attach = function(l_6_0)
+	local l_6_1 = 0
+	l_6_0._reload:anim_set_time("fire", l_6_1)
+	local l_6_2 = 0
+	l_6_0._reload:anim_play_to("fire", l_6_2)
+	l_6_0._unit:link(l_6_0._reload_attachment, l_6_0._reload, l_6_0._reload:orientation_object():name())
+	l_6_0._reload:set_visible(true)
 end
-function M249Machinegun.reload_drop(A0_16)
-	A0_16._reload:set_visible(false)
+
+M249Machinegun.reload_drop = function(l_7_0)
+	l_7_0._reload:set_visible(false)
 end
-function M249Machinegun.reload_grab(A0_17)
-	A0_17._reload:set_visible(true)
+
+M249Machinegun.reload_grab = function(l_8_0)
+	l_8_0._reload:set_visible(true)
 end
+
+

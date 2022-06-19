@@ -1,66 +1,75 @@
-OverlayMovie = OverlayMovie or class()
-function OverlayMovie.init(A0_0, A1_1, A2_2)
-	local L3_3, L4_4, L5_5
-	L3_3 = managers
-	L3_3 = L3_3.menu
-	L4_4 = L3_3
-	L3_3 = L3_3.ingame_gui
-	L3_3 = L3_3(L4_4)
-	L4_4 = L3_3
-	L3_3 = L3_3.root_panel
-	L3_3 = L3_3(L4_4)
-	L4_4 = L3_3
-	L3_3 = L3_3.panel
-	L3_3 = L3_3(L4_4)
-	A0_0._root_panel = L3_3
-	L3_3 = A0_0._root_panel
-	L4_4 = L3_3
-	L3_3 = L3_3.video
-	L5_5 = {}
-	L5_5.video = A1_1
-	L5_5.loop = A2_2
-	L5_5.layer = 2
-	L3_3 = L3_3(L4_4, L5_5)
-	A0_0._video = L3_3
-	L3_3 = managers
-	L3_3 = L3_3.menu
-	L4_4 = L3_3
-	L3_3 = L3_3.ingame_gui
-	L3_3 = L3_3(L4_4)
-	L4_4 = L3_3
-	L3_3 = L3_3.full_rect
-	L3_3 = L3_3(L4_4)
-	L4_4 = A0_0._root_panel
-	L5_5 = L4_4
-	L4_4 = L4_4.rect
-	L4_4(L5_5, {
-		color = Color.black,
-		layer = 1
-	})
-	L4_4 = get_fit_size
-	L5_5 = A0_0._video
-	L5_5 = L5_5.video_width
-	L5_5 = L5_5(L5_5)
-	L5_5 = L4_4(L5_5, A0_0._video:video_height(), L3_3.w, L3_3.h)
-	A0_0._video:set_size(L4_4, L5_5)
-	A0_0._video:set_center(L3_3.w / 2, L3_3.h / 2)
-	A0_0._video:play()
-	A0_0._is_done = false
-	A0_0._is_looping = A2_2
+if not OverlayMovie then
+	OverlayMovie = class()
 end
-function OverlayMovie.destroy(A0_6)
-	A0_6._video:stop()
-	managers.menu:ingame_gui():root_panel():remove(A0_6._root_panel)
+OverlayMovie.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._root_panel = managers.menu:ingame_gui():root_panel():panel()
+	local l_1_3, l_1_4 = l_1_0._root_panel:video, l_1_0._root_panel
+	local l_1_5 = {}
+	l_1_5.video = l_1_1
+	l_1_5.loop = l_1_2
+	l_1_5.layer = 2
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_0._video = l_1_3
+	l_1_3 = managers
+	l_1_3 = l_1_3.menu
+	l_1_3, l_1_4 = l_1_3:ingame_gui, l_1_3
+	l_1_3 = l_1_3(l_1_4)
+	l_1_3, l_1_4 = l_1_3:full_rect, l_1_3
+	l_1_3 = l_1_3(l_1_4)
+	l_1_4 = l_1_0._root_panel
+	l_1_4, l_1_5 = l_1_4:rect, l_1_4
+	local l_1_6 = {}
+	l_1_6.color = Color.black
+	l_1_6.layer = 1
+	l_1_4(l_1_5, l_1_6)
+	l_1_4 = get_fit_size
+	l_1_5 = l_1_0._video
+	l_1_5, l_1_6 = l_1_5:video_width, l_1_5
+	l_1_5 = l_1_5(l_1_6)
+	l_1_6 = l_1_0._video
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_4 = l_1_4(l_1_5, l_1_6, l_1_3.w, l_1_3.h)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6(l_1_6, l_1_4, R9_PC45)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6(l_1_6, l_1_3.w / 2, R9_PC45)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6(l_1_6)
+	l_1_0._is_done = false
+	l_1_0._is_looping = l_1_2
 end
-function OverlayMovie.update(A0_7, A1_8)
-	if not A0_7._looping and (A0_7._video:loop_count() > 0 or managers.menu:ingame_gui():is_faded_down()) then
-		A0_7._is_done = true
-	elseif managers.menu:ingame_gui():is_fading() then
-		A0_7._video:set_volume_gain(1 - managers.menu:ingame_gui():fade_value())
+
+OverlayMovie.destroy = function(l_2_0)
+	l_2_0._video:stop()
+	managers.menu:ingame_gui():root_panel():remove(l_2_0._root_panel)
+end
+
+OverlayMovie.update = function(l_3_0, l_3_1)
+	local l_3_2 = managers.menu:ingame_gui()
+	if not l_3_0._looping and (l_3_0._video:loop_count() > 0 or l_3_2:is_faded_down()) then
+		l_3_0._is_done = true
+	else
+		if l_3_2:is_fading() then
+			local l_3_3 = l_3_2:fade_value()
+			l_3_0._video:set_volume_gain(1 - l_3_3)
+		end
 	end
 end
-function OverlayMovie.is_done(A0_9)
-	local L1_10
-	L1_10 = A0_9._is_done
-	return L1_10
+
+OverlayMovie.is_done = function(l_4_0)
+	return l_4_0._is_done
 end
+
+

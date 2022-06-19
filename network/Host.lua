@@ -1,24 +1,31 @@
 require("network/session_finder/SessionProvider")
-Host = Host or class()
-function Host.init(A0_0)
-	A0_0._session_provider = SessionProvider:new()
-	Network:set_receiver("Host", A0_0)
+if not Host then
+	Host = class()
 end
-function Host.destroy(A0_1)
-	A0_1._session_provider:destroy()
-	A0_1._session_provider = nil
+Host.init = function(l_1_0)
+	l_1_0._session_provider = SessionProvider:new()
+	Network:set_receiver("Host", l_1_0)
 end
-function Host.save(A0_2, A1_3)
-	A0_2._session_provider:save(A1_3)
+
+Host.destroy = function(l_2_0)
+	l_2_0._session_provider:destroy()
+	l_2_0._session_provider = nil
 end
-function Host.load(A0_4, A1_5)
-	A0_4._session_provider:load(A1_5)
+
+Host.save = function(l_3_0, l_3_1)
+	l_3_0._session_provider:save(l_3_1)
 end
-function Host.update(A0_6, A1_7)
-	A0_6._session_provider:update(A1_7)
+
+Host.load = function(l_4_0, l_4_1)
+	l_4_0._session_provider:load(l_4_1)
 end
-function Host.session_provider(A0_8)
-	local L1_9
-	L1_9 = A0_8._session_provider
-	return L1_9
+
+Host.update = function(l_5_0, l_5_1)
+	l_5_0._session_provider:update(l_5_1)
 end
+
+Host.session_provider = function(l_6_0)
+	return l_6_0._session_provider
+end
+
+

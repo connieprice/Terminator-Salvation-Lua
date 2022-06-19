@@ -1,48 +1,64 @@
 core:module("CoreInput")
 core:require_module("CoreClass")
-function shift()
-	return Input:keyboard():down("left shift") or Input:keyboard():down("right shift")
-end
-function ctrl()
-	return Input:keyboard():down("left ctrl") or Input:keyboard():down("right ctrl")
-end
-function alt()
-	return Input:keyboard():down("left alt")
-end
-RepKey = RepKey or CoreClass.class()
-function RepKey.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._keys = A1_1 or {}
-	A0_0._current_time = 0
-	A0_0._current_rep_time = 0
-	A0_0._pause = A2_2 or 0.5
-	A0_0._rep = A3_3 or 0.1
-	A0_0._input = Input:keyboard()
-end
-function RepKey.set_input(A0_4, A1_5)
-	A0_4._input = A1_5
-end
-function RepKey.update(A0_6, A1_7, A2_8)
-	local L3_9, L4_10, L5_11, L6_12, L7_13, L8_14
-	L3_9 = false
-	for L7_13, L8_14 in L4_10(L5_11) do
-		if A0_6._input:down(L8_14) then
-			L3_9 = true
-		else
-		end
+shift = function()
+	if not Input:keyboard():down("left shift") then
+		return Input:keyboard():down("right shift")
 	end
-	if L3_9 then
-		if L5_11 >= L6_12 then
-			if L5_11 >= L6_12 then
-				A0_6._current_rep_time = 0
-			else
-				A0_6._current_rep_time = L5_11
-			end
-		else
-			A0_6._current_time = L5_11
+end
+
+ctrl = function()
+	if not Input:keyboard():down("left ctrl") then
+		return Input:keyboard():down("right ctrl")
+	end
+end
+
+alt = function()
+	local l_3_0, l_3_1 = Input:keyboard():down, Input:keyboard()
+	local l_3_2 = "left alt"
+	return l_3_0(l_3_1, l_3_2)
+end
+
+if not RepKey then
+	RepKey = CoreClass.class()
+end
+RepKey.init = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	do
+		if not l_4_1 then
+			l_4_0._keys = {}
 		end
+		l_4_0._current_time = 0
+		l_4_0._current_rep_time = 0
+		l_4_0._pause = l_4_2 or 0.5
+		l_4_0._rep = l_4_3 or 0.1
+		l_4_0._input = Input:keyboard()
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RepKey.set_input = function(l_5_0, l_5_1)
+	l_5_0._input = l_5_1
+end
+
+RepKey.update = function(l_6_0, l_6_1, l_6_2)
+	local l_6_7, l_6_8 = nil
+	local l_6_3 = false
+	for i_0,i_1 in ipairs(l_6_0._keys) do
+		if l_6_0._input:down(i_1) then
+			l_6_3 = true
 	else
-		A0_6._current_time = 0
-		A0_6._current_rep_time = 0
+		end
 	end
-	return L4_10
+	if l_6_3 then
+		if l_6_0._current_time ~= 0 or l_6_0._pause <= l_6_0._current_time then
+			if l_6_0._rep <= l_6_0._current_rep_time then
+				do return end
+			end
+	else
+		return false
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
 end
+
+

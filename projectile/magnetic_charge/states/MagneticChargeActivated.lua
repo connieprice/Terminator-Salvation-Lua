@@ -1,44 +1,66 @@
 require("projectile/magnetic_charge/states/MagneticChargeState")
 require("projectile/magnetic_charge/states/MagneticChargeDeactivated")
-MagneticChargeActivated = MagneticChargeActivated or class(MagneticChargeState)
-function MagneticChargeActivated.init(A0_0, A1_1, A2_2)
-	MagneticChargeState.init(A0_0, A1_1)
-	A0_0._attachment_point = A2_2
+if not MagneticChargeActivated then
+	MagneticChargeActivated = class(MagneticChargeState)
 end
-function MagneticChargeActivated.enter(A0_3)
-	A0_3._unit:base()._deactivate = false
-	A0_3._unit:base()._activated = true
-	A0_3._event_emitter:magnetic_charge_activated(A0_3._unit)
+MagneticChargeActivated.init = function(l_1_0, l_1_1, l_1_2)
+	MagneticChargeState.init(l_1_0, l_1_1)
+	l_1_0._attachment_point = l_1_2
 end
-function MagneticChargeActivated.leave(A0_4)
-	A0_4._unit:base()._activated = false
-	if A0_4:_attached() then
-		A0_4:_detach()
+
+MagneticChargeActivated.enter = function(l_2_0)
+	local l_2_1 = l_2_0._unit:base()
+	l_2_1._deactivate = false
+	l_2_1._activated = true
+	l_2_0._event_emitter:magnetic_charge_activated(l_2_0._unit)
+end
+
+MagneticChargeActivated.leave = function(l_3_0)
+	local l_3_1 = l_3_0._unit:base()
+	l_3_1._activated = false
+	if l_3_0:_attached() then
+		l_3_0:_detach()
 	end
 end
-function MagneticChargeActivated._attached(A0_5)
-	if not A0_5._attachment_point:valid() then
+
+MagneticChargeActivated._attached = function(l_4_0)
+	if not l_4_0._attachment_point:valid() then
 		return false
 	end
-	return TableAlgorithms.count_if(A0_5._attachment_point:attached_units(), function(A0_6)
-		local L1_7
-		L1_7 = _UPVALUE0_
-		L1_7 = L1_7._unit
-		L1_7 = A0_6 == L1_7
-		return L1_7
-	end) > 0
+	return TableAlgorithms.count_if(l_4_0._attachment_point:attached_units(), function(l_5_0)
+		-- upvalues: l_4_0
+		return l_5_0 == l_4_0._unit
+  end) > 0
 end
-function MagneticChargeActivated._detach(A0_8)
-	assert(A0_8:_attached())
-	A0_8._attachment_point:detach_unit(A0_8._unit)
+
+MagneticChargeActivated._detach = function(l_5_0)
+	assert(l_5_0:_attached())
+	l_5_0._attachment_point:detach_unit(l_5_0._unit)
 end
-function MagneticChargeActivated.update(A0_9, A1_10)
-	if A0_9._unit:base()._deactivate then
-		return MagneticChargeDeactivated:new(A0_9._unit)
+
+MagneticChargeActivated.update = function(l_6_0, l_6_1)
+	local l_6_5, l_6_6, l_6_7, l_6_8 = nil
+	if l_6_0._unit:base()._deactivate then
+		local l_6_2, l_6_3 = MagneticChargeDeactivated:new, MagneticChargeDeactivated
+		local l_6_4 = l_6_0._unit
+		return l_6_2(l_6_3, l_6_4)
 	end
-	if A0_9._unit:base()._bullet_hit then
-		World:spawn_unit(A0_9._unit:base()._explosion_unit, A0_9._unit:position(), A0_9._unit:rotation())
-		managers.sequence:run_sequence_simple("explosion", A0_9._unit)
-		return MagneticChargeDeactivated:new(A0_9._unit)
+	local l_6_9 = l_6_0._unit:base()
+	if l_6_9._bullet_hit then
+		local l_6_14, l_6_15 = World:spawn_unit, World
+		l_6_14(l_6_15, l_6_9._explosion_unit, l_6_0._unit:position(), l_6_0._unit:rotation())
+		l_6_14 = managers
+		l_6_14 = l_6_14.sequence
+		l_6_14, l_6_15 = l_6_14:run_sequence_simple, l_6_14
+		local l_6_13 = "explosion"
+		l_6_14(l_6_15, l_6_13, l_6_0._unit)
+		l_6_14 = MagneticChargeDeactivated
+		l_6_14, l_6_15 = l_6_14:new, l_6_14
+		local l_6_10, l_6_11 = nil
+		l_6_13 = l_6_0._unit
+		local l_6_12 = nil
+		return l_6_14(l_6_15, l_6_13)
 	end
 end
+
+

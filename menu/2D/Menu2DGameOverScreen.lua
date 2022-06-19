@@ -1,157 +1,109 @@
 require("menu/2D/Menu2DScreen")
-Menu2DGameOverScreen = Menu2DGameOverScreen or class(Menu2DScreen)
-function Menu2DGameOverScreen.create(A0_0, A1_1, A2_2, A3_3)
-	local L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12, L13_13, L14_14
-	L4_4 = A0_0._page
-	L5_5 = L4_4
-	L4_4 = L4_4.transition_time
-	L4_4 = L4_4(L5_5)
-	A0_0._transition_time = L4_4
-	A0_0._root_panel = A1_1
-	A0_0._full_screen_panel_root = A2_2
-	L5_5 = A2_2
-	L4_4 = A2_2.panel
-	L6_6 = {}
-	L7_7 = tweak_data
-	L7_7 = L7_7.menu2d
-	L7_7 = L7_7.layer_normal
-	L6_6.layer = L7_7
-	L4_4 = L4_4(L5_5, L6_6)
-	A0_0._full_screen_panel = L4_4
-	A0_0._next_start_y = 0
-	A0_0._visible_slots = 0
-	A0_0._current_slot = nil
-	A0_0._widget_border = 0
-	L4_4 = A0_0._full_screen_panel
-	L5_5 = L4_4
-	L4_4 = L4_4.height
-	L4_4 = L4_4(L5_5)
-	L4_4 = L4_4 * 0.35
-	A0_0._page_y = L4_4
-	L4_4 = A0_0._root_panel
-	L5_5 = L4_4
-	L4_4 = L4_4.panel
-	L6_6 = {}
-	L7_7 = tweak_data
-	L7_7 = L7_7.menu2d
-	L7_7 = L7_7.choice_panel_y
-	L6_6.y = L7_7
-	L7_7 = A0_0._root_panel
-	L7_7 = L7_7.h
-	L7_7 = L7_7(L8_8)
-	L7_7 = L7_7 - L8_8
-	L6_6.height = L7_7
-	L4_4 = L4_4(L5_5, L6_6)
-	A0_0._dummy_panel = L4_4
-	L4_4 = A0_0._root_panel
-	L5_5 = L4_4
-	L4_4 = L4_4.panel
-	L6_6 = {}
-	L7_7 = A0_0._full_screen_panel
-	L7_7 = L7_7.width
-	L7_7 = L7_7(L8_8)
-	L6_6.width = L7_7
-	L6_6.layer = 1
-	L6_6.halign = "right"
-	L6_6.x = 0
-	L7_7 = A0_0._page_y
-	L6_6.y = L7_7
-	L4_4 = L4_4(L5_5, L6_6)
-	A0_0._choice_panel = L4_4
-	L4_4 = A0_0._root_panel
-	L5_5 = L4_4
-	L4_4 = L4_4.text
-	L6_6 = {}
-	L7_7 = A0_0._page
-	L7_7 = L7_7.text
-	L7_7 = L7_7(L8_8)
-	L6_6.text = L7_7
-	L6_6.font = "credits_merged"
-	L7_7 = tweak_data
-	L7_7 = L7_7.menu2d
-	L7_7 = L7_7.normal_menu
-	L7_7 = L7_7.page_name_color
-	L7_7 = L7_7.with_alpha
-	L7_7 = L7_7(L8_8, L9_9)
-	L6_6.color = L7_7
-	L6_6.halign = "top"
-	L6_6.valign = "top"
-	L6_6.align = "center"
-	L6_6.height = 60
-	L6_6.x = 0
-	L7_7 = A0_0._page_y
-	L6_6.y = L7_7
-	L7_7 = A0_0._layer_text
-	L6_6.layer = L7_7
-	L4_4 = L4_4(L5_5, L6_6)
-	A0_0._page_name = L4_4
-	L4_4 = A0_0._page_name
-	L5_5 = L4_4
-	L4_4 = L4_4.text_rect
-	L7_7 = L4_4(L5_5)
-	A0_0._page_center_x = L8_8
-	L8_8(L9_9, L10_10)
-	L8_8(L9_9, L10_10)
-	A0_0._slots = L8_8
-	L14_14 = L9_9(L10_10)
-	for L11_11, L12_12 in L8_8(L9_9, L10_10, L11_11, L12_12, L13_13, L14_14, L9_9(L10_10)) do
-		L14_14 = A0_0
-		L13_13 = A0_0._set_choice
-		L13_13(L14_14, L11_11, L12_12)
-	end
-	if L9_9 > 0 then
-		L12_12 = A0_0._slots
-		L12_12 = #L12_12
-		L12_12 = L11_11
-		L12_12 = A0_0._slots
-		L12_12 = L12_12[1]
-		L13_13 = L12_12
-		L12_12 = L12_12.y
-		L12_12 = L12_12(L13_13)
-		L9_9(L10_10, L11_11)
-		A0_0._current_slot = 1
-		if L9_9 > L10_10 then
-			A0_0._scroll = true
-			A0_0._choice_wanted_y = 0
-			A0_0._current_top = 1
-			A0_0._current_end = L9_9
-			L12_12 = A0_0._current_slot
-			L12_12 = L11_11
-			A0_0._max_visible_slots = L9_9
-		else
-			A0_0._choice_wanted_y = 0
-			A0_0._scroll = false
-		end
-		L12_12 = true
-		L9_9(L10_10, L11_11, L12_12)
-		for L12_12, L13_13 in L9_9(L10_10) do
-			L14_14 = L13_13.text
-			L14_14 = L14_14(L13_13)
-			L14_14 = L14_14.text_rect
-			L14_14 = L14_14(L14_14)
-			L13_13:text():set_align("center")
-		end
-	end
-	for L12_12, L13_13 in L9_9(L10_10) do
-		L14_14 = A0_0._root_panel
-		L14_14 = L14_14.width
-		L14_14 = L14_14(L14_14)
-		L14_14 = L14_14 * 0.5
-		L14_14 = L14_14 - L8_8 * 0.5
-		L13_13:text():set_w(L8_8)
-		L13_13:text():set_x(L14_14)
-	end
-	A0_0._next_start_y = L9_9
-	L12_12 = A0_0._page_y
-	L13_13 = A0_0._page_name
-	L14_14 = L13_13
-	L13_13 = L13_13.height
-	L13_13 = L13_13(L14_14)
-	L12_12 = L12_12 + L13_13
-	L10_10(L11_11, L12_12)
-	if A3_3 then
-		L10_10(L11_11)
-	elseif A3_3 ~= "reset" then
-		L10_10(L11_11)
-	end
+if not Menu2DGameOverScreen then
+	Menu2DGameOverScreen = class(Menu2DScreen)
 end
+Menu2DGameOverScreen.create = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._transition_time = l_1_0._page:transition_time()
+	l_1_0._root_panel = l_1_1
+	l_1_0._full_screen_panel_root = l_1_2
+	local l_1_4, l_1_5 = l_1_2:panel, l_1_2
+	local l_1_6 = {}
+	l_1_6.layer = tweak_data.menu2d.layer_normal
+	l_1_4 = l_1_4(l_1_5, l_1_6)
+	l_1_0._full_screen_panel = l_1_4
+	l_1_0._next_start_y = 0
+	l_1_0._visible_slots = 0
+	l_1_0._current_slot = nil
+	l_1_0._widget_border = 0
+	l_1_4 = l_1_0._full_screen_panel
+	l_1_4, l_1_5 = l_1_4:height, l_1_4
+	l_1_4 = l_1_4(l_1_5)
+	l_1_4 = l_1_4 * 0.35
+	l_1_0._page_y = l_1_4
+	l_1_4 = l_1_0._root_panel
+	l_1_4, l_1_5 = l_1_4:panel, l_1_4
+	l_1_4, l_1_6 = l_1_4(l_1_5, l_1_6), {y = tweak_data.menu2d.choice_panel_y, height = l_1_0._root_panel:h() - tweak_data.menu2d.choice_panel_y}
+	l_1_0._dummy_panel = l_1_4
+	l_1_4 = l_1_0._root_panel
+	l_1_4, l_1_5 = l_1_4:panel, l_1_4
+	l_1_4, l_1_6 = l_1_4(l_1_5, l_1_6), {width = l_1_0._full_screen_panel:width(), layer = 1, halign = "right", x = 0, y = l_1_0._page_y}
+	l_1_0._choice_panel = l_1_4
+	l_1_4 = l_1_0._root_panel
+	l_1_4, l_1_5 = l_1_4:text, l_1_4
+	l_1_4, l_1_6 = l_1_4(l_1_5, l_1_6), {text = l_1_0._page:text(), font = "credits_merged", color = tweak_data.menu2d.normal_menu.page_name_color:with_alpha(0), halign = "top", valign = "top", align = "center", height = 60, x = 0, y = l_1_0._page_y, layer = l_1_0._layer_text}
+	l_1_0._page_name = l_1_4
+	l_1_4 = l_1_0._page_name
+	l_1_4, l_1_5 = l_1_4:text_rect, l_1_4
+	l_1_4 = l_1_4(l_1_5)
+	local l_1_7 = nil
+	l_1_0._page_center_x = l_1_0._root_panel:width() * 0.5 - l_1_6 * 0.5
+	l_1_0._page_name:set_x(l_1_0._page_center_x)
+	l_1_0._page_name:set_width(R10_PC98)
+	l_1_0._slots = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_1_11, l_1_12 = ipairs, l_1_0._page:choices()
+	l_1_11 = l_1_11(l_1_12, R10_PC98)
+	for i_0,i_1 in l_1_11 do
+		l_1_0:_set_choice(l_1_9, l_1_10)
+	end
+	do
+		if #l_1_0._page:choices() > 0 then
+			local l_1_13, l_1_18, l_1_19 = l_1_0._slots[1]
+			l_1_0._choice_panel:set_h(l_1_0._slots[#l_1_0._slots]:bottom_y() - l_1_0._slots[1]:y())
+			if l_1_0._dummy_panel:h() < l_1_0._slots[#l_1_0._slots]:bottom_y() then
+				do return end
+			end
+			l_1_0:set_selection(1, true)
+			for i_0,l_1_13 in pairs(l_1_0._slots) do
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				do
+					local l_1_14, l_1_15, l_1_16, l_1_17 = nil
+					 -- DECOMPILER ERROR: Overwrote pending register.
+
+					 -- DECOMPILER ERROR: Overwrote pending register.
+
+					 -- DECOMPILER ERROR: Overwrote pending register.
+
+					l_1_16(l_1_17, "center")
+			end
+			if 0 < l_1_14 then
+				end
+			end
+			 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+		end
+		for i_0,i_1 in pairs(l_1_0._slots) do
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_1_20:text():set_w(l_1_14)
+			l_1_20:text():set_x(l_1_18:width() * 0.5 - l_1_14 * 0.5)
+		end
+		if l_1_0._slots[1] then
+			l_1_0._next_start_y = l_1_0._page_name:y() - l_1_0._page_name:height() + l_1_0._slots[1]:height()
+		end
+		l_1_0._choice_panel:set_y(l_1_0._page_y + l_1_0._page_name:height())
+		if l_1_3 then
+			l_1_0:start_transition_forward_in()
+		elseif l_1_3 ~= "reset" then
+			l_1_0:start_transition_backward_in()
+			 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+		end
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 188 
+end
+
+

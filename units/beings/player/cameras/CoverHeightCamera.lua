@@ -1,57 +1,51 @@
 require("shared/camera/SharedCamera")
 require("shared/Interpolator")
-CoverHeightCamera = CoverHeightCamera or class(SharedCamera)
-function CoverHeightCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0.interpolation_speed = 4
-	A0_0._target_fov = Interpolator:new(67, 4)
+if not CoverHeightCamera then
+	CoverHeightCamera = class(SharedCamera)
 end
-function CoverHeightCamera.activate(A0_2)
-	if not A0_2._target_offset then
-		A0_2._target_offset = Interpolator:new(0, A0_2.interpolation_speed)
+CoverHeightCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0.interpolation_speed = 4
+	l_1_0._target_fov = Interpolator:new(67, 4)
+end
+
+CoverHeightCamera.activate = function(l_2_0)
+	if not l_2_0._target_offset then
+		l_2_0._target_offset = Interpolator:new(0, l_2_0.interpolation_speed)
 	end
-	A0_2._player_data = A0_2._root_unit:player_data()
-	A0_2:switch_to_normal()
+	l_2_0._player_data = l_2_0._root_unit:player_data()
+	l_2_0:switch_to_normal()
 end
-function CoverHeightCamera.update(A0_3, A1_4, A2_5, A3_6)
-	local L4_7, L5_8, L6_9
-	L4_7 = SharedCamera
-	L4_7 = L4_7.update
-	L5_8 = A0_3
-	L6_9 = A1_4
-	L4_7(L5_8, L6_9, A2_5, A3_6)
-	L4_7 = A0_3._player_data
-	L5_8 = L4_7.in_cover
-	L5_8 = L5_8 or L4_7.entering_cover
-	if L5_8 then
-		L6_9 = A0_3.switch_to_low_cover
-		L6_9(A0_3)
+
+CoverHeightCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_4 = l_3_0._player_data
+	if not l_3_4.in_cover then
+		local l_3_5, l_3_6, l_3_7, l_3_8, l_3_9, l_3_10, l_3_11 = l_3_4.entering_cover
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_3_5 then
+		l_3_0:switch_to_low_cover()
 	else
-		L6_9 = A0_3.switch_to_normal
-		L6_9(A0_3)
+		l_3_0:switch_to_normal()
 	end
-	L6_9 = A0_3._target_fov
-	L6_9 = L6_9.update
-	L6_9(L6_9, A3_6)
-	L6_9 = A0_3._target_fov
-	L6_9 = L6_9.value
-	L6_9 = L6_9(L6_9)
-	A0_3.fov = L6_9
-	L6_9 = A0_3._target_offset
-	L6_9 = L6_9.update
-	L6_9(L6_9, A3_6)
-	L6_9 = A0_3._target_offset
-	L6_9 = L6_9.set_speed
-	L6_9(L6_9, 4)
-	L6_9 = Vector3
-	L6_9 = L6_9(0, 0, A0_3._target_offset:value())
-	A0_3._unit:set_local_position(L6_9)
+	l_3_0._target_fov:update(l_3_3)
+	l_3_0.fov = l_3_0._target_fov:value()
+	l_3_0._target_offset:update(l_3_3)
+	l_3_0._target_offset:set_speed(4)
+	local l_3_12 = nil
+	l_3_0._unit:set_local_position(Vector3(0, 0, l_3_0._target_offset:value()))
 end
-function CoverHeightCamera.switch_to_low_cover(A0_10)
-	A0_10._target_offset:set_target(A0_10.offset)
-	A0_10._target_fov:set_target(60)
+
+CoverHeightCamera.switch_to_low_cover = function(l_4_0)
+	l_4_0._target_offset:set_target(l_4_0.offset)
+	l_4_0._target_fov:set_target(60)
 end
-function CoverHeightCamera.switch_to_normal(A0_11)
-	A0_11._target_offset:set_target(A0_11.normal_offset)
-	A0_11._target_fov:set_target(67)
+
+CoverHeightCamera.switch_to_normal = function(l_5_0)
+	l_5_0._target_offset:set_target(l_5_0.normal_offset)
+	l_5_0._target_fov:set_target(67)
 end
+
+

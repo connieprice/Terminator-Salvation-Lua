@@ -3,55 +3,65 @@ require("units/beings/machines/walker/states/WalkerReachingForTarget")
 require("units/beings/machines/walker/states/WalkerRequestingStun")
 require("units/beings/machines/walker/states/WalkerStrikeOfDeath")
 require("units/beings/machines/states/StunState")
-WalkerOnGround = WalkerOnGround or class(WalkerState)
-function WalkerOnGround.init(A0_0)
-	WalkerState.init(A0_0)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
-	A0_0._input = A0_0._unit:input()
+if not WalkerOnGround then
+	WalkerOnGround = class(WalkerState)
 end
-function WalkerOnGround.update(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L5_6
-	L2_3 = A0_1._input
-	L3_4 = A0_1._base
-	L5_6 = L2_3
-	L4_5 = L2_3.special_kill_target
-	L4_5 = L4_5(L5_6)
-	if L4_5 then
-		L5_6 = L2_3.special_kill_id
-		L5_6 = L5_6(L2_3)
-		L3_4:special_kill(L5_6, L4_5, L2_3:special_kill_position(), L2_3:special_kill_rotation())
-		return
+WalkerOnGround.init = function(l_1_0)
+	WalkerState.init(l_1_0)
+	local l_1_1 = l_1_0._unit
+	l_1_0._enemy_data = l_1_1:enemy_data()
+	l_1_0._input = l_1_1:input()
+end
+
+WalkerOnGround.update = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0._input
+	local l_2_3 = l_2_0._base
+	local l_2_4 = l_2_2:special_kill_target()
+	if l_2_4 then
+		local l_2_5 = l_2_2:special_kill_id()
+		l_2_3:special_kill(l_2_5, l_2_4, l_2_2:special_kill_position(), l_2_2:special_kill_rotation())
+		return 
 	end
-	L5_6 = L2_3.strike_of_death_direction
-	L5_6 = L5_6(L2_3)
-	if L5_6 then
-		A0_1._unit:play_redirect(A0_1:_strike_of_death_setup(L5_6).redirect)
-		L3_4._strike_of_death_target, L3_4._strike_of_death_setup = L2_3:strike_of_death_target(), A0_1:_strike_of_death_setup(L5_6)
+	local l_2_6 = l_2_2:strike_of_death_direction()
+	if l_2_6 then
+		local l_2_7 = l_2_2:strike_of_death_target()
+		local l_2_8 = l_2_0:_strike_of_death_setup(l_2_6)
+		l_2_0._unit:play_redirect(l_2_8.redirect)
+		l_2_3._strike_of_death_setup = l_2_8
+		l_2_3._strike_of_death_target = l_2_7
 	end
 end
-function WalkerOnGround.transition(A0_7)
-	if A0_7._base:check_fully_damaged() then
-		return (A0_7._base:check_fully_damaged())
+
+WalkerOnGround.transition = function(l_3_0)
+	local l_3_1 = l_3_0._base:check_fully_damaged()
+	if l_3_1 then
+		return l_3_1
 	end
-	if A0_7._enemy_data.reaching_for_target or A0_7._enemy_data.reached_target then
-		assert(A0_7._base._special_kill_target)
-		assert(A0_7._base._special_kill_setup)
+	local l_3_2 = l_3_0._enemy_data
+	if l_3_2.reaching_for_target or l_3_2.reached_target then
+		assert(l_3_0._base._special_kill_target)
+		assert(l_3_0._base._special_kill_setup)
 		return WalkerReachingForTarget
-	elseif A0_7._enemy_data.stun_requested then
+	elseif l_3_2.stun_requested then
 		return WalkerRequestingStun
-	elseif A0_7._enemy_data.strike_of_death then
+	elseif l_3_2.strike_of_death then
 		return WalkerStrikeOfDeath
 	end
 end
-function WalkerOnGround._strike_of_death_setup(A0_8, A1_9)
-	local L2_10, L3_11, L4_12
-	L3_11 = A1_9
-	L2_10 = A1_9.to_polar_with_reference
-	L4_12 = A0_8._unit
-	L4_12 = L4_12.rotation
-	L4_12 = L4_12(L4_12)
-	L4_12 = L4_12.y
-	L4_12 = L4_12(L4_12)
-	L2_10 = L2_10(L3_11, L4_12, math.UP)
-	L3_11, L4_12 = nil, nil
-	for 
+
+WalkerOnGround._strike_of_death_setup = function(l_4_0, l_4_1)
+	local l_4_8, l_4_9, l_4_10, l_4_11, l_4_12 = nil
+	local l_4_2 = (l_4_1:to_polar_with_reference(l_4_0._unit:rotation():y(), math.UP))
+	local l_4_3, l_4_4 = nil, nil
+	for i_0,i_1 in pairs(WalkerBase._STRIKE_OF_DEATH_DIRECTIONS) do
+		if not l_4_3 or math.abs(i_0 - l_4_2.spin) < l_4_4 then
+			l_4_3 = i_1
+			l_4_4 = math.abs(i_0 - l_4_2.spin)
+		end
+	end
+	return l_4_3
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

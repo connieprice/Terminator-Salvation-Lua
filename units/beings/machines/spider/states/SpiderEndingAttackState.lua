@@ -1,21 +1,35 @@
 require("units/beings/machines/spider/states/SpiderState")
 require("units/beings/machines/spider/states/SpiderNormalState")
 require("units/beings/machines/spider/states/SpiderStunState")
-SpiderEndingAttackState = SpiderEndingAttackState or class(SpiderState)
-function SpiderEndingAttackState.init(A0_0, A1_1)
-	SpiderState.init(A0_0, A1_1)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
+if not SpiderEndingAttackState then
+	SpiderEndingAttackState = class(SpiderState)
 end
-function SpiderEndingAttackState.update(A0_2, A1_3)
-	if A0_2._base:check_fully_damaged() then
-		return (A0_2._base:check_fully_damaged())
+SpiderEndingAttackState.init = function(l_1_0, l_1_1)
+	SpiderState.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_0._unit:enemy_data()
+end
+
+SpiderEndingAttackState.update = function(l_2_0, l_2_1)
+	local l_2_6 = nil
+	local l_2_2 = l_2_0._base:check_fully_damaged()
+	if l_2_2 then
+		return l_2_2
 	end
-	if not A0_2._enemy_data.ending_attack then
-		return SpiderNormalState:new(A0_2._unit)
-	elseif A0_2._enemy_data.is_stunned then
-		return SpiderStunState:new(A0_2._unit, "normal")
+	if not l_2_0._enemy_data.ending_attack then
+		local l_2_3, l_2_4 = SpiderNormalState:new, SpiderNormalState
+		local l_2_5 = l_2_0._unit
+		return l_2_3(l_2_4, l_2_5)
+	else
+		if l_2_0._enemy_data.is_stunned then
+			local l_2_7, l_2_8 = SpiderStunState:new, SpiderStunState
+			local l_2_9 = l_2_0._unit
+			local l_2_10 = "normal"
+			return l_2_7(l_2_8, l_2_9, l_2_10)
+		end
 	end
-	if A0_2._enemy_data.stun_requested then
-		A0_2:_request_stun()
+	if l_2_0._enemy_data.stun_requested then
+		l_2_0:_request_stun()
 	end
 end
+
+

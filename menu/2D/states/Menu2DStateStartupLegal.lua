@@ -1,14 +1,16 @@
 require("menu/2D/states/Menu2DState")
-Menu2DStateStartupLegal = Menu2DStateStartupLegal or class(Menu2DState)
-function Menu2DStateStartupLegal.init(A0_0)
-	Menu2DState.init(A0_0, Menu2DStateStartupLegal)
-	A0_0._state_data.menu.components.island = Menu2DIsland:new()
-	Menu2DIsland:new():change_page("legal_page")
+if not Menu2DStateStartupLegal then
+	Menu2DStateStartupLegal = class(Menu2DState)
 end
-function Menu2DStateStartupLegal.exit(A0_1)
-	local L1_2
-	L1_2 = A0_1._state_data
-	L1_2 = L1_2.menu
-	L1_2 = L1_2.components
-	L1_2.island = nil
+Menu2DStateStartupLegal.init = function(l_1_0)
+	Menu2DState.init(l_1_0, Menu2DStateStartupLegal)
+	local l_1_1 = Menu2DIsland:new()
+	l_1_0._state_data.menu.components.island = l_1_1
+	l_1_1:change_page("legal_page")
 end
+
+Menu2DStateStartupLegal.exit = function(l_2_0)
+	l_2_0._state_data.menu.components.island = nil
+end
+
+

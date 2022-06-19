@@ -1,30 +1,33 @@
 require("setups/DebugSetup")
-RailDriveTestBase = RailDriveTestBase or class()
-function RailDriveTestBase.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._unit:set_driving("script")
-	A0_0._turn = 0
-	A0_0._unit:set_gravity(Vector3(0, 0, -2000))
+if not RailDriveTestBase then
+	RailDriveTestBase = class()
 end
-function RailDriveTestBase.update(A0_2, A1_3, A2_4, A3_5)
-	local L4_6, L5_7, L6_8, L7_9
-	L5_7 = A1_3
-	L4_6 = A1_3.input
-	L4_6 = L4_6(L5_7)
-	L6_8 = L4_6
-	L5_7 = L4_6.eye_target_position
-	L5_7 = L5_7(L6_8)
-	L6_8, L7_9 = nil, nil
-	L7_9 = L4_6:aim_target_position()
-	A0_2:_update_movement(A1_3, A3_5)
-	A1_3:camera_data().eye_target_position = L5_7
+RailDriveTestBase.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._unit:set_driving("script")
+	l_1_0._turn = 0
+	l_1_0._unit:set_gravity(Vector3(0, 0, -2000))
 end
-function RailDriveTestBase._update_movement(A0_10, A1_11, A2_12)
-	if A1_11:input():movement().z > 0 then
-		A1_11:vehicle():brake(A1_11:input():movement().z)
+
+RailDriveTestBase.update = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	local l_2_4 = l_2_1:input()
+	local l_2_5 = (l_2_4:eye_target_position())
+	local l_2_6, l_2_7 = nil, nil
+	l_2_7 = l_2_4:aim_target_position()
+	l_2_0:_update_movement(l_2_1, l_2_3)
+	l_2_1:camera_data().eye_target_position = l_2_5
+end
+
+RailDriveTestBase._update_movement = function(l_3_0, l_3_1, l_3_2)
+	local l_3_3 = l_3_1:input()
+	local l_3_4 = l_3_3:movement()
+	if l_3_4.z > 0 then
+		l_3_1:vehicle():brake(l_3_4.z)
 	else
-		A1_11:vehicle():brake(0)
+		l_3_1:vehicle():brake(0)
 	end
-	A1_11:vehicle():gas(A1_11:input():movement().x)
-	A1_11:vehicle():turn(A1_11:input():movement().y)
+	l_3_1:vehicle():gas(l_3_4.x)
+	l_3_1:vehicle():turn(l_3_4.y)
 end
+
+

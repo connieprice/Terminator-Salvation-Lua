@@ -7,8 +7,10 @@ require("ai/common/CommonAiMovement")
 require("ai/common/CommonAiCombat")
 require("ai/common/CommonAiFindCover")
 require("ai/common/CommonAiSelfDestroy")
-CommonAiSetup = CommonAiSetup or class()
-function CommonAiSetup.init(A0_0)
+if not CommonAiSetup then
+	CommonAiSetup = class()
+end
+CommonAiSetup.init = function(l_1_0)
 	managers.aihivebrain:register_logicfunctions(CommonAiLod)
 	managers.aihivebrain:register_logicfunctions(CommonAiSensoryEventsHandler)
 	managers.aihivebrain:register_logicfunctions(CommonAiThreatTracking)
@@ -19,3 +21,5 @@ function CommonAiSetup.init(A0_0)
 	managers.aihivebrain:register_logicfunctions(CommonAiCombat)
 	managers.aihivebrain:register_logicfunctions(CommonAiSelfDestroy)
 end
+
+

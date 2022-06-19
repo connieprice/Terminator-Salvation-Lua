@@ -1,36 +1,33 @@
 require("units/BodyDamage")
-DestroyableBodyDamage = DestroyableBodyDamage or class(BodyDamage)
-function DestroyableBodyDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7)
-	BodyDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, "steel")
-	A0_0._health = A5_5
-	A0_0._give_unit_damage_while_destroyed = A6_6
-	A0_0._destroyed_callback = A7_7
-	A0_0._local_damage = 0
-	A0_0._destroyed = false
+if not DestroyableBodyDamage then
+	DestroyableBodyDamage = class(BodyDamage)
 end
-function DestroyableBodyDamage.faith_damage(A0_8, A1_9, A2_10, A3_11, A4_12, A5_13)
-	local L6_14, L7_15
-	L6_14 = A0_8._destroyed
-	if L6_14 then
-		L6_14 = A0_8._give_unit_damage_while_destroyed
-		if not L6_14 then
-			L6_14 = 0
-			return L6_14
-		end
-	end
-	L6_14 = BodyDamage
-	L6_14 = L6_14.faith_damage
-	L7_15 = A0_8
-	L7_15 = L6_14(L7_15, A1_9, A2_10, A3_11, A4_12, A5_13)
-	A0_8._local_damage = A0_8._local_damage + L7_15
-	if not A0_8._destroyed and A0_8._local_damage >= A0_8._health then
-		A0_8._destroyed = true
-		A0_8:destroyed()
-	end
-	return L6_14, L7_15
+DestroyableBodyDamage.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7)
+	BodyDamage.init(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, "steel")
+	l_1_0._health = l_1_5
+	l_1_0._give_unit_damage_while_destroyed = l_1_6
+	l_1_0._destroyed_callback = l_1_7
+	l_1_0._local_damage = 0
+	l_1_0._destroyed = false
 end
-function DestroyableBodyDamage.destroyed(A0_16)
-	if A0_16._destroyed_callback then
-		A0_16._destroyed_callback()
+
+DestroyableBodyDamage.faith_damage = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5)
+	if l_2_0._destroyed and not l_2_0._give_unit_damage_while_destroyed then
+		return 0
+	end
+	local l_2_6, l_2_7 = BodyDamage.faith_damage(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5)
+	l_2_0._local_damage = l_2_0._local_damage + l_2_7
+	if not l_2_0._destroyed and l_2_0._health <= l_2_0._local_damage then
+		l_2_0._destroyed = true
+		l_2_0:destroyed()
+	end
+	return l_2_6, l_2_7
+end
+
+DestroyableBodyDamage.destroyed = function(l_3_0)
+	if l_3_0._destroyed_callback then
+		l_3_0._destroyed_callback()
 	end
 end
+
+

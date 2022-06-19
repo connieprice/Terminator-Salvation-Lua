@@ -1,5 +1,7 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreSubtitleCutsceneKey = CoreSubtitleCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreSubtitleCutsceneKey then
+	CoreSubtitleCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreSubtitleCutsceneKey.ELEMENT_NAME = "subtitle"
 CoreSubtitleCutsceneKey.NAME = "Subtitle"
 CoreSubtitleCutsceneKey:register_serialized_attribute("category", "")
@@ -12,130 +14,140 @@ CoreSubtitleCutsceneKey:attribute_affects("string_id", "localized_text")
 CoreSubtitleCutsceneKey.control_for_category = CoreCutsceneKeyBase.standard_combo_box_control
 CoreSubtitleCutsceneKey.control_for_string_id = CoreCutsceneKeyBase.standard_combo_box_control
 CoreSubtitleCutsceneKey.control_for_divider = CoreCutsceneKeyBase.standard_divider_control
-function CoreSubtitleCutsceneKey.__tostring(A0_0)
-	return "Display subtitle \"" .. A0_0:string_id() .. "\"."
+CoreSubtitleCutsceneKey.__tostring = function(l_1_0)
+	return "Display subtitle \"" .. l_1_0:string_id() .. "\"."
 end
-function CoreSubtitleCutsceneKey.can_evaluate_with_player(A0_1, A1_2)
-	local L2_3
-	L2_3 = true
-	return L2_3
+
+CoreSubtitleCutsceneKey.can_evaluate_with_player = function(l_2_0, l_2_1)
+	return true
 end
-function CoreSubtitleCutsceneKey.unload(A0_4, A1_5)
+
+CoreSubtitleCutsceneKey.unload = function(l_3_0, l_3_1)
 	managers.subtitle:clear_subtitle()
 end
-function CoreSubtitleCutsceneKey.play(A0_6, A1_7, A2_8, A3_9)
-	if A2_8 then
+
+CoreSubtitleCutsceneKey.play = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	if l_4_2 then
 		managers.subtitle:clear_subtitle()
-	elseif not A3_9 then
-		managers.subtitle:show_subtitle(A0_6:string_id(), A0_6:duration())
+	elseif not l_4_3 then
+		managers.subtitle:show_subtitle(l_4_0:string_id(), l_4_0:duration())
 	end
 end
-function CoreSubtitleCutsceneKey.is_valid_category(A0_10, A1_11)
-	local L2_12
-	L2_12 = A1_11 and A1_11 ~= ""
-	return L2_12
+
+CoreSubtitleCutsceneKey.is_valid_category = function(l_5_0, l_5_1)
+	do
+		return not l_5_1 or l_5_1 ~= ""
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSubtitleCutsceneKey.is_valid_string_id(A0_13, A1_14)
-	local L2_15
-	L2_15 = A1_14 and A1_14 ~= ""
-	return L2_15
+
+CoreSubtitleCutsceneKey.is_valid_string_id = function(l_6_0, l_6_1)
+	do
+		return not l_6_1 or l_6_1 ~= ""
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSubtitleCutsceneKey.is_valid_duration(A0_16, A1_17)
-	local L2_18
-	L2_18 = A1_17 and A1_17 > 0
-	return L2_18
+
+CoreSubtitleCutsceneKey.is_valid_duration = function(l_7_0, l_7_1)
+	do
+		return not l_7_1 or l_7_1 > 0
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSubtitleCutsceneKey.control_for_localized_text(A0_19, A1_20)
-	EWS:TextCtrl(A1_20, "", "", "NO_BORDER,TE_RICH,TE_MULTILINE,TE_READONLY"):set_min_size(EWS:TextCtrl(A1_20, "", "", "NO_BORDER,TE_RICH,TE_MULTILINE,TE_READONLY"):get_min_size():with_y(160))
-	EWS:TextCtrl(A1_20, "", "", "NO_BORDER,TE_RICH,TE_MULTILINE,TE_READONLY"):set_background_colour(A1_20:background_colour():unpack())
-	return (EWS:TextCtrl(A1_20, "", "", "NO_BORDER,TE_RICH,TE_MULTILINE,TE_READONLY"))
+
+CoreSubtitleCutsceneKey.control_for_localized_text = function(l_8_0, l_8_1)
+	local l_8_2 = EWS:TextCtrl(l_8_1, "", "", "NO_BORDER,TE_RICH,TE_MULTILINE,TE_READONLY")
+	l_8_2:set_min_size(l_8_2:get_min_size():with_y(160))
+	l_8_2:set_background_colour(l_8_1:background_colour():unpack())
+	return l_8_2
 end
-function CoreSubtitleCutsceneKey.refresh_control_for_category(A0_21, A1_22)
-	local L2_23, L3_24, L4_25, L5_26, L6_27, L7_28, L8_29
-	L3_24 = A1_22
-	L2_23 = A1_22.freeze
-	L2_23(L3_24)
-	L3_24 = A1_22
-	L2_23 = A1_22.clear
-	L2_23(L3_24)
-	L2_23 = managers
-	L2_23 = L2_23.localization
-	L3_24 = L2_23
-	L2_23 = L2_23.xml_names
-	L2_23 = L2_23(L3_24)
-	L3_24 = table
-	L3_24 = L3_24.empty
-	L3_24 = L3_24(L4_25)
-	if L3_24 then
-		L3_24 = A1_22.set_enabled
-		L3_24(L4_25, L5_26)
+
+CoreSubtitleCutsceneKey.refresh_control_for_category = function(l_9_0, l_9_1)
+	local l_9_7, l_9_8, l_9_9, l_9_10, l_9_11, l_9_12, l_9_13, l_9_14 = nil
+	l_9_1:freeze()
+	l_9_1:clear()
+	local l_9_2 = managers.localization:xml_names()
+	if table.empty(l_9_2) then
+		l_9_1:set_enabled(false)
 	else
-		L3_24 = A1_22.set_enabled
-		L3_24(L4_25, L5_26)
-		L3_24 = A0_21.category
-		L3_24 = L3_24(L4_25)
-		for L7_28, L8_29 in L4_25(L5_26) do
-			A1_22:append(L8_29)
-			if L8_29 == L3_24 then
-				A1_22:set_value(L3_24)
+		l_9_1:set_enabled(true)
+		local l_9_3 = l_9_0:category()
+		for i_0,i_1 in ipairs(l_9_2) do
+			l_9_1:append(i_1)
+			if i_1 == l_9_3 then
+				l_9_1:set_value(l_9_3)
 			end
 		end
 	end
-	L3_24 = A1_22.thaw
-	L3_24(L4_25)
+	l_9_1:thaw()
 end
-function CoreSubtitleCutsceneKey.refresh_control_for_string_id(A0_30, A1_31)
-	local L2_32, L3_33, L4_34, L5_35, L6_36, L7_37, L8_38
-	L3_33 = A1_31
-	L2_32 = A1_31.freeze
-	L2_32(L3_33)
-	L3_33 = A1_31
-	L2_32 = A1_31.clear
-	L2_32(L3_33)
-	L3_33 = A0_30
-	L2_32 = A0_30.category
-	L2_32 = L2_32(L3_33)
-	if L2_32 ~= "" then
-		L2_32 = managers
-		L2_32 = L2_32.localization
-		L3_33 = L2_32
-		L2_32 = L2_32.string_map
-		L8_38 = L4_34(L5_35)
-		L2_32 = L2_32(L3_33, L4_34, L5_35, L6_36, L7_37, L8_38, L4_34(L5_35))
-	else
-		L2_32 = L2_32 or {}
+
+CoreSubtitleCutsceneKey.refresh_control_for_string_id = function(l_10_0, l_10_1)
+	l_10_1:freeze()
+	l_10_1:clear()
+	if l_10_0:category() ~= "" then
+		local l_10_11, l_10_12, l_10_13, l_10_14, l_10_15, l_10_16, l_10_17, l_10_18 = managers.localization:string_map, managers.localization, l_10_0:category(), .end
+		l_10_11 = l_10_11(l_10_12, l_10_13, l_10_14, l_10_15, l_10_16, l_10_17, l_10_18)
+	if not l_10_11 then
+		end
 	end
-	L3_33 = table
-	L3_33 = L3_33.empty
-	L3_33 = L3_33(L4_34)
-	if L3_33 then
-		L3_33 = A1_31.set_enabled
-		L3_33(L4_34, L5_35)
+	do
+		local l_10_2, l_10_3, l_10_4, l_10_5, l_10_6, l_10_19 = nil
+	end
+	l_10_12 = table
+	l_10_12 = l_10_12.empty
+	l_10_13, l_10_11 = l_10_11, {}
+	l_10_12 = l_10_12(l_10_13)
+	if l_10_12 then
+		l_10_12, l_10_13 = l_10_1:set_enabled, l_10_1
+		l_10_14 = false
+		l_10_12(l_10_13, l_10_14)
 	else
-		L3_33 = A1_31.set_enabled
-		L3_33(L4_34, L5_35)
-		L3_33 = A0_30.string_id
-		L3_33 = L3_33(L4_34)
-		for L7_37, L8_38 in L4_34(L5_35) do
-			A1_31:append(L8_38)
-			if L8_38 == L3_33 then
-				A1_31:set_value(L3_33)
+		l_10_12, l_10_13 = l_10_1:set_enabled, l_10_1
+		l_10_14 = true
+		l_10_12(l_10_13, l_10_14)
+		l_10_12, l_10_13 = l_10_0:string_id, l_10_0
+		l_10_12 = l_10_12(l_10_13)
+		local l_10_7 = nil
+		l_10_13 = ipairs
+		l_10_14 = l_10_11
+		l_10_13 = l_10_13(l_10_14)
+		for l_10_16,l_10_17 in l_10_13 do
+			local l_10_8, l_10_9, l_10_10 = nil
+			l_10_18, l_10_7 = l_10_1:append, l_10_1
+			l_10_8 = l_10_17
+			l_10_18(l_10_7, l_10_8)
+			if l_10_17 == l_10_12 then
+				l_10_18, l_10_7 = l_10_1:set_value, l_10_1
+				l_10_8 = l_10_12
+				l_10_18(l_10_7, l_10_8)
 			end
 		end
 	end
-	L3_33 = A1_31.thaw
-	L3_33(L4_34)
+	l_10_12(l_10_1)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSubtitleCutsceneKey.refresh_control_for_localized_text(A0_39, A1_40)
-	if A0_39:is_valid_category(A0_39:category()) and A0_39:is_valid_string_id(A0_39:string_id()) then
-		A1_40:set_value(managers.localization:text(A0_39:string_id()))
+
+CoreSubtitleCutsceneKey.refresh_control_for_localized_text = function(l_11_0, l_11_1)
+	if l_11_0:is_valid_category(l_11_0:category()) and l_11_0:is_valid_string_id(l_11_0:string_id()) then
+		l_11_1:set_value(managers.localization:text(l_11_0:string_id()))
 	else
-		A1_40:set_value("<No String Id>")
+		l_11_1:set_value("<No String Id>")
 	end
 end
-function CoreSubtitleCutsceneKey.validate_control_for_attribute(A0_41, A1_42)
-	if A1_42 ~= "localized_text" then
-		return A0_41.super.validate_control_for_attribute(A0_41, A1_42)
+
+CoreSubtitleCutsceneKey.validate_control_for_attribute = function(l_12_0, l_12_1)
+	if l_12_1 ~= "localized_text" then
+		local l_12_2 = l_12_0.super.validate_control_for_attribute
+		local l_12_3 = l_12_0
+		local l_12_4 = l_12_1
+		return l_12_2(l_12_3, l_12_4)
 	end
 	return true
 end
+
+

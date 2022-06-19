@@ -1,93 +1,74 @@
 require("menu/ingame/IntroCreditsText")
-IntroCredits = IntroCredits or class()
-function IntroCredits.init(A0_0, A1_1)
-	assert(A1_1)
-	A0_0._parent_panel = A1_1
-	A0_0._panel = A1_1:panel({layer = 99})
-	A0_0._node = File:new_parse_xml("data/gui/intro_credits.xml")
-	A0_0._index = 0
-	A0_0._total_time = 0
-	A0_0._is_done = false
-	A0_0:next_node()
+if not IntroCredits then
+	IntroCredits = class()
 end
-function IntroCredits.destroy(A0_2)
-	A0_2._parent_panel:remove(A0_2._panel)
-	A0_2._panel = nil
+IntroCredits.init = function(l_1_0, l_1_1)
+	assert(l_1_1)
+	l_1_0._parent_panel = l_1_1
+	local l_1_2, l_1_3 = l_1_1:panel, l_1_1
+	local l_1_4 = {}
+	l_1_4.layer = 99
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._panel = l_1_2
+	l_1_2 = File
+	l_1_2, l_1_3 = l_1_2:new_parse_xml, l_1_2
+	l_1_4 = "data/gui/intro_credits.xml"
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._node = l_1_2
+	l_1_0._index = 0
+	l_1_0._total_time = 0
+	l_1_0._is_done = false
+	l_1_2, l_1_3 = l_1_0:next_node, l_1_0
+	l_1_2(l_1_3)
 end
-function IntroCredits.time_to_seconds(A0_3, A1_4)
-	return tonumber(string.sub(A1_4, 1, 2)) * 60 + tonumber(string.sub(A1_4, 4, 5))
+
+IntroCredits.destroy = function(l_2_0)
+	l_2_0._parent_panel:remove(l_2_0._panel)
+	l_2_0._panel = nil
 end
-function IntroCredits.next_node(A0_5)
-	local L1_6, L2_7, L3_8, L4_9, L5_10, L6_11
-	L1_6 = A0_5._index
-	L2_7 = A0_5._node
-	L3_8 = L2_7
-	L2_7 = L2_7.num_children
-	L2_7 = L2_7(L3_8)
-	if L1_6 == L2_7 then
-		L1_6 = true
-		return L1_6
+
+IntroCredits.time_to_seconds = function(l_3_0, l_3_1)
+	return tonumber(string.sub(l_3_1, 1, 2)) * 60 + tonumber(string.sub(l_3_1, 4, 5))
+	 -- WARNING: undefined locals caused missing assignments!
+end
+
+IntroCredits.next_node = function(l_4_0)
+	if l_4_0._index == l_4_0._node:num_children() then
+		return true
 	end
-	L1_6 = A0_5._node
-	L2_7 = L1_6
-	L1_6 = L1_6.child
-	L3_8 = A0_5._index
-	L1_6 = L1_6(L2_7, L3_8)
-	L2_7 = A0_5._index
-	L2_7 = L2_7 + 1
-	A0_5._index = L2_7
-	L3_8 = A0_5
-	L2_7 = A0_5.time_to_seconds
-	L5_10 = L1_6
-	L4_9 = L1_6.parameter
-	L6_11 = "time"
-	L6_11 = L4_9(L5_10, L6_11)
-	L2_7 = L2_7(L3_8, L4_9, L5_10, L6_11, L4_9(L5_10, L6_11))
-	L4_9 = L1_6
-	L3_8 = L1_6.parameter
-	L5_10 = "head"
-	L3_8 = L3_8(L4_9, L5_10)
-	L5_10 = L1_6
-	L4_9 = L1_6.parameter
-	L6_11 = "line"
-	L4_9 = L4_9(L5_10, L6_11)
-	L5_10 = A0_5._panel
-	L6_11 = L5_10
-	L5_10 = L5_10.clear
-	L5_10(L6_11)
-	L5_10 = A0_5._panel
-	L6_11 = L5_10
-	L5_10 = L5_10.height
-	L5_10 = L5_10(L6_11)
-	L6_11 = tweak_data
-	L6_11 = L6_11.hud
-	L6_11 = L6_11.intro_credits
-	L6_11 = L6_11.VERTICAL_POSITION
-	L5_10 = L5_10 - L6_11
-	L6_11 = tweak_data
-	L6_11 = L6_11.hud
-	L6_11 = L6_11.intro_credits
-	L6_11 = L6_11.SHOW_TIME
-	A0_5._credit = IntroCreditsText:new(A0_5._panel, L2_7, L3_8, L4_9, L6_11, L5_10)
+	local l_4_1 = l_4_0._node:child(l_4_0._index)
+	l_4_0._index = l_4_0._index + 1
+	local l_4_2 = l_4_0:time_to_seconds(l_4_1:parameter("time"))
+	local l_4_3 = l_4_1:parameter("head")
+	local l_4_4 = l_4_1:parameter("line")
+	l_4_0._panel:clear()
+	local l_4_5 = l_4_0._panel:height() - tweak_data.hud.intro_credits.VERTICAL_POSITION
+	local l_4_6 = tweak_data.hud.intro_credits.SHOW_TIME
+	l_4_0._credit = IntroCreditsText:new(l_4_0._panel, l_4_2, l_4_3, l_4_4, l_4_6, l_4_5)
 	return false
 end
-function IntroCredits.update(A0_12, A1_13)
-	if A0_12._is_done then
-		return A0_12._is_done
+
+IntroCredits.update = function(l_5_0, l_5_1)
+	if l_5_0._is_done then
+		return l_5_0._is_done
 	end
-	A0_12._total_time = A0_12._total_time + A1_13
-	if A0_12._credit:is_active(A0_12._total_time) then
-		if A0_12._credit:update(A1_13) then
-			A0_12._credit = nil
-			A0_12._is_done = A0_12:next_node()
+	l_5_0._total_time = l_5_0._total_time + l_5_1
+	do
+		if l_5_0._credit:is_active(l_5_0._total_time) then
+			local l_5_2 = l_5_0._credit:update(l_5_1)
+			if l_5_2 then
+				l_5_0._credit = nil
+				l_5_0._is_done = l_5_0:next_node()
+			end
 		else
-			return
+			return 
 		end
 	end
-	return A0_12._is_done
+	return l_5_0._is_done
 end
-function IntroCredits.is_done(A0_14)
-	local L1_15
-	L1_15 = A0_14._is_done
-	return L1_15
+
+IntroCredits.is_done = function(l_6_0)
+	return l_6_0._is_done
 end
+
+

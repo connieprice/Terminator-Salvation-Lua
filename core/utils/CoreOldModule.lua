@@ -1,25 +1,46 @@
 core:module("CoreOldModule")
-function base_is_required(A0_0)
-	return A0_0 == "RELEASE" or A0_0 == "NETWORK" and Network:multiplayer() or A0_0 == "DEBUG" and (Application:ews_enabled() or Application:editor() or Application:debug_build())
+base_is_required = function(l_1_0)
+	 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+	if l_1_0 ~= "RELEASE" and (l_1_0 ~= "NETWORK" or not Network:multiplayer()) and l_1_0 == "DEBUG" and not Application:ews_enabled() and not Application:editor() then
+		local l_1_1 = Application:debug_build()
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_1_1
 end
-function base_require(A0_1, A1_2, A2_3)
-	if base_is_required(A2_3) then
-		if A1_2 then
-			require(A0_1 .. "_" .. A1_2)
-		else
-			require(A0_1)
+
+base_require = function(l_2_0, l_2_1, l_2_2)
+	if base_is_required(l_2_2) then
+		if l_2_1 then
+			require(l_2_0 .. "_" .. l_2_1)
 		end
+	else
+		require(l_2_0)
 	end
 end
-function get_core_or_local(A0_4)
-	return rawget(_G, A0_4) or rawget(_G, "Core" .. A0_4)
-end
-function core_or_local(A0_5, ...)
-	return get_core_or_local(A0_5) and get_core_or_local(A0_5):new(...)
-end
-function core_prepare_full_load(A0_7, A1_8)
-	if A1_8 and A1_8.prepare_full_load then
-		A1_8:prepare_full_load(A0_7)
+
+get_core_or_local = function(l_3_0)
+	if not rawget(_G, l_3_0) then
+		return rawget(_G, "Core" .. l_3_0)
 	end
-	return A0_7
 end
+
+core_or_local = function(l_4_0, ...)
+	do
+		if get_core_or_local(l_4_0) then
+			return get_core_or_local(l_4_0):new(...)
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+core_prepare_full_load = function(l_5_0, l_5_1)
+	if l_5_1 and l_5_1.prepare_full_load then
+		l_5_1:prepare_full_load(l_5_0)
+	end
+	return l_5_0
+end
+
+

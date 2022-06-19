@@ -1,27 +1,26 @@
 require("menu/2D/states/Menu2DState")
-Menu2DStateStartSync = Menu2DStateStartSync or class(Menu2DState)
-function Menu2DStateStartSync.init(A0_0, A1_1, A2_2)
-	Menu2DState.init(A0_0, A2_2)
-	A0_0._state_data.menu.components.island = nil
-	A0_0._state_data.menu.components.effects:fade_down(nil, 5)
-	A0_0._started = false
-	A0_0._sync_type = A1_1
+if not Menu2DStateStartSync then
+	Menu2DStateStartSync = class(Menu2DState)
 end
-function Menu2DStateStartSync.exit(A0_3)
-	local L1_4
-	L1_4 = A0_3._state_data
-	L1_4 = L1_4.menu
-	L1_4 = L1_4.sync_state
-	L1_4.sync_started = nil
+Menu2DStateStartSync.init = function(l_1_0, l_1_1, l_1_2)
+	Menu2DState.init(l_1_0, l_1_2)
+	l_1_0._state_data.menu.components.island = nil
+	l_1_0._state_data.menu.components.effects:fade_down(nil, 5)
+	l_1_0._started = false
+	l_1_0._sync_type = l_1_1
 end
-function Menu2DStateStartSync.update(A0_5)
-	local L1_6
-	L1_6 = A0_5._state_data
-	L1_6 = L1_6.menu
-	L1_6 = L1_6.components
-	if L1_6.effects:is_fade_down_done() and L1_6.page_flipper:page_change_completed() and not A0_5._started then
-		A0_5:_setup_sync_screen()
-		A0_5._state_data.menu.sync_state.sync_started = A0_5._sync_type
-		A0_5._started = true
+
+Menu2DStateStartSync.exit = function(l_2_0)
+	l_2_0._state_data.menu.sync_state.sync_started = nil
+end
+
+Menu2DStateStartSync.update = function(l_3_0)
+	local l_3_1 = l_3_0._state_data.menu.components
+	if l_3_1.effects:is_fade_down_done() and l_3_1.page_flipper:page_change_completed() and not l_3_0._started then
+		l_3_0:_setup_sync_screen()
+		l_3_0._state_data.menu.sync_state.sync_started = l_3_0._sync_type
+		l_3_0._started = true
 	end
 end
+
+

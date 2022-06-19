@@ -1,81 +1,108 @@
 require("projectile/magnetic_charge/states/MagneticChargeDeactivated")
 require("units/weapons/PlayerBaseWeapon")
-MagneticCharge = MagneticCharge or class(PlayerBaseWeapon)
-function MagneticCharge.init(A0_0, A1_1)
-	PlayerBaseWeapon.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._body = A0_0._unit:body(A0_0._body_name)
-	assert(A0_0._link_object_name)
-	A0_0._link_object = A0_0._unit:get_object(A0_0._link_object_name)
-	assert(A0_0._link_object)
-	A1_1:set_body_collision_callback(callback(A0_0, A0_0, "collision_callback"))
-	A0_0:_setup_link_object_relative_transform()
-	A0_0._activated = false
-	A0_0:_enter_state(MagneticChargeDeactivated:new(A0_0._unit))
+if not MagneticCharge then
+	MagneticCharge = class(PlayerBaseWeapon)
 end
-function MagneticCharge.enable(A0_2)
-	local L1_3
+MagneticCharge.init = function(l_1_0, l_1_1)
+	PlayerBaseWeapon.init(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._body = l_1_0._unit:body(l_1_0._body_name)
+	assert(l_1_0._link_object_name)
+	l_1_0._link_object = l_1_0._unit:get_object(l_1_0._link_object_name)
+	assert(l_1_0._link_object)
+	l_1_1:set_body_collision_callback(callback(l_1_0, l_1_0, "collision_callback"))
+	l_1_0:_setup_link_object_relative_transform()
+	l_1_0._activated = false
+	l_1_0:_enter_state(MagneticChargeDeactivated:new(l_1_0._unit))
 end
-function MagneticCharge._update_state(A0_4, A1_5)
-	local L2_6
-	L2_6 = A0_4._state
-	L2_6 = L2_6.update
-	if L2_6 then
-		L2_6 = A0_4._state
-		L2_6 = L2_6.update
-		L2_6 = L2_6(L2_6, A1_5)
-		if L2_6 then
-			A0_4:_enter_state(L2_6)
+
+MagneticCharge.enable = function(l_2_0)
+end
+
+MagneticCharge._update_state = function(l_3_0, l_3_1)
+	if l_3_0._state.update then
+		local l_3_2 = l_3_0._state:update(l_3_1)
+	if l_3_2 then
+		end
+		l_3_0:_enter_state(l_3_2)
+	end
+end
+
+MagneticCharge._enter_state = function(l_4_0, l_4_1)
+	l_4_0:_leave_state()
+	l_4_0._state = l_4_1
+	if l_4_0._state.enter then
+		l_4_0._state:enter()
+	end
+end
+
+MagneticCharge._leave_state = function(l_5_0)
+	if l_5_0._state and l_5_0._state.leave then
+		l_5_0._state:leave()
+	end
+end
+
+MagneticCharge._setup_link_object_relative_transform = function(l_6_0)
+	local l_6_1 = l_6_0._unit:position()
+	local l_6_2 = l_6_0._unit:rotation()
+	local l_6_3 = l_6_0._link_object:position()
+	local l_6_4 = l_6_0._link_object:rotation()
+	local l_6_5 = l_6_4:inverse()
+	l_6_0._link_object_relative_root_position = l_6_1 - l_6_3:rotate_with(l_6_5)
+	l_6_0._link_object_relative_root_rotation = l_6_5 * l_6_2
+end
+
+MagneticCharge.destroy = function(l_7_0, l_7_1)
+	l_7_0:_leave_state()
+end
+
+MagneticCharge._closest_attachment_point = function(l_8_0, l_8_1)
+	local l_8_9, l_8_10, l_8_11, l_8_12, l_8_13, l_8_14 = nil
+	local l_8_2 = l_8_1:attachment()
+	if not l_8_2 then
+		return 
+	end
+	local l_8_3, l_8_4 = nil, nil
+	local l_8_5 = l_8_2:attachment_points()
+	for i_0,i_1 in pairs(l_8_5) do
+		if #i_1:attached_units() == 0 then
+			local l_8_17 = nil
+		if not l_8_4 or i_1:position() - l_8_0._unit:position():length() < l_8_4 then
+			end
+		if i_1:position() - l_8_0._unit:position():length() <= 0 or true then
+			end
+			l_8_4 = i_1:position() - l_8_0._unit:position():length()
+			l_8_3 = l_8_16
 		end
 	end
+	return l_8_3, l_8_4
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function MagneticCharge._enter_state(A0_7, A1_8)
-	A0_7:_leave_state()
-	A0_7._state = A1_8
-	if A0_7._state.enter then
-		A0_7._state:enter()
+
+MagneticCharge.update = function(l_9_0, l_9_1, l_9_2, l_9_3)
+	l_9_0:_update_state(l_9_3)
+end
+
+MagneticCharge.collision_callback = function(l_10_0, l_10_1, l_10_2, l_10_3, l_10_4, l_10_5, l_10_6, l_10_7, l_10_8)
+	if l_10_0._state.collision_callback then
+		l_10_0._state:collision_callback(l_10_1, l_10_2, l_10_3, l_10_4, l_10_5, l_10_6, l_10_7, l_10_8)
 	end
 end
-function MagneticCharge._leave_state(A0_9)
-	if A0_9._state and A0_9._state.leave then
-		A0_9._state:leave()
-	end
+
+MagneticCharge.bullet_hit = function(l_11_0)
+	l_11_0._bullet_hit = true
 end
-function MagneticCharge._setup_link_object_relative_transform(A0_10)
-	local L1_11, L2_12, L3_13, L4_14, L5_15
-	L1_11 = A0_10._unit
-	L2_12 = L1_11
-	L1_11 = L1_11.position
-	L1_11 = L1_11(L2_12)
-	L2_12 = A0_10._unit
-	L3_13 = L2_12
-	L2_12 = L2_12.rotation
-	L2_12 = L2_12(L3_13)
-	L3_13 = A0_10._link_object
-	L4_14 = L3_13
-	L3_13 = L3_13.position
-	L3_13 = L3_13(L4_14)
-	L4_14 = A0_10._link_object
-	L5_15 = L4_14
-	L4_14 = L4_14.rotation
-	L4_14 = L4_14(L5_15)
-	L5_15 = L4_14.inverse
-	L5_15 = L5_15(L4_14)
-	A0_10._link_object_relative_root_position = (L1_11 - L3_13):rotate_with(L5_15)
-	A0_10._link_object_relative_root_rotation = L5_15 * L2_12
+
+MagneticCharge.deactivate = function(l_12_0)
+	l_12_0._deactivate = true
 end
-function MagneticCharge.destroy(A0_16, A1_17)
-	A0_16:_leave_state()
+
+MagneticCharge.activated = function(l_13_0)
+	return l_13_0._activated
 end
-function MagneticCharge._closest_attachment_point(A0_18, A1_19)
-	local L2_20, L3_21, L4_22, L5_23
-	L3_21 = A1_19
-	L2_20 = A1_19.attachment
-	L2_20 = L2_20(L3_21)
-	if not L2_20 then
-		return
-	end
-	L3_21, L4_22 = nil, nil
-	L5_23 = L2_20.attachment_points
-	L5_23 = L5_23(L2_20)
-	for 
+
+MagneticCharge.on_zoom_aim = function(l_14_0, l_14_1)
+end
+
+

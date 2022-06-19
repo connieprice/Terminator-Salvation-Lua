@@ -1,113 +1,136 @@
-BikerAiMove = BikerAiMove or class()
-function BikerAiMove.init_data(A0_0, A1_1)
-	local L2_2
-	L2_2 = {}
-	A1_1._move = L2_2
-	L2_2 = A1_1._move
-	L2_2.allowed_to_fire = false
-	L2_2 = A1_1._move
-	L2_2.target_from_behind = true
-	L2_2 = A1_1._move
-	L2_2.range_offset = 300
+if not BikerAiMove then
+	BikerAiMove = class()
 end
-function BikerAiMove.logic_biker_move_init(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	local L8_11
-	L8_11 = 0
-	return L8_11
+BikerAiMove.init_data = function(l_1_0, l_1_1)
+	l_1_1._move = {}
+	l_1_1._move.allowed_to_fire = false
+	l_1_1._move.target_from_behind = true
+	l_1_1._move.range_offset = 300
 end
-function BikerAiMove.logic_biker_move_passive(A0_12, A1_13, A2_14, A3_15, A4_16, A5_17, A6_18, A7_19)
-	if A2_14:ai_data().input.target_range and A2_14:ai_data().input.forced_target_units then
+
+BikerAiMove.logic_biker_move_init = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	return 0
+end
+
+BikerAiMove.logic_biker_move_passive = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4, l_3_5, l_3_6, l_3_7)
+	local l_3_8 = l_3_2:ai_data()
+	if l_3_8.input.target_range and l_3_8.input.forced_target_units then
 		return 0
 	end
 	return nil
 end
-function BikerAiMove.logic_biker_move_to_target_range(A0_20, A1_21, A2_22, A3_23, A4_24, A5_25, A6_26, A7_27)
-	local L8_28, L9_29, L10_30
-	L9_29 = A2_22
-	L8_28 = A2_22.ai_data
-	L8_28 = L8_28(L9_29)
-	L10_30 = A0_20
-	L9_29 = A0_20._closest_target
-	L9_29 = L9_29(L10_30, A2_22, L8_28.input.forced_target_units)
-	L10_30 = nil
-	if L9_29 then
-		L10_30 = A0_20:_get_pursuit_speed(A2_22, L9_29, L8_28)
+
+BikerAiMove.logic_biker_move_to_target_range = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6, l_4_7)
+	local l_4_8 = l_4_2:ai_data()
+	local l_4_9 = (l_4_0:_closest_target(l_4_2, l_4_8.input.forced_target_units))
+	local l_4_10 = nil
+	if l_4_9 then
+		l_4_10 = l_4_0:_get_pursuit_speed(l_4_2, l_4_9, l_4_8)
 	end
-	L8_28.output.closest_target = L9_29
-	L8_28.output.speed = L10_30
+	l_4_8.output.closest_target = l_4_9
+	l_4_8.output.speed = l_4_10
 	return nil
 end
-function BikerAiMove._closest_target(A0_31, A1_32, A2_33)
-	local L3_34, L4_35, L5_36, L6_37, L7_38, L8_39, L9_40
-	L4_35 = A1_32
-	L3_34 = A1_32.ai_data
-	L3_34 = L3_34(L4_35)
-	L4_35 = nil
-	for L8_39, L9_40 in L5_36(L6_37) do
-		if alive(L9_40) then
-			if not L4_35 then
-				L4_35 = L9_40
-			elseif (L9_40:position() - A1_32:position()):length() < (L4_35:position() - A1_32:position()):length() then
-				L4_35 = L9_40
+
+BikerAiMove._closest_target = function(l_5_0, l_5_1, l_5_2)
+	local l_5_8, l_5_9, l_5_10, l_5_11, l_5_12, l_5_13, l_5_14, l_5_15 = nil
+	local l_5_3 = (l_5_1:ai_data())
+	local l_5_4 = nil
+	for i_0,i_1 in pairs(l_5_2) do
+		if alive(i_1) then
+			if not l_5_4 then
+				l_5_4 = i_1
+			end
+		else
+			if i_1:position() - l_5_1:position():length() < l_5_4:position() - l_5_1:position():length() then
+				l_5_4 = i_1
 			end
 		end
 	end
-	return L4_35
+	return l_5_4
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function BikerAiMove._get_pursuit_speed(A0_41, A1_42, A2_43, A3_44)
-	local L4_45, L5_46, L6_47, L7_48, L8_49, L9_50, L10_51, L11_52, L12_53, L13_54, L14_55, L15_56, L16_57, L17_58
-	L4_45 = A1_42:position():with_z(0)
-	L5_46 = A2_43:position():with_z(0)
-	L6_47 = L5_46 - L4_45
-	L7_48 = L6_47:length()
-	L8_49 = A2_43:rotation():y():normalized()
-	L9_50 = A2_43:base():get_speed_vector()
-	L10_51 = (L8_49:dot(L9_50) * L8_49):length()
-	if A3_44._combat.current_attack_type == 1 then
-		L15_56 = tweak_data.rail.biker.NEAR_SPEED_CORRECTION
-		L16_57 = tweak_data.rail.biker.NEAR_MIN_SPEED
-		L17_58 = tweak_data.rail.biker.NEAR_MAX_SPEED
-	elseif A3_44._combat.current_attack_type == 2 then
-		L15_56 = tweak_data.rail.biker.MEDIUM_SPEED_CORRECTION
-		L16_57 = tweak_data.rail.biker.MEDIUM_MIN_SPEED
-		L17_58 = tweak_data.rail.biker.MEDIUM_MAX_SPEED
-	elseif A3_44._combat.current_attack_type == 3 or A3_44._combat.current_attack_type == 4 then
-		L15_56 = tweak_data.rail.biker.FAR_SPEED_CORRECTION
-		L16_57 = tweak_data.rail.biker.FAR_MIN_SPEED
-		L17_58 = tweak_data.rail.biker.FAR_MAX_SPEED
-	elseif A3_44._combat.current_attack_type == 5 then
-		L15_56 = tweak_data.rail.biker.APPROACH_SPEED_CORRECTION
-		L16_57 = tweak_data.rail.biker.APPROACH_MIN_SPEED
-		L17_58 = tweak_data.rail.biker.APPROACH_MAX_SPEED
+
+BikerAiMove._get_pursuit_speed = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	local l_6_4, l_6_5, l_6_6, l_6_7, l_6_8, l_6_9, l_6_10, l_6_11, l_6_12, l_6_13, l_6_14, l_6_15, l_6_16, l_6_17 = nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
+	l_6_4 = l_6_1:position():with_z(0)
+	l_6_5 = l_6_2:position():with_z(0)
+	l_6_6 = l_6_5 - l_6_4
+	l_6_7 = l_6_6:length()
+	l_6_8 = l_6_2:rotation():y():normalized()
+	l_6_9 = l_6_2:base():get_speed_vector()
+	l_6_10 = l_6_8:dot(l_6_9) * l_6_8:length()
+	if l_6_3._combat.current_attack_type == 1 then
+		do return end
 	end
-	if A3_44._move.target_from_behind then
-		if L7_48 > A3_44.input.target_range - A3_44._move.range_offset then
-			L13_54 = math.max(L15_56, L10_51) * (L7_48 / (A3_44.input.target_range - A3_44._move.range_offset))
-		else
-			L13_54 = L10_51 * (L7_48 / (A3_44.input.target_range - A3_44._move.range_offset))
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_3._combat.current_attack_type == 2 then
+		do return end
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_3._combat.current_attack_type == 3 or l_6_3._combat.current_attack_type == 4 then
+		do return end
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_6_3._combat.current_attack_type ~= 5 or l_6_3._move.target_from_behind then
+		if l_6_3.input.target_range - l_6_3._move.range_offset < l_6_7 then
+			do return end
 		end
-	elseif not A0_41:_is_behind_target_vehicle(A1_42, A2_43) then
-		if L7_48 > A3_44.input.target_range - A3_44._move.range_offset then
-			L13_54 = math.max(L15_56, L10_51) * (L7_48 / (A3_44.input.target_range - A3_44._move.range_offset))
-		else
-			L13_54 = L10_51 * ((2 * (A3_44.input.target_range - A3_44._move.range_offset) - L7_48) / (A3_44.input.target_range - A3_44._move.range_offset))
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	elseif not l_6_0:_is_behind_target_vehicle(l_6_1, l_6_2) then
+		if l_6_3.input.target_range - l_6_3._move.range_offset < l_6_7 then
+			do return end
 		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
 	else
-		L13_54 = L10_51 * (1 + (L7_48 + tweak_data.rail.biker.RETARDATION_DISTANCE) / tweak_data.rail.biker.RETARDATION_DISTANCE)
+		return l_6_14
+		 -- WARNING: undefined locals caused missing assignments!
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L14_55 = math.clamp(L13_54, L16_57, L17_58) / tweak_data.rail.biker.NORMALIZED_SPEED_FACTOR
-	return L14_55
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 160 
 end
-function BikerAiMove._is_behind_target_vehicle(A0_59, A1_60, A2_61)
-	local L3_62, L4_63
-	L4_63 = A2_61
-	L3_62 = A2_61.rotation
-	L3_62 = L3_62(L4_63)
-	L4_63 = L3_62
-	L3_62 = L3_62.y
-	L3_62 = L3_62(L4_63)
-	L4_63 = A2_61.position
-	L4_63 = L4_63(A2_61)
-	L4_63 = L4_63 - A1_60:position()
-	return L3_62:dot(L4_63) >= 0
+
+BikerAiMove._is_behind_target_vehicle = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_2:rotation():y()
+	local l_7_4 = l_7_2:position() - l_7_1:position()
+	local l_7_5 = l_7_3:dot(l_7_4)
+	return l_7_5 >= 0
 end
+
+

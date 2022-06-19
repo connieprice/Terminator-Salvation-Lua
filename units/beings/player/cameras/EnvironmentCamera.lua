@@ -1,231 +1,278 @@
-local L0_0
-L0_0 = require
-L0_0("shared/camera/SharedCamera")
-L0_0 = require
-L0_0("shared/Interpolator")
-L0_0 = mvector3
-L0_0 = L0_0.set
-EnvironmentCamera = EnvironmentCamera or class(SharedCamera)
-function EnvironmentCamera.init(A0_1, A1_2)
-	SharedCamera.init(A0_1, A1_2)
-	A0_1._target_fov = Interpolator:new(0, 4)
-	A0_1._target_shake_amount = Interpolator:new(0, 4)
-	A0_1._disable_avoid = false
-	A0_1._listener_id = nil
-	A0_1._explosion_anim = "explosion"
-	A0_1._amplitude = 0
-	A0_1._frequency = 0
+require("shared/camera/SharedCamera")
+require("shared/Interpolator")
+local l_0_0 = mvector3.set
+if not EnvironmentCamera then
+	EnvironmentCamera = class(SharedCamera)
 end
-function EnvironmentCamera.parse_parameters(A0_3, A1_4)
-	SharedCamera.parse_parameters(A0_3, A1_4)
-	if A1_4.unit then
-		A0_3._anim_unit_name = A1_4.unit
-	end
-	if A1_4.object then
-		A0_3._object_name = A1_4.object
-	end
-	if A1_4.detail_unit then
-		A0_3._anim_detail_unit_name = A1_4.detail_unit
-	end
-	if A1_4.detail_object then
-		A0_3._detail_object_name = A1_4.detail_object
-	end
-	if A1_4.disable_avoid then
-		A0_3._disable_avoid = true
-	end
-	if A1_4.explosion_anim then
-		A0_3._explosion_anim = A1_4.explosion_anim
-	end
+EnvironmentCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._target_fov = Interpolator:new(0, 4)
+	l_1_0._target_shake_amount = Interpolator:new(0, 4)
+	l_1_0._disable_avoid = false
+	l_1_0._listener_id = nil
+	l_1_0._explosion_anim = "explosion"
+	l_1_0._amplitude = 0
+	l_1_0._frequency = 0
 end
-function EnvironmentCamera.preload_units(A0_5)
-	local L1_6, L2_7
-	L1_6 = A0_5.unit
-	if L1_6 then
-		L2_7 = World
-		L2_7 = L2_7.preload_unit
-		L2_7(L2_7, L1_6)
+
+EnvironmentCamera.parse_parameters = function(l_2_0, l_2_1)
+	SharedCamera.parse_parameters(l_2_0, l_2_1)
+	if l_2_1.unit then
+		l_2_0._anim_unit_name = l_2_1.unit
 	end
-	L2_7 = A0_5.detail_unit
-	if L2_7 then
-		World:preload_unit(L2_7)
+	if l_2_1.object then
+		l_2_0._object_name = l_2_1.object
+	end
+	if l_2_1.detail_unit then
+		l_2_0._anim_detail_unit_name = l_2_1.detail_unit
+	end
+	if l_2_1.detail_object then
+		l_2_0._detail_object_name = l_2_1.detail_object
+	end
+	if l_2_1.disable_avoid then
+		l_2_0._disable_avoid = true
+	end
+	if l_2_1.explosion_anim then
+		l_2_0._explosion_anim = l_2_1.explosion_anim
 	end
 end
-function EnvironmentCamera.destroy(A0_8)
-	SharedCamera.destroy(A0_8)
-	if alive(A0_8._anim_unit) then
-		A0_8._anim_unit:set_slot(0)
-		A0_8._anim_unit = nil
-		A0_8._object = nil
+
+EnvironmentCamera.preload_units = function(l_3_0)
+	local l_3_1 = l_3_0.unit
+	if l_3_1 then
+		World:preload_unit(l_3_1)
 	end
-	if alive(A0_8._anim_detail_unit) then
-		A0_8._anim_detail_unit:set_slot(0)
-		A0_8._anim_detail_unit = nil
-		A0_8._detail_object = nil
-	end
-	if A0_8._action_event_registered then
-		managers.action_event:unregister_listener(A0_8)
-		managers.camera:destroy_listener(A0_8._listener_id)
+	local l_3_2 = l_3_0.detail_unit
+	if l_3_2 then
+		World:preload_unit(l_3_2)
 	end
 end
-function EnvironmentCamera.on_activate(A0_9, A1_10)
-	if A1_10 then
-		assert(not A0_9._action_event_registered)
-		managers.action_event:register_listener(A0_9, A0_9._anim_unit, A0_9._root_unit)
-		A0_9._listener_id = managers.camera:create_listener()
-		assert(A0_9._anim_unit == nil)
-		A0_9._anim_unit = World:spawn_unit(A0_9._anim_unit_name, Vector3(0, 0, 0), Rotation())
-		A0_9._anim_unit:set_driving("script")
-		A0_9._anim_unit:set_visible(false)
-		if A0_9._object_name then
-			A0_9._object = A0_9._anim_unit:get_object(A0_9._object_name)
-		else
-			A0_9._object = A0_9._anim_unit:orientation_object()
-		end
-		A0_9._asm = A0_9._anim_unit:anim_state_machine()
-		A0_9._anim_detail_unit = World:spawn_unit(A0_9._anim_detail_unit_name, Vector3(0, 0, 0), Rotation())
-		A0_9._anim_detail_unit:set_driving("script")
-		A0_9._anim_detail_unit:set_visible(false)
-		if A0_9._detail_object_name then
-			A0_9._detail_object = A0_9._anim_detail_unit:get_object(A0_9._object_name)
-		else
-			A0_9._detail_object = A0_9._anim_detail_unit:orientation_object()
-		end
-		A0_9._detail_asm = A0_9._anim_detail_unit:anim_state_machine()
-		A0_9._amplitude = 0
-		A0_9._frequency = 0
+
+EnvironmentCamera.destroy = function(l_4_0)
+	SharedCamera.destroy(l_4_0)
+	if alive(l_4_0._anim_unit) then
+		l_4_0._anim_unit:set_slot(0)
+		l_4_0._anim_unit = nil
+		l_4_0._object = nil
+	end
+	if alive(l_4_0._anim_detail_unit) then
+		l_4_0._anim_detail_unit:set_slot(0)
+		l_4_0._anim_detail_unit = nil
+		l_4_0._detail_object = nil
+	end
+	if l_4_0._action_event_registered then
+		managers.action_event:unregister_listener(l_4_0)
+		managers.camera:destroy_listener(l_4_0._listener_id)
+	end
+end
+
+EnvironmentCamera.on_activate = function(l_5_0, l_5_1)
+	if l_5_1 then
+		assert(not l_5_0._action_event_registered)
+		managers.action_event:register_listener(l_5_0, l_5_0._anim_unit, l_5_0._root_unit)
+		l_5_0._listener_id = managers.camera:create_listener()
+		do
+			local l_5_2 = assert
+			l_5_2(l_5_0._anim_unit == nil)
+			l_5_2 = World
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_0._anim_unit = l_5_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_2(l_5_2, "script")
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_2(l_5_2, false)
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_5_2 then
+				l_5_0._object = l_5_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			else
+				l_5_0._object = l_5_2
+			end
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_0._asm = l_5_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_0._anim_detail_unit = l_5_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_2(l_5_2, "script")
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_2(l_5_2, false)
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_5_2 then
+				l_5_0._detail_object = l_5_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			else
+				l_5_0._detail_object = l_5_2
+			end
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_5_0._detail_asm = l_5_2
+			l_5_0._amplitude = 0
+			l_5_0._frequency = 0
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
 	else
-		assert(A0_9._action_event_registered)
-		managers.action_event:unregister_listener(A0_9)
-		managers.camera:destroy_listener(A0_9._listener_id)
-		A0_9._anim_unit:set_slot(0)
-		A0_9._anim_unit = nil
-		A0_9._object = nil
-		A0_9._asm = nil
-		A0_9._anim_detail_unit:set_slot(0)
-		A0_9._anim_detail_unit = nil
-		A0_9._detail_object = nil
-		A0_9._detail_asm = nil
+		l_5_2(l_5_0._action_event_registered)
+		managers.action_event:unregister_listener(l_5_0)
+		managers.camera:destroy_listener(l_5_0._listener_id)
+		l_5_0._anim_unit:set_slot(0)
+		l_5_0._anim_unit = nil
+		l_5_0._object = nil
+		l_5_0._asm = nil
+		l_5_0._anim_detail_unit:set_slot(0)
+		l_5_0._anim_detail_unit = nil
+		l_5_0._detail_object = nil
+		l_5_0._detail_asm = nil
 	end
-	A0_9._action_event_registered = A1_10
+	l_5_0._action_event_registered = l_5_1
 end
-function EnvironmentCamera.update(A0_11, A1_12, A2_13, A3_14, A4_15)
-	local L5_16, L6_17, L7_18, L8_19, L9_20, L10_21
-	L5_16 = A0_11._anim_unit
-	L6_17 = A0_11._anim_detail_unit
-	L7_18 = assert
-	L8_19 = A0_11._anim_unit
-	L7_18(L8_19)
-	L7_18 = A0_11._object
-	L8_19 = A0_11._detail_object
-	L9_20 = _UPVALUE0_
-	L10_21 = A0_11._local_position
-	L9_20(L10_21, L7_18:local_position() + L8_19:local_position():rotate_with(L7_18:local_rotation()))
-	L10_21 = L7_18
-	L9_20 = L7_18.local_rotation
-	L9_20 = L9_20(L10_21)
-	A0_11._local_rotation = L9_20
-	L9_20 = SharedCamera
-	L9_20 = L9_20.update
-	L10_21 = A0_11
-	L9_20(L10_21, A1_12, A2_13, A3_14, A4_15)
-	L10_21 = L5_16
-	L9_20 = L5_16.set_position
-	L9_20(L10_21, A0_11._root_unit:position())
-	L10_21 = L6_17
-	L9_20 = L6_17.set_position
-	L9_20(L10_21, A0_11._root_unit:position())
-	L9_20 = managers
-	L9_20 = L9_20.camera
-	L10_21 = A0_11._listener_id
-	L9_20:set_listener_position(L10_21, A0_11._position)
-	L9_20:set_listener_rotation(L10_21, A0_11._rotation)
-	if A0_11._amplitude ~= L9_20:listener_data(L10_21).amplitude then
-		A0_11._asm:set_global("g_ground_shake_amplitude", L9_20:listener_data(L10_21).amplitude)
-		A0_11._amplitude = L9_20:listener_data(L10_21).amplitude
+
+EnvironmentCamera.update = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	-- upvalues: l_0_0
+	local l_6_5 = l_6_0._anim_unit
+	local l_6_6 = l_6_0._anim_detail_unit
+	assert(l_6_0._anim_unit)
+	local l_6_7 = l_6_0._object
+	local l_6_8 = l_6_0._detail_object
+	l_0_0(l_6_0._local_position, l_6_7:local_position() + l_6_8:local_position():rotate_with(l_6_7:local_rotation()))
+	l_6_0._local_rotation = l_6_7:local_rotation()
+	SharedCamera.update(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	l_6_5:set_position(l_6_0._root_unit:position())
+	l_6_6:set_position(l_6_0._root_unit:position())
+	local l_6_9 = managers.camera
+	local l_6_10 = l_6_0._listener_id
+	l_6_9:set_listener_position(l_6_10, l_6_0._position)
+	l_6_9:set_listener_rotation(l_6_10, l_6_0._rotation)
+	local l_6_11 = l_6_9:listener_data(l_6_10)
+	local l_6_12 = l_6_0._asm
+	if l_6_0._amplitude ~= l_6_11.amplitude then
+		l_6_12:set_global("g_ground_shake_amplitude", l_6_11.amplitude)
+		l_6_0._amplitude = l_6_11.amplitude
 	end
-	if A0_11._frequency ~= L9_20:listener_data(L10_21).frequency then
-		A0_11._asm:set_global("g_ground_shake_frequency", L9_20:listener_data(L10_21).frequency)
-		A0_11._frequency = L9_20:listener_data(L10_21).frequency
+	if l_6_0._frequency ~= l_6_11.frequency then
+		l_6_12:set_global("g_ground_shake_frequency", l_6_11.frequency)
+		l_6_0._frequency = l_6_11.frequency
 	end
 end
-function EnvironmentCamera.unit_explode(A0_22, A1_23, A2_24, A3_25)
-	A0_22:unit_explosion(A1_23, A2_24)
+
+EnvironmentCamera.unit_explode = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	l_7_0:unit_explosion(l_7_1, l_7_2)
 end
-function EnvironmentCamera.unit_explosion(A0_26, A1_27, A2_28)
-	local L3_29, L4_30, L5_31, L6_32, L7_33
-	L3_29 = managers
-	L3_29 = L3_29.environment
-	L4_30 = L3_29
-	L3_29 = L3_29.create_blur
-	L5_31 = "explosion_medium"
-	L6_32 = A0_26._anim_unit
-	L7_33 = L6_32
-	L6_32 = L6_32.position
-	L7_33 = L6_32(L7_33)
-	L3_29(L4_30, L5_31, L6_32, L7_33, L6_32(L7_33))
-	L3_29 = A0_26._root_unit
-	L4_30 = L3_29
-	L3_29 = L3_29.position
-	L3_29 = L3_29(L4_30)
-	L4_30 = A2_28 - L3_29
-	L5_31 = L4_30
-	L4_30 = L4_30.length
-	L4_30 = L4_30(L5_31)
-	L5_31 = math
-	L5_31 = L5_31.clamp
-	L6_32 = L4_30
-	L7_33 = 0
-	L5_31 = L5_31(L6_32, L7_33, 1500)
-	L5_31 = L5_31 / 1500
-	L5_31 = 1 - L5_31
-	L6_32 = math
-	L6_32 = L6_32.random
-	L6_32 = L6_32()
-	L7_33 = math
-	L7_33 = L7_33.random
-	L7_33 = L7_33()
-	A0_26._detail_asm:set_global("g_scale", L5_31)
-	A0_26._detail_asm:set_global("g_u", L6_32)
-	A0_26._detail_asm:set_global("g_v", L7_33)
-	A0_26._anim_detail_unit:play_redirect(A0_26._explosion_anim)
+
+EnvironmentCamera.unit_explosion = function(l_8_0, l_8_1, l_8_2)
+	managers.environment:create_blur("explosion_medium", l_8_0._anim_unit:position())
+	local l_8_3 = l_8_0._root_unit:position()
+	local l_8_4 = l_8_2 - l_8_3:length()
+	local l_8_5 = 1 - math.clamp(l_8_4, 0, 1500) / 1500
+	local l_8_6 = math.random()
+	local l_8_7 = math.random()
+	local l_8_8 = l_8_0._detail_asm
+	l_8_8:set_global("g_scale", l_8_5)
+	l_8_8:set_global("g_u", l_8_6)
+	l_8_8:set_global("g_v", l_8_7)
+	l_8_0._anim_detail_unit:play_redirect(l_8_0._explosion_anim)
 end
-function EnvironmentCamera.unit_afro_hit(A0_34, A1_35, A2_36, A3_37, A4_38, A5_39)
-	if not A0_34._disable_avoid then
-		A0_34._anim_detail_unit:play_redirect("avoid_bullet")
+
+EnvironmentCamera.unit_afro_hit = function(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4, l_9_5)
+	if not l_9_0._disable_avoid then
+		l_9_0._anim_detail_unit:play_redirect("avoid_bullet")
 	end
-	managers.environment:create_blur("whizbyblur", A4_38)
+	managers.environment:create_blur("whizbyblur", l_9_4)
 end
-function EnvironmentCamera.unit_player_damage(A0_40, A1_41, A2_42, A3_43, A4_44, A5_45, A6_46)
-	A0_40._anim_detail_unit:play_redirect("hit")
+
+EnvironmentCamera.unit_player_damage = function(l_10_0, l_10_1, l_10_2, l_10_3, l_10_4, l_10_5, l_10_6)
+	l_10_0._anim_detail_unit:play_redirect("hit")
 end
-function EnvironmentCamera._calculate_amount(A0_47, A1_48, A2_49)
-	return 0
-end
-function EnvironmentCamera.unit_spawn_projectile(A0_50, A1_51, A2_52, A3_53, A4_54)
-	A0_50:_trigger_radial_blur(A3_53, A2_52)
-end
-function EnvironmentCamera._trigger_radial_blur(A0_55, A1_56, A2_57)
-	local L3_58
-	L3_58 = A0_55.is_active
-	L3_58 = L3_58(A0_55)
-	if not L3_58 then
-		return
+
+EnvironmentCamera._calculate_amount = function(l_11_0, l_11_1, l_11_2)
+	if 100 - l_11_1 - l_11_2:length() < 0 then
+		return 0
 	end
-	L3_58 = nil
-	if A2_57 == "InstantBullet" then
-		L3_58 = "spawn_instant_bullet"
+end
+
+EnvironmentCamera.unit_spawn_projectile = function(l_12_0, l_12_1, l_12_2, l_12_3, l_12_4)
+	if l_12_2 == "InstantBullet" then
+		local l_12_5 = l_12_0:_calculate_amount(l_12_3, l_12_0._anim_unit:position()) * 0.1
+	end
+	l_12_0:_trigger_radial_blur(l_12_3, l_12_2)
+end
+
+EnvironmentCamera._trigger_radial_blur = function(l_13_0, l_13_1, l_13_2)
+	if not l_13_0:is_active() then
+		return 
+	end
+	local l_13_3 = nil
+	if l_13_2 == "InstantBullet" then
+		l_13_3 = "spawn_instant_bullet"
 	else
-		L3_58 = "spawn_projectile"
+		l_13_3 = "spawn_projectile"
 	end
-	managers.environment:create_blur(L3_58, A1_56)
+	managers.environment:create_blur(l_13_3, l_13_1)
 end
-function EnvironmentCamera.unit_weapon_shake_start(A0_59, A1_60, A2_61, A3_62)
-	A0_59._anim_unit:play_redirect(A3_62)
+
+EnvironmentCamera.unit_weapon_shake_start = function(l_14_0, l_14_1, l_14_2, l_14_3)
+	l_14_0._anim_unit:play_redirect(l_14_3)
 end
-function EnvironmentCamera.unit_weapon_shake_stop(A0_63, A1_64)
-	A0_63._anim_unit:play_redirect("stop_shake")
+
+EnvironmentCamera.unit_weapon_shake_stop = function(l_15_0, l_15_1)
+	l_15_0._anim_unit:play_redirect("stop_shake")
 end
-function EnvironmentCamera.debug_render(A0_65, A1_66, A2_67)
-	SharedCamera.debug_render(A0_65, A1_66, A2_67)
-	Draw:brush(Color(0.5, 0, 0, 1)):sphere(A0_65:position(), 3)
+
+EnvironmentCamera.debug_render = function(l_16_0, l_16_1, l_16_2)
+	SharedCamera.debug_render(l_16_0, l_16_1, l_16_2)
+	local l_16_3 = Draw:brush(Color(0.5, 0, 0, 1))
+	l_16_3:sphere(l_16_0:position(), 3)
 end
+
+

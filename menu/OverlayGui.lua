@@ -1,109 +1,139 @@
 require("menu/ScreenFader")
 require("menu/MenuUtility")
-OverlayGui = OverlayGui or class()
-function OverlayGui.init(A0_0)
-	A0_0:_setup_resources()
-	managers.viewport:add_resolution_changed_func(callback(A0_0, A0_0, "callback_resolution_changed"))
+if not OverlayGui then
+	OverlayGui = class()
 end
-function OverlayGui._setup_resources(A0_1)
-	A0_1._gui = MenuOverlay:newgui()
-	A0_1._width = 1280
-	A0_1._height = 720 * (1.7777778 / core_setup.aspect_ratio)
-	A0_1._workspace = A0_1._gui:create_scaled_screen_workspace(A0_1._width, A0_1._height, 0, 0, RenderSettings.resolution.x, RenderSettings.resolution.y)
-	A0_1._panel = A0_1._workspace:panel()
-	A0_1._engine_viewport = Application:create_scene_viewport(0, 0, 1, 1)
-	A0_1._overlay_camera = Overlay:create_camera()
-	A0_1._engine_viewport:set_camera(A0_1._overlay_camera)
-	A0_1._fader = ScreenFader:new(A0_1._panel:panel({layer = 99}))
-	if A0_1._fader_data then
-		A0_1._fader:restore_state(A0_1._fader_data)
-		A0_1._fader_data = nil
+OverlayGui.init = function(l_1_0)
+	l_1_0:_setup_resources()
+	managers.viewport:add_resolution_changed_func(callback(l_1_0, l_1_0, "callback_resolution_changed"))
+end
+
+OverlayGui._setup_resources = function(l_2_0)
+	l_2_0._gui = MenuOverlay:newgui()
+	local l_2_1 = RenderSettings.resolution
+	l_2_0._width = 1280
+	l_2_0._height = 720 * (1.7777778 / core_setup.aspect_ratio)
+	l_2_0._workspace = l_2_0._gui:create_scaled_screen_workspace(l_2_0._width, l_2_0._height, 0, 0, l_2_1.x, l_2_1.y)
+	l_2_0._panel = l_2_0._workspace:panel()
+	l_2_0._engine_viewport = Application:create_scene_viewport(0, 0, 1, 1)
+	l_2_0._overlay_camera = Overlay:create_camera()
+	l_2_0._engine_viewport:set_camera(l_2_0._overlay_camera)
+	local l_2_2, l_2_3 = ScreenFader:new, ScreenFader
+	local l_2_4, l_2_5 = l_2_0._panel:panel, l_2_0._panel
+	l_2_5, l_2_4 = .end, l_2_4(l_2_5, {layer = 99})
+	local l_2_6 = nil
+	l_2_2 = l_2_2(l_2_3, l_2_4, l_2_5, l_2_6)
+	l_2_0._fader = l_2_2
+	l_2_2 = l_2_0._fader_data
+	if l_2_2 then
+		l_2_2 = l_2_0._fader
+		l_2_2, l_2_3 = l_2_2:restore_state, l_2_2
+		l_2_4 = l_2_0._fader_data
+		l_2_2(l_2_3, l_2_4)
+		l_2_0._fader_data = nil
 	end
 end
-function OverlayGui._shutdown_resources(A0_2)
-	A0_2._gui:destroy_workspace(A0_2._workspace)
-	A0_2._gui = nil
-	A0_2._workspace = nil
-	A0_2._panel = nil
-	Application:destroy_viewport(A0_2._engine_viewport)
-	Overlay:delete_camera(A0_2._overlay_camera)
-	A0_2._fader_data = {}
-	A0_2._fader:save_state(A0_2._fader_data)
-	A0_2._fader:destroy()
-	A0_2._fader = nil
+
+OverlayGui._shutdown_resources = function(l_3_0)
+	l_3_0._gui:destroy_workspace(l_3_0._workspace)
+	l_3_0._gui = nil
+	l_3_0._workspace = nil
+	l_3_0._panel = nil
+	Application:destroy_viewport(l_3_0._engine_viewport)
+	Overlay:delete_camera(l_3_0._overlay_camera)
+	l_3_0._fader_data = {}
+	l_3_0._fader:save_state(l_3_0._fader_data)
+	l_3_0._fader:destroy()
+	l_3_0._fader = nil
 end
-function OverlayGui.safe_rect(A0_3)
-	return MenuUtility.safe_rect()
+
+OverlayGui.safe_rect = function(l_4_0)
+	local l_4_1 = MenuUtility.safe_rect
+	return l_4_1()
 end
-function OverlayGui.full_rect(A0_4)
-	local L1_5, L2_6
-	L1_5 = {}
-	L2_6 = A0_4._width
-	L1_5.w = L2_6
-	L2_6 = A0_4._height
-	L1_5.h = L2_6
-	return L1_5
+
+OverlayGui.full_rect = function(l_5_0)
+	local l_5_1 = {}
+	l_5_1.w = l_5_0._width
+	l_5_1.h = l_5_0._height
+	return l_5_1
 end
-function OverlayGui.destroy(A0_7)
-	A0_7:_shutdown_resources()
-	A0_7._fader_data = nil
+
+OverlayGui.destroy = function(l_6_0)
+	l_6_0:_shutdown_resources()
+	l_6_0._fader_data = nil
 end
-function OverlayGui.show(A0_8)
-	A0_8._panel:show()
+
+OverlayGui.show = function(l_7_0)
+	l_7_0._panel:show()
 end
-function OverlayGui.hide(A0_9)
-	A0_9._panel:hide()
+
+OverlayGui.hide = function(l_8_0)
+	l_8_0._panel:hide()
 end
-function OverlayGui.fade_down_with_speed(A0_10, A1_11)
-	A0_10:fade_down()
-	A0_10._fader:set_speed(A1_11)
+
+OverlayGui.fade_down_with_speed = function(l_9_0, l_9_1)
+	l_9_0:fade_down()
+	l_9_0._fader:set_speed(l_9_1)
 end
-function OverlayGui.fade_down_slow(A0_12)
-	A0_12:fade_down()
-	A0_12._fader:set_speed(3)
+
+OverlayGui.fade_down_slow = function(l_10_0)
+	l_10_0:fade_down()
+	l_10_0._fader:set_speed(3)
 end
-function OverlayGui.fade_down(A0_13)
+
+OverlayGui.fade_down = function(l_11_0)
 	print("fade down")
-	A0_13._fader:fade_down()
-	A0_13._fader:set_speed(9)
+	l_11_0._fader:fade_down()
+	l_11_0._fader:set_speed(9)
 end
-function OverlayGui.set_faded_down(A0_14)
-	A0_14._fader:set_faded_down()
+
+OverlayGui.set_faded_down = function(l_12_0)
+	l_12_0._fader:set_faded_down()
 end
-function OverlayGui.fade_up(A0_15)
-	A0_15._fader:fade_up()
-	A0_15._fader:set_speed(2)
+
+OverlayGui.fade_up = function(l_13_0)
+	l_13_0._fader:fade_up()
+	l_13_0._fader:set_speed(2)
 end
-function OverlayGui.fade_up_slow(A0_16)
-	A0_16:fade_up()
-	A0_16._fader:set_speed(1)
+
+OverlayGui.fade_up_slow = function(l_14_0)
+	l_14_0:fade_up()
+	l_14_0._fader:set_speed(1)
 end
-function OverlayGui.update(A0_17, A1_18)
-	if A0_17._fader then
-		A0_17._fader:update(A1_18)
+
+OverlayGui.update = function(l_15_0, l_15_1)
+	if l_15_0._fader then
+		l_15_0._fader:update(l_15_1)
 	end
 end
-function OverlayGui.root_panel(A0_19)
-	local L1_20
-	L1_20 = A0_19._panel
-	return L1_20
+
+OverlayGui.root_panel = function(l_16_0)
+	return l_16_0._panel
 end
-function OverlayGui.is_fading(A0_21)
-	local L1_22
-	L1_22 = A0_21._fader
-	return L1_22
+
+OverlayGui.is_fading = function(l_17_0)
+	return l_17_0._fader
 end
-function OverlayGui.fade_value(A0_23)
-	if A0_23._fader then
-		return A0_23._fader:value()
+
+OverlayGui.fade_value = function(l_18_0)
+	if l_18_0._fader then
+		local l_18_1, l_18_2 = l_18_0._fader:value, l_18_0._fader
+		return l_18_1(l_18_2)
 	else
 		return 0
 	end
 end
-function OverlayGui.is_faded_down(A0_24)
-	return A0_24._fader and A0_24._fader:fade_down_done()
+
+OverlayGui.is_faded_down = function(l_19_0)
+	if l_19_0._fader then
+		return l_19_0._fader:fade_down_done()
+	end
 end
-function OverlayGui.callback_resolution_changed(A0_25)
-	A0_25:_shutdown_resources()
-	A0_25:_setup_resources()
+
+OverlayGui.callback_resolution_changed = function(l_20_0)
+	l_20_0:_shutdown_resources()
+	l_20_0:_setup_resources()
 end
+
+

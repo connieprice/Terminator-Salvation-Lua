@@ -1,37 +1,38 @@
-GameStateInSession = GameStateInSession or class(FiniteStateMachineState)
-function GameStateInSession.init(A0_0)
-	local L1_1, L2_2, L3_3, L4_4, L5_5, L6_6
-	L1_1 = A0_0.game
-	L1_1 = L1_1._set_is_in_session
-	L1_1(L2_2, L3_3)
-	L1_1 = managers
-	L1_1 = L1_1.local_user
-	L1_1 = L1_1.users
-	L1_1 = L1_1(L2_2)
-	for L5_5, L6_6 in L2_2(L3_3) do
-		if L6_6:wants_to_play() then
-			managers.network:peer():join_game(L6_6, L6_6:wanted_player_slot_id())
+if not GameStateInSession then
+	GameStateInSession = class(FiniteStateMachineState)
+end
+GameStateInSession.init = function(l_1_0)
+	local l_1_5, l_1_6, l_1_7, l_1_8, l_1_9, l_1_10, l_1_11, l_1_12 = nil
+	l_1_0.game:_set_is_in_session(true)
+	local l_1_1 = managers.local_user:users()
+	for i_0,i_1 in pairs(l_1_1) do
+		if i_1:wants_to_play() then
+			managers.network:peer():join_game(i_1, i_1:wanted_player_slot_id())
 		end
 	end
-	L5_5 = A0_0.game
-	L6_6 = "game"
-	A0_0._session_state = L3_3
-	L5_5 = true
-	L3_3(L4_4, L5_5)
+	l_1_0._session_state = FiniteStateMachine:new(l_1_0.game, "game", GameStateInSessionLobby)
+	l_1_0._session_state:set_debug(true)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function GameStateInSession.update(A0_7, A1_8)
-	A0_7._session_state:update(A1_8)
+
+GameStateInSession.update = function(l_2_0, l_2_1)
+	l_2_0._session_state:update(l_2_1)
 end
-function GameStateInSession.exit(A0_9)
-	A0_9.game:_set_is_in_session(false)
+
+GameStateInSession.exit = function(l_3_0)
+	l_3_0.game:_set_is_in_session(false)
 	managers.game_transition:clear_wants_to_quit_session()
-	A0_9._session_state:destroy()
+	l_3_0._session_state:destroy()
 end
-function GameStateInSession.transition(A0_10)
+
+GameStateInSession.transition = function(l_4_0)
 	if managers.menu:is_in_dialog() then
-		return
+		return 
 	end
 	if managers.game_transition:wants_to_quit_session() or managers.game_transition:wants_to_go_to_pre_frontend() then
 		return GameStateWaitingForMenuSyncStart
 	end
 end
+
+

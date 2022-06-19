@@ -1,245 +1,166 @@
-TextPanelCreator = TextPanelCreator or class()
-function TextPanelCreator.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5)
-	local L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12
-	A0_0._font = L6_6
-	A0_0._x = 0
-	A0_0._y = 0
-	A0_0._max_height = 0
-	A0_0._use_small_font = A4_4
-	if not A3_3 then
-		L9_9 = 1
-		L10_10 = 1
-		A3_3 = L6_6
+if not TextPanelCreator then
+	TextPanelCreator = class()
+end
+TextPanelCreator.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5)
+	l_1_0._font = tweak_data.player.new_hud.TEXTPANEL_CREATOR_FONT
+	l_1_0._x = 0
+	l_1_0._y = 0
+	l_1_0._max_height = 0
+	l_1_0._use_small_font = l_1_4
+	if not l_1_3 then
+		l_1_3 = Color(1, 1, 1, 1)
 	end
-	A0_0._pulse_target = L6_6
-	L9_9 = tweak_data
-	L9_9 = L9_9.player
-	L9_9 = L9_9.new_hud
-	L9_9 = L9_9.mission_objectives
-	L9_9 = L9_9.ICON_PULSE_SPEED_NOT_COMPLETE
-	A0_0._pulse_interpolator = L6_6
-	L6_6(L7_7, L8_8)
-	A0_0._panel = L6_6
-	L6_6(L7_7)
+	l_1_0._pulse_target = tweak_data.player.new_hud.mission_objectives.ICON_PULSE_TARGET
+	l_1_0._pulse_interpolator = Interpolator:new(1, tweak_data.player.new_hud.mission_objectives.ICON_PULSE_SPEED_NOT_COMPLETE)
+	l_1_0._pulse_interpolator:set_target(l_1_0._pulse_target)
+	l_1_0._panel = l_1_1:create_hud_panel()
+	assert(l_1_2)
 	repeat
-		if L6_6 then
-			L9_9 = 1
-			L10_10 = L6_6 - 1
-			L9_9 = A2_2
-			L10_10 = L6_6 + 1
-			A2_2 = L8_8
-			L9_9 = A2_2
-			L10_10 = "[]]"
-			L10_10 = A2_2
-			L9_9 = A2_2.sub
-			L11_11 = 1
-			L12_12 = L8_8 - 1
-			L9_9 = L9_9(L10_10, L11_11, L12_12)
-			L11_11 = A2_2
-			L10_10 = A2_2.sub
-			L12_12 = L8_8 + 1
-			L10_10 = L10_10(L11_11, L12_12)
-			A2_2 = L10_10
-			L10_10 = assert
-			L11_11 = L8_8
-			L10_10(L11_11)
-			L11_11 = A0_0
-			L10_10 = A0_0.add_text
-			L12_12 = L7_7
-			L10_10(L11_11, L12_12, A3_3)
-			L11_11 = A0_0
-			L10_10 = A0_0.add_icon
-			L12_12 = L9_9
-			L10_10(L11_11, L12_12)
+		local l_1_6 = l_1_2:find("[[]")
+		if l_1_6 then
+			local l_1_7 = l_1_2:sub(1, l_1_6 - 1)
+			l_1_2 = l_1_2:sub(l_1_6 + 1)
+			local l_1_8 = l_1_2:find("[]]")
+			local l_1_9 = l_1_2:sub(1, l_1_8 - 1)
+			l_1_2 = l_1_2:sub(l_1_8 + 1)
+			assert(l_1_8)
+			l_1_0:add_text(l_1_7, l_1_3)
+			l_1_0:add_icon(l_1_9)
 		end
-	until L6_6 == nil
-	if L6_6 > 0 then
-		L9_9 = A3_3
-		L6_6(L7_7, L8_8, L9_9)
+	until l_1_6 == nil
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_1_6 > 0 then
+		l_1_6(l_1_0, l_1_2, l_1_3)
 	end
-	L9_9 = A0_0._max_height
-	L6_6(L7_7, L8_8, L9_9)
-	L12_12 = L7_7(L8_8)
-	for L9_9, L10_10 in L6_6(L7_7, L8_8, L9_9, L10_10, L11_11, L12_12, L7_7(L8_8)) do
-		L12_12 = L10_10
-		L11_11 = L10_10.height
-		L11_11 = L11_11(L12_12)
-		L12_12 = A0_0._max_height
-		L12_12 = L12_12 - L11_11
-		L12_12 = L12_12 / 2
-		L10_10:set_y(L12_12)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6(l_1_6, l_1_0._x, l_1_0._max_height)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_1_12, l_1_13 = l_1_0._panel:children(), .end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	for i_0,i_1 in l_1_6 do
+		local l_1_14 = l_1_11:height()
+		local l_1_15 = (l_1_0._max_height - l_1_14) / 2
+		l_1_11:set_y(l_1_15)
 	end
-	A0_0._move_to_position = A5_5
-	if L6_6 then
-		A0_0._target_position = L6_6
-		L9_9 = tweak_data
-		L9_9 = L9_9.player
-		L9_9 = L9_9.new_hud
-		L9_9 = L9_9.mission_objectives
-		L9_9 = L9_9.ICON_PULSE_SPEED_NOT_COMPLETE
-		A0_0._move_interpolator = L6_6
-		L6_6(L7_7, L8_8)
+	l_1_0._move_to_position = l_1_5
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_1_6 then
+		l_1_0._target_position = l_1_0._panel:parent():world_center_x()
+		l_1_0._move_interpolator = Interpolator:new(0, tweak_data.player.new_hud.mission_objectives.ICON_PULSE_SPEED_NOT_COMPLETE)
+		l_1_0._move_interpolator:set_target(l_1_0._target_position)
 	else
-		L9_9 = L8_8
-		L9_9 = L8_8
-		L12_12 = L8_8(L9_9)
-		L6_6(L7_7, L8_8, L9_9, L10_10, L11_11, L12_12, L8_8(L9_9))
+		l_1_0._panel:set_world_center_x(l_1_0._panel:parent():world_center_x())
 	end
-	L6_6(L7_7)
+	l_1_1:hud_panel_done()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function TextPanelCreator.add_text(A0_13, A1_14, A2_15)
-	if A0_13._use_small_font then
-		A0_13._panel:text({
-			valign = "center",
-			x = A0_13._x,
-			font = A0_13._font,
-			font_size = 25,
-			color = A2_15,
-			text = A1_14,
-			layer = 100
-		}):set_font_scale(tweak_data.player.new_hud.TEXTPANEL_SMALL_FONT_FACTOR)
+
+TextPanelCreator.add_text = function(l_2_0, l_2_1, l_2_2)
+	local l_2_3, l_2_4 = l_2_0._panel:text, l_2_0._panel
+	local l_2_5 = {}
+	l_2_5.valign = "center"
+	l_2_5.x = l_2_0._x
+	l_2_5.font = l_2_0._font
+	l_2_5.font_size = 25
+	l_2_5.color = l_2_2
+	l_2_5.text = l_2_1
+	l_2_5.layer = 100
+	l_2_3 = l_2_3(l_2_4, l_2_5)
+	l_2_4 = l_2_0._use_small_font
+	if l_2_4 then
+		l_2_4, l_2_5 = l_2_3:set_font_scale, l_2_3
+		l_2_4(l_2_5, tweak_data.player.new_hud.TEXTPANEL_SMALL_FONT_FACTOR)
 	end
-	A0_13._panel:text({
-		valign = "center",
-		x = A0_13._x,
-		font = A0_13._font,
-		font_size = 25,
-		color = A2_15,
-		text = A1_14,
-		layer = 100
-	}):set_height(A0_13._panel:text({
-		valign = "center",
-		x = A0_13._x,
-		font = A0_13._font,
-		font_size = 25,
-		color = A2_15,
-		text = A1_14,
-		layer = 100
-	}):line_height())
-	A0_13._x = A0_13._x + A0_13._panel:text({
-		valign = "center",
-		x = A0_13._x,
-		font = A0_13._font,
-		font_size = 25,
-		color = A2_15,
-		text = A1_14,
-		layer = 100
-	}):text_rect()
-	if A0_13._panel:text({
-		valign = "center",
-		x = A0_13._x,
-		font = A0_13._font,
-		font_size = 25,
-		color = A2_15,
-		text = A1_14,
-		layer = 100
-	}):text_rect() > A0_13._max_height then
-		A0_13._max_height = A0_13._panel:text({
-			valign = "center",
-			x = A0_13._x,
-			font = A0_13._font,
-			font_size = 25,
-			color = A2_15,
-			text = A1_14,
-			layer = 100
-		}):text_rect()
+	l_2_4, l_2_5 = l_2_3:set_height, l_2_3
+	l_2_4(l_2_5, l_2_3:line_height())
+	l_2_4, l_2_5 = l_2_3:text_rect, l_2_3
+	l_2_4 = l_2_4(l_2_5)
+	local l_2_6, l_2_7 = nil
+	l_2_0._x = l_2_0._x + l_2_6
+	if l_2_0._max_height < l_2_7 then
+		l_2_0._max_height = l_2_7
 	end
 end
-function TextPanelCreator.add_icon(A0_16, A1_17)
-	local L2_18
-	if A1_17:sub(1, 7) == "action:" then
-		A1_17 = A1_17:sub(8)
-		L2_18 = "gui_button_" .. ({
-			revive = "y",
-			cover = "a",
-			pick_up = "y",
-			look_at = "y"
-		})[A1_17]
+
+TextPanelCreator.add_icon = function(l_3_0, l_3_1)
+	local l_3_2 = nil
+	if l_3_1:sub(1, 7) == "action:" then
+		l_3_1 = l_3_1:sub(8)
+		l_3_2 = "gui_button_" .. ({revive = "y", cover = "a", pick_up = "y", look_at = "y"})[l_3_1]
 	else
-		L2_18 = "gui_" .. A1_17
+		l_3_2 = "gui_" .. l_3_1
 	end
-	A0_16._panel:bitmap({valign = "center", texture = L2_18}):set_left(A0_16._x)
-	A0_16._x = A0_16._x + A0_16._panel:bitmap({valign = "center", texture = L2_18}):texture_width()
-	if A0_16._panel:bitmap({valign = "center", texture = L2_18}):texture_height() > A0_16._max_height then
-		A0_16._max_height = A0_16._panel:bitmap({valign = "center", texture = L2_18}):texture_height()
+	local l_3_3 = l_3_0._panel:bitmap
+	local l_3_4 = l_3_0._panel
+	l_3_3 = l_3_3(l_3_4, {valign = "center", texture = l_3_2})
+	l_3_4(l_3_3, l_3_0._x)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_0._x = l_3_4
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_3_0._max_height < l_3_4 then
+		l_3_0._max_height = l_3_4
 	end
-	if L2_18 == "gui_mission_objectivebox_completed" then
-		A0_16._pulse_icon = A0_16._panel:bitmap({valign = "center", texture = L2_18})
-		A0_16._pulse_interpolator:set_speed(tweak_data.player.new_hud.mission_objectives.ICON_PULSE_SPEED_COMPLETE)
-	elseif L2_18 == "gui_mission_objectivebox_not_completed" then
-		A0_16._pulse_icon = A0_16._panel:bitmap({valign = "center", texture = L2_18})
-		A0_16._pulse_interpolator:set_speed(tweak_data.player.new_hud.mission_objectives.ICON_PULSE_SPEED_NOT_COMPLETE)
+	if l_3_2 == "gui_mission_objectivebox_completed" then
+		l_3_0._pulse_icon = l_3_3
+		l_3_0._pulse_interpolator:set_speed(tweak_data.player.new_hud.mission_objectives.ICON_PULSE_SPEED_COMPLETE)
+	elseif l_3_2 == "gui_mission_objectivebox_not_completed" then
+		l_3_0._pulse_icon = l_3_3
+		l_3_0._pulse_interpolator:set_speed(tweak_data.player.new_hud.mission_objectives.ICON_PULSE_SPEED_NOT_COMPLETE)
 	else
-		A0_16._pulse_icon = nil
+		l_3_0._pulse_icon = nil
 	end
 end
-function TextPanelCreator.panel(A0_19)
-	local L1_20
-	L1_20 = A0_19._panel
-	return L1_20
+
+TextPanelCreator.panel = function(l_4_0)
+	return l_4_0._panel
 end
-function TextPanelCreator.update_icon_pulse(A0_21, A1_22)
-	local L2_23, L3_24, L4_25
-	L2_23 = A0_21._pulse_icon
-	if not L2_23 then
-		return
+
+TextPanelCreator.update_icon_pulse = function(l_5_0, l_5_1)
+	if not l_5_0._pulse_icon then
+		return 
 	end
-	L2_23 = A0_21._pulse_interpolator
-	L3_24 = L2_23
-	L2_23 = L2_23.update
-	L4_25 = A1_22
-	L2_23(L3_24, L4_25)
-	L2_23 = A0_21._pulse_interpolator
-	L3_24 = L2_23
-	L2_23 = L2_23.value
-	L2_23 = L2_23(L3_24)
-	L3_24 = A0_21._pulse_interpolator
-	L4_25 = L3_24
-	L3_24 = L3_24.has_reached_target
-	L3_24 = L3_24(L4_25)
-	if L3_24 then
-		L3_24 = A0_21._pulse_interpolator
-		L4_25 = L3_24
-		L3_24 = L3_24.target
-		L3_24 = L3_24(L4_25)
-		L2_23 = L3_24
+	l_5_0._pulse_interpolator:update(l_5_1)
+	local l_5_2 = l_5_0._pulse_interpolator:value()
+	if l_5_0._pulse_interpolator:has_reached_target() then
+		l_5_2 = l_5_0._pulse_interpolator:target()
 	end
-	L3_24 = A0_21._pulse_target
-	if L2_23 == L3_24 then
-		L3_24 = A0_21._pulse_interpolator
-		L4_25 = L3_24
-		L3_24 = L3_24.set_target
-		L3_24(L4_25, 1)
-	elseif L2_23 == 1 then
-		L3_24 = A0_21._pulse_interpolator
-		L4_25 = L3_24
-		L3_24 = L3_24.set_target
-		L3_24(L4_25, A0_21._pulse_target)
+	if l_5_2 == l_5_0._pulse_target then
+		l_5_0._pulse_interpolator:set_target(1)
+	elseif l_5_2 == 1 then
+		l_5_0._pulse_interpolator:set_target(l_5_0._pulse_target)
 	end
-	L3_24 = A0_21._pulse_icon
-	L4_25 = L3_24
-	L3_24 = L3_24.center_x
-	L3_24 = L3_24(L4_25)
-	L4_25 = A0_21._pulse_icon
-	L4_25 = L4_25.center_y
-	L4_25 = L4_25(L4_25)
-	A0_21._pulse_icon:set_size(64 * L2_23, 64 * L2_23)
-	A0_21._pulse_icon:set_center(L3_24, L4_25)
+	local l_5_3 = l_5_0._pulse_icon:center_x()
+	local l_5_4 = l_5_0._pulse_icon:center_y()
+	l_5_0._pulse_icon:set_size(64 * l_5_2, 64 * l_5_2)
+	l_5_0._pulse_icon:set_center(l_5_3, l_5_4)
 end
-function TextPanelCreator.update_mover(A0_26, A1_27)
-	local L2_28
-	L2_28 = A0_26._move_to_position
-	if not L2_28 then
-		return
+
+TextPanelCreator.update_mover = function(l_6_0, l_6_1)
+	if not l_6_0._move_to_position then
+		return 
 	end
-	L2_28 = A0_26._move_interpolator
-	L2_28 = L2_28.update
-	L2_28(L2_28, A1_27)
-	L2_28 = A0_26._move_interpolator
-	L2_28 = L2_28.value
-	L2_28 = L2_28(L2_28)
-	if A0_26._move_interpolator:has_reached_target() then
-		L2_28 = A0_26._move_interpolator:target()
+	l_6_0._move_interpolator:update(l_6_1)
+	local l_6_2 = l_6_0._move_interpolator:value()
+	if l_6_0._move_interpolator:has_reached_target() then
+		l_6_2 = l_6_0._move_interpolator:target()
 	end
-	A0_26._panel:set_world_center_x(L2_28)
+	l_6_0._panel:set_world_center_x(l_6_2)
 end
+
+

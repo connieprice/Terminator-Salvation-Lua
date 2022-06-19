@@ -1,21 +1,32 @@
-Angle = Angle or class()
-function angle_constrain(A0_0)
-	return A0_0 % 360
+if not Angle then
+	Angle = class()
 end
-function angle_diff(A0_1, A1_2)
-	return angle_constrain(A0_1) - angle_constrain(A1_2) + 360
-end
-function angle_to_signed(A0_3)
-	local L1_4
-	if A0_3 > 180 then
-		A0_3 = A0_3 - 360
+angle_constrain = function(l_1_0)
+		return l_1_0 % 360
+  end
+angle_diff = function(l_2_0, l_2_1)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if angle_constrain(l_2_0) - angle_constrain(l_2_1) < 0 then
+		local l_2_2 = angle_constrain(l_2_0) - angle_constrain(l_2_1) + 360
 	end
-	return A0_3
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_2_2
 end
-function angle_from_signed(A0_5)
-	local L1_6
-	if A0_5 < 0 then
-		A0_5 = A0_5 + 360
+
+angle_to_signed = function(l_3_0)
+	if l_3_0 > 180 then
+		l_3_0 = l_3_0 - 360
 	end
-	return A0_5
+	return l_3_0
 end
+
+angle_from_signed = function(l_4_0)
+	if l_4_0 < 0 then
+		l_4_0 = l_4_0 + 360
+	end
+	return l_4_0
+end
+
+

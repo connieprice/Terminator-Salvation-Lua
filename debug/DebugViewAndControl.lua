@@ -1,99 +1,66 @@
-local L0_0, L1_1
-function L0_0()
-	local L0_2, L1_3
-	L0_2 = assert
-	L1_3 = managers
-	L1_3 = L1_3.user_viewport
-	L0_2(L1_3)
-	L0_2 = next
-	L1_3 = managers
-	L1_3 = L1_3.user_viewport
-	L1_3 = L1_3.viewports
-	L1_3 = L1_3(L1_3)
-	L1_3 = L0_2(L1_3, nil)
-	return L0_2, L1_3
+local l_0_0 = function()
+	assert(managers.user_viewport)
+	local l_1_0, l_1_1 = next((managers.user_viewport:viewports()), nil)
+	return l_1_0, l_1_1
 end
-function L1_1(A0_4)
-	local L1_5
-	L1_5 = _UPVALUE0_
-	L1_5 = L1_5()
-	assert(L1_5)
-	L1_5:control_unit(A0_4)
+
+control_unit = function(l_2_0)
+	-- upvalues: l_0_0
+	local l_2_1 = l_0_0()
+	assert(l_2_1)
+	l_2_1:control_unit(l_2_0)
 end
-control_unit = L1_1
-function L1_1(A0_6)
-	local L1_7, L2_8
-	L1_7 = _UPVALUE0_
-	L2_8 = L1_7()
-	assert(L2_8)
-	L2_8:view_unit(A0_6)
+
+view_unit = function(l_3_0)
+	-- upvalues: l_0_0
+	local l_3_1, l_3_2 = l_0_0()
+	assert(l_3_2)
+	l_3_2:view_unit(l_3_0)
 end
-view_unit = L1_1
-function L1_1()
-	local L0_9, L1_10, L2_11, L3_12
-	L0_9 = _UPVALUE0_
-	L1_10 = L0_9()
-	L2_11 = assert
-	L3_12 = L0_9
-	L2_11(L3_12)
-	L2_11 = assert
-	L3_12 = L1_10
-	L2_11(L3_12)
-	L3_12 = L0_9
-	L2_11 = L0_9.assigned_unit
-	L2_11 = L2_11(L3_12)
-	L3_12 = L0_9.control_unit
-	L3_12(L0_9, L2_11)
-	L3_12 = L1_10.view_unit
-	L3_12(L1_10, L2_11)
+
+reset_view_and_control = function()
+	-- upvalues: l_0_0
+	local l_4_0, l_4_1 = l_0_0()
+	assert(l_4_0)
+	assert(l_4_1)
+	local l_4_2 = l_4_0:assigned_unit()
+	l_4_0:control_unit(l_4_2)
+	l_4_1:view_unit(l_4_2)
 end
-reset_view_and_control = L1_1
-function L1_1()
-	local L0_13, L1_14, L2_15, L3_16, L4_17, L5_18, L6_19, L7_20, L8_21, L9_22, L10_23, L11_24, L12_25
-	L0_13 = 10
-	L1_14 = _UPVALUE0_
-	L2_15 = L1_14()
-	L3_16 = assert
-	L4_17 = L2_15
-	L3_16(L4_17)
-	L4_17 = L2_15
-	L3_16 = L2_15.engine_camera
-	L3_16 = L3_16(L4_17)
-	L4_17 = assert
-	L5_18 = L3_16
-	L4_17(L5_18)
-	L5_18 = L3_16
-	L4_17 = L3_16.position
-	L4_17 = L4_17(L5_18)
-	L6_19 = L3_16
-	L5_18 = L3_16.new_rotation
-	L5_18 = L5_18(L6_19)
-	L6_19 = L5_18
-	L5_18 = L5_18.y
-	L5_18 = L5_18(L6_19)
-	L7_20 = L3_16
-	L6_19 = L3_16.far_range
-	L6_19 = L6_19(L7_20)
-	L7_20 = managers
-	L7_20 = L7_20.slot
-	L8_21 = L7_20
-	L7_20 = L7_20.get_mask
-	L9_22 = "players"
-	L10_23 = "friends"
-	L11_24 = "enemies"
-	L7_20 = L7_20(L8_21, L9_22, L10_23, L11_24)
-	L9_22 = L2_15
-	L8_21 = L2_15.viewed_unit
-	L8_21 = L8_21(L9_22)
-	L9_22 = math
-	L9_22 = L9_22.sin
-	L10_23 = L0_13
-	L9_22 = L9_22(L10_23)
-	L9_22 = L9_22 * L6_19
-	L10_23 = World
-	L11_24 = L10_23
-	L10_23 = L10_23.find_units
-	L12_25 = "cone"
-	L10_23 = L10_23(L11_24, L12_25, L4_17, L4_17 + L6_19 * L5_18, L9_22, L7_20)
-	L11_24, L12_25 = nil, nil
-	for 
+
+select_character = function()
+	-- upvalues: l_0_0
+	local l_5_17, l_5_18, l_5_19, l_5_20 = nil
+	local l_5_0 = 10
+	local l_5_1, l_5_2 = l_0_0()
+	assert(l_5_2)
+	local l_5_3 = l_5_2:engine_camera()
+	assert(l_5_3)
+	local l_5_4 = l_5_3:position()
+	local l_5_5 = l_5_3:new_rotation():y()
+	local l_5_6 = l_5_3:far_range()
+	local l_5_7 = managers.slot:get_mask("players", "friends", "enemies")
+	local l_5_8 = l_5_2:viewed_unit()
+	local l_5_9 = math.sin(l_5_0) * l_5_6
+	local l_5_16 = World:find_units
+	l_5_16 = (l_5_16(World, "cone", l_5_4, l_5_4 + l_5_6 * l_5_5, l_5_9, l_5_7))
+	local l_5_10 = nil
+	local l_5_11, l_5_12 = nil
+	l_5_12 = pairs
+	l_5_12 = l_5_12(l_5_16)
+	for i_0,i_1 in l_5_12 do
+		if i_1 ~= l_5_8 then
+			local l_5_22 = nil
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if not l_5_11 or i_1:position() - l_5_4:length() < l_5_11 then
+			end
+			l_5_11 = i_1:position() - l_5_4:length()
+		end
+	end
+	return l_5_10
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

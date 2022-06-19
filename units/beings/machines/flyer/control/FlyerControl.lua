@@ -1,6 +1,11 @@
 require("network/control/UnitControl")
-FlyerControl = FlyerControl or class(UnitControl)
-function FlyerControl.send_input(A0_0, A1_1)
+if not FlyerControl then
+	FlyerControl = class(UnitControl)
 end
-function FlyerControl.receive_input(A0_2, A1_3)
+FlyerControl.send_input = function(l_1_0, l_1_1)
 end
+
+FlyerControl.receive_input = function(l_2_0, l_2_1)
+end
+
+

@@ -1,171 +1,246 @@
-InventoryHud = InventoryHud or class()
-function InventoryHud.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._player_unit = A1_1
-	A0_0._inventory = A0_0._player_unit:base():inventory()
-	A0_0._safe_panel = A2_2
-	A0_0._player_data = A1_1:player_data()
-	A0_0._inventory_icons = A3_3
-	A0_0._panel = A0_0._safe_panel:panel({
-		name = "inventory_panel",
-		valign = "grow",
-		halign = "grow"
-	})
-	A0_0._icons = {
-		[1] = {x = 170, y = 0},
-		[2] = {x = 0, y = 110},
-		[3] = {
-			x = -170,
-			y = 0
-		},
-		[4] = {
-			x = 0,
-			y = -110
-		}
-	}
-	A0_0._alpha_interpolator = Interpolator:new(0, tweak_data.player.hud.INVENTORY_FADE_SPEED)
-	A0_0._stay_visible_time = 0
-	A0_0._centered_image = A0_0._panel:bitmap({
-		layer = 0,
-		name = "inventory_center",
-		texture = "gui_inv_arrow_dummy"
-	})
-	A0_0._centered_image:set_center_x(A0_0._panel:center_x())
-	A0_0._centered_image:set_center_y(A0_0._panel:center_y())
+if not InventoryHud then
+	InventoryHud = class()
 end
-function InventoryHud.destroy(A0_4)
-	if A0_4._panel then
-		A0_4._panel:clear()
+InventoryHud.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._player_unit = l_1_1
+	l_1_0._inventory = l_1_0._player_unit:base():inventory()
+	l_1_0._safe_panel = l_1_2
+	l_1_0._player_data = l_1_1:player_data()
+	l_1_0._inventory_icons = l_1_3
+	local l_1_4, l_1_5 = l_1_0._safe_panel:panel, l_1_0._safe_panel
+	local l_1_6 = {}
+	l_1_6.name = "inventory_panel"
+	l_1_6.valign = "grow"
+	l_1_6.halign = "grow"
+	l_1_4 = l_1_4(l_1_5, l_1_6)
+	l_1_0._panel = l_1_4
+	l_1_4 = 170
+	l_1_5 = 110
+	local l_1_7 = {}
+	l_1_7.x = l_1_4
+	l_1_7.y = 0
+	l_1_7 = {x = 0, y = l_1_5}
+	l_1_7 = {x = -l_1_4, y = 0}
+	l_1_7 = {x = 0, y = -l_1_5}
+	l_1_0._icons, l_1_6 = l_1_6, {[1] = l_1_7, [2] = l_1_7, [3] = l_1_7, [4] = l_1_7}
+	l_1_6 = Interpolator
+	l_1_6, l_1_7 = l_1_6:new, l_1_6
+	l_1_6 = l_1_6(l_1_7, 0, tweak_data.player.hud.INVENTORY_FADE_SPEED)
+	l_1_0._alpha_interpolator = l_1_6
+	l_1_0._stay_visible_time = 0
+	l_1_6 = l_1_0._panel
+	l_1_6, l_1_7 = l_1_6:bitmap, l_1_6
+	local l_1_8 = {}
+	l_1_8.layer = 0
+	l_1_8.name = "inventory_center"
+	l_1_8.texture = "gui_inv_arrow_dummy"
+	l_1_6 = l_1_6(l_1_7, l_1_8)
+	l_1_0._centered_image = l_1_6
+	l_1_6 = l_1_0._centered_image
+	l_1_6, l_1_7 = l_1_6:set_center_x, l_1_6
+	l_1_8 = l_1_0._panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6(l_1_7, l_1_8)
+	l_1_6 = l_1_0._centered_image
+	l_1_6, l_1_7 = l_1_6:set_center_y, l_1_6
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6(l_1_7, l_1_8)
+end
+
+InventoryHud.destroy = function(l_2_0)
+	if l_2_0._panel then
+		l_2_0._panel:clear()
 	end
-	A0_4._panel = nil
+	l_2_0._panel = nil
 end
-function InventoryHud.update(A0_5, A1_6)
-	local L2_7, L3_8, L4_9, L5_10
-	L2_7 = A0_5._player_data
-	L2_7 = L2_7.hud_inventory_show
-	L3_8 = A0_5._player_data
-	L3_8 = L3_8.hud_inventory_selection_slot
-	L4_9 = A0_5._player_data
-	L4_9 = L4_9.hud_inventory_primary_active_slot
-	L5_10 = A0_5._player_data
-	L5_10 = L5_10.hud_inventory_secondary_active_slot
-	A0_5:_update_stay_visible_time(A1_6, L2_7)
-	A0_5:_update_alpha_fade(A1_6)
-	A0_5:_create_destroy_bitmaps()
-	A0_5:_set_bitmap_alpha_and_visibility(A0_5._alpha_interpolator:value(), L3_8, L4_9, L5_10)
+
+InventoryHud.update = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0._player_data.hud_inventory_show
+	local l_3_3 = l_3_0._player_data.hud_inventory_selection_slot
+	local l_3_4 = l_3_0._player_data.hud_inventory_primary_active_slot
+	local l_3_5 = l_3_0._player_data.hud_inventory_secondary_active_slot
+	l_3_0:_update_stay_visible_time(l_3_1, l_3_2)
+	l_3_0:_update_alpha_fade(l_3_1)
+	l_3_0:_create_destroy_bitmaps()
+	l_3_0:_set_bitmap_alpha_and_visibility(l_3_0._alpha_interpolator:value(), l_3_3, l_3_4, l_3_5)
 end
-function InventoryHud._update_stay_visible_time(A0_11, A1_12, A2_13)
-	local L3_14
-	if A2_13 then
-		L3_14 = tweak_data
-		L3_14 = L3_14.player
-		L3_14 = L3_14.hud
-		L3_14 = L3_14.INVENTORY_FADE_OUT_TIME
-		A0_11._stay_visible_time = L3_14
+
+InventoryHud._update_stay_visible_time = function(l_4_0, l_4_1, l_4_2)
+	if l_4_2 then
+		l_4_0._stay_visible_time = tweak_data.player.hud.INVENTORY_FADE_OUT_TIME
 	end
-	L3_14 = A0_11._stay_visible_time
-	L3_14 = L3_14 - A1_12
-	A0_11._stay_visible_time = L3_14
+	l_4_0._stay_visible_time = l_4_0._stay_visible_time - l_4_1
 end
-function InventoryHud._update_alpha_fade(A0_15, A1_16)
-	if A0_15._stay_visible_time > 0 then
-		A0_15._alpha_interpolator:set_target(1)
+
+InventoryHud._update_alpha_fade = function(l_5_0, l_5_1)
+	if l_5_0._stay_visible_time > 0 then
+		l_5_0._alpha_interpolator:set_target(1)
 	else
-		A0_15._alpha_interpolator:set_target(0)
+		l_5_0._alpha_interpolator:set_target(0)
 	end
-	A0_15._alpha_interpolator:update(A1_16)
+	l_5_0._alpha_interpolator:update(l_5_1)
 end
-function InventoryHud._create_destroy_bitmaps(A0_17, A1_18)
-	local L2_19, L3_20, L4_21, L5_22, L6_23, L7_24, L8_25
-	for L5_22 = 1, 4 do
-		L6_23 = A0_17._inventory
-		L7_24 = L6_23
-		L6_23 = L6_23.item_by_index
-		L8_25 = L5_22
-		L6_23 = L6_23(L7_24, L8_25)
-		L7_24 = A0_17._icons
-		L7_24 = L7_24[L5_22]
-		L7_24 = L7_24.bitmap
-		if L7_24 then
-			L7_24 = A0_17._icons
-			L7_24 = L7_24[L5_22]
-			L7_24 = L7_24.texture_name
+
+InventoryHud._create_destroy_bitmaps = function(l_6_0, l_6_1)
+	for l_6_5 = 1, 4 do
+		local l_6_6 = l_6_0._inventory:item_by_index(l_6_5)
+		if l_6_0._icons[l_6_5].bitmap then
+			local l_6_7, l_6_9, l_6_11, l_6_13, l_6_15, l_6_16, l_6_18, l_6_20, l_6_22 = l_6_0._icons[l_6_5].texture_name
 		end
-		if L6_23 then
-			L8_25 = A0_17._inventory_icons
-			L8_25 = L8_25[L6_23:name()]
+		do
+			local l_6_8, l_6_10, l_6_12, l_6_14, l_6_17, l_6_19, l_6_21, l_6_23 = , l_6_6 and l_6_0._inventory_icons[l_6_6:name()] or "gui_inv_empty"
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+		if l_6_8 and l_6_10 and l_6_8 ~= l_6_10 then
+			l_6_0:_destroy_bitmap_in_slot(l_6_5)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_6_0:_create_bitmap_in_slot(l_6_5, l_6_10)
+		end
+		do return end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_6_8 then
+			l_6_0:_destroy_bitmap_in_slot(l_6_5)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		elseif l_6_10 then
+			l_6_0:_create_bitmap_in_slot(l_6_5, l_6_10)
+		end
+	end
+end
+
+InventoryHud._create_bitmap_in_slot = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_0._icons[l_7_1]
+	local l_7_4, l_7_5 = l_7_0._panel:bitmap, l_7_0._panel
+	local l_7_6 = {}
+	l_7_6.layer = 0
+	l_7_6.name = "inventory_weapon_icon"
+	l_7_6.texture = l_7_2
+	l_7_4 = l_7_4(l_7_5, l_7_6)
+	l_7_3.bitmap = l_7_4
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3.texture_name = l_7_2
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3 = l_7_3.bitmap
+	l_7_3, l_7_4 = l_7_3:set_color, l_7_3
+	l_7_5 = l_7_0._icons
+	l_7_5 = l_7_5[l_7_1]
+	l_7_5 = l_7_5.bitmap
+	l_7_5, l_7_6 = l_7_5:color, l_7_5
+	l_7_5 = l_7_5(l_7_6)
+	l_7_5, l_7_6 = l_7_5:with_alpha, l_7_5
+	l_7_6, l_7_5 = .end, l_7_5(l_7_6, 0)
+	l_7_3(l_7_4, l_7_5, l_7_6)
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3 = l_7_3.bitmap
+	l_7_3, l_7_4 = l_7_3:set_center_x, l_7_3
+	l_7_5 = l_7_0._panel
+	l_7_5, l_7_6 = l_7_5:center_x, l_7_5
+	l_7_5 = l_7_5(l_7_6)
+	l_7_6 = l_7_0._icons
+	l_7_6 = l_7_6[l_7_1]
+	l_7_6 = l_7_6.x
+	l_7_5 = l_7_5 + l_7_6
+	l_7_3(l_7_4, l_7_5)
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3 = l_7_3.bitmap
+	l_7_3, l_7_4 = l_7_3:set_center_y, l_7_3
+	l_7_5 = l_7_0._panel
+	l_7_5, l_7_6 = l_7_5:center_y, l_7_5
+	l_7_5 = l_7_5(l_7_6)
+	l_7_6 = l_7_0._icons
+	l_7_6 = l_7_6[l_7_1]
+	l_7_6 = l_7_6.y
+	l_7_5 = l_7_5 + l_7_6
+	l_7_3(l_7_4, l_7_5)
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3 = l_7_3.bitmap
+	l_7_3, l_7_4 = l_7_3:set_valign, l_7_3
+	l_7_5 = "center"
+	l_7_3(l_7_4, l_7_5)
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3 = l_7_3.bitmap
+	l_7_3, l_7_4 = l_7_3:set_halign, l_7_3
+	l_7_5 = "center"
+	l_7_3(l_7_4, l_7_5)
+	l_7_3 = l_7_0._icons
+	l_7_3 = l_7_3[l_7_1]
+	l_7_3 = l_7_3.bitmap
+	l_7_3, l_7_4 = l_7_3:hide, l_7_3
+	l_7_3(l_7_4)
+end
+
+InventoryHud._destroy_bitmap_in_slot = function(l_8_0, l_8_1)
+	l_8_0._panel:remove(l_8_0._icons[l_8_1].bitmap)
+	l_8_0._icons[l_8_1].bitmap = nil
+	l_8_0._icons[l_8_1].weapon = nil
+end
+
+InventoryHud._set_bitmap_alpha_and_visibility = function(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4)
+	l_9_0._centered_image:set_color(l_9_0._centered_image:color():with_alpha(l_9_1))
+	for l_9_8 = 1, 4 do
+		if l_9_0._icons[l_9_8] then
+			local l_9_9, l_9_10, l_9_11, l_9_14, l_9_15 = l_9_0._icons[l_9_8].bitmap
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_9_9 then
+			if l_9_1 > 0 then
+				l_9_9:show()
+				local l_9_12, l_9_13 = , nil
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_9_8 == l_9_3 then
+					do return end
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_9_8 == l_9_4 then
+					do return end
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_9_8 == l_9_2 then
+					do return end
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				l_9_12:set_color(nil:with_alpha(l_9_13))
+			end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
 		else
-			L8_25 = L8_25 or "gui_inv_empty"
-		end
-		if L7_24 and L8_25 then
-			if L7_24 ~= L8_25 then
-				A0_17:_destroy_bitmap_in_slot(L5_22)
-				A0_17:_create_bitmap_in_slot(L5_22, L8_25)
-			end
-		elseif L7_24 then
-			A0_17:_destroy_bitmap_in_slot(L5_22)
-		elseif L8_25 then
-			A0_17:_create_bitmap_in_slot(L5_22, L8_25)
+			l_9_13(l_9_12)
 		end
 	end
 end
-function InventoryHud._create_bitmap_in_slot(A0_26, A1_27, A2_28)
-	A0_26._icons[A1_27].bitmap = A0_26._panel:bitmap({
-		layer = 0,
-		name = "inventory_weapon_icon",
-		texture = A2_28
-	})
-	A0_26._icons[A1_27].texture_name = A2_28
-	A0_26._icons[A1_27].bitmap:set_color(A0_26._icons[A1_27].bitmap:color():with_alpha(0))
-	A0_26._icons[A1_27].bitmap:set_center_x(A0_26._panel:center_x() + A0_26._icons[A1_27].x)
-	A0_26._icons[A1_27].bitmap:set_center_y(A0_26._panel:center_y() + A0_26._icons[A1_27].y)
-	A0_26._icons[A1_27].bitmap:set_valign("center")
-	A0_26._icons[A1_27].bitmap:set_halign("center")
-	A0_26._icons[A1_27].bitmap:hide()
-end
-function InventoryHud._destroy_bitmap_in_slot(A0_29, A1_30)
-	A0_29._panel:remove(A0_29._icons[A1_30].bitmap)
-	A0_29._icons[A1_30].bitmap = nil
-	A0_29._icons[A1_30].weapon = nil
-end
-function InventoryHud._set_bitmap_alpha_and_visibility(A0_31, A1_32, A2_33, A3_34, A4_35)
-	local L5_36, L6_37, L7_38, L8_39, L9_40, L10_41, L11_42
-	L8_39 = L7_38
-	L8_39 = L7_38
-	L9_40 = A1_32
-	L11_42 = L7_38(L8_39, L9_40)
-	L5_36(L6_37, L7_38, L8_39, L9_40, L10_41, L11_42, L7_38(L8_39, L9_40))
-	for L8_39 = 1, 4 do
-		L9_40 = A0_31._icons
-		L9_40 = L9_40[L8_39]
-		if L9_40 then
-			L9_40 = A0_31._icons
-			L9_40 = L9_40[L8_39]
-			L9_40 = L9_40.bitmap
-		end
-		if L9_40 then
-			if A1_32 > 0 then
-				L11_42 = L9_40
-				L10_41 = L9_40.show
-				L10_41(L11_42)
-				L10_41, L11_42 = nil, nil
-				if L8_39 == A3_34 then
-					L11_42 = Color(0, 1, 0)
-				elseif L8_39 == A4_35 then
-					L11_42 = Color(1, 0, 0)
-				else
-					L11_42 = Color(1, 1, 1)
-				end
-				if L8_39 == A2_33 then
-					L10_41 = A1_32
-				else
-					L10_41 = 0.5 * A1_32
-				end
-				L9_40:set_color(L11_42:with_alpha(L10_41))
-			else
-				L11_42 = L9_40
-				L10_41 = L9_40.hide
-				L10_41(L11_42)
-			end
-		end
-	end
-end
+
+

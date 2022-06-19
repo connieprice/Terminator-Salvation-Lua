@@ -1,5 +1,9 @@
 require("managers/actionmanagers/AMWeaponPickup")
-AMM79Pickup = AMM79Pickup or class(AMWeaponPickup)
-function AMM79Pickup.init(A0_0, A1_1, A2_2)
-	AMWeaponPickup.init(A0_0, A1_1, A2_2, "m79_grenadelauncher")
+if not AMM79Pickup then
+	AMM79Pickup = class(AMWeaponPickup)
 end
+AMM79Pickup.init = function(l_1_0, l_1_1, l_1_2)
+	AMWeaponPickup.init(l_1_0, l_1_1, l_1_2, "m79_grenadelauncher")
+end
+
+

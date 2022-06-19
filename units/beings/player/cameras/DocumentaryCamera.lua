@@ -1,6 +1,8 @@
 require("shared/camera/SharedCamera")
 require("shared/Interpolator")
-DocumentaryCamera = DocumentaryCamera or class(SharedCamera)
+if not DocumentaryCamera then
+	DocumentaryCamera = class(SharedCamera)
+end
 DocumentaryCamera.walk_dir_redirects = {}
 DocumentaryCamera.walk_dir_redirects[1] = "walk_fwd"
 DocumentaryCamera.walk_dir_redirects[2] = "walk_bwd"
@@ -11,194 +13,224 @@ DocumentaryCamera.run_dir_redirects[1] = "run_fwd"
 DocumentaryCamera.run_dir_redirects[2] = "run_bwd"
 DocumentaryCamera.run_dir_redirects[3] = "run_lt"
 DocumentaryCamera.run_dir_redirects[4] = "run_rt"
-function DocumentaryCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0._target_fov = Interpolator:new(0, 4)
-	A0_0._target_shake_amount = Interpolator:new(0, 4)
-	A0_0._player_data = A0_0._root_unit:player_data()
-	A0_0._damage_data = A0_0._root_unit:damage_data()
-	A0_0._shake_amount = 0
-	A0_0._cam_settings = tweak_data.player.camera.documentary_camera
+DocumentaryCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._target_fov = Interpolator:new(0, 4)
+	l_1_0._target_shake_amount = Interpolator:new(0, 4)
+	l_1_0._player_data = l_1_0._root_unit:player_data()
+	l_1_0._damage_data = l_1_0._root_unit:damage_data()
+	l_1_0._shake_amount = 0
+	l_1_0._cam_settings = tweak_data.player.camera.documentary_camera
 end
-function DocumentaryCamera.destroy(A0_2)
-	SharedCamera.destroy(A0_2)
-	if alive(A0_2._anim_unit) then
-		A0_2._anim_unit:set_slot(0)
-		A0_2._anim_unit = nil
-		A0_2._object = nil
+
+DocumentaryCamera.destroy = function(l_2_0)
+	SharedCamera.destroy(l_2_0)
+	if alive(l_2_0._anim_unit) then
+		l_2_0._anim_unit:set_slot(0)
+		l_2_0._anim_unit = nil
+		l_2_0._object = nil
 	end
 end
-function DocumentaryCamera.on_activate(A0_3, A1_4)
-	if A1_4 then
-		assert(A0_3._anim_unit == nil)
-		A0_3._anim_unit = World:spawn_unit(A0_3._anim_unit_name, Vector3(0, 0, 0), Rotation())
-		A0_3._anim_unit:set_driving("script")
-		A0_3._anim_unit:set_visible(false)
-		if A0_3._object_name then
-			A0_3._object = A0_3._anim_unit:get_object(A0_3._object_name)
+
+DocumentaryCamera.on_activate = function(l_3_0, l_3_1)
+	do
+		if l_3_1 then
+			local l_3_2 = assert
+			l_3_2(l_3_0._anim_unit == nil)
+			l_3_2 = World
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_3_0._anim_unit = l_3_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_3_2(l_3_2, "script")
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_3_2(l_3_2, false)
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_3_2 then
+				l_3_0._object = l_3_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			else
+				l_3_0._object = l_3_2
+			end
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_3_0._unit_data = l_3_2
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_3_0._asm = l_3_2
+			l_3_0._shake_amount = 0
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	else
+		l_3_2(l_3_0._anim_unit)
+		l_3_0._anim_unit:set_slot(0)
+		l_3_0._anim_unit = nil
+		l_3_0._object = nil
+		l_3_0._unit_data = nil
+		l_3_0._asm = nil
+	end
+end
+
+DocumentaryCamera.parse_parameters = function(l_4_0, l_4_1)
+	SharedCamera.parse_parameters(l_4_0, l_4_1)
+	if l_4_1.unit then
+		l_4_0._anim_unit_name = l_4_1.unit
+	end
+	if l_4_1.object then
+		l_4_0._object_name = l_4_1.object
+	end
+end
+
+DocumentaryCamera.preload_units = function(l_5_0)
+	local l_5_1 = l_5_0.unit
+	if l_5_1 then
+		World:preload_unit(l_5_1)
+	end
+end
+
+DocumentaryCamera.update = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	assert(l_6_0._anim_unit)
+	local l_6_5 = l_6_0._anim_unit
+	local l_6_6 = l_6_0._player_data
+	if l_6_6 then
+		local l_6_7 = l_6_0._target_fov
+		if l_6_6.is_precision_aiming then
+			l_6_7:set_target(-10)
 		else
-			A0_3._object = A0_3._anim_unit:orientation_object()
+			l_6_7:set_target(0)
 		end
-		A0_3._unit_data = A0_3._anim_unit:unit_data()
-		A0_3._asm = A0_3._anim_unit:anim_state_machine()
-		A0_3._shake_amount = 0
-	else
-		assert(A0_3._anim_unit)
-		A0_3._anim_unit:set_slot(0)
-		A0_3._anim_unit = nil
-		A0_3._object = nil
-		A0_3._unit_data = nil
-		A0_3._asm = nil
-	end
-end
-function DocumentaryCamera.parse_parameters(A0_5, A1_6)
-	SharedCamera.parse_parameters(A0_5, A1_6)
-	if A1_6.unit then
-		A0_5._anim_unit_name = A1_6.unit
-	end
-	if A1_6.object then
-		A0_5._object_name = A1_6.object
-	end
-end
-function DocumentaryCamera.preload_units(A0_7)
-	local L1_8
-	L1_8 = A0_7.unit
-	if L1_8 then
-		World:preload_unit(L1_8)
-	end
-end
-function DocumentaryCamera.update(A0_9, A1_10, A2_11, A3_12, A4_13)
-	local L5_14, L6_15, L7_16, L8_17
-	L5_14 = assert
-	L6_15 = A0_9._anim_unit
-	L5_14(L6_15)
-	L5_14 = A0_9._anim_unit
-	L6_15 = A0_9._player_data
-	if L6_15 then
-		L7_16 = A0_9._target_fov
-		L8_17 = L6_15.is_precision_aiming
-		if L8_17 then
-			L8_17 = L7_16.set_target
-			L8_17(L7_16, -10)
+		l_6_7:update(l_6_2)
+		l_6_0._target_shake_amount:update(l_6_2)
+		local l_6_8 = l_6_0._target_shake_amount:value()
+		if l_6_0._shake_amount ~= l_6_8 then
+			l_6_0._asm:set_global("shake_amount", l_6_8)
+			l_6_0._shake_amount = l_6_8
+		end
+		l_6_0._fov = l_6_7:value()
+		local l_6_9 = l_6_0._damage_data
+		local l_6_10 = l_6_0._camera_data
+		if l_6_6.strangul then
+			l_6_0:strangul()
+		elseif l_6_10.enter_dead then
+			l_6_0:enter_dead()
+		elseif l_6_10.dead then
+			l_6_0:dead()
+		elseif l_6_6.rail_vehicle_shake then
+			l_6_0:on_vehicle(l_6_6.rail_vehicle_shake)
+		elseif l_6_6.reviving then
+			l_6_0:reviving()
+		elseif l_6_6.running then
+			l_6_0:running(0, false)
+		elseif l_6_6.walking then
+			l_6_0:walking(0, false)
 		else
-			L8_17 = L7_16.set_target
-			L8_17(L7_16, 0)
+			l_6_0:idle(false)
 		end
-		L8_17 = L7_16.update
-		L8_17(L7_16, A2_11)
-		L8_17 = A0_9._target_shake_amount
-		L8_17 = L8_17.update
-		L8_17(L8_17, A2_11)
-		L8_17 = A0_9._target_shake_amount
-		L8_17 = L8_17.value
-		L8_17 = L8_17(L8_17)
-		if A0_9._shake_amount ~= L8_17 then
-			A0_9._asm:set_global("shake_amount", L8_17)
-			A0_9._shake_amount = L8_17
-		end
-		A0_9._fov = L7_16:value()
-		if L6_15.strangul then
-			A0_9:strangul()
-		elseif A0_9._camera_data.enter_dead then
-			A0_9:enter_dead()
-		elseif A0_9._camera_data.dead then
-			A0_9:dead()
-		elseif L6_15.rail_vehicle_shake then
-			A0_9:on_vehicle(L6_15.rail_vehicle_shake)
-		elseif L6_15.reviving then
-			A0_9:reviving()
-		elseif L6_15.running then
-			A0_9:running(0, false)
-		elseif L6_15.walking then
-			A0_9:walking(0, false)
-		else
-			A0_9:idle(false)
-		end
-		A0_9._local_position = A0_9._object:local_position()
-		A0_9._local_rotation = A0_9._object:local_rotation()
+		local l_6_11 = l_6_0._object
+		l_6_0._local_position = l_6_11:local_position()
+		l_6_0._local_rotation = l_6_11:local_rotation()
 	end
-	L7_16 = SharedCamera
-	L7_16 = L7_16.update
-	L8_17 = A0_9
-	L7_16(L8_17, A1_10, A2_11, A3_12, A4_13)
-	L8_17 = L5_14
-	L7_16 = L5_14.set_position
-	L7_16(L8_17, A0_9._position)
-	L7_16 = A0_9._unit_data
-	L7_16 = L7_16.entering_dead_done
-	A0_9.entering_dead_done = L7_16
+	SharedCamera.update(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	l_6_5:set_position(l_6_0._position)
+	l_6_0.entering_dead_done = l_6_0._unit_data.entering_dead_done
 end
-function DocumentaryCamera._set_shake_amount(A0_18, A1_19)
-	A0_18._target_shake_amount:set_target(A1_19)
+
+DocumentaryCamera._set_shake_amount = function(l_7_0, l_7_1)
+	l_7_0._target_shake_amount:set_target(l_7_1)
 end
-function DocumentaryCamera.idle(A0_20, A1_21)
-	if A1_21 then
-		A0_20._anim_unit:play_redirect("aim")
+
+DocumentaryCamera.idle = function(l_8_0, l_8_1)
+	if l_8_1 then
+		l_8_0._anim_unit:play_redirect("aim")
 	else
-		A0_20._anim_unit:play_redirect("idle")
+		l_8_0._anim_unit:play_redirect("idle")
 	end
-	A0_20:_set_shake_amount(0)
+	l_8_0:_set_shake_amount(0)
 end
-function DocumentaryCamera.walking(A0_22, A1_23, A2_24)
-	local L3_25
-	if A2_24 then
-		L3_25 = A0_22._anim_unit
-		L3_25 = L3_25.play_redirect
-		L3_25(L3_25, "aim")
+
+DocumentaryCamera.walking = function(l_9_0, l_9_1, l_9_2)
+	if l_9_2 then
+		l_9_0._anim_unit:play_redirect("aim")
 	else
-		L3_25 = DocumentaryCamera
-		L3_25 = L3_25.walk_dir_redirects
-		L3_25 = L3_25[A0_22._player_data.move_dir]
-		if L3_25 then
-			A0_22._anim_unit:play_redirect(L3_25)
+		local l_9_3 = DocumentaryCamera.walk_dir_redirects[l_9_0._player_data.move_dir]
+	if l_9_3 then
 		end
+		l_9_0._anim_unit:play_redirect(l_9_3)
 	end
-	L3_25 = A0_22._player_data
-	L3_25 = L3_25.is_precision_aiming
-	if L3_25 then
-		L3_25 = A0_22._set_shake_amount
-		L3_25(A0_22, A0_22._cam_settings.walk_aim_shake)
+	if l_9_0._player_data.is_precision_aiming then
+		l_9_0:_set_shake_amount(l_9_0._cam_settings.walk_aim_shake)
 	else
-		L3_25 = A0_22._set_shake_amount
-		L3_25(A0_22, A0_22._cam_settings.walk_shake)
+		l_9_0:_set_shake_amount(l_9_0._cam_settings.walk_shake)
 	end
 end
-function DocumentaryCamera.running(A0_26, A1_27, A2_28)
-	local L3_29
-	if A2_28 then
-		L3_29 = A0_26._anim_unit
-		L3_29 = L3_29.play_redirect
-		L3_29(L3_29, "aim")
+
+DocumentaryCamera.running = function(l_10_0, l_10_1, l_10_2)
+	if l_10_2 then
+		l_10_0._anim_unit:play_redirect("aim")
 	else
-		L3_29 = DocumentaryCamera
-		L3_29 = L3_29.run_dir_redirects
-		L3_29 = L3_29[A0_26._player_data.move_dir]
-		if L3_29 then
-			A0_26._anim_unit:play_redirect(L3_29)
+		local l_10_3 = DocumentaryCamera.run_dir_redirects[l_10_0._player_data.move_dir]
+	if l_10_3 then
 		end
+		l_10_0._anim_unit:play_redirect(l_10_3)
 	end
-	L3_29 = A0_26._set_shake_amount
-	L3_29(A0_26, A0_26._cam_settings.run_shake)
+	l_10_0:_set_shake_amount(l_10_0._cam_settings.run_shake)
 end
-function DocumentaryCamera.reviving(A0_30)
-	A0_30._anim_unit:play_redirect("revive")
+
+DocumentaryCamera.reviving = function(l_11_0)
+	l_11_0._anim_unit:play_redirect("revive")
 end
-function DocumentaryCamera.wounded(A0_31)
-	A0_31._anim_unit:play_redirect("wounded")
+
+DocumentaryCamera.wounded = function(l_12_0)
+	l_12_0._anim_unit:play_redirect("wounded")
 end
-function DocumentaryCamera.enter_dead(A0_32)
-	A0_32._anim_unit:play_redirect("enter_dead")
+
+DocumentaryCamera.enter_dead = function(l_13_0)
+	l_13_0._anim_unit:play_redirect("enter_dead")
 end
-function DocumentaryCamera.dead(A0_33)
-	A0_33._anim_unit:play_redirect("dead")
+
+DocumentaryCamera.dead = function(l_14_0)
+	l_14_0._anim_unit:play_redirect("dead")
 end
-function DocumentaryCamera.strangul(A0_34)
-	A0_34._anim_unit:play_redirect("strangul")
+
+DocumentaryCamera.strangul = function(l_15_0)
+	l_15_0._anim_unit:play_redirect("strangul")
 end
-function DocumentaryCamera.on_vehicle(A0_35, A1_36)
-	A0_35._anim_unit:play_redirect(A1_36)
+
+DocumentaryCamera.on_vehicle = function(l_16_0, l_16_1)
+	l_16_0._anim_unit:play_redirect(l_16_1)
 end
-function DocumentaryCamera.debug_render(A0_37, A1_38, A2_39)
-	SharedCamera.debug_render(A0_37, A1_38, A2_39)
-	Draw:brush(Color(0.5, 1, 0, 0)):sphere(A0_37:position(), 10)
+
+DocumentaryCamera.debug_render = function(l_17_0, l_17_1, l_17_2)
+	SharedCamera.debug_render(l_17_0, l_17_1, l_17_2)
+	local l_17_3 = Draw:brush(Color(0.5, 1, 0, 0))
+	l_17_3:sphere(l_17_0:position(), 10)
 end
+
+

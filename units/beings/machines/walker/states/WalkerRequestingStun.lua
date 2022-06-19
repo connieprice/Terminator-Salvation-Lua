@@ -1,31 +1,40 @@
 require("units/beings/machines/walker/states/WalkerState")
 require("units/beings/machines/walker/states/WalkerStunned")
-WalkerRequestingStun = WalkerRequestingStun or class(WalkerState)
-function WalkerRequestingStun.init(A0_0)
-	WalkerState.init(A0_0)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
-	A0_0._base:_set_can_move(false)
-	A0_0._base:_set_can_fire(false)
+if not WalkerRequestingStun then
+	WalkerRequestingStun = class(WalkerState)
 end
-function WalkerRequestingStun.exit(A0_1)
-	local L1_2
-	L1_2 = A0_1._base
-	L1_2:_set_can_move(true)
-	L1_2:_set_can_fire(true)
+WalkerRequestingStun.init = function(l_1_0)
+	WalkerState.init(l_1_0)
+	local l_1_1 = l_1_0._unit
+	l_1_0._enemy_data = l_1_1:enemy_data()
+	local l_1_2 = l_1_0._base
+	l_1_2:_set_can_move(false)
+	l_1_2:_set_can_fire(false)
 end
-function WalkerRequestingStun.update(A0_3, A1_4)
-	local L2_5
-	L2_5 = A0_3._unit
-	L2_5:play_redirect("stun")
-	if not A0_3._enemy_data.pre_stunned then
-		L2_5:play_redirect("pre_stun")
+
+WalkerRequestingStun.exit = function(l_2_0)
+	local l_2_1 = l_2_0._base
+	l_2_1:_set_can_move(true)
+	l_2_1:_set_can_fire(true)
+end
+
+WalkerRequestingStun.update = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0._unit
+	l_3_2:play_redirect("stun")
+	if not l_3_0._enemy_data.pre_stunned then
+		l_3_2:play_redirect("pre_stun")
 	end
 end
-function WalkerRequestingStun.transition(A0_6)
-	if A0_6._base:check_fully_damaged() then
-		return (A0_6._base:check_fully_damaged())
+
+WalkerRequestingStun.transition = function(l_4_0)
+	local l_4_1 = l_4_0._base:check_fully_damaged()
+	if l_4_1 then
+		return l_4_1
 	end
-	if not A0_6._enemy_data.pre_stunned and A0_6._enemy_data.is_stunned then
+	local l_4_2 = l_4_0._enemy_data
+	if not l_4_2.pre_stunned and l_4_2.is_stunned then
 		return WalkerStunned
 	end
 end
+
+

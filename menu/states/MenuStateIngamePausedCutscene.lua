@@ -1,47 +1,43 @@
-MenuStateIngamePausedCutscene = MenuStateIngamePausedCutscene or class(FiniteStateMachineState)
-function MenuStateIngamePausedCutscene.init(A0_0)
-	local L1_1
-	L1_1 = A0_0._menu
-	L1_1 = L1_1.gui_interface
-	L1_1 = L1_1(L1_1)
-	L1_1 = L1_1.set_state
-	L1_1(L1_1, "ingame")
-	L1_1 = managers
-	L1_1 = L1_1.volume
-	L1_1 = L1_1.activate_set
-	L1_1(L1_1, "movie")
-	L1_1 = managers
-	L1_1 = L1_1.game_transition
-	L1_1 = L1_1.cutscene_id
-	L1_1 = L1_1(L1_1)
+if not MenuStateIngamePausedCutscene then
+	MenuStateIngamePausedCutscene = class(FiniteStateMachineState)
+end
+MenuStateIngamePausedCutscene.init = function(l_1_0)
+	l_1_0._menu:gui_interface():set_state("ingame")
+	managers.volume:activate_set("movie")
+	local l_1_1 = managers.game_transition:cutscene_id()
 	managers.game_transition:clear_wants_to_show_cutscene()
-	managers.cutscene:play_cutscene(L1_1)
-	A0_0._frame_count_playing = 0
-	A0_0._menu._is_in_cutscene = true
+	managers.cutscene:play_cutscene(l_1_1)
+	l_1_0._frame_count_playing = 0
+	l_1_0._menu._is_in_cutscene = true
 end
-function MenuStateIngamePausedCutscene.exit(A0_2)
-	A0_2._menu._is_in_cutscene = nil
+
+MenuStateIngamePausedCutscene.exit = function(l_2_0)
+	l_2_0._menu._is_in_cutscene = nil
 end
-function MenuStateIngamePausedCutscene.update(A0_3, A1_4)
+
+MenuStateIngamePausedCutscene.update = function(l_3_0, l_3_1)
 	if not managers.cutscene:is_playing() then
-		A0_3._menu:ingame_gui():set_faded_down()
+		l_3_0._menu:ingame_gui():set_faded_down()
 		managers.game_transition:request_unpause()
 		managers.game_transition:request_cutscene_unpause()
 	end
-	if not A0_3._executed_post_init and managers.cutscene:is_playing() then
-		A0_3._frame_count_playing = A0_3._frame_count_playing or 0
-		A0_3._frame_count_playing = A0_3._frame_count_playing + 1
-		if A0_3._frame_count_playing > 10 then
-			A0_3._menu:ingame_gui():fade_up()
-			A0_3._executed_post_init = true
-		end
+	if not l_3_0._frame_count_playing then
+		l_3_0._frame_count_playing = l_3_0._executed_post_init or not managers.cutscene:is_playing() or 0
+	end
+	l_3_0._frame_count_playing = l_3_0._frame_count_playing + 1
+	if l_3_0._frame_count_playing > 10 then
+		l_3_0._menu:ingame_gui():fade_up()
+		l_3_0._executed_post_init = true
 	end
 end
-function MenuStateIngamePausedCutscene.exit(A0_5)
+
+MenuStateIngamePausedCutscene.exit = function(l_4_0)
 	managers.volume:deactivate_set("movie")
-	A0_5._menu:ingame_gui():fade_down_slow()
+	l_4_0._menu:ingame_gui():fade_down_slow()
 	managers.cutscene:on_cutscene_exit()
 end
-function MenuStateIngamePausedCutscene.transition(A0_6)
-	local L1_7
+
+MenuStateIngamePausedCutscene.transition = function(l_5_0)
 end
+
+

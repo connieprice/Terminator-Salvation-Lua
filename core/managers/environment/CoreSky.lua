@@ -1,89 +1,98 @@
 core:module("CoreSky")
 core:require_module("CoreClass")
-Sky = Sky or CoreClass.class()
-function Sky.init(A0_0)
-	A0_0._params = {}
-	A0_0._name = "default"
+if not Sky then
+	Sky = CoreClass.class()
 end
-function Sky.set_name(A0_1, A1_2)
-	A0_1._name = A1_2
+Sky.init = function(l_1_0)
+	l_1_0._params = {}
+	l_1_0._name = "default"
 end
-function Sky.set_value(A0_3, A1_4, A2_5)
-	A0_3._params[A1_4] = A2_5
+
+Sky.set_name = function(l_2_0, l_2_1)
+	l_2_0._name = l_2_1
 end
-function Sky.value(A0_6, A1_7)
-	return A0_6._params[A1_7]
+
+Sky.set_value = function(l_3_0, l_3_1, l_3_2)
+	l_3_0._params[l_3_1] = l_3_2
 end
-function Sky.parse(A0_8, A1_9)
-	local L2_10, L3_11, L4_12, L5_13, L6_14, L7_15
-	A0_8._params = L2_10
-	for L5_13 in L2_10(L3_11) do
-		L7_15 = L5_13
-		L6_14 = L5_13.parameter
-		L6_14 = L6_14(L7_15, "key")
-		L7_15 = L5_13.parameter
-		L7_15 = L7_15(L5_13, "value")
-		if L5_13:name() == "param" and L6_14 and L6_14 ~= "" and L7_15 and L7_15 ~= "" then
-			if math.string_is_good_vector(L7_15) then
-				A0_8._params[L6_14] = math.string_to_vector(L7_15)
-			elseif tonumber(L7_15) then
-				A0_8._params[L6_14] = tonumber(L7_15)
-			elseif string.sub(L7_15, 1, 1) == "#" then
-				A0_8._params[L6_14] = A0_8:database_lookup(string.sub(L7_15, 2))
+
+Sky.value = function(l_4_0, l_4_1)
+	return l_4_0._params[l_4_1]
+end
+
+Sky.parse = function(l_5_0, l_5_1)
+	local l_5_5, l_5_6, l_5_7, l_5_8 = nil
+	l_5_0._params = {}
+	for i_0 in l_5_1:children() do
+		local l_5_10 = i_0:parameter("key")
+		if l_5_9:name() == "param" and l_5_10 and l_5_10 ~= "" and l_5_9:parameter("value") and l_5_9:parameter("value") ~= "" then
+			if math.string_is_good_vector(l_5_9:parameter("value")) then
+				l_5_0._params[l_5_10] = math.string_to_vector(l_5_9:parameter("value"))
+			end
+		else
+			if tonumber(l_5_9:parameter("value")) then
+				l_5_0._params[l_5_10] = tonumber(l_5_9:parameter("value"))
+			end
+		else
+			if string.sub(l_5_9:parameter("value"), 1, 1) == "#" then
+				l_5_0._params[l_5_10] = l_5_0:database_lookup(string.sub(l_5_9:parameter("value"), 2))
+			end
+		else
+			l_5_0._params[l_5_10] = tostring(l_5_9:parameter("value"))
+		end
+	end
+end
+
+Sky.copy = function(l_6_0, l_6_1)
+	local l_6_5, l_6_6, l_6_7, l_6_8, l_6_9, l_6_10, l_6_11, l_6_12, l_6_13, l_6_14, l_6_15, l_6_16, l_6_17, l_6_18, l_6_19, l_6_20 = nil
+	for i_0,i_1 in pairs(l_6_1._params) do
+		if type(i_1) == "string" then
+			l_6_0._params[i_0] = i_1
+		else
+			if type(i_1) ~= "number" then
+				l_6_0._params[i_0] = Vector3(i_1.x, i_1.y, i_1.z)
+			end
+		else
+			l_6_0._params[i_0] = i_1
+		end
+	end
+	l_6_0._name = l_6_1._name
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Sky.interpolate = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	local l_7_8, l_7_9, l_7_10, l_7_11, l_7_12, l_7_13, l_7_14, l_7_15, l_7_16, l_7_17 = nil
+	local l_7_4 = 1 - l_7_3
+	for i_0,i_1 in pairs(l_7_2._params) do
+		if not l_7_1._params[i_0] then
+			return 
+		end
+		for i_0,i_1 in l_7_5 do
+			if type(i_1) ~= "string" then
+				l_7_0._params[i_0] = l_7_1._params[i_0] * l_7_4 + i_1 * l_7_3
 			else
-				A0_8._params[L6_14] = tostring(L7_15)
+				l_7_0._params[i_0] = i_1
 			end
 		end
+		l_7_0._name = l_7_2._name
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+		 -- WARNING: missing end command somewhere! Added here
 	end
 end
-function Sky.copy(A0_16, A1_17)
-	local L2_18, L3_19, L4_20, L5_21, L6_22
-	for L5_21, L6_22 in L2_18(L3_19) do
-		if type(L6_22) == "string" then
-			A0_16._params[L5_21] = L6_22
-		elseif type(L6_22) ~= "number" then
-			A0_16._params[L5_21] = Vector3(L6_22.x, L6_22.y, L6_22.z)
-		else
-			A0_16._params[L5_21] = L6_22
-		end
-	end
-	A0_16._name = L2_18
+
+Sky.database_lookup = function(l_8_0, l_8_1)
+	local l_8_2 = string.find(l_8_1, "#")
+	local l_8_3 = string.sub(l_8_1, 1, l_8_2 - 1)
+	local l_8_4 = string.sub(l_8_1, l_8_2 + 1)
+	local l_8_5 = assert
+	l_8_5(l_8_3 == "LightIntensityDB")
+	l_8_5 = LightIntensityDB
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	assert(l_8_5)
+	return l_8_5
 end
-function Sky.interpolate(A0_23, A1_24, A2_25, A3_26)
-	local L4_27, L5_28, L6_29, L7_30, L8_31, L9_32
-	L4_27 = 1 - A3_26
-	for L8_31, L9_32 in L5_28(L6_29) do
-		if not A1_24._params[L8_31] then
-			return
-		elseif type(L9_32) ~= "string" then
-			A0_23._params[L8_31] = A1_24._params[L8_31] * L4_27 + L9_32 * A3_26
-		else
-			A0_23._params[L8_31] = L9_32
-		end
-	end
-	A0_23._name = L5_28
-end
-function Sky.database_lookup(A0_33, A1_34)
-	local L2_35, L3_36, L4_37, L5_38
-	L2_35 = string
-	L2_35 = L2_35.find
-	L3_36 = A1_34
-	L4_37 = "#"
-	L2_35 = L2_35(L3_36, L4_37)
-	L3_36 = string
-	L3_36 = L3_36.sub
-	L4_37 = A1_34
-	L5_38 = 1
-	L3_36 = L3_36(L4_37, L5_38, L2_35 - 1)
-	L4_37 = string
-	L4_37 = L4_37.sub
-	L5_38 = A1_34
-	L4_37 = L4_37(L5_38, L2_35 + 1)
-	L5_38 = assert
-	L5_38(L3_36 == "LightIntensityDB")
-	L5_38 = LightIntensityDB
-	L5_38 = L5_38.lookup
-	L5_38 = L5_38(L5_38, L4_37)
-	assert(L5_38)
-	return L5_38
-end
+
+

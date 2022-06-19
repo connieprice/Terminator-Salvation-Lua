@@ -1,86 +1,70 @@
 require("units/beings/machines/walker/states/WalkerState")
 require("units/beings/machines/walker/states/WalkerOnGround")
 require("units/beings/machines/walker/states/WalkerConnected")
-WalkerReachingForTarget = WalkerReachingForTarget or class(WalkerState)
-function WalkerReachingForTarget.init(A0_0)
-	local L1_1, L2_2, L3_3, L4_4, L5_5, L6_6
-	L1_1 = WalkerState
-	L1_1 = L1_1.init
-	L2_2 = A0_0
-	L1_1(L2_2)
-	L1_1 = A0_0._unit
-	L2_2 = A0_0._base
-	L3_3 = L2_2._special_kill_target
-	L4_4 = L2_2._special_kill_setup
-	A0_0._target_unit = L3_3
-	A0_0._special_kill_setup = L4_4
-	L6_6 = L1_1
-	L5_5 = L1_1.anim_state_machine
-	L5_5 = L5_5(L6_6)
-	L6_6 = L5_5.get_modifier
-	L6_6 = L6_6(L5_5, "ik_left_hand")
-	A0_0._ik_left_hand = L6_6
-	L6_6 = L4_4.target_object_name
-	A0_0._target_object = L3_3:get_object(L6_6)
-	assert(A0_0._target_object)
-	A0_0._enemy_data, L1_1:enemy_data().reaching_for_target = L1_1:enemy_data(), true
-	L2_2:_set_override_transform(L2_2._special_kill_position, L2_2._special_kill_rotation)
+if not WalkerReachingForTarget then
+	WalkerReachingForTarget = class(WalkerState)
 end
-function WalkerReachingForTarget.update(A0_7, A1_8)
-	local L2_9, L3_10, L4_11, L5_12, L6_13
-	L2_9 = A0_7._unit
-	L3_10 = A0_7._enemy_data
-	L4_11 = L3_10.reached_target
-	if L4_11 then
-		L4_11 = A0_7._special_kill_setup
-		L5_12 = A0_7._target_unit
-		L6_13 = L5_12
-		L5_12 = L5_12.play_redirect
-		L5_12 = L5_12(L6_13, L4_11.target_redirect)
-		if L5_12 == "" or L5_12 == nil then
-			L6_13 = L2_9.play_redirect
-			L6_13(L2_9, "abort_reach")
+WalkerReachingForTarget.init = function(l_1_0)
+	WalkerState.init(l_1_0)
+	local l_1_1 = l_1_0._unit
+	local l_1_2 = l_1_0._base
+	local l_1_3 = l_1_2._special_kill_target
+	local l_1_4 = l_1_2._special_kill_setup
+	l_1_0._target_unit = l_1_3
+	l_1_0._special_kill_setup = l_1_4
+	local l_1_5 = l_1_1:anim_state_machine()
+	l_1_0._ik_left_hand = l_1_5:get_modifier("ik_left_hand")
+	local l_1_6 = l_1_4.target_object_name
+	l_1_0._target_object = l_1_3:get_object(l_1_6)
+	assert(l_1_0._target_object)
+	local l_1_7 = l_1_1:enemy_data()
+	l_1_7.reaching_for_target = true
+	l_1_0._enemy_data = l_1_7
+	l_1_2:_set_override_transform(l_1_2._special_kill_position, l_1_2._special_kill_rotation)
+end
+
+WalkerReachingForTarget.update = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0._unit
+	local l_2_3 = l_2_0._enemy_data
+	if l_2_3.reached_target then
+		local l_2_4 = l_2_0._special_kill_setup
+		local l_2_5 = l_2_0._target_unit:play_redirect(l_2_4.target_redirect)
+		if l_2_5 == "" or l_2_5 == nil then
+			l_2_2:play_redirect("abort_reach")
 		else
-			L6_13 = L2_9.play_redirect
-			L6_13(L2_9, L4_11.redirect)
+			l_2_2:play_redirect(l_2_4.redirect)
 		end
 	else
-		L4_11 = alive
-		L5_12 = A0_7._target_unit
-		L4_11 = L4_11(L5_12)
-		if L4_11 then
-			L4_11 = L3_10.reaching_for_target
-			L4_11 = L4_11 or L3_10.reached_target
-		elseif not L4_11 then
-			L5_12 = L2_9
-			L4_11 = L2_9.play_redirect
-			L6_13 = "abort_reach"
-			L4_11(L5_12, L6_13)
+		if not alive(l_2_0._target_unit) or not l_2_3.reaching_for_target and not l_2_3.reached_target then
+			l_2_2:play_redirect("abort_reach")
 		end
 	end
-	L4_11 = A0_7._target_object
-	L5_12 = assert
-	L6_13 = L4_11
-	L5_12(L6_13)
-	L6_13 = L4_11
-	L5_12 = L4_11.position
-	L5_12 = L5_12(L6_13)
-	L6_13 = L4_11.rotation
-	L6_13 = L6_13(L4_11)
-	A0_7._ik_left_hand:set_target_position(L5_12)
-	A0_7._ik_left_hand:set_target_rotation(L6_13)
+	local l_2_6 = l_2_0._target_object
+	assert(l_2_6)
+	local l_2_7 = l_2_6:position()
+	local l_2_8 = l_2_6:rotation()
+	local l_2_9 = l_2_0._ik_left_hand
+	l_2_9:set_target_position(l_2_7)
+	l_2_9:set_target_rotation(l_2_8)
 end
-function WalkerReachingForTarget.exit(A0_14)
-	A0_14._enemy_data.reaching_for_target = false
-	A0_14._base:_set_override_transform(nil, nil)
+
+WalkerReachingForTarget.exit = function(l_3_0)
+	local l_3_1 = l_3_0._enemy_data
+	l_3_1.reaching_for_target = false
+	l_3_0._base:_set_override_transform(nil, nil)
 end
-function WalkerReachingForTarget.transition(A0_15)
-	if A0_15._base:check_fully_damaged() then
-		return (A0_15._base:check_fully_damaged())
+
+WalkerReachingForTarget.transition = function(l_4_0)
+	local l_4_1 = l_4_0._base:check_fully_damaged()
+	if l_4_1 then
+		return l_4_1
 	end
-	if A0_15._enemy_data.connected then
+	local l_4_2 = l_4_0._enemy_data
+	if l_4_2.connected then
 		return WalkerConnected
-	elseif not A0_15._enemy_data.special_kill then
+	elseif not l_4_2.special_kill then
 		return WalkerOnGround
 	end
 end
+
+

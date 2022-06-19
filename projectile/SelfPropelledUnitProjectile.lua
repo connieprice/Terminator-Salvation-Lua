@@ -1,460 +1,290 @@
 require("shared/Angle")
 require("shared/InterpolatorLinear")
-SelfPropelledUnitProjectile = SelfPropelledUnitProjectile or class()
-function SelfPropelledUnitProjectile.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._spawning_unit = A1_1
-	A0_0._orientation_obj = A0_0._unit:orientation_object()
-	A0_0._detonation_time = 10
-	A0_0._start_position = A0_0._unit:position()
-	A0_0._start_pitch = Rotation:look_at(A0_0._unit:rotation():y(), Vector3(0, 0, 1)):yaw()
-	A0_0._start_yaw = Rotation:look_at(A0_0._unit:rotation():y(), Vector3(0, 0, 1)):roll()
-	A0_0._start_rotation = A0_0._unit:rotation()
-	A0_0._life_time = 10
-	A0_0._lived_time = 0
-	A0_0._rotation = A0_0._rotation_min + math:random((A0_0._rotation_max - A0_0._rotation_min) * 10000) / 10000
-	A0_0._engine_init_time = 1
-	A0_0._initial_speed = 2500
-	A0_0._speed = 7000
-	A0_0._radial_velocity = 0
-	A0_0._velocity_dampening = 2
-	A0_0._gravity = 0
-	A0_0._current_velocity = Vector3(0, 0, 0)
-	A0_0._dispersion = 0.1
-	A0_0._blind_fire_dispersion = 1
-	A0_0._gravity_velocity = Vector3(0, 0, 0)
-	A0_0._radius = 0
-	A0_0._dispersion_radius = 50
-	A0_0._curr_angle = math.random(180)
-	A0_0._acceleration_dampening = 6
-	A0_0._inherited_velocity = Vector3(0, 0, 0)
+if not SelfPropelledUnitProjectile then
+	SelfPropelledUnitProjectile = class()
+end
+SelfPropelledUnitProjectile.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._spawning_unit = l_1_1
+	l_1_0._orientation_obj = l_1_0._unit:orientation_object()
+	l_1_0._detonation_time = 10
+	l_1_0._start_position = l_1_0._unit:position()
+	l_1_0._start_pitch = Rotation:look_at(l_1_0._unit:rotation():y(), Vector3(0, 0, 1)):yaw()
+	l_1_0._start_yaw = Rotation:look_at(l_1_0._unit:rotation():y(), Vector3(0, 0, 1)):roll()
+	l_1_0._start_rotation = l_1_0._unit:rotation()
+	l_1_0._life_time = 10
+	l_1_0._lived_time = 0
+	l_1_0._rotation = l_1_0._rotation_min + math:random((l_1_0._rotation_max - l_1_0._rotation_min) * 10000) / 10000
+	l_1_0._engine_init_time = 1
+	l_1_0._initial_speed = 2500
+	l_1_0._speed = 7000
+	l_1_0._radial_velocity = 0
+	l_1_0._velocity_dampening = 2
+	l_1_0._gravity = 0
+	l_1_0._current_velocity = Vector3(0, 0, 0)
+	l_1_0._dispersion = 0.1
+	l_1_0._blind_fire_dispersion = 1
+	l_1_0._gravity_velocity = Vector3(0, 0, 0)
+	l_1_0._radius = 0
+	l_1_0._dispersion_radius = 50
+	l_1_0._curr_angle = math.random(180)
+	l_1_0._acceleration_dampening = 6
+	l_1_0._inherited_velocity = Vector3(0, 0, 0)
 	if Global.category_debug_render.projectile_trace then
-		Draw:brush():set_persistance(60)
-		Draw:brush():set_color(Color(1, 0, 0, 1), 1)
-		Draw:brush():sphere(A0_0._start_position, 5)
-		Draw:pen("permanent"):set("blue")
-		Draw:pen("permanent"):line(A0_0._start_position, A0_0._start_position + A0_0._start_rotation:y() * 100)
+		local l_1_2 = Draw:brush()
+		l_1_2:set_persistance(60)
+		l_1_2:set_color(Color(1, 0, 0, 1), 1)
+		l_1_2:sphere(l_1_0._start_position, 5)
+		local l_1_3 = Draw:pen("permanent")
+		l_1_3:set("blue")
+		l_1_3:line(l_1_0._start_position, l_1_0._start_position + l_1_0._start_rotation:y() * 100)
 	end
 end
-function SelfPropelledUnitProjectile.set_spawning_unit(A0_2, A1_3)
-	A0_2._spawning_unit = A1_3
+
+SelfPropelledUnitProjectile.set_spawning_unit = function(l_2_0, l_2_1)
+	l_2_0._spawning_unit = l_2_1
 end
-function SelfPropelledUnitProjectile.set_blind_fire(A0_4, A1_5)
-	local L2_6
-	if A1_5 then
-		L2_6 = A0_4._blind_fire_dispersion
-	else
-		L2_6 = L2_6 or A0_4._dispersion
+
+SelfPropelledUnitProjectile.set_blind_fire = function(l_3_0, l_3_1)
+	if not l_3_1 or not l_3_0._blind_fire_dispersion then
+		l_3_0._dispersion = l_3_0._dispersion
 	end
-	A0_4._dispersion = L2_6
 end
-function SelfPropelledUnitProjectile.set_precision_aiming(A0_7, A1_8)
-	local L2_9
-	if not A1_8 then
-		L2_9 = A0_7._blind_fire_dispersion
-	else
-		L2_9 = L2_9 or A0_7._dispersion
+
+SelfPropelledUnitProjectile.set_precision_aiming = function(l_4_0, l_4_1)
+	if l_4_1 or not l_4_0._blind_fire_dispersion then
+		l_4_0._dispersion = l_4_0._dispersion
 	end
-	A0_7._dispersion = L2_9
 end
-function SelfPropelledUnitProjectile.update(A0_10, A1_11, A2_12, A3_13)
-	A0_10:_update_lifetime(A1_11, A2_12, A3_13)
-	A0_10:_update_hit(A1_11, A2_12, A3_13)
-	A0_10:_update_rotation(A1_11, A2_12, A3_13)
-	A0_10:_update_position(A1_11, A2_12, A3_13)
-	A0_10:_update_trail_effect(A1_11, A2_12, A3_13)
-	A0_10:_update_projectile_effect(A1_11, A2_12, A3_13)
-	A0_10._previous_position = A0_10._unit:position()
+
+SelfPropelledUnitProjectile.update = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	l_5_0:_update_lifetime(l_5_1, l_5_2, l_5_3)
+	l_5_0:_update_hit(l_5_1, l_5_2, l_5_3)
+	l_5_0:_update_rotation(l_5_1, l_5_2, l_5_3)
+	l_5_0:_update_position(l_5_1, l_5_2, l_5_3)
+	l_5_0:_update_trail_effect(l_5_1, l_5_2, l_5_3)
+	l_5_0:_update_projectile_effect(l_5_1, l_5_2, l_5_3)
+	l_5_0._previous_position = l_5_0._unit:position()
 end
-function SelfPropelledUnitProjectile._update_position(A0_14, A1_15, A2_16, A3_17)
-	local L4_18, L5_19, L6_20, L7_21, L8_22, L9_23, L10_24, L11_25
-	L4_18 = A0_14._curr_speed
-	if not L4_18 then
-		L4_18 = A0_14._initial_speed
-		A0_14._curr_speed = L4_18
+
+SelfPropelledUnitProjectile._update_position = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	if not l_6_0._curr_speed then
+		l_6_0._curr_speed = l_6_0._initial_speed
 	end
-	L4_18 = A0_14._speed
-	L5_19 = A0_14._lived_time
-	L6_20 = A0_14._engine_init_time
-	if L5_19 < L6_20 then
-		L4_18 = A0_14._initial_speed
+	local l_6_4 = l_6_0._speed
+	if l_6_0._lived_time < l_6_0._engine_init_time then
+		l_6_4 = l_6_0._initial_speed
 	end
-	L5_19 = A0_14._curr_speed
-	L6_20 = A0_14._curr_speed
-	L6_20 = L4_18 - L6_20
-	L7_21 = A0_14._acceleration_dampening
-	L6_20 = L6_20 * L7_21
-	L6_20 = L6_20 * A3_17
-	L5_19 = L5_19 + L6_20
-	A0_14._curr_speed = L5_19
-	L5_19 = A0_14._gravity_velocity
-	L6_20 = A0_14._gravity
-	L7_21 = Vector3
-	L8_22 = 0
-	L9_23 = 0
-	L10_24 = -1
-	L7_21 = L7_21(L8_22, L9_23, L10_24)
-	L6_20 = L6_20 * L7_21
-	L6_20 = L6_20 * A3_17
-	L5_19 = L5_19 + L6_20
-	A0_14._gravity_velocity = L5_19
-	L5_19 = A0_14._start_rotation
-	L6_20 = L5_19
-	L5_19 = L5_19.y
-	L5_19 = L5_19(L6_20)
-	L6_20 = L5_19
-	L5_19 = L5_19.normalized
-	L5_19 = L5_19(L6_20)
-	L6_20 = A0_14._curr_speed
-	L5_19 = L5_19 * L6_20
-	L6_20 = A0_14._gravity_velocity
-	L5_19 = L5_19 + L6_20
-	L6_20 = A0_14._inherited_velocity
-	L5_19 = L5_19 + L6_20
-	L6_20 = A0_14._radial_velocity
-	if L6_20 then
-		L6_20 = A0_14._dispersion
-		if L6_20 > 0 then
-			L6_20 = A0_14._unit
-			L7_21 = L6_20
-			L6_20 = L6_20.position
-			L6_20 = L6_20(L7_21)
-			L7_21 = A0_14._start_position
-			L6_20 = L6_20 - L7_21
-			L7_21 = math
-			L7_21 = L7_21.acos
-			L8_22 = math
-			L8_22 = L8_22.dot
-			L9_23 = A0_14._start_rotation
-			L10_24 = L9_23
-			L9_23 = L9_23.y
-			L9_23 = L9_23(L10_24)
-			L10_24 = L9_23
-			L9_23 = L9_23.normalized
-			L9_23 = L9_23(L10_24)
-			L11_25 = L6_20
-			L10_24 = L6_20.normalized
-			L11_25 = L10_24(L11_25)
-			L11_25 = L8_22(L9_23, L10_24, L11_25, L10_24(L11_25))
-			L7_21 = L7_21(L8_22, L9_23, L10_24, L11_25, L8_22(L9_23, L10_24, L11_25, L10_24(L11_25)))
-			L9_23 = L6_20
-			L8_22 = L6_20.length
-			L8_22 = L8_22(L9_23)
-			L9_23 = math
-			L9_23 = L9_23.sin
-			L10_24 = L7_21
-			L9_23 = L9_23(L10_24)
-			L8_22 = L8_22 * L9_23
-			L9_23 = A0_14._dispersion_radius
-			L10_24 = A0_14._dispersion
-			L9_23 = L9_23 * L10_24
-			L10_24 = A0_14._lived_time
-			L11_25 = A0_14._life_time
-			L10_24 = L10_24 / L11_25
-			L10_24 = 1 - L10_24
-			L9_23 = L9_23 * L10_24
-			if L8_22 > L9_23 then
-				L10_24 = 2 * L9_23
-				L10_24 = L8_22 > L10_24
-				L11_25 = A0_14._left_dispersion
-				if not L11_25 or L10_24 then
-					L11_25 = L6_20.flat
-					L11_25 = L11_25(L6_20, A0_14._start_rotation:y())
-					L11_25 = L11_25.normalized
-					L11_25 = L11_25(L11_25)
-					A0_14._curr_angle = ((math.acos(math.dot(L11_25, A0_14._start_rotation:x():normalized())) <= 90 and math.acos(math.dot(L11_25, A0_14._start_rotation:z():normalized())) or 360 - math.acos(math.dot(L11_25, A0_14._start_rotation:z():normalized()))) + (L10_24 and 180 or not A0_14._left_dispersion and math.random(135, 225) or 0)) % 360
-					A0_14._left_dispersion = true
-				end
-			else
-				A0_14._left_dispersion = false
+	l_6_0._curr_speed = l_6_0._curr_speed + (l_6_4 - l_6_0._curr_speed) * l_6_0._acceleration_dampening * l_6_3
+	l_6_0._gravity_velocity = l_6_0._gravity_velocity + l_6_0._gravity * Vector3(0, 0, -1) * l_6_3
+	local l_6_5 = l_6_0._start_rotation:y():normalized() * l_6_0._curr_speed + l_6_0._gravity_velocity + l_6_0._inherited_velocity
+	if l_6_0._radial_velocity and l_6_0._dispersion > 0 then
+		local l_6_6 = l_6_0._unit:position() - l_6_0._start_position
+		local l_6_7 = math.acos(math.dot(l_6_0._start_rotation:y():normalized(), l_6_6:normalized()))
+		local l_6_8 = l_6_6:length() * math.sin(l_6_7)
+		local l_6_9 = l_6_0._dispersion_radius * l_6_0._dispersion * (1 - l_6_0._lived_time / l_6_0._life_time)
+		if (2 * l_6_9 >= l_6_8 and not l_6_0._left_dispersion) or l_6_9 >= l_6_8 then
+			local l_6_13 = nil
+			local l_6_14 = nil
+			local l_6_15 = math.acos(math.dot(l_6_6:flat(l_6_0._start_rotation:y()):normalized(), l_6_0._start_rotation:x():normalized()))
+			do
+				local l_6_19 = nil
 			end
-			L10_24 = A0_14._start_rotation
-			L11_25 = L10_24
-			L10_24 = L10_24.z
-			L10_24 = L10_24(L11_25)
-			L11_25 = L10_24
-			L10_24 = L10_24.normalized
-			L10_24 = L10_24(L11_25)
-			L11_25 = math
-			L11_25 = L11_25.cos
-			L11_25 = L11_25(A0_14._curr_angle)
-			L10_24 = L10_24 * L11_25
-			L11_25 = A0_14._radial_velocity
-			L10_24 = L10_24 * L11_25
-			L11_25 = A0_14._start_rotation
-			L11_25 = L11_25.x
-			L11_25 = L11_25(L11_25)
-			L11_25 = L11_25.normalized
-			L11_25 = L11_25(L11_25)
-			L11_25 = L11_25 * math.sin(A0_14._curr_angle)
-			L11_25 = L11_25 * A0_14._radial_velocity
-			L10_24 = L10_24 + L11_25
-			L5_19 = L5_19 + L10_24
+			l_6_0._curr_angle = (360 - math.acos(math.dot(l_6_14, l_6_0._start_rotation:z():normalized())) + ((((l_6_15 <= 90 and math.acos(math.dot(l_6_14, l_6_0._start_rotation:z():normalized()))) or l_6_13) and 180) or (not l_6_0._left_dispersion and math.random(135, 225)) or 0)) % 360
+			l_6_0._left_dispersion = true
 		end
+		do return end
+		l_6_0._left_dispersion = false
+		l_6_5 = l_6_5 + (l_6_0._start_rotation:z():normalized() * math.cos(l_6_0._curr_angle) * l_6_0._radial_velocity + l_6_0._start_rotation:x():normalized() * math.sin(l_6_0._curr_angle) * l_6_0._radial_velocity)
 	end
-	L6_20 = A0_14._velocity_dampening
-	if L6_20 then
-		L6_20 = A0_14._velocity_dampening
-		if L6_20 > 0 then
-			L6_20 = A0_14._current_velocity
-			L7_21 = A0_14._current_velocity
-			L7_21 = L5_19 - L7_21
-			L8_22 = A0_14._velocity_dampening
-			L7_21 = L7_21 * L8_22
-			L7_21 = L7_21 * A3_17
-			L6_20 = L6_20 + L7_21
-			A0_14._current_velocity = L6_20
-		end
+	if l_6_0._velocity_dampening and l_6_0._velocity_dampening > 0 then
+		l_6_0._current_velocity = l_6_0._current_velocity + (l_6_5 - l_6_0._current_velocity) * l_6_0._velocity_dampening * l_6_3
 	else
-		A0_14._current_velocity = L5_19
+		l_6_0._current_velocity = l_6_5
 	end
-	L6_20 = A0_14._unit
-	L7_21 = L6_20
-	L6_20 = L6_20.position
-	L6_20 = L6_20(L7_21)
-	L7_21 = A0_14._unit
-	L8_22 = L7_21
-	L7_21 = L7_21.set_position
-	L9_23 = A0_14._current_velocity
-	L9_23 = L9_23 * A3_17
-	L9_23 = L6_20 + L9_23
-	L7_21(L8_22, L9_23)
-	L7_21 = Global
-	L7_21 = L7_21.category_debug_render
-	L7_21 = L7_21.projectile_trace
-	if L7_21 then
-		L7_21 = A0_14._previous_position
-		if L7_21 then
-			L7_21 = Draw
-			L8_22 = L7_21
-			L7_21 = L7_21.pen
-			L9_23 = "permanent"
-			L7_21 = L7_21(L8_22, L9_23)
-			L9_23 = L7_21
-			L8_22 = L7_21.set
-			L10_24 = "green"
-			L8_22(L9_23, L10_24)
-			L9_23 = L7_21
-			L8_22 = L7_21.line
-			L10_24 = A0_14._previous_position
-			L11_25 = A0_14._unit
-			L11_25 = L11_25.position
-			L11_25 = L11_25(L11_25)
-			L8_22(L9_23, L10_24, L11_25, L11_25(L11_25))
+	local l_6_20 = l_6_0._unit:position()
+	l_6_0._unit:set_position(l_6_20 + l_6_0._current_velocity * l_6_3)
+	if Global.category_debug_render.projectile_trace and l_6_0._previous_position then
+		local l_6_21 = Draw:pen("permanent")
+		l_6_21:set("green")
+		l_6_21:line(l_6_0._previous_position, l_6_0._unit:position())
+	end
+end
+
+SelfPropelledUnitProjectile._update_rotation = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	if l_7_0._engine_init_time < l_7_0._lived_time and l_7_0._previous_position then
+		local l_7_4 = Rotation(l_7_0._unit:rotation():x(), l_7_0._unit:position() - l_7_0._previous_position, l_7_0._unit:rotation():z()) * Rotation(Vector3(0, 1, 0), l_7_0._rotation * l_7_3)
+		l_7_0._unit:set_rotation(l_7_4)
+	end
+end
+
+SelfPropelledUnitProjectile._update_lifetime = function(l_8_0, l_8_1, l_8_2, l_8_3)
+	if l_8_0._life_time <= l_8_0._lived_time then
+		l_8_0:destroy(l_8_1)
+	end
+	l_8_0._lived_time = l_8_0._lived_time + l_8_3
+end
+
+SelfPropelledUnitProjectile._update_trail_effect = function(l_9_0, l_9_1, l_9_2, l_9_3)
+	while l_9_0._trail_effect and l_9_0._trail_effect_init_distance <= l_9_0:distance_travelled() do
+		local l_9_4 = l_9_0._unit:get_object(l_9_0._trail_effect_object)
+		if not l_9_0._prev_trail_spawn_pos then
+			l_9_0._prev_trail_spawn_pos = l_9_4:position()
+			return 
 		end
-	end
-end
-function SelfPropelledUnitProjectile._update_rotation(A0_26, A1_27, A2_28, A3_29)
-	local L4_30
-	L4_30 = A0_26._lived_time
-	if L4_30 > A0_26._engine_init_time then
-		L4_30 = A0_26._previous_position
-		if L4_30 then
-			L4_30 = Rotation
-			L4_30 = L4_30(A0_26._unit:rotation():x(), A0_26._unit:position() - A0_26._previous_position, A0_26._unit:rotation():z())
-			L4_30 = L4_30 * Rotation(Vector3(0, 1, 0), A0_26._rotation * A3_29)
-			A0_26._unit:set_rotation(L4_30)
-		end
-	end
-end
-function SelfPropelledUnitProjectile._update_lifetime(A0_31, A1_32, A2_33, A3_34)
-	if A0_31._lived_time >= A0_31._life_time then
-		A0_31:destroy(A1_32)
-	end
-	A0_31._lived_time = A0_31._lived_time + A3_34
-end
-function SelfPropelledUnitProjectile._update_trail_effect(A0_35, A1_36, A2_37, A3_38)
-	local L4_39, L5_40, L6_41, L7_42
-	L4_39 = A0_35._trail_effect
-	if L4_39 then
-		L5_40 = A0_35
-		L4_39 = A0_35.distance_travelled
-		L4_39 = L4_39(L5_40)
-		L5_40 = A0_35._trail_effect_init_distance
-		if L4_39 >= L5_40 then
-			L4_39 = A0_35._unit
-			L5_40 = L4_39
-			L4_39 = L4_39.get_object
-			L6_41 = A0_35._trail_effect_object
-			L4_39 = L4_39(L5_40, L6_41)
-			L5_40 = A0_35._prev_trail_spawn_pos
-			if not L5_40 then
-				L6_41 = L4_39
-				L5_40 = L4_39.position
-				L5_40 = L5_40(L6_41)
-				A0_35._prev_trail_spawn_pos = L5_40
-				return
-			end
-			L6_41 = L4_39
-			L5_40 = L4_39.position
-			L5_40 = L5_40(L6_41)
-			L6_41 = A0_35._prev_trail_spawn_pos
-			L5_40 = L5_40 - L6_41
-			L6_41 = L5_40
-			L5_40 = L5_40.length
-			L5_40 = L5_40(L6_41)
-			L7_42 = L4_39
-			L6_41 = L4_39.position
-			L6_41 = L6_41(L7_42)
-			L7_42 = A0_35._prev_trail_spawn_pos
-			L6_41 = L6_41 - L7_42
-			L7_42 = L6_41
-			L6_41 = L6_41.normalized
-			L6_41 = L6_41(L7_42)
-			while true do
-				L7_42 = A0_35._trail_effect_spawn_space
-				if L5_40 > L7_42 then
-					L7_42 = A0_35._prev_trail_spawn_pos
-					L7_42 = L7_42 + L6_41 * A0_35._trail_effect_spawn_space
-					L5_40 = L5_40 - A0_35._trail_effect_spawn_space
-					A0_35._prev_trail_spawn_pos = L7_42
-					if Global.category_debug_render.projectile_trace then
-						Draw:brush():set_persistance(60)
-						Draw:brush():set_color(Color(1, 0, 0, 1), 1)
-						Draw:brush():sphere(L7_42, 5)
-					end
-				end
+		local l_9_5 = l_9_4:position() - l_9_0._prev_trail_spawn_pos:length()
+		local l_9_6 = l_9_4:position() - l_9_0._prev_trail_spawn_pos:normalized()
+		while l_9_0._trail_effect_spawn_space < l_9_5 do
+			local l_9_7 = l_9_0._prev_trail_spawn_pos + l_9_6 * l_9_0._trail_effect_spawn_space
+			local l_9_8 = Rotation:look_at(l_9_0._prev_trail_spawn_pos, l_9_7, Vector3(0, 0, 1)) * Rotation(Vector3(1, 0, 0), 90)
+			local l_9_9, l_9_10 = World:effect_manager():spawn, World:effect_manager()
+			local l_9_11 = {}
+			l_9_11.effect = l_9_0._trail_effect
+			l_9_11.position = l_9_7
+			l_9_11.rotation = l_9_8
+			l_9_9 = l_9_9(l_9_10, l_9_11)
+			l_9_10 = l_9_0._trail_effect_spawn_space
+			l_9_5 = l_9_5 - l_9_10
+			l_9_0._prev_trail_spawn_pos = l_9_7
+			l_9_10 = Global
+			l_9_10 = l_9_10.category_debug_render
+			l_9_10 = l_9_10.projectile_trace
+			if l_9_10 then
+				l_9_10 = Draw
+				l_9_10, l_9_11 = l_9_10:brush, l_9_10
+				l_9_10 = l_9_10(l_9_11)
+				l_9_11(l_9_10, 60)
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				l_9_11(l_9_10, Color(1, 0, 0, 1), 1)
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				l_9_11(l_9_10, l_9_7, 5)
 			end
 		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
 end
-function SelfPropelledUnitProjectile._update_projectile_effect(A0_43, A1_44, A2_45, A3_46)
-	if A0_43._projectile_effect and not A0_43._projectile_effect_id and A0_43:distance_travelled() >= A0_43._projectile_effect_init_distance then
-		A0_43._projectile_effect_id = World:effect_manager():spawn({
-			effect = A0_43._projectile_effect,
-			parent = A0_43._unit:get_object(A0_43._projectile_effect_object),
-			normal = Vector3(0, 1, 0),
-			force_synch = true
-		})
+
+SelfPropelledUnitProjectile._update_projectile_effect = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	if l_10_0._projectile_effect and not l_10_0._projectile_effect_id and l_10_0._projectile_effect_init_distance <= l_10_0:distance_travelled() then
+		local l_10_4, l_10_5 = World:effect_manager():spawn, World:effect_manager()
+		local l_10_6 = {}
+		l_10_6.effect = l_10_0._projectile_effect
+		l_10_6.parent = l_10_0._unit:get_object(l_10_0._projectile_effect_object)
+		l_10_6.normal = Vector3(0, 1, 0)
+		l_10_6.force_synch = true
+		l_10_4 = l_10_4(l_10_5, l_10_6)
+		l_10_0._projectile_effect_id = l_10_4
 	end
 end
-function SelfPropelledUnitProjectile._update_hit(A0_47, A1_48, A2_49, A3_50)
-	local L4_51, L5_52, L6_53, L7_54
-	L4_51 = A0_47._previous_position
-	if L4_51 then
-		L5_52 = A0_47
-		L4_51 = A0_47.distance_travelled
-		L4_51 = L4_51(L5_52)
-		L5_52 = A0_47._safety_distance
-		if L4_51 >= L5_52 then
-			L4_51 = A0_47._unit
-			L5_52 = L4_51
-			L4_51 = L4_51.position
-			L4_51 = L4_51(L5_52)
-			L5_52 = A0_47._previous_position
-			L6_53 = nil
-			L7_54 = A0_47._radius
-			if L7_54 > 0 then
-				L7_54 = managers
-				L7_54 = L7_54.slot
-				L7_54 = L7_54.get_mask
-				L7_54 = L7_54(L7_54, "target_world")
-				L7_54 = L7_54 - SlotMask(A0_47._ignore_unit_slot)
-				L6_53 = A0_47._unit:raycast("ray", L5_52, L4_51, "ray_type", "body", "sphere_cast_radius", A0_47._radius, "slot_mask", L7_54, "ignore_unit", A0_47._unit, "bundle", 5)
-			else
-				L7_54 = managers
-				L7_54 = L7_54.slot
-				L7_54 = L7_54.get_mask
-				L7_54 = L7_54(L7_54, "solid_objects")
-				L7_54 = L7_54 - SlotMask(A0_47._ignore_unit_slot)
-				L6_53 = A0_47._unit:raycast("ray", L5_52, L4_51, "slot_mask", L7_54, "ignore_unit", A0_47._unit)
-			end
-			if L6_53 then
-				L7_54 = L6_53.position
-				L7_54 = L7_54 + L6_53.normal * 20
-				A0_47:hit(L7_54, L6_53)
-				if Global.category_debug_render.projectile_trace then
-					Draw:brush():set_persistance(60)
-					Draw:brush():set_color(Color(1, 1, 0, 0), 1)
-					Draw:brush():sphere(L7_54, 5)
-					Draw:pen("permanent"):set("green")
-					Draw:pen("permanent"):line(L7_54, L7_54 + L6_53.normal * 100)
-				end
-			end
+
+SelfPropelledUnitProjectile._update_hit = function(l_11_0, l_11_1, l_11_2, l_11_3)
+	if l_11_0._previous_position and l_11_0._safety_distance <= l_11_0:distance_travelled() then
+		local l_11_4 = l_11_0._unit:position()
+		local l_11_5 = l_11_0._previous_position
+		local l_11_6 = nil
+		if l_11_0._radius > 0 then
+			local l_11_7 = managers.slot:get_mask("target_world") - SlotMask(l_11_0._ignore_unit_slot)
+			l_11_6 = l_11_0._unit:raycast("ray", l_11_5, l_11_4, "ray_type", "body", "sphere_cast_radius", l_11_0._radius, "slot_mask", l_11_7, "ignore_unit", l_11_0._unit, "bundle", 5)
+		else
+			local l_11_8 = managers.slot:get_mask("solid_objects") - SlotMask(l_11_0._ignore_unit_slot)
+			l_11_6 = l_11_0._unit:raycast("ray", l_11_5, l_11_4, "slot_mask", l_11_8, "ignore_unit", l_11_0._unit)
 		end
-	end
-end
-function SelfPropelledUnitProjectile.set_explosion_damage_at_center(A0_55, A1_56)
-	A0_55._explosion_damage_at_center = A1_56
-end
-function SelfPropelledUnitProjectile.set_explosion_radius(A0_57, A1_58)
-	A0_57._explosion_radius = A1_58
-end
-function SelfPropelledUnitProjectile.set_speed(A0_59, A1_60)
-	A0_59._speed = A1_60
-end
-function SelfPropelledUnitProjectile.set_initial_speed(A0_61, A1_62)
-	A0_61._initial_speed = A1_62
-end
-function SelfPropelledUnitProjectile.hit(A0_63, A1_64, A2_65)
-	local L3_66, L4_67
-	L3_66 = World
-	L4_67 = L3_66
-	L3_66 = L3_66.spawn_unit
-	L3_66 = L3_66(L4_67, A0_63._explosion_unit, A1_64)
-	L4_67 = A0_63._explosion_damage_at_center
-	if L4_67 then
-		L4_67 = L3_66.base
-		L4_67 = L4_67(L3_66)
-		L4_67 = L4_67.set_damage_at_center
-		L4_67(L4_67, A0_63._explosion_damage_at_center)
-	end
-	L4_67 = L3_66.base
-	L4_67 = L4_67(L3_66)
-	L4_67 = L4_67.set_spawning_unit
-	if L4_67 then
-		L4_67 = L3_66.base
-		L4_67 = L4_67(L3_66)
-		L4_67 = L4_67.set_spawning_unit
-		L4_67(L4_67, A0_63._spawning_unit)
-	end
-	L4_67 = A0_63._decal
-	if L4_67 then
-		L4_67 = A2_65.ray
-		L4_67 = L4_67 - A2_65.normal * A2_65.ray:dot(A2_65.normal) * 2
-		if World:project_decal(A0_63._decal, A1_64, A2_65.ray, L4_67, A2_65.normal) and World:project_decal(A0_63._decal, A1_64, A2_65.ray, L4_67, A2_65.normal) ~= "" then
-			World:effect_manager():spawn({
-				effect = World:project_decal(A0_63._decal, A1_64, A2_65.ray, L4_67, A2_65.normal),
-				position = A1_64,
-				normal = A2_65.normal
-			})
+	if l_11_6 then
 		end
+		local l_11_9 = l_11_6.position + l_11_6.normal * 20
+		l_11_0:hit(l_11_9, l_11_6)
+	if Global.category_debug_render.projectile_trace then
+		end
+		local l_11_10 = Draw:brush()
+		l_11_10:set_persistance(60)
+		l_11_10:set_color(Color(1, 1, 0, 0), 1)
+		l_11_10:sphere(l_11_9, 5)
+		local l_11_11 = Draw:pen("permanent")
+		l_11_11:set("green")
+		l_11_11:line(l_11_9, l_11_9 + l_11_6.normal * 100)
 	end
-	L4_67 = World
-	L4_67 = L4_67.effect_manager
-	L4_67 = L4_67(L4_67)
-	L4_67 = L4_67.spawn
-	L4_67(L4_67, {
-		effect = A0_63._explosion_effect,
-		position = A1_64,
-		normal = A2_65.normal
-	})
-	L4_67 = A0_63._unit
-	L4_67 = L4_67.set_slot
-	L4_67(L4_67, 0)
-	L4_67 = A0_63._projectile_effect_kill_delay
-	if L4_67 then
-		L4_67 = World
-		L4_67 = L4_67.effect_manager
-		L4_67 = L4_67(L4_67)
-		L4_67 = L4_67.set_remaining_lifetime
-		L4_67(L4_67, A0_63._projectile_effect_id, A0_63._projectile_effect_kill_delay)
+end
+
+SelfPropelledUnitProjectile.set_explosion_damage_at_center = function(l_12_0, l_12_1)
+	l_12_0._explosion_damage_at_center = l_12_1
+end
+
+SelfPropelledUnitProjectile.set_explosion_radius = function(l_13_0, l_13_1)
+	l_13_0._explosion_radius = l_13_1
+end
+
+SelfPropelledUnitProjectile.set_speed = function(l_14_0, l_14_1)
+	l_14_0._speed = l_14_1
+end
+
+SelfPropelledUnitProjectile.set_initial_speed = function(l_15_0, l_15_1)
+	l_15_0._initial_speed = l_15_1
+end
+
+SelfPropelledUnitProjectile.hit = function(l_16_0, l_16_1, l_16_2)
+	local l_16_3 = World:spawn_unit(l_16_0._explosion_unit, l_16_1)
+	if l_16_0._explosion_damage_at_center then
+		l_16_3:base():set_damage_at_center(l_16_0._explosion_damage_at_center)
+	end
+	if l_16_3:base().set_spawning_unit then
+		l_16_3:base():set_spawning_unit(l_16_0._spawning_unit)
+	end
+	if l_16_0._decal then
+		local l_16_4 = l_16_2.ray - l_16_2.normal * l_16_2.ray:dot(l_16_2.normal) * 2
+		local l_16_5 = World:project_decal(l_16_0._decal, l_16_1, l_16_2.ray, l_16_4, l_16_2.normal)
+	if l_16_5 and l_16_5 ~= "" then
+		end
+		local l_16_6, l_16_7 = World:effect_manager():spawn, World:effect_manager()
+		local l_16_8 = {}
+		l_16_8.effect = l_16_5
+		l_16_8.position = l_16_1
+		l_16_8.normal = l_16_2.normal
+		l_16_6(l_16_7, l_16_8)
+	end
+	local l_16_9, l_16_10 = World:effect_manager():spawn, World:effect_manager()
+	local l_16_11 = {}
+	l_16_11.effect = l_16_0._explosion_effect
+	l_16_11.position = l_16_1
+	l_16_11.normal = l_16_2.normal
+	l_16_9(l_16_10, l_16_11)
+	l_16_9 = l_16_0._unit
+	l_16_9, l_16_10 = l_16_9:set_slot, l_16_9
+	l_16_11 = 0
+	l_16_9(l_16_10, l_16_11)
+	l_16_9 = l_16_0._projectile_effect_kill_delay
+	if l_16_9 then
+		l_16_9 = World
+		l_16_9, l_16_10 = l_16_9:effect_manager, l_16_9
+		l_16_9 = l_16_9(l_16_10)
+		l_16_9, l_16_10 = l_16_9:set_remaining_lifetime, l_16_9
+		l_16_11 = l_16_0._projectile_effect_id
+		l_16_9(l_16_10, l_16_11, l_16_0._projectile_effect_kill_delay)
 	else
-		L4_67 = World
-		L4_67 = L4_67.effect_manager
-		L4_67 = L4_67(L4_67)
-		L4_67 = L4_67.fade_kill
-		L4_67(L4_67, A0_63._projectile_effect_id)
+		l_16_9 = World
+		l_16_9, l_16_10 = l_16_9:effect_manager, l_16_9
+		l_16_9 = l_16_9(l_16_10)
+		l_16_9, l_16_10 = l_16_9:fade_kill, l_16_9
+		l_16_11 = l_16_0._projectile_effect_id
+		l_16_9(l_16_10, l_16_11)
 	end
 end
-function SelfPropelledUnitProjectile.distance_travelled(A0_68)
-	return (A0_68._unit:position() - A0_68._start_position):length()
+
+SelfPropelledUnitProjectile.distance_travelled = function(l_17_0)
+	local l_17_1 = l_17_0._unit:position()
+	local l_17_2 = l_17_1 - l_17_0._start_position
+	local l_17_3, l_17_4 = l_17_2:length, l_17_2
+	return l_17_3(l_17_4)
 end
-function SelfPropelledUnitProjectile.destroy(A0_69, A1_70)
-	A0_69._unit:set_slot(0)
-	if A0_69._projectile_effect_kill_delay then
-		World:effect_manager():set_remaining_lifetime(A0_69._projectile_effect_id, A0_69._projectile_effect_kill_delay)
+
+SelfPropelledUnitProjectile.destroy = function(l_18_0, l_18_1)
+	l_18_0._unit:set_slot(0)
+	if l_18_0._projectile_effect_kill_delay then
+		World:effect_manager():set_remaining_lifetime(l_18_0._projectile_effect_id, l_18_0._projectile_effect_kill_delay)
 	else
-		World:effect_manager():fade_kill(A0_69._projectile_effect_id)
+		World:effect_manager():fade_kill(l_18_0._projectile_effect_id)
 	end
 end
+
+

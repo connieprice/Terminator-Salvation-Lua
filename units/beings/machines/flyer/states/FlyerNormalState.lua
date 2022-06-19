@@ -3,34 +3,48 @@ require("units/beings/machines/flyer/states/FlyerFullyDamagedState")
 require("units/beings/machines/flyer/states/FlyerStunState")
 require("units/beings/machines/flyer/states/FlyerAttackingState")
 require("units/beings/machines/flyer/states/FlyerSelfDestroyingState")
-FlyerNormalState = FlyerNormalState or class(FlyerState)
-function FlyerNormalState.init(A0_0, A1_1)
-	FlyerState.init(A0_0, A1_1)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
-	A0_0._input = A1_1:input()
+if not FlyerNormalState then
+	FlyerNormalState = class(FlyerState)
 end
-function FlyerNormalState.update(A0_2, A1_3)
-	local L2_4, L3_5
-	L2_4 = A0_2._base
-	L3_5 = L2_4
-	L2_4 = L2_4.check_fully_damaged
-	L2_4 = L2_4(L3_5)
-	if L2_4 then
-		return L2_4
+FlyerNormalState.init = function(l_1_0, l_1_1)
+	FlyerState.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_0._unit:enemy_data()
+	l_1_0._input = l_1_1:input()
+end
+
+FlyerNormalState.update = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0._base:check_fully_damaged()
+	if l_2_2 then
+		return l_2_2
 	end
-	L3_5 = A0_2._unit
-	if A0_2._enemy_data.is_stunned then
-		return FlyerStunState:new(L3_5, "patrol")
-	elseif A0_2._enemy_data.attacking then
-		return FlyerAttackingState:new(L3_5)
-	elseif A0_2._enemy_data.self_destroying then
-		return FlyerSelfDestroyingState:new(L3_5)
+	local l_2_3 = l_2_0._unit
+	local l_2_4 = l_2_0._enemy_data
+	if l_2_4.is_stunned then
+		local l_2_5, l_2_6 = FlyerStunState:new, FlyerStunState
+		local l_2_7 = l_2_3
+		local l_2_8, l_2_12, l_2_16 = "patrol"
+		return l_2_5(l_2_6, l_2_7, l_2_8)
+	elseif l_2_4.attacking then
+		local l_2_9, l_2_10 = FlyerAttackingState:new, FlyerAttackingState
+		local l_2_11 = l_2_3
+		return l_2_9(l_2_10, l_2_11)
+	elseif l_2_4.self_destroying then
+		local l_2_13, l_2_14 = FlyerSelfDestroyingState:new, FlyerSelfDestroyingState
+		local l_2_15 = l_2_3
+		return l_2_13(l_2_14, l_2_15)
 	end
-	if A0_2._enemy_data.stun_requested then
-		L3_5:play_redirect("stun")
-	elseif A0_2._input:fire() and A0_2._enemy_data.can_shoot then
-		L3_5:play_redirect("enter_attack")
-	elseif A0_2._input:self_destroy() or A0_2._enemy_data.debug_force_self_destroy then
-		L3_5:play_redirect("self_destroy")
+	local l_2_17 = l_2_0._input
+	if l_2_4.stun_requested then
+		l_2_3:play_redirect("stun")
+	else
+		if l_2_17:fire() and l_2_4.can_shoot then
+			l_2_3:play_redirect("enter_attack")
+		end
+	else
+		if l_2_17:self_destroy() or l_2_4.debug_force_self_destroy then
+			l_2_3:play_redirect("self_destroy")
+		end
 	end
 end
+
+

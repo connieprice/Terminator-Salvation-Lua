@@ -1,68 +1,62 @@
-Menu2DCamera = Menu2DCamera or class()
-Menu2DCamera._cameras = {
-	mainmenu = {
-		difficulty_level = "mainmenu_to_difficulty_level",
-		options = "mainmenu_to_options",
-		checkpoints = "mainmenu_to_checkpoints"
-	},
-	confirm_overwrite_save_game = {
-		difficulty_level = "mainmenu_to_difficulty_level"
-	},
-	confirm_overwrite_replay_scenario = {
-		checkpoints = "mainmenu_to_checkpoints"
-	}
-}
-function Menu2DCamera.init(A0_0)
+if not Menu2DCamera then
+	Menu2DCamera = class()
+end
+local l_0_0 = Menu2DCamera
+local l_0_1 = {}
+local l_0_2 = {}
+l_0_2.difficulty_level = "mainmenu_to_difficulty_level"
+l_0_2.options = "mainmenu_to_options"
+l_0_2.checkpoints = "mainmenu_to_checkpoints"
+l_0_1.mainmenu = l_0_2
+l_0_1.confirm_overwrite_save_game, l_0_2 = l_0_2, {difficulty_level = "mainmenu_to_difficulty_level"}
+l_0_1.confirm_overwrite_replay_scenario, l_0_2 = l_0_2, {checkpoints = "mainmenu_to_checkpoints"}
+l_0_0._cameras = l_0_1
+l_0_0 = Menu2DCamera
+l_0_1 = function(l_1_0)
 	World:preload_unit("player_cam")
-	A0_0:_set_camera_pos()
+	l_1_0:_set_camera_pos()
 end
-function Menu2DCamera._set_camera_pos(A0_1)
-	local L1_2
-	L1_2 = true
-	managers.worldcamera:play_world_camera("mainmenu_to_options", L1_2)
+
+l_0_0.init = l_0_1
+l_0_0 = Menu2DCamera
+l_0_1 = function(l_2_0)
+	local l_2_1 = true
+	managers.worldcamera:play_world_camera("mainmenu_to_options", l_2_1)
 end
-function Menu2DCamera.play(A0_3, A1_4, A2_5, A3_6)
-	local L4_7, L5_8, L6_9
-	L5_8 = A0_3
-	L4_7 = A0_3._lookup_camera_name
-	L6_9 = A1_4
-	L4_7 = L4_7(L5_8, L6_9, A2_5)
-	if L4_7 then
-		L5_8 = managers
-		L5_8 = L5_8.worldcamera
-		L6_9 = L5_8
-		L5_8 = L5_8.current_world_camera
-		L5_8 = L5_8(L6_9)
-		if L5_8 then
-			L6_9 = L5_8.playing
-			L6_9 = L6_9(L5_8)
+
+l_0_0._set_camera_pos = l_0_1
+l_0_0 = Menu2DCamera
+l_0_1 = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_4 = l_3_0:_lookup_camera_name(l_3_1, l_3_2)
+	if l_3_4 then
+		local l_3_5 = managers.worldcamera:current_world_camera()
+		if not l_3_5 or not l_3_5:playing() then
+			managers.worldcamera:play_world_camera(l_3_4, l_3_3)
 		else
-			if not L6_9 then
-				L6_9 = managers
-				L6_9 = L6_9.worldcamera
-				L6_9 = L6_9.play_world_camera
-				L6_9(L6_9, L4_7, A3_6)
-		end
-		else
-			L6_9 = nil
-			if A3_6 then
-				L6_9 = managers.worldcamera:current_world_camera():current_time()
+			local l_3_6 = nil
+			if l_3_3 then
+				l_3_6 = managers.worldcamera:current_world_camera():current_time()
 			else
-				L6_9 = L5_8:current_time() - TimerManager:main():delta_time()
+				l_3_6 = l_3_5:current_time() - TimerManager:main():delta_time()
 			end
-			managers.worldcamera:play_world_camera(L4_7, A3_6, L6_9)
+			managers.worldcamera:play_world_camera(l_3_4, l_3_3, l_3_6)
 		end
-		A0_3._wc_backward = A3_6
+		l_3_0._wc_backward = l_3_3
 	end
-	L5_8 = L4_7 ~= nil
-	return L5_8
+	return l_3_4 ~= nil
 end
-function Menu2DCamera._lookup_camera_name(A0_10, A1_11, A2_12)
-	local L3_13
-	L3_13 = Menu2DCamera
-	L3_13 = L3_13._cameras
-	L3_13 = L3_13[A1_11]
-	if L3_13 and L3_13[A2_12] then
-		return L3_13[A2_12]
+
+l_0_0.play = l_0_1
+l_0_0 = Menu2DCamera
+l_0_1 = function(l_4_0, l_4_1, l_4_2)
+	local l_4_3 = Menu2DCamera._cameras[l_4_1]
+	if l_4_3 then
+		local l_4_4 = l_4_3[l_4_2]
+		if l_4_4 then
+			return l_4_4
+		end
 	end
 end
+
+l_0_0._lookup_camera_name = l_0_1
+

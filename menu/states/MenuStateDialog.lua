@@ -1,1 +1,4 @@
-MenuStateDialog = MenuStateDialog or class(MenuStateFadeTransition)
+if not MenuStateDialog then
+	MenuStateDialog = class(MenuStateFadeTransition)
+end
+

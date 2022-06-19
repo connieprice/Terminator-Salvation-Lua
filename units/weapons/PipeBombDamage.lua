@@ -1,16 +1,32 @@
-PipeBombDamage = PipeBombDamage or class(UnitDamage)
-function PipeBombDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	UnitDamage.init(A0_0, A1_1, PlayerBodyDamage, A3_3, A4_4, A5_5, A6_6)
-	A0_0._unit = A1_1
+if not PipeBombDamage then
+	PipeBombDamage = class(UnitDamage)
 end
-function PipeBombDamage.add_damage(A0_7, A1_8, A2_9, A3_10, A4_11, A5_12, A6_13, A7_14, A8_15)
-	if A1_8 == "collision" then
-		A7_14 = 0
+PipeBombDamage.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	UnitDamage.init(l_1_0, l_1_1, PlayerBodyDamage, l_1_3, l_1_4, l_1_5, l_1_6)
+	l_1_0._unit = l_1_1
+end
+
+PipeBombDamage.add_damage = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7, l_2_8)
+	if l_2_1 == "collision" then
+		l_2_7 = 0
 	end
-	if A1_8 == "ezsqz_bullet" then
-		A0_7._unit:base():bullet_hit()
+	if l_2_1 == "ezsqz_bullet" then
+		l_2_0._unit:base():bullet_hit()
 	end
-	return UnitDamage.add_damage(A0_7, A1_8, A2_9, A3_10, A4_11, A5_12, A6_13, A7_14, A8_15)
+	local l_2_9 = UnitDamage.add_damage
+	local l_2_10 = l_2_0
+	local l_2_11 = l_2_1
+	local l_2_12 = l_2_2
+	local l_2_13 = l_2_3
+	local l_2_14 = l_2_4
+	local l_2_15 = l_2_5
+	local l_2_16 = l_2_6
+	local l_2_17 = l_2_7
+	local l_2_18 = l_2_8
+	return l_2_9(l_2_10, l_2_11, l_2_12, l_2_13, l_2_14, l_2_15, l_2_16, l_2_17, l_2_18)
 end
-function PipeBombDamage.dead(A0_16, A1_17)
+
+PipeBombDamage.dead = function(l_3_0, l_3_1)
 end
+
+

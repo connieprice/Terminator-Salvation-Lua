@@ -1,194 +1,151 @@
 require("ai/machines/MachineAiData")
-SpiderAiData = SpiderAiData or class(MachineAiData)
-function SpiderAiData.init(A0_0)
-	MachineAiData.init(A0_0)
-	A0_0:_setup_brain_data()
-	A0_0.UNIT_EYES = {
-		PATROL = {
-			{
-				name = "a_eye",
-				half_fov = 6,
-				half_zfov = tweak_data.enemy.spider.SCAN_Z_FOV / 2,
-				range = tweak_data.enemy.spider.SCAN_RANGE
-			},
-			{
-				name = "a_eye",
-				half_fov = 180,
-				half_zfov = 60,
-				range = 500
-			}
-		},
-		STANDARD = {
-			{
-				name = "a_eye",
-				half_fov = 90,
-				half_zfov = 60,
-				range = 10000
-			},
-			{
-				name = "a_eye",
-				half_fov = 180,
-				half_zfov = 60,
-				range = 500
-			}
-		}
-	}
-	A0_0.UNIT_WEAPONS = {
-		{
-			name = "gun_left",
-			id = "left",
-			enabled = true
-		},
-		{
-			name = "gun_right",
-			id = "right",
-			enabled = true
-		}
-	}
-	A0_0.SPEEDS = {normal = 1}
-	A0_0.threat_constants = {
-		DAMAGE_DECLINATION_FACTOR = 0.05,
-		LOS_DECLINATION_FACTOR = 2,
-		LOF_DECLINATION_FACTOR = 0.5,
-		primary_weights = {
-			HAS_LOS_FACTOR = 1,
-			NO_LOS_FACTOR = 0.6,
-			HAS_LOF_FACTOR = 1,
-			NO_LOF_FACTOR = 0.6,
-			MIN_AGGRESSION_FACTOR = 0.1,
-			MAX_AGGRESSION_FACTOR = 0.8,
-			MIN_DAMAGE_FACTOR = 0.1,
-			MAX_DAMAGE_FACTOR = 1,
-			DAMAGE_SCALE = 40,
-			PROXIMITY_OVERRIDE_RANGE = 700,
-			HUMAN_PLAYER_FACTOR = 1,
-			NON_HUMAN_PLAYER_FACTOR = 0.7,
-			IN_COVER_FACTOR = 0.1,
-			OUT_OF_COVER_FACTOR = 1,
-			SAME_TARGET_FACTOR = 1,
-			CHANGE_TARGET_FACTOR = 0.95
-		},
-		secondary_weights = {
-			HAS_LOS_FACTOR = 1,
-			NO_LOS_FACTOR = 0.1,
-			HAS_LOF_FACTOR = 1,
-			NO_LOF_FACTOR = 0.1,
-			MIN_AGGRESSION_FACTOR = 0.01,
-			MAX_AGGRESSION_FACTOR = 0.2,
-			MIN_DAMAGE_FACTOR = 0.01,
-			MAX_DAMAGE_FACTOR = 1,
-			DAMAGE_SCALE = 2,
-			PROXIMITY_OVERRIDE_RANGE = 700,
-			FIRING_ARC_ORIENTATION_OBJECT = "a_eye",
-			FIRING_ARC_INFO = {
-				{
-					CENTER_ANGLE = 0,
-					HALF_FOV = 40,
-					HALF_ZFOV = 60
-				}
-			},
-			SAME_TARGET_FACTOR = 1,
-			CHANGE_TARGET_FACTOR = 0.8
-		}
-	}
-	A0_0.NUMBER_OF_SECONDARY_TARGETS = 1
-	A0_0.LINE_OF_FIRE_SLOT_MASK = "enemy_line_of_fire_blockers"
-	A0_0.FRIENDLY_UNITS_SLOT_MASK = "machines"
-	A0_0.WEAPONS_RANGE = tweak_data.ai.machines.spider.WEAPONS_RANGE
-	A0_0.SOUND_LEVEL_HEARING_THRESHOLD = 0
-	A0_0.TIME_TO_FORGET_THREATNING_UNIT = 40
-	A0_0.TIME_TO_FORGET_UNIDENTIFIED_THREAT = 10
-	A0_0.PATROL_MOVE_TIMERS = tweak_data.ai.machines.spider.PATROL_MOVE_TIMERS
-	A0_0.AGGRESIVE_MOVE_TIMERS = tweak_data.ai.machines.spider.AGGRESIVE_MOVE_TIMERS
-	A0_0.HIDE_TIMERS = tweak_data.ai.machines.spider.HIDE_TIMERS
-	A0_0.ROTATE_TO_WAYPOINT_DIRECTION_START_DISTANCE = 300
+if not SpiderAiData then
+	SpiderAiData = class(MachineAiData)
 end
-function SpiderAiData._setup_brain_data(A0_1)
-	local L1_2
-	L1_2 = {}
-	L1_2.normal = {
-		name = "spider_brain",
-		group = "normal",
-		auto_started_threads = {
-			"spider_threat_tracking",
-			"spider_targeting",
-			"spider_sensory",
-			"spider_behavior",
-			"spider_movement",
-			"spider_combat"
-		},
-		lod_managed_threads = {},
-		lod_distance = 0,
-		init_functions = {
-			SpiderAiThreatTracking.init_data,
-			CommonAiTargeting.init_data,
-			CommonAiSensoryEventsHandler.init_data,
-			CommonAiBehavior.init_data,
-			CommonAiCombat.init_data,
-			CommonAiMovement.init_data
-		},
-		forced_targeting_threads = {
-			"spider_threat_tracking",
-			"spider_targeting",
-			"spider_combat"
-		}
-	}
-	L1_2.rail = {
-		name = "spider_brain",
-		group = "rail",
-		auto_started_threads = {
-			"spider_threat_tracking",
-			"spider_targeting",
-			"spider_sensory",
-			"spider_behavior",
-			"spider_movement",
-			"spider_combat"
-		},
-		lod_managed_threads = {},
-		lod_distance = 0,
-		init_functions = {
-			SpiderAiThreatTracking.init_data,
-			CommonAiTargeting.init_data,
-			CommonAiSensoryEventsHandler.init_data,
-			CommonAiBehavior.init_data,
-			CommonAiCombat.init_data,
-			CommonAiMovement.init_data,
-			MachineAiData.set_rail_target_slot,
-			SpiderAiData.set_weapon_range_to_rail
-		}
-	}
-	A0_1.brain_infos = L1_2
-	L1_2 = "surface_spider"
-	A0_1.graph = Search:nav(L1_2)
-	assert(A0_1.graph, "AI graph " .. L1_2 .. " not found!")
-	A0_1.input.is_firing = false
-	A0_1.input.is_charging = false
-	A0_1.output.urgent = false
-	A0_1.output.attack_mode = false
-	A0_1.output.allowed_to_fire = false
-	A0_1.output.firing_target = nil
-	A0_1.output.investigate_mode = false
-	A0_1.output.firing_target_position = nil
-	A0_1.output.threat_arc_min = nil
-	A0_1.output.threat_arc_max = nil
+SpiderAiData.init = function(l_1_0)
+	MachineAiData.init(l_1_0)
+	l_1_0:_setup_brain_data()
+	local l_1_1 = {}
+	local l_1_2 = {}
+	l_1_2.name = "a_eye"
+	l_1_2.half_fov = 90
+	l_1_2.half_zfov = 60
+	l_1_2.range = 10000
+	local l_1_3 = {}
+	l_1_3.name = "a_eye"
+	l_1_3.half_fov = 180
+	l_1_3.half_zfov = 60
+	l_1_3.range = 500
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_4 = {}
+	l_1_4.name = "a_eye"
+	l_1_4.half_fov = 180
+	l_1_4.half_zfov = 60
+	l_1_4.range = 500
+	l_1_3 = {name = "a_eye", half_fov = 6, half_zfov = tweak_data.enemy.spider.SCAN_Z_FOV / 2, range = tweak_data.enemy.spider.SCAN_RANGE}
+	l_1_2 = {l_1_3, l_1_4}
+	l_1_0.UNIT_EYES, l_1_3 = l_1_3, {PATROL = l_1_2, STANDARD = l_1_1}
+	local l_1_5 = {}
+	l_1_5.name = "gun_right"
+	l_1_5.id = "right"
+	l_1_5.enabled = true
+	l_1_4 = {name = "gun_left", id = "left", enabled = true}
+	l_1_0.UNIT_WEAPONS, l_1_3 = l_1_3, {l_1_4, l_1_5}
+	l_1_0.SPEEDS, l_1_3 = l_1_3, {normal = 1}
+	l_1_4 = {HAS_LOS_FACTOR = 1, NO_LOS_FACTOR = 0.6, HAS_LOF_FACTOR = 1, NO_LOF_FACTOR = 0.6, MIN_AGGRESSION_FACTOR = 0.1, MAX_AGGRESSION_FACTOR = 0.8, MIN_DAMAGE_FACTOR = 0.1, MAX_DAMAGE_FACTOR = 1, DAMAGE_SCALE = 40, PROXIMITY_OVERRIDE_RANGE = 700, HUMAN_PLAYER_FACTOR = 1, NON_HUMAN_PLAYER_FACTOR = 0.7, IN_COVER_FACTOR = 0.1, OUT_OF_COVER_FACTOR = 1, SAME_TARGET_FACTOR = 1, CHANGE_TARGET_FACTOR = 0.95}
+	local l_1_6 = {}
+	l_1_6.CENTER_ANGLE = 0
+	l_1_6.HALF_FOV = 40
+	l_1_6.HALF_ZFOV = 60
+	l_1_5 = {l_1_6}
+	l_1_4 = {HAS_LOS_FACTOR = 1, NO_LOS_FACTOR = 0.1, HAS_LOF_FACTOR = 1, NO_LOF_FACTOR = 0.1, MIN_AGGRESSION_FACTOR = 0.01, MAX_AGGRESSION_FACTOR = 0.2, MIN_DAMAGE_FACTOR = 0.01, MAX_DAMAGE_FACTOR = 1, DAMAGE_SCALE = 2, PROXIMITY_OVERRIDE_RANGE = 700, FIRING_ARC_ORIENTATION_OBJECT = "a_eye", FIRING_ARC_INFO = l_1_5, SAME_TARGET_FACTOR = 1, CHANGE_TARGET_FACTOR = 0.8}
+	l_1_0.threat_constants, l_1_3 = l_1_3, {DAMAGE_DECLINATION_FACTOR = 0.05, LOS_DECLINATION_FACTOR = 2, LOF_DECLINATION_FACTOR = 0.5, primary_weights = l_1_4, secondary_weights = l_1_4}
+	l_1_0.NUMBER_OF_SECONDARY_TARGETS = 1
+	l_1_0.LINE_OF_FIRE_SLOT_MASK = "enemy_line_of_fire_blockers"
+	l_1_0.FRIENDLY_UNITS_SLOT_MASK = "machines"
+	l_1_3 = tweak_data
+	l_1_3 = l_1_3.ai
+	l_1_3 = l_1_3.machines
+	l_1_3 = l_1_3.spider
+	l_1_3 = l_1_3.WEAPONS_RANGE
+	l_1_0.WEAPONS_RANGE = l_1_3
+	l_1_0.SOUND_LEVEL_HEARING_THRESHOLD = 0
+	l_1_0.TIME_TO_FORGET_THREATNING_UNIT = 40
+	l_1_0.TIME_TO_FORGET_UNIDENTIFIED_THREAT = 10
+	l_1_3 = tweak_data
+	l_1_3 = l_1_3.ai
+	l_1_3 = l_1_3.machines
+	l_1_3 = l_1_3.spider
+	l_1_3 = l_1_3.PATROL_MOVE_TIMERS
+	l_1_0.PATROL_MOVE_TIMERS = l_1_3
+	l_1_3 = tweak_data
+	l_1_3 = l_1_3.ai
+	l_1_3 = l_1_3.machines
+	l_1_3 = l_1_3.spider
+	l_1_3 = l_1_3.AGGRESIVE_MOVE_TIMERS
+	l_1_0.AGGRESIVE_MOVE_TIMERS = l_1_3
+	l_1_3 = tweak_data
+	l_1_3 = l_1_3.ai
+	l_1_3 = l_1_3.machines
+	l_1_3 = l_1_3.spider
+	l_1_3 = l_1_3.HIDE_TIMERS
+	l_1_0.HIDE_TIMERS = l_1_3
+	l_1_0.ROTATE_TO_WAYPOINT_DIRECTION_START_DISTANCE = 300
 end
-function SpiderAiData.clear_output(A0_3)
-	MachineAiData.clear_output(A0_3)
-	A0_3.output.urgent = false
-	A0_3.output.attack_mode = false
-	A0_3.output.allowed_to_fire = false
-	A0_3.output.firing_target = nil
-	A0_3.output.investigate_mode = false
-	A0_3.output.firing_target_position = nil
-	A0_3.output.threat_arc_min = nil
-	A0_3.output.threat_arc_max = nil
+
+SpiderAiData._setup_brain_data = function(l_2_0)
+	local l_2_1 = {}
+	local l_2_2 = {}
+	l_2_2.name = "spider_brain"
+	l_2_2.group = "normal"
+	local l_2_3 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_2.init_functions, l_2_3 = l_2_3, {"spider_threat_tracking".init_data, "spider_targeting".init_data, "spider_sensory".init_data, "spider_behavior".init_data, "spider_movement".init_data, "spider_combat".init_data}
+	l_2_2.forced_targeting_threads, l_2_3 = l_2_3, {"spider_threat_tracking", "spider_targeting", "spider_combat"}
+	l_2_1.normal = l_2_2
+	l_2_3 = {"spider_threat_tracking", "spider_targeting", "spider_sensory", "spider_behavior", "spider_movement", "spider_combat"}
+	l_2_3 = {}
+	l_2_3 = {SpiderAiThreatTracking.init_data, CommonAiTargeting.init_data, CommonAiSensoryEventsHandler.init_data, CommonAiBehavior.init_data, CommonAiCombat.init_data, CommonAiMovement.init_data, MachineAiData.set_rail_target_slot, SpiderAiData.set_weapon_range_to_rail}
+	l_2_1.rail, l_2_2 = l_2_2, {name = "spider_brain", group = "rail", auto_started_threads = l_2_3, lod_managed_threads = l_2_3, lod_distance = 0, init_functions = l_2_3}
+	l_2_0.brain_infos = l_2_1
+	l_2_1 = "surface_spider"
+	l_2_2 = Search
+	l_2_2, l_2_3 = l_2_2:nav, l_2_2
+	l_2_2 = l_2_2(l_2_3, l_2_1)
+	l_2_0.graph = l_2_2
+	l_2_2 = assert
+	l_2_3 = l_2_0.graph
+	l_2_2(l_2_3, "AI graph " .. l_2_1 .. " not found!")
+	l_2_2 = l_2_0.input
+	l_2_2.is_firing = false
+	l_2_2 = l_2_0.input
+	l_2_2.is_charging = false
+	l_2_2 = l_2_0.output
+	l_2_2.urgent = false
+	l_2_2 = l_2_0.output
+	l_2_2.attack_mode = false
+	l_2_2 = l_2_0.output
+	l_2_2.allowed_to_fire = false
+	l_2_2 = l_2_0.output
+	l_2_2.firing_target = nil
+	l_2_2 = l_2_0.output
+	l_2_2.investigate_mode = false
+	l_2_2 = l_2_0.output
+	l_2_2.firing_target_position = nil
+	l_2_2 = l_2_0.output
+	l_2_2.threat_arc_min = nil
+	l_2_2 = l_2_0.output
+	l_2_2.threat_arc_max = nil
 end
-function SpiderAiData.set_weapon_range_to_rail(A0_4, A1_5)
-	local L2_6
-	L2_6 = tweak_data
-	L2_6 = L2_6.ai
-	L2_6 = L2_6.machines
-	L2_6 = L2_6.spider
-	L2_6 = L2_6.WEAPONS_RANGE_RAIL
-	A1_5.WEAPONS_RANGE = L2_6
+
+SpiderAiData.clear_output = function(l_3_0)
+	MachineAiData.clear_output(l_3_0)
+	l_3_0.output.urgent = false
+	l_3_0.output.attack_mode = false
+	l_3_0.output.allowed_to_fire = false
+	l_3_0.output.firing_target = nil
+	l_3_0.output.investigate_mode = false
+	l_3_0.output.firing_target_position = nil
+	l_3_0.output.threat_arc_min = nil
+	l_3_0.output.threat_arc_max = nil
 end
+
+SpiderAiData.set_weapon_range_to_rail = function(l_4_0, l_4_1)
+	l_4_1.WEAPONS_RANGE = tweak_data.ai.machines.spider.WEAPONS_RANGE_RAIL
+end
+
+

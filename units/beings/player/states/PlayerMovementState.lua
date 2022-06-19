@@ -1,179 +1,142 @@
 require("shared/updatescheduler/UpdateSchedulerDtMethod")
-PlayerMovementState = PlayerMovementState or class()
-function PlayerMovementState.init(A0_0, A1_1, A2_2)
-	local L3_3
-	A0_0._unit = A1_1
-	A0_0._name = A2_2
-	L3_3 = A1_1.base
-	L3_3 = L3_3(A1_1)
-	A0_0._base = L3_3
-	L3_3 = managers
-	L3_3 = L3_3.slot
-	L3_3 = L3_3.get_mask
-	L3_3 = L3_3(L3_3, "standable")
-	A0_0._slotmask_standable = L3_3
-	L3_3 = A0_0._unit
-	L3_3 = L3_3.anim_state_machine
-	L3_3 = L3_3(L3_3)
-	A0_0._machine = L3_3
-	L3_3 = A0_0._unit
-	L3_3 = L3_3.player_data
-	L3_3 = L3_3(L3_3)
-	A0_0._player_data = L3_3
-	A0_0._idle_time = 0
-	L3_3 = A0_0._update_time_until_idle_animation
-	L3_3(A0_0)
-	A0_0._base_state = "onground/rifle/idle/std"
-	L3_3 = A1_1.position
-	L3_3 = L3_3(A1_1)
-	A0_0._pos = L3_3
-	L3_3 = A0_0._unit
-	L3_3 = L3_3.mover_by_name
-	L3_3 = L3_3(L3_3, "in_cover")
-	assert(L3_3)
-	A0_0._incover_mover_radius = L3_3:radius()
-	A0_0._was_upperbody_idle = false
+if not PlayerMovementState then
+	PlayerMovementState = class()
 end
-function PlayerMovementState.enter(A0_4)
-	local L1_5
+PlayerMovementState.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._unit = l_1_1
+	l_1_0._name = l_1_2
+	l_1_0._base = l_1_1:base()
+	l_1_0._slotmask_standable = managers.slot:get_mask("standable")
+	l_1_0._machine = l_1_0._unit:anim_state_machine()
+	l_1_0._player_data = l_1_0._unit:player_data()
+	l_1_0._idle_time = 0
+	l_1_0:_update_time_until_idle_animation()
+	l_1_0._base_state = "onground/rifle/idle/std"
+	l_1_0._pos = l_1_1:position()
+	local l_1_3 = l_1_0._unit:mover_by_name("in_cover")
+	assert(l_1_3)
+	l_1_0._incover_mover_radius = l_1_3:radius()
+	l_1_0._was_upperbody_idle = false
 end
-function PlayerMovementState.leave(A0_6)
-	local L1_7
+
+PlayerMovementState.enter = function(l_2_0)
 end
-function PlayerMovementState.name(A0_8)
-	local L1_9
-	L1_9 = A0_8._name
-	return L1_9
+
+PlayerMovementState.leave = function(l_3_0)
 end
-function PlayerMovementState.update(A0_10, A1_11, A2_12)
-	A0_10:update_common(A1_11, A2_12)
+
+PlayerMovementState.name = function(l_4_0)
+	return l_4_0._name
 end
-function PlayerMovementState.variable_frequency_post_update(A0_13, A1_14)
-	A0_13:_update_idle(A1_14)
+
+PlayerMovementState.update = function(l_5_0, l_5_1, l_5_2)
+	l_5_0:update_common(l_5_1, l_5_2)
 end
-function PlayerMovementState.update_common(A0_15, A1_16, A2_17)
-	A0_15._pos = A0_15._unit:position()
+
+PlayerMovementState.variable_frequency_post_update = function(l_6_0, l_6_1)
+	l_6_0:_update_idle(l_6_1)
 end
-function PlayerMovementState._limit_aim_acceleration(A0_18)
-	local L1_19, L2_20
-	L1_19 = A0_18._player_data
-	L2_20 = L1_19.can_shoot
-	L2_20 = L2_20 and not L2_20 and not L2_20
-	return L2_20
+
+PlayerMovementState.update_common = function(l_7_0, l_7_1, l_7_2)
+	l_7_0._pos = l_7_0._unit:position()
 end
-function PlayerMovementState._update_aim_parameters(A0_21, A1_22)
-	local L2_23, L3_24, L4_25, L5_26, L6_27, L7_28
-	L3_24 = A0_21
-	L2_23 = A0_21._get_aim_constraints
-	L5_26 = L2_23(L3_24)
-	L6_27 = A0_21._player_data
-	L7_28 = A0_21._limit_aim_acceleration
-	L7_28 = L7_28(A0_21)
-	A0_21._base:_update_aim_parameters(A1_22, L2_23, L3_24, L4_25, L5_26, false, L7_28)
-end
-function PlayerMovementState._get_aim_constraints(A0_29, A1_30)
-	local L2_31, L3_32, L4_33, L5_34, L6_35
-	L2_31 = A0_29._player_data
-	L3_32 = L2_31.pitch_neg_angle
-	L4_33 = L2_31.pitch_pos_angle
-	L5_34 = L2_31.yaw_neg_angle
-	L6_35 = L2_31.yaw_pos_angle
-	return L3_32, L4_33, L5_34, L6_35
-end
-function PlayerMovementState._play_random_redirect(A0_36, A1_37)
-	local L2_38, L3_39, L4_40
-	L2_38 = #A1_37
-	if L2_38 > 0 then
-		L3_39 = math
-		L3_39 = L3_39.random
-		L4_40 = 1
-		L3_39 = L3_39(L4_40, L2_38)
-		L4_40 = A1_37[L3_39]
-		A0_36._unit:play_redirect(L4_40)
-	end
-end
-function PlayerMovementState._update_idle(A0_41, A1_42)
-	local L2_43, L3_44
-	L2_43 = A0_41._player_data
-	L3_44 = L2_43.idle
-	if L3_44 then
-		L3_44 = L2_43.upperbody_idle
-		if L3_44 then
-			L3_44 = L2_43.turning_left
-			if not L3_44 then
-				L3_44 = L2_43.turning_right
-				if not L3_44 then
-					L3_44 = A0_41._idle_time
-					L3_44 = L3_44 + A1_42
-					A0_41._idle_time = L3_44
-				end
-			end
+
+PlayerMovementState._limit_aim_acceleration = function(l_8_0)
+	local l_8_1 = l_8_0._player_data
+	if l_8_1.can_shoot then
+		if not l_8_1.turning_left then
+			local l_8_2 = not l_8_1.turning_right
 		end
 	else
-		A0_41._idle_time = 0
+		return false
 	end
-	L3_44 = L2_43.under_fire_reactions_enabled
-	if L3_44 then
-		L3_44 = A0_41._update_idle_under_fire
-		L3_44 = L3_44(A0_41, A1_42, L2_43)
-		if L3_44 then
-			A0_41._idle_time = 0
+end
+
+PlayerMovementState._update_aim_parameters = function(l_9_0, l_9_1)
+	local l_9_2, l_9_3, l_9_4, l_9_5 = l_9_0:_get_aim_constraints()
+	local l_9_6 = l_9_0._player_data
+	local l_9_7 = l_9_0:_limit_aim_acceleration()
+	l_9_0._base:_update_aim_parameters(l_9_1, l_9_2, l_9_3, l_9_4, l_9_5, false, l_9_7)
+end
+
+PlayerMovementState._get_aim_constraints = function(l_10_0, l_10_1)
+	local l_10_2 = l_10_0._player_data
+	return l_10_2.pitch_neg_angle, l_10_2.pitch_pos_angle, l_10_2.yaw_neg_angle, l_10_2.yaw_pos_angle
+end
+
+PlayerMovementState._play_random_redirect = function(l_11_0, l_11_1)
+	local l_11_2 = #l_11_1
+	if l_11_2 > 0 then
+		local l_11_3 = math.random(1, l_11_2)
+		local l_11_4 = l_11_1[l_11_3]
+		l_11_0._unit:play_redirect(l_11_4)
+	end
+end
+
+PlayerMovementState._update_idle = function(l_12_0, l_12_1)
+	local l_12_2 = l_12_0._player_data
+	if l_12_2.idle and l_12_2.upperbody_idle and not l_12_2.turning_left and not l_12_2.turning_right then
+		l_12_0._idle_time = l_12_0._idle_time + l_12_1
+	else
+		l_12_0._idle_time = 0
+	end
+	if l_12_2.under_fire_reactions_enabled and l_12_0:_update_idle_under_fire(l_12_1, l_12_2) then
+		l_12_0._idle_time = 0
+	else
+		if l_12_0._time_until_idle_animation < l_12_0._idle_time then
+			local l_12_3 = l_12_0:_idle_redirects()
+			l_12_0:_play_random_redirect(l_12_3)
+			l_12_0._idle_time = 0
+			l_12_0:_update_time_until_idle_animation()
+		end
+	end
+	l_12_0:_update_upper_body_idle()
+end
+
+PlayerMovementState._update_upper_body_idle = function(l_13_0)
+	local l_13_1 = l_13_0._player_data
+	if l_13_1.upperbody_idle then
+		if not l_13_1.turning_left then
+			local l_13_2 = not l_13_1.turning_right
 		end
 	else
-		L3_44 = A0_41._idle_time
-		if L3_44 > A0_41._time_until_idle_animation then
-			L3_44 = A0_41._idle_redirects
-			L3_44 = L3_44(A0_41)
-			A0_41:_play_random_redirect(L3_44)
-			A0_41._idle_time = 0
-			A0_41:_update_time_until_idle_animation()
-		end
+		local l_13_3, l_13_4 = false
 	end
-	L3_44 = A0_41._update_upper_body_idle
-	L3_44(A0_41)
-end
-function PlayerMovementState._update_upper_body_idle(A0_45)
-	local L1_46, L2_47
-	L1_46 = A0_45._player_data
-	L2_47 = L1_46.upperbody_idle
-	L2_47 = L2_47 and not L2_47 and not L2_47
-	if not L2_47 and A0_45._was_upperbody_idle then
-		A0_45._unit:play_redirect("exit_idle")
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if not l_13_3 and l_13_0._was_upperbody_idle then
+		l_13_0._unit:play_redirect("exit_idle")
 	end
-	A0_45._was_upperbody_idle = L2_47
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_13_0._was_upperbody_idle = l_13_3
 end
-function PlayerMovementState._update_idle_under_fire(A0_48, A1_49, A2_50)
-	local L3_51, L4_52, L5_53
-	L3_51 = A2_50.time_since_incoming_fire
-	L4_52 = tweak_data
-	L4_52 = L4_52.player
-	L4_52 = L4_52.idle
-	L4_52 = L4_52.UNDER_FIRE_TIMEOUT
-	L3_51 = L3_51 < L4_52
-	L4_52 = A2_50.animation_under_fire
-	if L3_51 then
-		if not L4_52 then
-			L5_53 = A0_48._idle_under_fire_redirects
-			L5_53 = L5_53(A0_48)
-			A0_48:_play_random_redirect(L5_53)
-		end
-	elseif L4_52 then
-		L5_53 = A0_48._unit
-		L5_53 = L5_53.play_redirect
-		L5_53(L5_53, "exit_idle_under_fire")
+
+PlayerMovementState._update_idle_under_fire = function(l_14_0, l_14_1, l_14_2)
+	local l_14_6 = l_14_2.time_since_incoming_fire < tweak_data.player.idle.UNDER_FIRE_TIMEOUT
+	if l_14_6 and not l_14_2.animation_under_fire then
+		local l_14_7 = nil
+		l_14_0:_play_random_redirect(l_14_0:_idle_under_fire_redirects())
 	end
-	return L3_51
+	do return end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_14_7 then
+		l_14_0._unit:play_redirect("exit_idle_under_fire")
+	end
+	return l_14_6
 end
-function PlayerMovementState._idle_redirects(A0_54)
-	local L1_55
-	L1_55 = {}
-	return L1_55
+
+PlayerMovementState._idle_redirects = function(l_15_0)
+	return {}
 end
-function PlayerMovementState._idle_under_fire_redirects(A0_56)
-	local L1_57
-	L1_57 = {}
-	return L1_57
+
+PlayerMovementState._idle_under_fire_redirects = function(l_16_0)
+	return {}
 end
-function PlayerMovementState._update_time_until_idle_animation(A0_58)
-	A0_58._time_until_idle_animation = math.random(tweak_data.player.idle.MIN_TIME_UNTIL_IDLE_ANIMATION, tweak_data.player.idle.MAX_TIME_UNTIL_IDLE_ANIMATION)
+
+PlayerMovementState._update_time_until_idle_animation = function(l_17_0)
+	l_17_0._time_until_idle_animation = math.random(tweak_data.player.idle.MIN_TIME_UNTIL_IDLE_ANIMATION, tweak_data.player.idle.MAX_TIME_UNTIL_IDLE_ANIMATION)
 end
+
+

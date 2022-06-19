@@ -1,16 +1,29 @@
-TankWeaponSecondary = TankWeaponSecondary or class(GenericProjectileWeapon)
-function TankWeaponSecondary.init(A0_0, A1_1)
-	GenericProjectileWeapon.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._fire_logic = A0_0._unit:logic()
+if not TankWeaponSecondary then
+	TankWeaponSecondary = class(GenericProjectileWeapon)
 end
-function TankWeaponSecondary.fire(A0_2, A1_3)
-	A0_2:set_explosion_damage_at_center({
-		hard = A0_2._damage_on_max_power_up * 1,
-		soft = A0_2._damage_on_max_power_up * 1
-	})
-	GenericProjectileWeapon.fire(A0_2, A1_3)
+TankWeaponSecondary.init = function(l_1_0, l_1_1)
+	GenericProjectileWeapon.init(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._fire_logic = l_1_0._unit:logic()
 end
-function TankWeaponSecondary.destroy(A0_4)
-	GenericProjectileWeapon.destroy(A0_4)
+
+TankWeaponSecondary.fire = function(l_2_0, l_2_1)
+	if l_2_0._fire_logic:get_power_up_percent() > 1 then
+		local l_2_2 = 1
+	end
+	local l_2_3 = nil
+	local l_2_4 = nil
+	local l_2_5, l_2_6 = l_2_0._damage_on_max_power_up * l_2_3, l_2_0:set_explosion_damage_at_center
+	local l_2_7 = l_2_0
+	l_2_6(l_2_7, {hard = l_2_5, soft = l_2_5})
+	l_2_6 = GenericProjectileWeapon
+	l_2_6 = l_2_6.fire
+	l_2_7 = l_2_0
+	l_2_6(l_2_7, l_2_1)
 end
+
+TankWeaponSecondary.destroy = function(l_3_0)
+	GenericProjectileWeapon.destroy(l_3_0)
+end
+
+

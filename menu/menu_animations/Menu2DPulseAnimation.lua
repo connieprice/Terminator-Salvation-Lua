@@ -1,70 +1,52 @@
-Menu2DPulseAnimation = Menu2DPulseAnimation or class({})
-function Menu2DPulseAnimation.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5)
-	local L6_6
-	A0_0._object = A1_1
-	L6_6 = A2_2 or 0
-	A0_0._pulse_time = L6_6
-	L6_6 = A5_5 or 0
-	A0_0._wait_time = L6_6
-	A0_0._min_alpha = A3_3
-	L6_6 = A4_4 - A3_3
-	A0_0._alpha_diff = L6_6
-	A0_0._fade_down = true
-	A0_0._pulse_timer = 0
-	A0_0._wait_timer = 0
+if not Menu2DPulseAnimation then
+	Menu2DPulseAnimation = class({})
 end
-function Menu2DPulseAnimation.update(A0_7, A1_8)
-	local L2_9, L3_10, L4_11, L5_12
-	L2_9 = A0_7._pulse_timer
-	if L2_9 ~= 0 then
-		L2_9 = A0_7._wait_timer
-		L2_9 = L2_9 + A1_8
-		A0_7._wait_timer = L2_9
-		L2_9 = A0_7._wait_time
-		L3_10 = A0_7._wait_timer
-		if L2_9 > L3_10 then
-			return
-		end
+Menu2DPulseAnimation.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5)
+	l_1_0._object = l_1_1
+	do
+		l_1_0._pulse_time = l_1_2 or 0
+		l_1_0._wait_time = l_1_5 or 0
+		l_1_0._min_alpha = l_1_3
+		l_1_0._alpha_diff = l_1_4 - l_1_3
+		l_1_0._fade_down = true
+		l_1_0._pulse_timer = 0
+		l_1_0._wait_timer = 0
 	end
-	L2_9 = A0_7._pulse_timer
-	L2_9 = L2_9 + A1_8
-	A0_7._pulse_timer = L2_9
-	L2_9 = nil
-	L3_10 = A0_7._pulse_timer
-	L4_11 = A0_7._pulse_time
-	L3_10 = L3_10 / L4_11
-	if L3_10 > 1 then
-		L3_10 = 1
-	end
-	L4_11 = A0_7._fade_down
-	if L4_11 == true then
-		L4_11 = 1 - L3_10
-		L5_12 = A0_7._alpha_diff
-		L4_11 = L4_11 * L5_12
-		L5_12 = A0_7._min_alpha
-		L2_9 = L4_11 + L5_12
-	else
-		L4_11 = A0_7._fade_down
-		if L4_11 == false then
-			L4_11 = A0_7._alpha_diff
-			L4_11 = L3_10 * L4_11
-			L5_12 = A0_7._min_alpha
-			L2_9 = L4_11 + L5_12
-		end
-	end
-	L4_11 = A0_7._object
-	if L4_11 then
-		L4_11 = A0_7._object
-		L5_12 = L4_11
-		L4_11 = L4_11.set_color
-		L4_11(L5_12, A0_7._object:color():with_alpha(L2_9))
-		if L3_10 == 1 then
-			A0_7._pulse_timer = 0
-			L4_11 = A0_7._fade_down
-			L4_11 = not L4_11
-			A0_7._fade_down = L4_11
-		end
-	end
-	L4_11 = false
-	return L4_11
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+Menu2DPulseAnimation.update = function(l_2_0, l_2_1)
+	if l_2_0._pulse_timer ~= 0 then
+		l_2_0._wait_timer = l_2_0._wait_timer + l_2_1
+		if l_2_0._wait_timer < l_2_0._wait_time then
+			return 
+		end
+	end
+	l_2_0._pulse_timer = l_2_0._pulse_timer + l_2_1
+	local l_2_2 = nil
+	if l_2_0._pulse_timer / l_2_0._pulse_time > 1 then
+		local l_2_3, l_2_4, l_2_5, l_2_6 = 1
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_2_0._fade_down == true then
+		l_2_2 = (1 - l_2_3) * l_2_0._alpha_diff + l_2_0._min_alpha
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	elseif l_2_0._fade_down == false then
+		l_2_2 = l_2_3 * l_2_0._alpha_diff + l_2_0._min_alpha
+	end
+	if l_2_0._object then
+		l_2_0._object:set_color(l_2_0._object:color():with_alpha(l_2_2))
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_2_3 == 1 then
+		end
+		l_2_0._pulse_timer = 0
+		l_2_0._fade_down = not l_2_0._fade_down
+	end
+	return false
+end
+
+

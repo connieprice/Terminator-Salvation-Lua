@@ -1,23 +1,29 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreChangeCameraCutsceneKey = CoreChangeCameraCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreChangeCameraCutsceneKey then
+	CoreChangeCameraCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreChangeCameraCutsceneKey.ELEMENT_NAME = "change_camera"
 CoreChangeCameraCutsceneKey.NAME = "Camera Change"
 CoreChangeCameraCutsceneKey:register_serialized_attribute("camera", nil)
-function CoreChangeCameraCutsceneKey.__tostring(A0_0)
-	return "Change camera to \"" .. A0_0:camera() .. "\"."
+CoreChangeCameraCutsceneKey.__tostring = function(l_1_0)
+	return "Change camera to \"" .. l_1_0:camera() .. "\"."
 end
-function CoreChangeCameraCutsceneKey.load(A0_1, A1_2, A2_3)
-	A0_1.super.load(A0_1, A1_2, A2_3)
-	if A0_1.__camera == nil then
-		A0_1.__camera = A1_2:parameter("ref_obj_name") or "camera"
+
+CoreChangeCameraCutsceneKey.load = function(l_2_0, l_2_1, l_2_2)
+	l_2_0.super.load(l_2_0, l_2_1, l_2_2)
+	if not l_2_1:parameter("ref_obj_name") then
+		l_2_0.__camera = l_2_0.__camera ~= nil or "camera"
 	end
 end
-function CoreChangeCameraCutsceneKey.evaluate(A0_4, A1_5, A2_6)
-	local L3_7, L4_8
-	L4_8 = A1_5
-	L3_7 = A1_5.set_camera
-	L3_7(L4_8, A0_4:camera())
+
+CoreChangeCameraCutsceneKey.evaluate = function(l_3_0, l_3_1, l_3_2)
+	l_3_1:set_camera(l_3_0:camera())
 end
-function CoreChangeCameraCutsceneKey.is_valid_camera(A0_9, A1_10)
-	return A0_9.super.is_valid_unit_name(A0_9, A1_10) and string.begins(A1_10, "camera")
+
+CoreChangeCameraCutsceneKey.is_valid_camera = function(l_4_0, l_4_1)
+	if l_4_0.super.is_valid_unit_name(l_4_0, l_4_1) then
+		return string.begins(l_4_1, "camera")
+	end
 end
+
+

@@ -1,48 +1,48 @@
-HunterKillerAiData = HunterKillerAiData or class(MachineAiData)
-function HunterKillerAiData.init(A0_0)
-	MachineAiData.init(A0_0)
-	A0_0:_setup_brain_data()
+if not HunterKillerAiData then
+	HunterKillerAiData = class(MachineAiData)
 end
-function HunterKillerAiData._setup_brain_data(A0_1)
-	local L1_2, L2_3, L3_4
-	L1_2 = {}
-	L2_3 = {}
-	L2_3.name = "hunter_killer_brain"
-	L2_3.group = "rail"
-	L3_4 = {"hk_combat", "hk_defence"}
-	L2_3.auto_started_threads = L3_4
-	L3_4 = {}
-	L2_3.lod_managed_threads = L3_4
-	L2_3.lod_distance = 0
-	L3_4 = {
-		HunterKillerAiCombat:init_data(A0_1),
-		HunterKillerAiDefence:init_data(A0_1)
-	}
-	L2_3.init_functions = L3_4
-	L1_2.rail = L2_3
-	A0_1.brain_infos = L1_2
-	L1_2 = A0_1.output
-	L2_3 = {}
-	L1_2.firing_target_unit = L2_3
-	L1_2 = A0_1.output
-	L2_3 = {}
-	L1_2.firing_target_position = L2_3
-	L1_2 = A0_1.output
-	L2_3 = {}
-	L1_2.allowed_to_fire = L2_3
-	L1_2 = A0_1.output
-	L1_2 = L1_2.allowed_to_fire
-	L1_2[1] = false
-	L1_2 = A0_1.output
-	L1_2 = L1_2.allowed_to_fire
-	L1_2[2] = false
-	L1_2 = A0_1.output
-	L1_2.allowed_to_release_flare = false
+HunterKillerAiData.init = function(l_1_0)
+	MachineAiData.init(l_1_0)
+	l_1_0:_setup_brain_data()
 end
-function HunterKillerAiData.clear_output(A0_5)
-	MachineAiData.clear_output(A0_5)
-	A0_5.output.firing_target_unit = {}
-	A0_5.output.firing_target_position = {}
-	A0_5.output.allowed_to_fire = {}
-	A0_5.output.allowed_to_release_flare = nil
+
+HunterKillerAiData._setup_brain_data = function(l_2_0)
+	local l_2_1 = {}
+	local l_2_2 = {}
+	l_2_2.name = "hunter_killer_brain"
+	l_2_2.group = "rail"
+	local l_2_3 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_2.init_functions, l_2_3 = l_2_3, {"hk_combat":init_data(l_2_0), HunterKillerAiDefence:init_data(l_2_0)}
+	l_2_1.rail = l_2_2
+	l_2_0.brain_infos = l_2_1
+	l_2_1 = l_2_0.output
+	l_2_1.firing_target_unit, l_2_2 = l_2_2, {}
+	l_2_1 = l_2_0.output
+	l_2_1.firing_target_position, l_2_2 = l_2_2, {}
+	l_2_1 = l_2_0.output
+	l_2_1.allowed_to_fire, l_2_2 = l_2_2, {}
+	l_2_1 = l_2_0.output
+	l_2_1 = l_2_1.allowed_to_fire
+	l_2_1[1] = false
+	l_2_1 = l_2_0.output
+	l_2_1 = l_2_1.allowed_to_fire
+	l_2_1[2] = false
+	l_2_1 = l_2_0.output
+	l_2_1.allowed_to_release_flare = false
 end
+
+HunterKillerAiData.clear_output = function(l_3_0)
+	MachineAiData.clear_output(l_3_0)
+	l_3_0.output.firing_target_unit = {}
+	l_3_0.output.firing_target_position = {}
+	l_3_0.output.allowed_to_fire = {}
+	l_3_0.output.allowed_to_release_flare = nil
+end
+
+

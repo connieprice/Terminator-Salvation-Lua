@@ -1,43 +1,41 @@
-Menu2DFadeOutAnimation = Menu2DFadeOutAnimation or class({})
-function Menu2DFadeOutAnimation.init(A0_0, A1_1, A2_2, A3_3, A4_4)
-	A0_0._object = A1_1
-	A0_0._fade_speed = A3_3
-	A0_0._wait_time = A2_2 or 0
-	A0_0._end_alpha = A4_4 or 0
-	A0_0._alpha_diff = A1_1:color().alpha - A4_4
-	A0_0._fade_speed_timer = 0
-	A0_0._wait_timer = 0
+if not Menu2DFadeOutAnimation then
+	Menu2DFadeOutAnimation = class({})
 end
-function Menu2DFadeOutAnimation.update(A0_5, A1_6)
-	local L2_7, L3_8
-	L2_7 = A0_5._fade_speed_timer
-	if L2_7 ~= 0 then
-		L2_7 = A0_5._wait_timer
-		L2_7 = L2_7 + A1_6
-		A0_5._wait_timer = L2_7
-		L2_7 = A0_5._wait_time
-		L3_8 = A0_5._wait_timer
-		if L2_7 > L3_8 then
-			return
+Menu2DFadeOutAnimation.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4)
+	l_1_0._object = l_1_1
+	l_1_0._fade_speed = l_1_3
+	do
+		l_1_0._wait_time = l_1_2 or 0
+		l_1_0._end_alpha = l_1_4 or 0
+		l_1_0._alpha_diff = l_1_1:color().alpha - l_1_4
+		l_1_0._fade_speed_timer = 0
+		l_1_0._wait_timer = 0
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Menu2DFadeOutAnimation.update = function(l_2_0, l_2_1)
+	if l_2_0._fade_speed_timer ~= 0 then
+		l_2_0._wait_timer = l_2_0._wait_timer + l_2_1
+		if l_2_0._wait_timer < l_2_0._wait_time then
+			return 
 		end
 	end
-	L2_7 = A0_5._fade_speed_timer
-	L2_7 = L2_7 + A1_6
-	A0_5._fade_speed_timer = L2_7
-	L2_7 = A0_5._fade_speed_timer
-	L3_8 = A0_5._fade_speed
-	L2_7 = L2_7 / L3_8
-	if L2_7 > 1 then
-		L2_7 = 1
+	l_2_0._fade_speed_timer = l_2_0._fade_speed_timer + l_2_1
+	if l_2_0._fade_speed_timer / l_2_0._fade_speed > 1 then
+		local l_2_2 = 1
 	end
-	L3_8 = 1 - L2_7
-	L3_8 = L3_8 * A0_5._alpha_diff
-	L3_8 = L3_8 + A0_5._end_alpha
-	if A0_5._object then
-		A0_5._object:set_color(A0_5._object:color():with_alpha(L3_8))
-		if A0_5._object:color().alpha == A0_5._end_alpha then
-			return true
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	local l_2_3 = nil
+	if l_2_0._object then
+		l_2_0._object:set_color(l_2_0._object:color():with_alpha((1 - l_2_2) * l_2_0._alpha_diff + l_2_0._end_alpha))
+	if l_2_0._object:color().alpha == l_2_0._end_alpha then
 		end
+		return true
 	end
 	return false
 end
+
+

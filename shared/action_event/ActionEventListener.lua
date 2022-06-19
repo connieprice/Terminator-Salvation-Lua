@@ -1,33 +1,37 @@
-ActionEventListener = ActionEventListener or class()
-function ActionEventListener.init(A0_0, A1_1, A2_2)
-	A0_0._unit_filter = A2_2
-	A0_0._callback = A1_1
-	A0_0._continuous_events = {}
+if not ActionEventListener then
+	ActionEventListener = class()
 end
-function ActionEventListener.destroy(A0_3)
-	local L1_4
+ActionEventListener.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._unit_filter = l_1_2
+	l_1_0._callback = l_1_1
+	l_1_0._continuous_events = {}
 end
-function ActionEventListener.set_unit_filter(A0_5, A1_6)
-	A0_5._unit_filter = A1_6
+
+ActionEventListener.destroy = function(l_2_0)
 end
-function ActionEventListener.unit_filter(A0_7)
-	local L1_8
-	L1_8 = A0_7._unit_filter
-	return L1_8
+
+ActionEventListener.set_unit_filter = function(l_3_0, l_3_1)
+	l_3_0._unit_filter = l_3_1
 end
-function ActionEventListener.callback(A0_9)
-	local L1_10
-	L1_10 = A0_9._callback
-	return L1_10
+
+ActionEventListener.unit_filter = function(l_4_0)
+	return l_4_0._unit_filter
 end
-function ActionEventListener.add_continuous_event(A0_11, A1_12)
-	A0_11._continuous_events[A1_12] = true
+
+ActionEventListener.callback = function(l_5_0)
+	return l_5_0._callback
 end
-function ActionEventListener.remove_continuous_event(A0_13, A1_14)
-	A0_13._continuous_events[A1_14] = nil
+
+ActionEventListener.add_continuous_event = function(l_6_0, l_6_1)
+	l_6_0._continuous_events[l_6_1] = true
 end
-function ActionEventListener.continuous_events(A0_15)
-	local L1_16
-	L1_16 = A0_15._continuous_events
-	return L1_16
+
+ActionEventListener.remove_continuous_event = function(l_7_0, l_7_1)
+	l_7_0._continuous_events[l_7_1] = nil
 end
+
+ActionEventListener.continuous_events = function(l_8_0)
+	return l_8_0._continuous_events
+end
+
+

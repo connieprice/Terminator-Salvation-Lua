@@ -1,11 +1,16 @@
 require("ai/common/AiCoverManager")
 require("ai/common/AiWaypointManager")
-AiManager = AiManager or class()
-function AiManager.init(A0_0)
-	A0_0.cover_manager = AiCoverManager:new()
-	A0_0.waypoint = AiWaypointManager:new()
+if not AiManager then
+	AiManager = class()
 end
-function AiManager.update(A0_1, A1_2, A2_3)
-	A0_1.cover_manager:update(A1_2, A2_3)
+AiManager.init = function(l_1_0)
+	l_1_0.cover_manager = AiCoverManager:new()
+	l_1_0.waypoint = AiWaypointManager:new()
+end
+
+AiManager.update = function(l_2_0, l_2_1, l_2_2)
+	l_2_0.cover_manager:update(l_2_1, l_2_2)
 	NavigationGraphUtilities.reset_counter()
 end
+
+

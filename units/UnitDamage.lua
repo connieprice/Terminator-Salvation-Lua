@@ -1,190 +1,192 @@
-UnitDamage = UnitDamage or class(CoreUnitDamage)
-function UnitDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	CoreUnitDamage.init(A0_0, A1_1, A2_2 or BodyDamage, A3_3, A4_4, A5_5, A6_6)
-	A0_0._callbacks = {}
-	A0_0._can_die = true
+if not UnitDamage then
+	UnitDamage = class(CoreUnitDamage)
 end
-function UnitDamage.destroy(A0_7)
+UnitDamage.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	local l_1_7 = CoreUnitDamage.init
+	local l_1_8 = l_1_0
+	local l_1_9 = l_1_1
+	do
+		l_1_7(l_1_8, l_1_9, l_1_2 or BodyDamage, l_1_3, l_1_4, l_1_5, l_1_6)
+		l_1_0._callbacks, l_1_7 = l_1_7, {}
+		l_1_0._can_die = true
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+UnitDamage.destroy = function(l_2_0)
 	CoreUnitDamage:destroy()
 end
-function UnitDamage.set_damage_multiplier(A0_8, A1_9)
-	local L2_10, L3_11, L4_12, L5_13, L6_14, L7_15, L8_16
-	for L5_13, L6_14 in L2_10(L3_11) do
-		L7_15 = A0_8._unit
-		L8_16 = L7_15
-		L7_15 = L7_15.body
-		L7_15 = L7_15(L8_16, L6_14._name)
-		if L7_15 then
-			L8_16 = L7_15.extension
-			L8_16 = L8_16(L7_15)
-			L8_16 = L8_16.damage
-			assert(L8_16)
-			assert(L8_16.set_damage_multiplier, "Body " .. L6_14._name .. " damage type is not derived from BodyDamage")
-			L8_16:set_damage_multiplier(A1_9)
+
+UnitDamage.set_damage_multiplier = function(l_3_0, l_3_1)
+	local l_3_5, l_3_6, l_3_7, l_3_8 = nil
+	for i_0,i_1 in pairs(l_3_0._unit_element._bodies) do
+		if l_3_0._unit:body(i_1._name) then
+			assert(l_3_0._unit:body(i_1._name):extension().damage)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			assert(l_3_0._unit:body(i_1._name):extension().damage.set_damage_multiplier, "Body " .. l_3_10._name .. " damage type is not derived from BodyDamage")
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_0._unit:body(i_1._name):extension().damage:set_damage_multiplier(l_3_1)
 		end
 	end
 end
-function UnitDamage.set_immune_to_damage(A0_17, A1_18)
-	A0_17._immune_to_damage = A1_18
+
+UnitDamage.set_immune_to_damage = function(l_4_0, l_4_1)
+	l_4_0._immune_to_damage = l_4_1
 end
-function UnitDamage.immune_to_damage(A0_19)
-	local L1_20
-	L1_20 = A0_19._immune_to_damage
-	return L1_20
+
+UnitDamage.immune_to_damage = function(l_5_0)
+	return l_5_0._immune_to_damage
 end
-function UnitDamage.set_can_die(A0_21, A1_22)
-	A0_21._can_die = A1_22
+
+UnitDamage.set_can_die = function(l_6_0, l_6_1)
+	l_6_0._can_die = l_6_1
 end
-function UnitDamage.can_die(A0_23)
-	local L1_24
-	L1_24 = A0_23._can_die
-	if L1_24 then
-		L1_24 = A0_23._immune_to_damage
-		L1_24 = not L1_24
+
+UnitDamage.can_die = function(l_7_0)
+	if l_7_0._can_die then
+		return not l_7_0._immune_to_damage
 	end
-	return L1_24
 end
-function UnitDamage.set_fully_damaged(A0_25)
-	A0_25._unit:damage_data().damage = A0_25._unit:damage_data().health
-	A0_25._has_reported_fully_damaged = true
-	A0_25:fully_damaged()
+
+UnitDamage.set_fully_damaged = function(l_8_0)
+	local l_8_1 = l_8_0._unit:damage_data()
+	l_8_1.damage = l_8_1.health
+	l_8_0._has_reported_fully_damaged = true
+	l_8_0:fully_damaged()
 end
-function UnitDamage.revive(A0_26)
-	A0_26._has_reported_fully_damaged = false
-	A0_26._unit:damage_data():revive()
+
+UnitDamage.revive = function(l_9_0)
+	l_9_0._has_reported_fully_damaged = false
+	l_9_0._unit:damage_data():revive()
 end
-function UnitDamage.outside_worlds_bounding_box(A0_27)
-	CoreUnitDamage.outside_worlds_bounding_box(A0_27)
-	if alive(A0_27._unit) then
-		if A0_27._unit:player_data() ~= nil then
+
+UnitDamage.outside_worlds_bounding_box = function(l_10_0)
+	CoreUnitDamage.outside_worlds_bounding_box(l_10_0)
+	if alive(l_10_0._unit) then
+		if l_10_0._unit:player_data() ~= nil then
 			managers.user_viewport:pause_all_sounds()
 			managers.game_transition:game_over()
-		else
-			managers.unit_scripting:unit_dead(A0_27._unit)
-			A0_27._unit:set_slot(0)
-		end
-	end
-end
-function UnitDamage.add_damage(A0_28, A1_29, A2_30, A3_31, A4_32, A5_33, A6_34, A7_35, A8_36)
-	local L9_37, L10_38, L11_39, L12_40, L13_41, L14_42
-	L9_37 = alive
-	L9_37 = L9_37(L10_38)
-	if L9_37 then
-		L9_37 = A2_30.slot
-		L9_37 = L9_37(L10_38)
-		if L9_37 == L10_38 then
-			return
-		end
-	end
-	L9_37 = A0_28._unit
-	L9_37 = L9_37.damage_data
-	L9_37 = L9_37(L10_38)
-	if L9_37 then
-		if L10_38 then
-			return
-		end
-		if not L10_38 then
-		elseif L10_38 then
-			L9_37.damage = L10_38
-		end
-		L11_39 = A7_35 >= 0
-		L10_38(L11_39)
-		if not L10_38 then
-			if L10_38 then
-				A0_28._has_reported_fully_damaged = true
-				L13_41 = A1_29
-				L14_42 = A3_31
-				L10_38(L11_39, L12_40, L13_41, L14_42, A4_32, A5_33, A6_34, A7_35, A8_36)
-				L10_38(L11_39)
-				A0_28._attack_unit = A2_30
-			end
-		end
-	end
-	for L13_41, L14_42 in L10_38(L11_39) do
-		L14_42(A7_35, A5_33, A6_34, A1_29, A2_30, A3_31)
-	end
-	L13_41 = A2_30
-	L14_42 = A3_31
-	return L10_38(L11_39, L12_40, L13_41, L14_42, A4_32, A5_33, A6_34, A7_35, A8_36)
-end
-function UnitDamage.fully_damaged_inflictor(A0_43)
-	local L1_44
-	L1_44 = A0_43._attack_unit
-	return L1_44
-end
-function UnitDamage.register_damage_callback(A0_45, A1_46)
-	A0_45._callbacks[A1_46] = A1_46
-end
-function UnitDamage.unregister_damage_callback(A0_47, A1_48)
-	A0_47._callbacks[A1_48] = nil
-end
-function UnitDamage.fully_damaged(A0_49, A1_50)
-	print("Killing unit " .. A0_49._unit:name())
-	A0_49._unit:set_slot(0)
-end
-function UnitDamage.get_weakspots(A0_51)
-	local L1_52, L2_53, L3_54, L4_55
-	L1_52 = A0_51._show_weakspots_time
-	if L1_52 then
-		L1_52 = Application
-		L2_53 = L1_52
-		L1_52 = L1_52.time
-		L1_52 = L1_52(L2_53)
-		L2_53 = A0_51._show_weakspots_time
-	elseif L1_52 >= L2_53 then
-		L1_52 = nil
-		return L1_52
-	end
-	L1_52 = A0_51._weak_spot_name
-	if L1_52 then
-		L1_52 = A0_51._weak_spot_type
-		if L1_52 then
-			L1_52 = {}
-			L2_53 = nil
-			L3_54 = A0_51._unit
-			L4_55 = L3_54
-			L3_54 = L3_54.damage_data
-			L3_54 = L3_54(L4_55)
-			L3_54 = L3_54.damage
-			L4_55 = A0_51._unit
-			L4_55 = L4_55.damage_data
-			L4_55 = L4_55(L4_55)
-			L4_55 = L4_55.health
-			L3_54 = L3_54 < L4_55
-			L4_55 = nil
-			if A0_51._weak_spot_type == "object3d" then
-				L2_53 = A0_51._unit:get_object(A0_51._weak_spot_name):position()
-			elseif A0_51._weak_spot_type == "body" then
-				L2_53 = A0_51._unit:body(A0_51._weak_spot_name):center_of_mass()
-				L4_55 = A0_51._unit:body(A0_51._weak_spot_name):name()
-			else
-				assert(false)
-			end
-			if L2_53 then
-				table.insert(L1_52, {
-					name = A0_51._weak_spot_name,
-					pos = L2_53,
-					active = L3_54,
-					body_name = L4_55
-				})
-			end
-			return L1_52, A0_51._show_weakspots_time, A0_51._show_weakspots_range
 		end
 	else
-		L1_52 = nil
-		return L1_52
+		managers.unit_scripting:unit_dead(l_10_0._unit)
+		l_10_0._unit:set_slot(0)
 	end
 end
-function UnitDamage.set_show_weakspots(A0_56, A1_57, A2_58)
-	A0_56._show_weakspots_time = Application:time() + A1_57
-	A0_56._show_weakspots_range = A2_58
+
+UnitDamage.add_damage = function(l_11_0, l_11_1, l_11_2, l_11_3, l_11_4, l_11_5, l_11_6, l_11_7, l_11_8)
+	if alive(l_11_2) and l_11_2:slot() == l_11_0._unit:slot() then
+		return 
+	end
+	local l_11_9 = l_11_0._unit:damage_data()
+	if l_11_9 then
+		if l_11_0._immune_to_damage then
+			return 
+		end
+		if l_11_0._can_die or l_11_0._unit:control():is_human_controlled() then
+			l_11_9.damage = l_11_9.damage + l_11_7
+		end
+		local l_11_10 = assert
+		l_11_10(l_11_7 >= 0)
+		l_11_10 = l_11_0._has_reported_fully_damaged
+	if not l_11_10 then
+		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_11_10 then
+		end
+		l_11_0._has_reported_fully_damaged = true
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_11_16, l_11_18 = l_11_0, l_11_2
+		local l_11_17, l_11_19 = l_11_1, l_11_3
+		l_11_10(l_11_16, l_11_18, l_11_17, l_11_19, l_11_4, l_11_5, l_11_6, l_11_7, l_11_8)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_11_16 = l_11_2
+		l_11_10(l_11_16)
+		l_11_0._attack_unit = l_11_2
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	for i_0,i_1 in l_11_10(l_11_0._callbacks) do
+		i_1(l_11_7, l_11_5, l_11_6, l_11_1, l_11_2, l_11_3)
+	end
+	local l_11_20 = l_11_2
+	local l_11_21 = l_11_3
+	local l_11_22 = l_11_4
+	local l_11_23 = l_11_5
+	local l_11_24 = l_11_6
+	local l_11_25 = l_11_7
+	do
+		local l_11_26 = l_11_8
+		return CoreUnitDamage.add_damage(l_11_0, l_11_1, l_11_20, l_11_21, l_11_22, l_11_23, l_11_24, l_11_25, l_11_26)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function UnitDamage.get_outline_weakspots(A0_59)
-	local L1_60
+
+UnitDamage.fully_damaged_inflictor = function(l_12_0)
+	return l_12_0._attack_unit
 end
-function UnitDamage.check_outline_weakspot(A0_61)
-	local L1_62
+
+UnitDamage.register_damage_callback = function(l_13_0, l_13_1)
+	l_13_0._callbacks[l_13_1] = l_13_1
 end
-function UnitDamage.hide_all_outline_weakspots(A0_63)
-	local L1_64
+
+UnitDamage.unregister_damage_callback = function(l_14_0, l_14_1)
+	l_14_0._callbacks[l_14_1] = nil
 end
+
+UnitDamage.fully_damaged = function(l_15_0, l_15_1)
+	print("Killing unit " .. l_15_0._unit:name())
+	l_15_0._unit:set_slot(0)
+end
+
+UnitDamage.get_weakspots = function(l_16_0)
+	if not l_16_0._show_weakspots_time or l_16_0._show_weakspots_time <= Application:time() then
+		return nil
+	end
+	if l_16_0._weak_spot_name and l_16_0._weak_spot_type then
+		local l_16_1 = {}
+		local l_16_2 = nil
+		local l_16_5 = l_16_0._unit:damage_data().damage < l_16_0._unit:damage_data().health
+		if l_16_0._weak_spot_type == "object3d" then
+			local l_16_6 = nil
+			l_16_2 = l_16_0._unit:get_object(l_16_0._weak_spot_name):position()
+		elseif l_16_0._weak_spot_type == "body" then
+			local l_16_7 = nil
+			l_16_2 = l_16_0._unit:body(l_16_0._weak_spot_name):center_of_mass()
+			l_16_7 = l_16_0._unit:body(l_16_0._weak_spot_name):name()
+		else
+			assert(false)
+		end
+		if l_16_2 then
+			local l_16_8 = nil
+			local l_16_9 = table.insert
+			local l_16_10 = l_16_1
+			l_16_9(l_16_10, {name = l_16_0._weak_spot_name, pos = l_16_2, active = l_16_5, body_name = l_16_8})
+		end
+		return l_16_1, l_16_0._show_weakspots_time, l_16_0._show_weakspots_range
+	else
+		return nil
+	end
+end
+
+UnitDamage.set_show_weakspots = function(l_17_0, l_17_1, l_17_2)
+	l_17_0._show_weakspots_time = Application:time() + l_17_1
+	l_17_0._show_weakspots_range = l_17_2
+end
+
+UnitDamage.get_outline_weakspots = function(l_18_0)
+end
+
+UnitDamage.check_outline_weakspot = function(l_19_0)
+end
+
+UnitDamage.hide_all_outline_weakspots = function(l_20_0)
+end
+
+

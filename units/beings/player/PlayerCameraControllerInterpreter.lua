@@ -1,37 +1,40 @@
-PlayerCameraControllerInterpreter = PlayerCameraControllerInterpreter or class()
-function PlayerCameraControllerInterpreter.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._player_data = A1_1:player_data()
+if not PlayerCameraControllerInterpreter then
+	PlayerCameraControllerInterpreter = class()
 end
-function PlayerCameraControllerInterpreter.enable(A0_2, A1_3)
-	A0_2._controller = A1_3
+PlayerCameraControllerInterpreter.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._player_data = l_1_1:player_data()
 end
-function PlayerCameraControllerInterpreter.disable(A0_4)
-	local L1_5
-	A0_4._controller = nil
+
+PlayerCameraControllerInterpreter.enable = function(l_2_0, l_2_1)
+	l_2_0._controller = l_2_1
 end
-function PlayerCameraControllerInterpreter.update(A0_6)
-	local L1_7, L2_8
-	L1_7 = A0_6._controller
-	if not L1_7 then
-		return
+
+PlayerCameraControllerInterpreter.disable = function(l_3_0)
+	l_3_0._controller = nil
+end
+
+PlayerCameraControllerInterpreter.update = function(l_4_0)
+	if not l_4_0._controller then
+		return 
 	end
-	L1_7 = A0_6._unit
-	L2_8 = L1_7
-	L1_7 = L1_7.camera
-	L1_7 = L1_7(L2_8)
-	L2_8 = nil
-	if A0_6._player_data.on_rail_vehicle then
-		L2_8 = A0_6._controller:get_input_axis("look") * tweak_data.player.aim.LOOK_SPEED_BASE_RAIL_TURRET
+	local l_4_1 = (l_4_0._unit:camera())
+	local l_4_2 = nil
+	if l_4_0._player_data.on_rail_vehicle then
+		l_4_2 = l_4_0._controller:get_input_axis("look") * tweak_data.player.aim.LOOK_SPEED_BASE_RAIL_TURRET
 	else
-		L2_8 = A0_6._controller:get_input_axis("look") * tweak_data.player.aim.LOOK_SPEED_BASE
+		l_4_2 = l_4_0._controller:get_input_axis("look") * tweak_data.player.aim.LOOK_SPEED_BASE
 	end
-	if A0_6._player_data.invert_y then
-		L2_8 = -L2_8:with_x(-L2_8.x)
+	if l_4_0._player_data.invert_y then
+		l_4_2 = -l_4_2:with_x(-l_4_2.x)
 	end
-	L1_7:set_look_vector(L2_8)
+	l_4_1:set_look_vector(l_4_2)
 end
-function PlayerCameraControllerInterpreter.save(A0_9, A1_10)
+
+PlayerCameraControllerInterpreter.save = function(l_5_0, l_5_1)
 end
-function PlayerCameraControllerInterpreter.load(A0_11, A1_12)
+
+PlayerCameraControllerInterpreter.load = function(l_6_0, l_6_1)
 end
+
+

@@ -1,35 +1,45 @@
-TutorialManager = TutorialManager or class()
-function TutorialManager.init(A0_0)
-	A0_0:_parse_tutorial_xml()
+if not TutorialManager then
+	TutorialManager = class()
 end
-function TutorialManager.get_tutorials(A0_1)
-	local L1_2
-	L1_2 = A0_1._tutorials
-	return L1_2
+TutorialManager.init = function(l_1_0)
+	l_1_0:_parse_tutorial_xml()
 end
-function TutorialManager.set_current_tutorial(A0_3, A1_4)
-	A0_3._current_tutorial_id = A1_4
+
+TutorialManager.get_tutorials = function(l_2_0)
+	return l_2_0._tutorials
 end
-function TutorialManager.clear_current_tutorial(A0_5)
-	local L1_6
-	A0_5._current_tutorial_id = nil
+
+TutorialManager.set_current_tutorial = function(l_3_0, l_3_1)
+	l_3_0._current_tutorial_id = l_3_1
 end
-function TutorialManager.get_current_tutorial(A0_7)
-	local L1_8
-	L1_8 = A0_7._current_tutorial_id
-	if L1_8 then
-		L1_8 = A0_7._tutorials
-		L1_8 = L1_8[A0_7._current_tutorial_id]
-		return L1_8
+
+TutorialManager.clear_current_tutorial = function(l_4_0)
+	l_4_0._current_tutorial_id = nil
+end
+
+TutorialManager.get_current_tutorial = function(l_5_0)
+	if l_5_0._current_tutorial_id then
+		return l_5_0._tutorials[l_5_0._current_tutorial_id]
 	else
-		L1_8 = nil
-		return L1_8
+		return nil
 	end
 end
-function TutorialManager._parse_tutorial_xml(A0_9)
-	local L1_10
-	L1_10 = {}
-	A0_9._tutorials = L1_10
-	L1_10 = "data/gui/tutorials.xml"
-	if File:exists(L1_10) then
-		for 
+
+TutorialManager._parse_tutorial_xml = function(l_6_0)
+	local l_6_6, l_6_7, l_6_8, l_6_9, l_6_10 = nil
+	l_6_0._tutorials = {}
+	local l_6_1 = "data/gui/tutorials.xml"
+	if File:exists(l_6_1) then
+		local l_6_2 = File:parse_xml(l_6_1)
+		for i_0 in l_6_2:children() do
+			local l_6_12 = i_0:parameter("name")
+			local l_6_13 = l_6_11:parameter("text")
+			local l_6_14 = l_6_11:parameter("texture")
+			local l_6_15 = l_6_11:parameter("background")
+			local l_6_16 = l_6_0._tutorials
+			l_6_16[l_6_12] = {text = l_6_13, texture = l_6_14, background = l_6_15}
+		end
+	end
+end
+
+

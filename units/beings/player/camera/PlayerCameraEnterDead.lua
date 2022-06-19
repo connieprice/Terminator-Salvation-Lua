@@ -1,31 +1,35 @@
 require("units/beings/player/camera/PlayerCameraState")
 require("units/beings/player/camera/PlayerCameraLookAtDeadPlayer")
-PlayerCameraEnterDead = PlayerCameraEnterDead or class(PlayerCameraState)
-function PlayerCameraEnterDead.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraEnterDead)
-	A0_0:_set_camera_name("enter_dead")
-	A0_0._camera._unit:camera_data().enter_dead = true
-	A0_0._documentary_camera = A0_0._camera:find_camera("enter_dead")
-	assert(A0_0._documentary_camera)
-	A0_0._damage_data = A0_0._camera._damage_data
+if not PlayerCameraEnterDead then
+	PlayerCameraEnterDead = class(PlayerCameraState)
 end
-function PlayerCameraEnterDead.exit(A0_1)
-	A0_1._camera._unit:camera_data().enter_dead = false
+PlayerCameraEnterDead.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraEnterDead)
+	l_1_0:_set_camera_name("enter_dead")
+	l_1_0._camera._unit:camera_data().enter_dead = true
+	l_1_0._documentary_camera = l_1_0._camera:find_camera("enter_dead")
+	assert(l_1_0._documentary_camera)
+	l_1_0._damage_data = l_1_0._camera._damage_data
 end
-function PlayerCameraEnterDead.transition(A0_2)
-	if A0_2._damage_data:is_fully_damaged() then
-		if A0_2:_death_animation_done() then
-			return PlayerCameraLookAtDeadPlayer
-		end
-	else
-		return PlayerCameraState.transition(A0_2)
+
+PlayerCameraEnterDead.exit = function(l_2_0)
+	l_2_0._camera._unit:camera_data().enter_dead = false
+end
+
+PlayerCameraEnterDead.transition = function(l_3_0)
+	if l_3_0._damage_data:is_fully_damaged() and l_3_0:_death_animation_done() then
+		return PlayerCameraLookAtDeadPlayer
 	end
+	do return end
+	local l_3_1 = PlayerCameraState.transition
+	local l_3_2 = l_3_0
+	return l_3_1(l_3_2)
 end
-function PlayerCameraEnterDead._death_animation_done(A0_3)
-	local L1_4
-	L1_4 = A0_3._camera
-	L1_4 = L1_4.find_camera
-	L1_4 = L1_4(L1_4, "enter_dead")
-	assert(L1_4)
-	return L1_4.entering_dead_done
+
+PlayerCameraEnterDead._death_animation_done = function(l_4_0)
+	local l_4_1 = l_4_0._camera:find_camera("enter_dead")
+	assert(l_4_1)
+	return l_4_1.entering_dead_done
 end
+
+

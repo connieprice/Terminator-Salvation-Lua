@@ -1,21 +1,19 @@
-RailBuggy = RailBuggy or class(RailWheeledVehicle)
-function RailBuggy.init(A0_0, A1_1)
-	RailWheeledVehicle.init(A0_0, A1_1)
+if not RailBuggy then
+	RailBuggy = class(RailWheeledVehicle)
 end
-function RailBuggy.update(A0_2, A1_3, A2_4, A3_5)
-	RailWheeledVehicle.update(A0_2, A1_3, A2_4, A3_5)
+RailBuggy.init = function(l_1_0, l_1_1)
+	RailWheeledVehicle.init(l_1_0, l_1_1)
 end
-function RailBuggy.brace_needed(A0_6)
-	local L1_7
-	L1_7 = A0_6._total_current_rot
-	L1_7 = L1_7.x
-	if not (L1_7 > 10) then
-		L1_7 = A0_6._total_current_rot
-		L1_7 = L1_7.y
-	elseif L1_7 > 10 then
-		L1_7 = true
-		return L1_7
+
+RailBuggy.update = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	RailWheeledVehicle.update(l_2_0, l_2_1, l_2_2, l_2_3)
+end
+
+RailBuggy.brace_needed = function(l_3_0)
+	if l_3_0._total_current_rot.x > 10 or l_3_0._total_current_rot.y > 10 then
+		return true
 	end
-	L1_7 = true
-	return L1_7
+	return true
 end
+
+

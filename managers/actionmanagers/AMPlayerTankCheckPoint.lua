@@ -1,22 +1,31 @@
-AMPlayerTankCheckPoint = AMPlayerTankCheckPoint or class(CoreActionElement)
-function AMPlayerTankCheckPoint.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
-	managers.world:add_checkpoint(A0_0)
+if not AMPlayerTankCheckPoint then
+	AMPlayerTankCheckPoint = class(CoreActionElement)
 end
-function AMPlayerTankCheckPoint.activate_now(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8, L6_9, L7_10, L8_11, L9_12, L10_13, L11_14
-	L1_4 = A0_3.checkpoint
-	L2_5 = L1_4.spawnpoints
-	L3_6 = 1
-	L4_7 = A0_3.unit_names
-	L5_8 = A0_3.brain_name
-	L4_7 = L4_7 or L6_9.default_unit_names
-	L5_8 = L5_8 or L6_9[1]
-	for L9_12, L10_13 in L6_9(L7_10) do
-		L11_14 = L4_7[L3_6]
-		managers.player_slot:set_spawn_point(L3_6, L11_14, A0_3.position + L10_13.position, L10_13.rotation, false, true, L5_8)
-		L3_6 = L3_6 + 1
+AMPlayerTankCheckPoint.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+	managers.world:add_checkpoint(l_1_0)
+end
+
+AMPlayerTankCheckPoint.activate_now = function(l_2_0)
+	local l_2_9, l_2_10 = nil
+	local l_2_1 = l_2_0.checkpoint
+	local l_2_2 = l_2_1.spawnpoints
+	local l_2_3 = 1
+	if not l_2_0.unit_names then
+		local l_2_4 = PlayerTankCheckPointHubElementData.default_unit_names
 	end
-	L6_9(L7_10)
-	L6_9(L7_10, L8_11)
+	if not l_2_0.brain_name then
+		local l_2_5 = nil
+	end
+	for i_0,i_1 in pairs(l_2_2) do
+		local l_2_6, l_2_7 = , PlayerTankCheckPointHubElementData.brain_names[1]
+		managers.player_slot:set_spawn_point(l_2_3, l_2_6[l_2_3], l_2_0.position + i_1.position, i_1.rotation, false, true, l_2_7)
+		l_2_3 = l_2_3 + 1
+	end
+	assert(l_2_0.checkpoint_index)
+	managers.save:save_progress(l_2_0.checkpoint_index)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

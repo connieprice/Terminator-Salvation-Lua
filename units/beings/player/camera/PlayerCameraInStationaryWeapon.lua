@@ -1,14 +1,19 @@
 require("units/beings/player/camera/PlayerCameraState")
-PlayerCameraInStationaryWeapon = PlayerCameraInStationaryWeapon or class(PlayerCameraState)
-function PlayerCameraInStationaryWeapon.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraInStationaryWeapon)
+if not PlayerCameraInStationaryWeapon then
+	PlayerCameraInStationaryWeapon = class(PlayerCameraState)
 end
-function PlayerCameraInStationaryWeapon.update(A0_1, A1_2)
-	local L2_3
-	if A0_1._player_data.is_precision_aiming then
-		L2_3 = "stationary_weapon_zoom_aim"
+PlayerCameraInStationaryWeapon.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraInStationaryWeapon)
+end
+
+PlayerCameraInStationaryWeapon.update = function(l_2_0, l_2_1)
+	local l_2_2 = nil
+	if l_2_0._player_data.is_precision_aiming then
+		l_2_2 = "stationary_weapon_zoom_aim"
 	else
-		L2_3 = "stationary_weapon"
+		l_2_2 = "stationary_weapon"
 	end
-	A0_1:_set_camera_name(L2_3)
+	l_2_0:_set_camera_name(l_2_2)
 end
+
+

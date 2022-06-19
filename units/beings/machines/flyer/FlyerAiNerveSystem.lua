@@ -1,363 +1,256 @@
 require("units/beings/AiNerveSystem")
 require("shared/updatescheduler/UpdateSchedulerDtMethod")
-FlyerAiNerveSystem = FlyerAiNerveSystem or class(AiNerveSystem)
+if not FlyerAiNerveSystem then
+	FlyerAiNerveSystem = class(AiNerveSystem)
+end
 FlyerAiNerveSystem.NORMAL_MOVE_SPEED = 1
-function FlyerAiNerveSystem.init(A0_0, A1_1)
-	local L2_2
-	L2_2 = AiNerveSystem
-	L2_2 = L2_2.init
-	L2_2(A0_0, A1_1)
-	A0_0._locked_firing_target = nil
-	L2_2 = A1_1.body
-	L2_2 = L2_2(A1_1, "default_body")
-	A0_0._chassi_body = L2_2
-	L2_2 = assert
-	L2_2(A0_0._chassi_body)
-	L2_2 = math
-	L2_2 = L2_2.rand
-	L2_2 = L2_2(0.8, 1.2)
-	A0_0._flyer_movement = FlyerMovement:new(A0_0._chassi_body, L2_2)
-	A0_0._dead_acceleration = nil
-	A0_0._dead_approach_acceleration = Vector3(0, 0, 0)
-	A0_0._dead_angular_acceleration = nil
-	A0_0._low_frequency = UpdateSchedulerDtMethod:new(managers.update_scheduler:add_function(A0_0.low_frequency_update, "flyer_nervesystem"))
-	A0_0._velocity_fraction = 0
-	A0_0._look_at_position = nil
-	A0_0._next_pos = nil
-	A0_0._physics_timer = TimerManager:physics()
-	A0_0._damage_data = A1_1:damage_data()
+FlyerAiNerveSystem.init = function(l_1_0, l_1_1)
+	AiNerveSystem.init(l_1_0, l_1_1)
+	l_1_0._locked_firing_target = nil
+	l_1_0._chassi_body = l_1_1:body("default_body")
+	assert(l_1_0._chassi_body)
+	local l_1_2 = math.rand(0.8, 1.2)
+	l_1_0._flyer_movement = FlyerMovement:new(l_1_0._chassi_body, l_1_2)
+	l_1_0._dead_acceleration = nil
+	l_1_0._dead_approach_acceleration = Vector3(0, 0, 0)
+	l_1_0._dead_angular_acceleration = nil
+	l_1_0._low_frequency = UpdateSchedulerDtMethod:new(managers.update_scheduler:add_function(l_1_0.low_frequency_update, "flyer_nervesystem"))
+	l_1_0._velocity_fraction = 0
+	l_1_0._look_at_position = nil
+	l_1_0._next_pos = nil
+	l_1_0._physics_timer = TimerManager:physics()
+	l_1_0._damage_data = l_1_1:damage_data()
 end
-function FlyerAiNerveSystem.destroy(A0_3)
-	A0_3._low_frequency:remove()
-	AiNerveSystem.destroy(A0_3)
+
+FlyerAiNerveSystem.destroy = function(l_2_0)
+	l_2_0._low_frequency:remove()
+	AiNerveSystem.destroy(l_2_0)
 end
-function FlyerAiNerveSystem.init_default_ai_data(A0_4)
-	local L1_5, L2_6
-	L1_5 = A0_4._ai_data
-	L1_5 = L1_5.input
-	L2_6 = A0_4._ai_data
-	L2_6 = L2_6.default_speed
-	L1_5.speed = L2_6
+
+FlyerAiNerveSystem.init_default_ai_data = function(l_3_0)
+	l_3_0._ai_data.input.speed = l_3_0._ai_data.default_speed
 end
-function FlyerAiNerveSystem._end_stun(A0_7)
-	A0_7._flyer_movement:reset()
+
+FlyerAiNerveSystem._end_stun = function(l_4_0)
+	l_4_0._flyer_movement:reset()
 end
-function FlyerAiNerveSystem._stun_update(A0_8, A1_9, A2_10, A3_11)
-	local L4_12, L5_13, L6_14, L7_15, L8_16, L9_17, L10_18
-	L5_13 = A1_9
-	L4_12 = A1_9.input
-	L4_12 = L4_12(L5_13)
-	L6_14 = L4_12
-	L5_13 = L4_12.clear
-	L5_13(L6_14)
-	L5_13 = A0_8._chassi_body
-	L6_14 = L5_13
-	L5_13 = L5_13.position
-	L5_13 = L5_13(L6_14)
-	L6_14 = L5_13
-	L5_13 = L5_13.with_z
-	L7_15 = A0_8._last_target_pos
-	L7_15 = L7_15.z
-	L5_13 = L5_13(L6_14, L7_15)
-	L6_14 = A0_8._flyer_movement
-	L7_15 = L6_14
-	L6_14 = L6_14.update
-	L8_16 = A3_11
-	L9_17 = nil
-	L10_18 = false
-	L7_15 = L6_14(L7_15, L8_16, L9_17, L10_18, false, 0, L5_13, nil)
-	L9_17 = L4_12
-	L8_16 = L4_12.set_acceleration
-	L10_18 = L6_14
-	L8_16(L9_17, L10_18)
-	L9_17 = L4_12
-	L8_16 = L4_12.set_angular_acceleration
-	L10_18 = L7_15
-	L8_16(L9_17, L10_18)
+
+FlyerAiNerveSystem._stun_update = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	local l_5_4 = l_5_1:input()
+	l_5_4:clear()
+	local l_5_5 = l_5_0._chassi_body:position():with_z(l_5_0._last_target_pos.z)
+	local l_5_6, l_5_7 = l_5_0._flyer_movement:update(l_5_3, nil, false, false, 0, l_5_5, nil)
+	l_5_4:set_acceleration(l_5_6)
+	l_5_4:set_angular_acceleration(l_5_7)
 end
-function FlyerAiNerveSystem.update(A0_19, A1_20, A2_21, A3_22)
-	if A0_19._damage_data.fully_damaged then
-		A0_19:_update_dead(A1_20, A2_21, A3_22)
-		return
+
+FlyerAiNerveSystem.update = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	if l_6_0._damage_data.fully_damaged then
+		l_6_0:_update_dead(l_6_1, l_6_2, l_6_3)
+		return 
 	end
-	if not AiNerveSystem.update(A0_19, A1_20, A2_21, A3_22) then
-		A1_20:input():clear()
-		return
+	if not AiNerveSystem.update(l_6_0, l_6_1, l_6_2, l_6_3) then
+		l_6_1:input():clear()
+		return 
 	end
-	if A0_19._waypoint_options and A0_19._waypoint_options.speed then
-		A0_19._velocity_fraction = A0_19._waypoint_options.speed
+	if l_6_0._waypoint_options and l_6_0._waypoint_options.speed then
+		l_6_0._velocity_fraction = l_6_0._waypoint_options.speed
 	else
-		A0_19._velocity_fraction = A0_19._ai_data.output.move_speed
+		l_6_0._velocity_fraction = l_6_0._ai_data.output.move_speed
 	end
-	if not A0_19._low_frequency:update(A0_19, A3_22, A1_20, A2_21) then
-		A0_19:_update_move(A1_20, A2_21, A3_22, false)
+	local l_6_4, l_6_5 = l_6_0._low_frequency:update(l_6_0, l_6_3, l_6_1, l_6_2)
+	if not l_6_5 then
+		l_6_0:_update_move(l_6_1, l_6_2, l_6_3, false)
 	end
 end
-function FlyerAiNerveSystem.low_frequency_update(A0_23, A1_24, A2_25, A3_26)
-	local L4_27, L5_28, L6_29, L7_30
-	L4_27 = AiNerveSystem
-	L4_27 = L4_27.low_frequency_update
-	L5_28 = A0_23
-	L6_29 = A2_25
-	L7_30 = A3_26
-	L4_27(L5_28, L6_29, L7_30, A1_24)
-	L5_28 = A2_25
-	L4_27 = A2_25.enemy_data
-	L4_27 = L4_27(L5_28)
-	L5_28 = A0_23._ai_data
-	L5_28 = L5_28.output
-	L6_29, L7_30 = nil, nil
-	if not L4_27.preparing_to_fire and not L4_27.is_firing or not A0_23._locked_firing_target then
-		A0_23._locked_firing_target = L5_28.firing_target
+
+FlyerAiNerveSystem.low_frequency_update = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	AiNerveSystem.low_frequency_update(l_7_0, l_7_2, l_7_3, l_7_1)
+	local l_7_4 = l_7_2:enemy_data()
+	local l_7_5 = l_7_0._ai_data.output
+	local l_7_6, l_7_7, l_7_8, l_7_9 = nil, nil, nil, nil
+	if (not l_7_4.preparing_to_fire and not l_7_4.is_firing) or not l_7_0._locked_firing_target then
+		l_7_0._locked_firing_target = l_7_5.firing_target
 	end
-	if L5_28.allowed_to_fire and (A0_23._chassi_body:velocity():length() < tweak_data.ai.machines.flyer.MAX_FIRE_VELOCITY or A0_23._ai_data.no_max_fire_velocity) then
-		if alive(A0_23._locked_firing_target) then
-			if A0_23._locked_firing_target:targeting_info() then
-				L6_29 = A0_23._locked_firing_target:targeting_info():primary_target_position()
+	if l_7_5.allowed_to_fire and (l_7_0._chassi_body:velocity():length() < tweak_data.ai.machines.flyer.MAX_FIRE_VELOCITY or l_7_0._ai_data.no_max_fire_velocity) then
+		if alive(l_7_0._locked_firing_target) then
+			local l_7_10 = l_7_0._locked_firing_target:targeting_info()
+			if l_7_10 then
+				l_7_6 = l_7_10:primary_target_position()
 			else
-				L6_29 = A0_23._locked_firing_target:oobb():center()
+				l_7_6 = l_7_0._locked_firing_target:oobb():center()
 			end
-			L7_30 = true
-		elseif A0_23._ai_data.output.firing_target_position then
-			L6_29 = L5_28.firing_target_position
-			L7_30 = true
-		end
-		if L7_30 and IntelUtilities.ai_friendly_fire(A2_25, L6_29) then
-			L7_30 = false
-		end
-	end
-	L7_30 = A0_23:_burst_fire(A3_26, L7_30, L4_27.firing)
-	A0_23._look_at_position = A0_23:_get_look_at_position(A0_23._next_pos, L6_29)
-	L6_29 = L6_29 or A0_23._look_at_position
-	A2_25:input():clear()
-	A0_23:_update_move(A2_25, A3_26, A1_24, true)
-	A2_25:input():set_aim_target_position(L6_29)
-	if L7_30 then
-		A2_25:input():set_fire()
-		A2_25:input():set_miss_dispersion(A0_23:_update_weapons_dispersions(A2_25, {
-			A0_23._locked_firing_target
-		}, A1_24)[1])
-	end
-	A2_25:input():set_defensive(L5_28.defensive)
-	A0_23._ai_data.input.is_firing = L4_27.preparing_to_fire or L4_27.is_firing
-	if L5_28.self_destroy then
-		A2_25:input():set_self_destroy()
-	end
-end
-function FlyerAiNerveSystem._update_move(A0_31, A1_32, A2_33, A3_34, A4_35)
-	local L5_36, L6_37, L7_38, L8_39, L9_40, L10_41, L11_42, L12_43, L13_44
-	if not A4_35 then
-		L6_37 = A0_31
-		L5_36 = A0_31._update_path
-		L7_38 = A1_32
-		L8_39 = A2_33
-		L5_36(L6_37, L7_38, L8_39)
-	end
-	L5_36 = A0_31._look_at_position
-	if not L5_36 then
-		L6_37 = A0_31
-		L5_36 = A0_31._get_look_at_position
-		L7_38 = A0_31._next_pos
-		L8_39 = nil
-		L5_36 = L5_36(L6_37, L7_38, L8_39)
-	end
-	A0_31._look_at_position = L5_36
-	L5_36 = A0_31._move_to_position
-	if not L5_36 then
-		L5_36 = A0_31._last_target_pos
-		if not L5_36 then
-			L5_36 = A0_31._chassi_body
-			L6_37 = L5_36
-			L5_36 = L5_36.position
-			L5_36 = L5_36(L6_37)
-		end
-	end
-	A0_31._last_target_pos = L5_36
-	L5_36 = A0_31._move_to_position
-	if L5_36 then
-		L5_36 = A0_31._ai_data
-		L6_37 = L5_36
-		L5_36 = L5_36.path
-		L5_36 = L5_36(L6_37)
-		if L5_36 then
-			L5_36 = A0_31._ai_data
-			L6_37 = L5_36
-			L5_36 = L5_36.path
-			L5_36 = L5_36(L6_37)
-			L6_37 = A0_31._current_path_index
-			L6_37 = L6_37 + 1
-			L5_36 = L5_36[L6_37]
-			A0_31._next_pos = L5_36
-		end
-	else
-		A0_31._next_pos = nil
-	end
-	L5_36 = A0_31._physics_timer
-	L6_37 = L5_36
-	L5_36 = L5_36.delta_time
-	L5_36 = L5_36(L6_37)
-	L7_38 = A1_32
-	L6_37 = A1_32.input
-	L6_37 = L6_37(L7_38)
-	L7_38 = A0_31._velocity_fraction
-	if L7_38 > 0.001 then
-		L8_39 = A0_31
-		L7_38 = A0_31._force_path
-		L7_38 = L7_38(L8_39)
-		L8_39 = A0_31._ai_data
-		L8_39 = L8_39.output
-		L8_39 = L8_39.allowed_to_strafe
-		if L8_39 then
-			L8_39 = A0_31._ai_data
-			L9_40 = L8_39
-			L8_39 = L8_39.path
-			L8_39 = L8_39(L9_40)
-			if L8_39 then
-				L8_39 = A0_31._ai_data
-				L9_40 = L8_39
-				L8_39 = L8_39.path
-				L8_39 = L8_39(L9_40)
-				L8_39 = #L8_39
-				L8_39 = L8_39 == 1
-			end
-		end
-		L9_40 = A0_31._flyer_movement
-		L10_41 = L9_40
-		L9_40 = L9_40.update
-		L11_42 = L5_36
-		L12_43 = A0_31._look_at_position
-		L13_44 = L8_39
-		L10_41 = L9_40(L10_41, L11_42, L12_43, L13_44, L7_38, A0_31._velocity_fraction, A0_31._last_target_pos, A0_31._next_pos)
-		L12_43 = L6_37
-		L11_42 = L6_37.set_acceleration
-		L13_44 = L9_40
-		L11_42(L12_43, L13_44)
-		L12_43 = L6_37
-		L11_42 = L6_37.set_angular_acceleration
-		L13_44 = L10_41
-		L11_42(L12_43, L13_44)
-	else
-		L8_39 = L6_37
-		L7_38 = L6_37.set_acceleration
-		L9_40 = Vector3
-		L10_41 = 0
-		L11_42 = 0
-		L12_43 = 0
-		L13_44 = L9_40(L10_41, L11_42, L12_43)
-		L7_38(L8_39, L9_40, L10_41, L11_42, L12_43, L13_44, L9_40(L10_41, L11_42, L12_43))
-		L8_39 = L6_37
-		L7_38 = L6_37.set_angular_acceleration
-		L9_40 = Vector3
-		L10_41 = 0
-		L11_42 = 0
-		L12_43 = 0
-		L13_44 = L9_40(L10_41, L11_42, L12_43)
-		L7_38(L8_39, L9_40, L10_41, L11_42, L12_43, L13_44, L9_40(L10_41, L11_42, L12_43))
-	end
-end
-function FlyerAiNerveSystem._get_look_at_position(A0_45, A1_46, A2_47)
-	local L3_48
-	if A2_47 then
-		L3_48 = A2_47
-	elseif A0_45._ai_data.output.look_at_position then
-		L3_48 = A0_45._ai_data.output.look_at_position
-	elseif A0_45._waypoint_rotation_look_at_position then
-		L3_48 = A0_45._waypoint_rotation_look_at_position
-	elseif A0_45._move_to_position then
-		if A1_46 then
-			L3_48 = math.lerp(A1_46, A0_45._move_to_position, math.min(1, (A0_45._chassi_body:position() - A0_45._move_to_position):length() / 500))
+			l_7_7 = true
 		else
-			L3_48 = A0_45._move_to_position
+			if l_7_0._ai_data.output.firing_target_position then
+				l_7_6 = l_7_5.firing_target_position
+				l_7_7 = true
+			end
 		end
+	if l_7_7 then
+		end
+	if IntelUtilities.ai_friendly_fire(l_7_2, l_7_6) then
+		end
+		l_7_7 = false
+	end
+	l_7_7 = l_7_0:_burst_fire(l_7_3, l_7_7, l_7_4.firing)
+	l_7_0._look_at_position = l_7_0:_get_look_at_position(l_7_0._next_pos, l_7_6)
+	if not l_7_6 then
+		l_7_6 = l_7_0._look_at_position
+	end
+	local l_7_11 = l_7_2:input()
+	l_7_11:clear()
+	l_7_0:_update_move(l_7_2, l_7_3, l_7_1, true)
+	l_7_11:set_aim_target_position(l_7_6)
+	if l_7_7 then
+		l_7_11:set_fire()
+		local l_7_12, l_7_13 = l_7_0:_update_weapons_dispersions, l_7_0
+		local l_7_14 = l_7_2
+		local l_7_15 = {}
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_7_12 = l_7_12(l_7_13, l_7_14, l_7_15, l_7_0._locked_firing_target)
+		l_7_13, l_7_14 = l_7_11:set_miss_dispersion, l_7_11
+		l_7_15 = l_7_12[1]
+		l_7_13(l_7_14, l_7_15)
+	end
+	l_7_11:set_defensive(l_7_5.defensive)
+	if not l_7_4.preparing_to_fire then
+		l_7_0._ai_data.input.is_firing = l_7_4.is_firing
+	end
+	if l_7_5.self_destroy then
+		l_7_11:set_self_destroy()
+	end
+end
+
+FlyerAiNerveSystem._update_move = function(l_8_0, l_8_1, l_8_2, l_8_3, l_8_4)
+	if not l_8_4 then
+		l_8_0:_update_path(l_8_1, l_8_2)
+	end
+	if not l_8_0._look_at_position then
+		l_8_0._look_at_position = l_8_0:_get_look_at_position(l_8_0._next_pos, nil)
+	end
+	if not l_8_0._move_to_position and not l_8_0._last_target_pos then
+		l_8_0._last_target_pos = l_8_0._chassi_body:position()
+	end
+	if l_8_0._move_to_position and l_8_0._ai_data:path() then
+		l_8_0._next_pos = l_8_0._ai_data:path()[l_8_0._current_path_index + 1]
 	else
-		L3_48 = A0_45._chassi_body:position()
+		l_8_0._next_pos = nil
 	end
-	if (L3_48 - A0_45._chassi_body:position()):length() < 50 then
-		L3_48 = L3_48 + 500 * A0_45._chassi_body:rotation():y()
+	local l_8_5 = l_8_0._physics_timer:delta_time()
+	local l_8_6 = l_8_1:input()
+	if l_8_0._velocity_fraction > 0.001 then
+		local l_8_7 = l_8_0:_force_path()
+		local l_8_11, l_8_12 = , l_8_0._flyer_movement:update(l_8_5, l_8_0._look_at_position, not l_8_0._ai_data.output.allowed_to_strafe or not l_8_0._ai_data:path() or #l_8_0._ai_data:path() == 1, l_8_7, l_8_0._velocity_fraction, l_8_0._last_target_pos, l_8_0._next_pos)
+		l_8_6:set_acceleration(l_8_12)
+		l_8_6:set_angular_acceleration(R13_PC84)
+	else
+		l_8_6:set_acceleration(Vector3(0, 0, 0))
+		l_8_6:set_angular_acceleration(Vector3(0, 0, 0))
 	end
-	return L3_48
 end
-function FlyerAiNerveSystem._update_dead(A0_49, A1_50, A2_51, A3_52)
-	local L4_53, L5_54, L6_55, L7_56, L8_57
-	L4_53 = A0_49._braindead
-	if not L4_53 then
-		L5_54 = A0_49
-		L4_53 = A0_49._kill_brain
-		L4_53(L5_54)
-	end
-	L4_53 = AiNerveSystem
-	L4_53 = L4_53.update
-	L5_54 = A0_49
-	L6_55 = A1_50
-	L7_56 = A2_51
-	L8_57 = A3_52
-	L4_53(L5_54, L6_55, L7_56, L8_57)
-	L5_54 = A1_50
-	L4_53 = A1_50.input
-	L4_53 = L4_53(L5_54)
-	L6_55 = L4_53
-	L5_54 = L4_53.clear
-	L5_54(L6_55)
-	L5_54 = NavigationGraphUtilities
-	L5_54 = L5_54.get_on_ground_position
-	L6_55 = A0_49._unit_position
-	L5_54 = L5_54(L6_55)
-	if L5_54 then
-		L6_55 = mvector3
-		L6_55 = L6_55.distance
-		L7_56 = A0_49._unit_position
-		L8_57 = L5_54
-		L6_55 = L6_55(L7_56, L8_57)
-		if L6_55 < 100 then
-			return
+
+FlyerAiNerveSystem._get_look_at_position = function(l_9_0, l_9_1, l_9_2)
+	if l_9_2 then
+		local l_9_3 = l_9_2
+	else
+		if l_9_0._ai_data.output.look_at_position then
+			do return end
 		end
 	end
-	L6_55 = A0_49._chassi_body
-	L7_56 = L6_55
-	L6_55 = L6_55.rotation
-	L6_55 = L6_55(L7_56)
-	L7_56 = A0_49._dead_acceleration
-	if not L7_56 then
-		L8_57 = L6_55
-		L7_56 = L6_55.y
-		L7_56 = L7_56(L8_57)
-		L8_57 = L6_55.z
-		L8_57 = L8_57(L6_55)
-		if A0_49._chassi_body:velocity():dot(L7_56) > 500 then
-			A0_49._dead_approach_acceleration = A0_49._chassi_body:velocity() * 1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_9_0._waypoint_rotation_look_at_position then
+		local l_9_4 = l_9_0._ai_data.output.look_at_position
+	elseif l_9_0._move_to_position then
+		if l_9_1 then
+			do return end
 		end
-		A0_49._dead_acceleration = 0.1 * (math.rand(1000, 1200) * L8_57:spread(20))
-		A0_49._dead_angular_acceleration = math.rand(1000, 1200) / 180 * L8_57:spread(20):cross(L8_57):normalized()
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		do
+			local l_9_5, l_9_6 = math.lerp(l_9_1, l_9_0._move_to_position, math.min(1, l_9_0._chassi_body:position() - l_9_0._move_to_position:length() / 500))
 	end
-	L8_57 = L4_53
-	L7_56 = L4_53.set_acceleration
-	L7_56(L8_57, A0_49._dead_acceleration:rotate_with(L6_55) + A0_49._dead_approach_acceleration)
-	L8_57 = L4_53
-	L7_56 = L4_53.set_angular_acceleration
-	L7_56(L8_57, A0_49._dead_angular_acceleration)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	else
+		if l_9_0._chassi_body:position() - l_9_0._chassi_body:position():length() < 50 then
+			local l_9_7 = l_9_0._chassi_body:position() + 500 * l_9_0._chassi_body:rotation():y()
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		return l_9_7
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 49 
 end
-function FlyerAiNerveSystem._update_weapons_dispersions(A0_58, A1_59, A2_60, A3_61)
-	local L4_62
-	L4_62 = tweak_data
-	L4_62 = L4_62.ai
-	L4_62 = L4_62.machines
-	L4_62 = L4_62.flyer
-	A0_58._miss_max_dispersion = L4_62.MISS_MAX_DISPERSION
-	A0_58._miss_timer_speed = L4_62.MISS_TIMER_SPEED
-	A0_58._number_of_dispersion_weapons = L4_62.NUMBER_OF_DISPERSION_WEAPONS
-	return AiNerveSystem._update_weapons_dispersions(A0_58, A1_59, A2_60, A3_61)
+
+FlyerAiNerveSystem._update_dead = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	if not l_10_0._braindead then
+		l_10_0:_kill_brain()
+	end
+	AiNerveSystem.update(l_10_0, l_10_1, l_10_2, l_10_3)
+	local l_10_4 = l_10_1:input()
+	l_10_4:clear()
+	local l_10_5 = NavigationGraphUtilities.get_on_ground_position(l_10_0._unit_position)
+	if l_10_5 and mvector3.distance(l_10_0._unit_position, l_10_5) < 100 then
+		return 
+	end
+	local l_10_6 = l_10_0._chassi_body:rotation()
+	if not l_10_0._dead_acceleration then
+		local l_10_7 = l_10_6:y()
+		local l_10_8 = l_10_6:z()
+		local l_10_9 = l_10_6:x()
+		local l_10_10 = math.rand(1000, 1200)
+		local l_10_11 = l_10_10 / 180
+		local l_10_12 = l_10_8:spread(20)
+		if l_10_0._chassi_body:velocity():dot(l_10_7) > 500 then
+			local l_10_13, l_10_14, l_10_15 = 0.1 * (l_10_10 * l_10_12)
+			l_10_14 = l_10_0._chassi_body
+			l_10_14, l_10_15 = l_10_14:velocity, l_10_14
+			l_10_14 = l_10_14(l_10_15)
+			l_10_14 = l_10_14 * 1
+			l_10_0._dead_approach_acceleration = l_10_14
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_10_0._dead_acceleration = l_10_13
+		l_10_0._dead_angular_acceleration = l_10_11 * l_10_12:cross(l_10_8):normalized()
+	end
+	l_10_4:set_acceleration(l_10_0._dead_acceleration:rotate_with(l_10_6) + l_10_0._dead_approach_acceleration)
+	l_10_4:set_angular_acceleration(l_10_0._dead_angular_acceleration)
 end
-function FlyerAiNerveSystem._burst_fire(A0_63, A1_64, A2_65, A3_66)
-	local L4_67
-	L4_67 = tweak_data
-	L4_67 = L4_67.ai
-	L4_67 = L4_67.machines
-	L4_67 = L4_67.flyer
-	A0_63._burst_mean_time = L4_67.BURST_LENGTH
-	A0_63._burst_standard_deviation_time = 2 * L4_67.BURST_LENGTH
-	A0_63._burst_max_deviation_time = 0.4 * L4_67.BURST_LENGTH
-	A0_63._burst_pause_mean_time = L4_67.TIME_BETWEEN_BURSTS
-	A0_63._burst_pause_standard_deviation_time = 2 * L4_67.TIME_BETWEEN_BURSTS
-	A0_63._burst_pause_max_deviation_time = 0.4 * L4_67.TIME_BETWEEN_BURSTS
-	return AiNerveSystem._burst_fire(A0_63, A1_64, A2_65, A3_66)
+
+FlyerAiNerveSystem._update_weapons_dispersions = function(l_11_0, l_11_1, l_11_2, l_11_3)
+	local l_11_4 = tweak_data.ai.machines.flyer
+	l_11_0._miss_max_dispersion = l_11_4.MISS_MAX_DISPERSION
+	l_11_0._miss_timer_speed = l_11_4.MISS_TIMER_SPEED
+	l_11_0._number_of_dispersion_weapons = l_11_4.NUMBER_OF_DISPERSION_WEAPONS
+	local l_11_5 = AiNerveSystem._update_weapons_dispersions
+	local l_11_6 = l_11_0
+	local l_11_7 = l_11_1
+	local l_11_8 = l_11_2
+	local l_11_9 = l_11_3
+	return l_11_5(l_11_6, l_11_7, l_11_8, l_11_9)
 end
+
+FlyerAiNerveSystem._burst_fire = function(l_12_0, l_12_1, l_12_2, l_12_3)
+	local l_12_4 = tweak_data.ai.machines.flyer
+	l_12_0._burst_mean_time = l_12_4.BURST_LENGTH
+	l_12_0._burst_standard_deviation_time = 2 * l_12_4.BURST_LENGTH
+	l_12_0._burst_max_deviation_time = 0.4 * l_12_4.BURST_LENGTH
+	l_12_0._burst_pause_mean_time = l_12_4.TIME_BETWEEN_BURSTS
+	l_12_0._burst_pause_standard_deviation_time = 2 * l_12_4.TIME_BETWEEN_BURSTS
+	l_12_0._burst_pause_max_deviation_time = 0.4 * l_12_4.TIME_BETWEEN_BURSTS
+	local l_12_5 = AiNerveSystem._burst_fire
+	local l_12_6 = l_12_0
+	local l_12_7 = l_12_1
+	local l_12_8 = l_12_2
+	local l_12_9 = l_12_3
+	return l_12_5(l_12_6, l_12_7, l_12_8, l_12_9)
+end
+
+

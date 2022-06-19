@@ -1,41 +1,29 @@
-local L0_0
-L0_0 = core
-L0_0 = L0_0.module
-L0_0(L0_0, "CoreSongProject")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "CoreKeywordArguments")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "CoreClass")
-L0_0 = CoreKeywordArguments
-L0_0 = L0_0.parse_kwargs
-SongProject = SongProject or CoreClass.class()
-function SongProject.init(A0_1, ...)
-	local L2_3, L3_4, L4_5
-	L2_3 = CoreKeywordArguments
-	L2_3 = L2_3.KeywordArguments
-	L3_4 = L2_3
-	L2_3 = L2_3.new
-	L4_5 = ...
-	L2_3 = L2_3(L3_4, L4_5, ...)
-	L4_5 = L2_3
-	L3_4 = L2_3.optional_object
-	L3_4 = L3_4(L4_5, "node")
-	L4_5 = L2_3.optional_function
-	L4_5 = L4_5(L2_3, "song_modified_cb")
-	A0_1._song_modified_cb = L4_5
-	L4_5 = L2_3.assert_all_consumed
-	L4_5(L2_3)
-	if not L3_4 then
-		L4_5 = "<song_project><modes/><audioclips/><sections/><markers/></song_project>"
-		L3_4 = Node.from_xml(L4_5)
+core:module("CoreSongProject")
+core:require_module("CoreKeywordArguments")
+core:require_module("CoreClass")
+local l_0_0 = CoreKeywordArguments.parse_kwargs
+local l_0_1 = function(l_1_0)
+	if l_1_0 ~= nil then
+		local l_1_1 = l_1_0:parameters()
+		local l_1_2 = function(l_2_0, l_2_1)
+			local l_2_2 = rawget(l_2_0, l_2_1)
+			local l_2_3 = assert
+			l_2_3(l_2_2 ~= nil, "Attempt to index a non-existent key.")
+			return l_2_2
+    end
+		local l_1_3 = setmetatable
+		local l_1_4 = l_1_1
+		local l_1_5 = {}
+		l_1_5.__index = l_1_2
+		l_1_3(l_1_4, l_1_5)
+		return l_1_1
 	end
-	L4_5 = {L3_4}
-	A0_1._version_list = L4_5
-	A0_1._current_index = 1
-	L4_5 = A0_1._set_convenient_attr
-	L4_5(A0_1, L3_4)
 end
-function SongProject._set_convenient_attr(A0_6, A1_7)
-	for 
+
+end
+ -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+if not SongProject then
+	 -- WARNING: undefined locals caused missing assignments!
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 26 
+

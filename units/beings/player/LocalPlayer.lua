@@ -1,3 +1,7 @@
-LocalPlayer = LocalPlayer or class()
-function LocalPlayer.init(A0_0, A1_1)
+if not LocalPlayer then
+	LocalPlayer = class()
 end
+LocalPlayer.init = function(l_1_0, l_1_1)
+end
+
+

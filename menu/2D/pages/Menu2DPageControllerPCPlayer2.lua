@@ -1,24 +1,24 @@
-Menu2DPageControllerPCPlayer2 = Menu2DPageControllerPCPlayer2 or class(Menu2DPageControllerPC)
-function Menu2DPageControllerPCPlayer2.init(A0_0, A1_1, A2_2)
-	Menu2DPageControllerPC.init(A0_0, A1_1, A2_2)
+if not Menu2DPageControllerPCPlayer2 then
+	Menu2DPageControllerPCPlayer2 = class(Menu2DPageControllerPC)
 end
-function Menu2DPageControllerPCPlayer2.user(A0_3)
-	local L1_4
-	L1_4 = managers
-	L1_4 = L1_4.player_slot
-	L1_4 = L1_4.slot
-	L1_4 = L1_4(L1_4, 2)
-	assert(L1_4)
-	return L1_4:user()
+Menu2DPageControllerPCPlayer2.init = function(l_1_0, l_1_1, l_1_2)
+	Menu2DPageControllerPC.init(l_1_0, l_1_1, l_1_2)
 end
-function Menu2DPageControllerPCPlayer2.controller_wrapper(A0_5)
-	return A0_5:user():controller_wrapper()
+
+Menu2DPageControllerPCPlayer2.user = function(l_2_0)
+	local l_2_1 = managers.player_slot:slot(2)
+	assert(l_2_1)
+	local l_2_2, l_2_3 = l_2_1:user, l_2_1
+	return l_2_2(l_2_3)
 end
-function Menu2DPageControllerPCPlayer2.create_controller_checker(A0_6)
-	local L1_7, L2_8
-	L1_7 = ControllerWrapperInputPressedChecker
-	L2_8 = L1_7
-	L1_7 = L1_7.new
-	L1_7 = L1_7(L2_8, A0_6:controller_wrapper())
-	A0_6._controller_checker = L1_7
+
+Menu2DPageControllerPCPlayer2.controller_wrapper = function(l_3_0)
+	local l_3_1, l_3_2 = l_3_0:user():controller_wrapper, l_3_0:user()
+	return l_3_1(l_3_2)
 end
+
+Menu2DPageControllerPCPlayer2.create_controller_checker = function(l_4_0)
+	l_4_0._controller_checker = ControllerWrapperInputPressedChecker:new(l_4_0:controller_wrapper())
+end
+
+

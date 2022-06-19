@@ -1,150 +1,158 @@
-WalkerInput = WalkerInput or class()
-function WalkerInput.init(A0_0, A1_1)
-	A0_0:clear()
+if not WalkerInput then
+	WalkerInput = class()
 end
-function WalkerInput.clear(A0_2)
-	A0_2._movement = Vector3(0, 0, 0)
-	A0_2._eye_target_position = nil
-	A0_2._primary_aim_target_position = nil
-	A0_2._secondary_aim_target_position = nil
-	A0_2._prepare_primary_fire = false
-	A0_2._primary_fire = false
-	A0_2._prepare_secondary_fire = false
-	A0_2._secondary_fire = false
-	A0_2._special_kill_target = nil
-	A0_2._special_kill_id = nil
-	A0_2._remove_magcharge_attachment_point_name = nil
-	A0_2._miss_dispersions = {0, 0}
-	A0_2._strike_of_death_direction = nil
-	A0_2._strike_of_death_target = nil
+WalkerInput.init = function(l_1_0, l_1_1)
+	l_1_0:clear()
 end
-function WalkerInput.movement(A0_3)
-	local L1_4
-	L1_4 = A0_3._movement
-	return L1_4
+
+WalkerInput.clear = function(l_2_0)
+	l_2_0._movement = Vector3(0, 0, 0)
+	l_2_0._eye_target_position = nil
+	l_2_0._primary_aim_target_position = nil
+	l_2_0._secondary_aim_target_position = nil
+	l_2_0._prepare_primary_fire = false
+	l_2_0._primary_fire = false
+	l_2_0._prepare_secondary_fire = false
+	l_2_0._secondary_fire = false
+	l_2_0._special_kill_target = nil
+	l_2_0._special_kill_id = nil
+	l_2_0._remove_magcharge_attachment_point_name = nil
+	do
+		local l_2_1 = {}
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	end
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function WalkerInput.set_movement(A0_5, A1_6)
-	A0_5._movement = A1_6
+
+WalkerInput.movement = function(l_3_0)
+	return l_3_0._movement
 end
-function WalkerInput.eye_target_position(A0_7)
-	local L1_8
-	L1_8 = A0_7._eye_target_position
-	return L1_8
+
+WalkerInput.set_movement = function(l_4_0, l_4_1)
+	l_4_0._movement = l_4_1
 end
-function WalkerInput.set_eye_target_position(A0_9, A1_10)
-	A0_9._eye_target_position = A1_10
+
+WalkerInput.eye_target_position = function(l_5_0)
+	return l_5_0._eye_target_position
 end
-function WalkerInput.set_aim_target_position(A0_11, A1_12)
-	A0_11:set_primary_aim_target_position(A1_12)
+
+WalkerInput.set_eye_target_position = function(l_6_0, l_6_1)
+	l_6_0._eye_target_position = l_6_1
 end
-function WalkerInput.aim_target_position(A0_13)
-	return A0_13:primary_aim_target_position()
+
+WalkerInput.set_aim_target_position = function(l_7_0, l_7_1)
+	l_7_0:set_primary_aim_target_position(l_7_1)
 end
-function WalkerInput.primary_aim_target_position(A0_14)
-	local L1_15
-	L1_15 = A0_14._primary_aim_target_position
-	return L1_15
+
+WalkerInput.aim_target_position = function(l_8_0)
+	local l_8_1, l_8_2 = l_8_0:primary_aim_target_position, l_8_0
+	return l_8_1(l_8_2)
 end
-function WalkerInput.set_primary_aim_target_position(A0_16, A1_17)
-	A0_16._primary_aim_target_position = A1_17
+
+WalkerInput.primary_aim_target_position = function(l_9_0)
+	return l_9_0._primary_aim_target_position
 end
-function WalkerInput.secondary_aim_target_position(A0_18)
-	local L1_19
-	L1_19 = A0_18._secondary_aim_target_position
-	return L1_19
+
+WalkerInput.set_primary_aim_target_position = function(l_10_0, l_10_1)
+	l_10_0._primary_aim_target_position = l_10_1
 end
-function WalkerInput.set_secondary_aim_target_position(A0_20, A1_21)
-	A0_20._secondary_aim_target_position = A1_21
+
+WalkerInput.secondary_aim_target_position = function(l_11_0)
+	return l_11_0._secondary_aim_target_position
 end
-function WalkerInput.primary_fire(A0_22)
-	local L1_23
-	L1_23 = A0_22._primary_fire
-	return L1_23
+
+WalkerInput.set_secondary_aim_target_position = function(l_12_0, l_12_1)
+	l_12_0._secondary_aim_target_position = l_12_1
 end
-function WalkerInput.set_primary_fire(A0_24)
-	local L1_25
-	A0_24._primary_fire = true
+
+WalkerInput.primary_fire = function(l_13_0)
+	return l_13_0._primary_fire
 end
-function WalkerInput.set_prepare_primary_fire(A0_26)
-	local L1_27
-	A0_26._prepare_primary_fire = true
+
+WalkerInput.set_primary_fire = function(l_14_0)
+	l_14_0._primary_fire = true
 end
-function WalkerInput.prepare_primary_fire(A0_28)
-	local L1_29
-	L1_29 = A0_28._prepare_primary_fire
-	return L1_29
+
+WalkerInput.set_prepare_primary_fire = function(l_15_0)
+	l_15_0._prepare_primary_fire = true
 end
-function WalkerInput.secondary_fire(A0_30)
-	local L1_31
-	L1_31 = A0_30._secondary_fire
-	return L1_31
+
+WalkerInput.prepare_primary_fire = function(l_16_0)
+	return l_16_0._prepare_primary_fire
 end
-function WalkerInput.set_secondary_fire(A0_32)
-	local L1_33
-	A0_32._secondary_fire = true
+
+WalkerInput.secondary_fire = function(l_17_0)
+	return l_17_0._secondary_fire
 end
-function WalkerInput.set_prepare_secondary_fire(A0_34)
-	local L1_35
-	A0_34._prepare_secondary_fire = true
+
+WalkerInput.set_secondary_fire = function(l_18_0)
+	l_18_0._secondary_fire = true
 end
-function WalkerInput.prepare_secondary_fire(A0_36)
-	local L1_37
-	L1_37 = A0_36._prepare_secondary_fire
-	return L1_37
+
+WalkerInput.set_prepare_secondary_fire = function(l_19_0)
+	l_19_0._prepare_secondary_fire = true
 end
-function WalkerInput.special_kill_target(A0_38)
-	local L1_39
-	L1_39 = A0_38._special_kill_target
-	return L1_39
+
+WalkerInput.prepare_secondary_fire = function(l_20_0)
+	return l_20_0._prepare_secondary_fire
 end
-function WalkerInput.special_kill_id(A0_40)
-	local L1_41
-	L1_41 = A0_40._special_kill_id
-	return L1_41
+
+WalkerInput.special_kill_target = function(l_21_0)
+	return l_21_0._special_kill_target
 end
-function WalkerInput.special_kill_position(A0_42)
-	local L1_43
-	L1_43 = A0_42._special_kill_position
-	return L1_43
+
+WalkerInput.special_kill_id = function(l_22_0)
+	return l_22_0._special_kill_id
 end
-function WalkerInput.special_kill_rotation(A0_44)
-	local L1_45
-	L1_45 = A0_44._special_kill_rotation
-	return L1_45
+
+WalkerInput.special_kill_position = function(l_23_0)
+	return l_23_0._special_kill_position
 end
-function WalkerInput.set_special_kill(A0_46, A1_47, A2_48, A3_49, A4_50)
-	A0_46._special_kill_target = A1_47
-	A0_46._special_kill_id = A2_48
-	A0_46._special_kill_position = A3_49
-	A0_46._special_kill_rotation = A4_50
+
+WalkerInput.special_kill_rotation = function(l_24_0)
+	return l_24_0._special_kill_rotation
 end
-function WalkerInput.remove_magcharge_attachment_point_name(A0_51)
-	local L1_52
-	L1_52 = A0_51._remove_magcharge_attachment_point_name
-	return L1_52
+
+WalkerInput.set_special_kill = function(l_25_0, l_25_1, l_25_2, l_25_3, l_25_4)
+	l_25_0._special_kill_target = l_25_1
+	l_25_0._special_kill_id = l_25_2
+	l_25_0._special_kill_position = l_25_3
+	l_25_0._special_kill_rotation = l_25_4
 end
-function WalkerInput.set_remove_magcharge(A0_53, A1_54)
-	A0_53._remove_magcharge_attachment_point_name = A1_54
+
+WalkerInput.remove_magcharge_attachment_point_name = function(l_26_0)
+	return l_26_0._remove_magcharge_attachment_point_name
 end
-function WalkerInput.miss_dispersions(A0_55)
-	assert(#A0_55._miss_dispersions == 1 or #A0_55._miss_dispersions == 2)
-	return A0_55._miss_dispersions
+
+WalkerInput.set_remove_magcharge = function(l_27_0, l_27_1)
+	l_27_0._remove_magcharge_attachment_point_name = l_27_1
 end
-function WalkerInput.set_miss_dispersions(A0_56, A1_57)
-	assert(#A1_57 == 1 or #A1_57 == 2)
-	A0_56._miss_dispersions = A1_57
+
+WalkerInput.miss_dispersions = function(l_28_0)
+	local l_28_1 = assert
+	l_28_1(#l_28_0._miss_dispersions == 1 or #l_28_0._miss_dispersions == 2)
+	l_28_1 = l_28_0._miss_dispersions
+	return l_28_1
 end
-function WalkerInput.strike_of_death_direction(A0_58)
-	local L1_59
-	L1_59 = A0_58._strike_of_death_direction
-	return L1_59
+
+WalkerInput.set_miss_dispersions = function(l_29_0, l_29_1)
+	local l_29_2 = assert
+	l_29_2(#l_29_1 == 1 or #l_29_1 == 2)
+	l_29_0._miss_dispersions = l_29_1
 end
-function WalkerInput.strike_of_death_target(A0_60)
-	local L1_61
-	L1_61 = A0_60._strike_of_death_target
-	return L1_61
+
+WalkerInput.strike_of_death_direction = function(l_30_0)
+	return l_30_0._strike_of_death_direction
 end
-function WalkerInput.set_strike_of_death(A0_62, A1_63, A2_64)
-	A0_62._strike_of_death_direction = A1_63
-	A0_62._strike_of_death_target = A2_64
+
+WalkerInput.strike_of_death_target = function(l_31_0)
+	return l_31_0._strike_of_death_target
 end
+
+WalkerInput.set_strike_of_death = function(l_32_0, l_32_1, l_32_2)
+	l_32_0._strike_of_death_direction = l_32_1
+	l_32_0._strike_of_death_target = l_32_2
+end
+
+

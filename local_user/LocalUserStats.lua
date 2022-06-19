@@ -1,16 +1,20 @@
-LocalUserStats = LocalUserStats or class()
-function LocalUserStats.init(A0_0)
-	local L1_1
+if not LocalUserStats then
+	LocalUserStats = class()
 end
-function LocalUserStats.destroy(A0_2)
-	local L1_3
+LocalUserStats.init = function(l_1_0)
 end
-function LocalUserStats.set_assigned_unit_and_stats(A0_4, A1_5, A2_6)
-	assert(A2_6)
-	if A0_4._listener then
-		managers.action_event:unregister_listener(A0_4)
+
+LocalUserStats.destroy = function(l_2_0)
+end
+
+LocalUserStats.set_assigned_unit_and_stats = function(l_3_0, l_3_1, l_3_2)
+	assert(l_3_2)
+	if l_3_0._listener then
+		managers.action_event:unregister_listener(l_3_0)
 	end
-	A0_4._listener = managers.action_event:register_listener(A0_4, nil, nil)
-	A0_4._stats = A2_6
-	A0_4._unit = A1_5
+	l_3_0._listener = managers.action_event:register_listener(l_3_0, nil, nil)
+	l_3_0._stats = l_3_2
+	l_3_0._unit = l_3_1
 end
+
+

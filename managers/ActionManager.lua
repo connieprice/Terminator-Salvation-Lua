@@ -147,55 +147,51 @@ require("managers/actionmanagers/AMHarvesterBoss")
 require("managers/actionmanagers/AMHarvesterBossSound")
 require("managers/actionmanagers/AMAmmoBox")
 require("managers/actionmanagers/AMRumble")
-AMSpawnUnit = AMSpawnUnit or class(CoreActionElement)
-function AMSpawnUnit.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
-	if A0_0.unit_name ~= "none" then
-		World:preload_unit(A0_0.unit_name)
+if not AMSpawnUnit then
+	AMSpawnUnit = class(CoreActionElement)
+end
+AMSpawnUnit.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+	if l_1_0.unit_name ~= "none" then
+		World:preload_unit(l_1_0.unit_name)
 	end
 end
-function AMSpawnUnit.activate_now(A0_3)
-	cat_print("gaspode", "AMSpawnUnit:activate_now()", A0_3.unit_name)
-	if A0_3.unit_name ~= "none" then
-		if A0_3.unit_spawn_mass then
-			World:spawn_unit(A0_3.unit_name, A0_3.position, A0_3.rotation):push(A0_3.unit_spawn_mass, A0_3.unit_spawn_dir * A0_3.unit_spawn_velocity)
+
+AMSpawnUnit.activate_now = function(l_2_0)
+	cat_print("gaspode", "AMSpawnUnit:activate_now()", l_2_0.unit_name)
+	if l_2_0.unit_name ~= "none" then
+		local l_2_1 = World:spawn_unit(l_2_0.unit_name, l_2_0.position, l_2_0.rotation)
+		if l_2_0.unit_spawn_mass then
+			l_2_1:push(l_2_0.unit_spawn_mass, l_2_0.unit_spawn_dir * l_2_0.unit_spawn_velocity)
 		end
-	elseif Application:editor() then
-		managers.editor:output_error("Cant spawn unit \"none\" [" .. A0_3._name .. "]")
-	end
-	A0_3:deactivate_now()
-end
-AMCameraShake = AMCameraShake or class(CoreActionElement)
-function AMCameraShake.init(A0_4, A1_5, A2_6)
-	CoreActionElement.init(A0_4, A1_5, A2_6)
-end
-function AMCameraShake.activate_now(A0_7)
-	local L1_8
-	L1_8 = alive
-	L1_8 = L1_8(script_data.player)
-	if L1_8 then
-		L1_8 = cat_print
-		L1_8("gaspode", "AMCameraShake:activate_now()")
-		L1_8 = A0_7.shaker_strength
-		if L1_8 then
-			L1_8 = script_data
-			L1_8 = L1_8.player
-			L1_8 = L1_8.camera
-			L1_8 = L1_8(L1_8)
-			L1_8 = L1_8.shaker_play
-			L1_8 = L1_8(L1_8, "mission_triggered", A0_7.shaker_strength)
-			script_data.player:camera():shaker():set_parameter(L1_8, "attack", A0_7.shaker_attack)
-			script_data.player:camera():shaker():set_parameter(L1_8, "sustain", A0_7.shaker_sustain)
-			script_data.player:camera():shaker():set_parameter(L1_8, "decay", A0_7.shaker_decay)
-		else
-			L1_8 = script_data
-			L1_8 = L1_8.player
-			L1_8 = L1_8.camera
-			L1_8 = L1_8(L1_8)
-			L1_8 = L1_8.shaker_play
-			L1_8(L1_8, "mission_triggered", 0.5)
+	else
+		if Application:editor() then
+			managers.editor:output_error("Cant spawn unit \"none\" [" .. l_2_0._name .. "]")
 		end
 	end
-	L1_8 = A0_7.deactivate_now
-	L1_8(A0_7)
+	l_2_0:deactivate_now()
 end
+
+if not AMCameraShake then
+	AMCameraShake = class(CoreActionElement)
+end
+AMCameraShake.init = function(l_3_0, l_3_1, l_3_2)
+	CoreActionElement.init(l_3_0, l_3_1, l_3_2)
+end
+
+AMCameraShake.activate_now = function(l_4_0)
+	if alive(script_data.player) then
+		cat_print("gaspode", "AMCameraShake:activate_now()")
+		if l_4_0.shaker_strength then
+			local l_4_1 = script_data.player:camera():shaker_play("mission_triggered", l_4_0.shaker_strength)
+			script_data.player:camera():shaker():set_parameter(l_4_1, "attack", l_4_0.shaker_attack)
+			script_data.player:camera():shaker():set_parameter(l_4_1, "sustain", l_4_0.shaker_sustain)
+			script_data.player:camera():shaker():set_parameter(l_4_1, "decay", l_4_0.shaker_decay)
+		end
+	else
+		script_data.player:camera():shaker_play("mission_triggered", 0.5)
+	end
+	l_4_0:deactivate_now()
+end
+
+

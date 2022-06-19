@@ -1,6 +1,10 @@
 require("menu/states/MenuStateSyncStarted")
-MenuStateSyncToIngameStarted = MenuStateSyncToIngameStarted or class(MenuStateSyncStarted)
-function MenuStateSyncToIngameStarted.init(A0_0)
-	MenuStateSyncStarted.init(A0_0)
-	A0_0._menu:gui_interface():set_state("syncing_to_ingame")
+if not MenuStateSyncToIngameStarted then
+	MenuStateSyncToIngameStarted = class(MenuStateSyncStarted)
 end
+MenuStateSyncToIngameStarted.init = function(l_1_0)
+	MenuStateSyncStarted.init(l_1_0)
+	l_1_0._menu:gui_interface():set_state("syncing_to_ingame")
+end
+
+

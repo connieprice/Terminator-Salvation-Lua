@@ -1,37 +1,38 @@
-MissionObjective = MissionObjective or class()
-function MissionObjective.init(A0_0, A1_1, A2_2)
-	A0_0._objective_id = A1_1
-	assert(A2_2)
-	A0_0._assigned_to = A2_2
+if not MissionObjective then
+	MissionObjective = class()
 end
-function MissionObjective.assigned_to(A0_3)
-	local L1_4
-	L1_4 = A0_3._assigned_to
-	return L1_4
+MissionObjective.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._objective_id = l_1_1
+	assert(l_1_2)
+	l_1_0._assigned_to = l_1_2
 end
-function MissionObjective.name(A0_5)
-	local L1_6
-	L1_6 = A0_5._objective_id
-	return L1_6
+
+MissionObjective.assigned_to = function(l_2_0)
+	return l_2_0._assigned_to
 end
-function MissionObjective.set_text_id(A0_7, A1_8)
-	A0_7._text_id = A1_8
+
+MissionObjective.name = function(l_3_0)
+	return l_3_0._objective_id
 end
-function MissionObjective.text_id(A0_9)
-	local L1_10
-	L1_10 = A0_9._text_id
-	return L1_10
+
+MissionObjective.set_text_id = function(l_4_0, l_4_1)
+	l_4_0._text_id = l_4_1
 end
-function MissionObjective.id(A0_11)
-	local L1_12
-	L1_12 = A0_11._objective_id
-	return L1_12
+
+MissionObjective.text_id = function(l_5_0)
+	return l_5_0._text_id
 end
-function MissionObjective.set_time(A0_13, A1_14)
-	A0_13._time = A1_14
+
+MissionObjective.id = function(l_6_0)
+	return l_6_0._objective_id
 end
-function MissionObjective.time(A0_15)
-	local L1_16
-	L1_16 = A0_15._time
-	return L1_16
+
+MissionObjective.set_time = function(l_7_0, l_7_1)
+	l_7_0._time = l_7_1
 end
+
+MissionObjective.time = function(l_8_0)
+	return l_8_0._time
+end
+
+

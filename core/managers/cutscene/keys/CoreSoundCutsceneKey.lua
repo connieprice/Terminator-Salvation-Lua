@@ -1,5 +1,7 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreSoundCutsceneKey = CoreSoundCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreSoundCutsceneKey then
+	CoreSoundCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreSoundCutsceneKey.ELEMENT_NAME = "sound"
 CoreSoundCutsceneKey.NAME = "Sound"
 CoreSoundCutsceneKey:register_serialized_attribute("bank", "")
@@ -11,134 +13,178 @@ CoreSoundCutsceneKey:attribute_affects("bank", "cue")
 CoreSoundCutsceneKey.control_for_unit_name = CoreCutsceneKeyBase.standard_combo_box_control
 CoreSoundCutsceneKey.control_for_object_name = CoreCutsceneKeyBase.standard_combo_box_control
 CoreSoundCutsceneKey.control_for_bank = CoreCutsceneKeyBase.standard_combo_box_control
-function CoreSoundCutsceneKey.__tostring(A0_0)
-	return "Trigger sound \"" .. A0_0:bank() .. "/" .. A0_0:cue() .. "\" on \"" .. A0_0:unit_name() .. "\"."
+CoreSoundCutsceneKey.__tostring = function(l_1_0)
+	return "Trigger sound \"" .. l_1_0:bank() .. "/" .. l_1_0:cue() .. "\" on \"" .. l_1_0:unit_name() .. "\"."
 end
-function CoreSoundCutsceneKey.prime(A0_1, A1_2)
-	A0_1:sound():prime()
+
+CoreSoundCutsceneKey.prime = function(l_2_0, l_2_1)
+	l_2_0:sound():prime()
 end
-function CoreSoundCutsceneKey.skip(A0_3, A1_4)
-	A0_3:stop()
+
+CoreSoundCutsceneKey.skip = function(l_3_0, l_3_1)
+	l_3_0:stop()
 end
-function CoreSoundCutsceneKey.can_evaluate_with_player(A0_5, A1_6)
-	local L2_7
-	L2_7 = true
-	return L2_7
+
+CoreSoundCutsceneKey.can_evaluate_with_player = function(l_4_0, l_4_1)
+	return true
 end
-function CoreSoundCutsceneKey.play(A0_8, A1_9, A2_10, A3_11)
-	if A2_10 then
-		A0_8:stop()
-	elseif not A3_11 then
-		if A0_8:unit_name() ~= "" and A0_8:object_name() ~= "" then
-			A0_8:sound():set_output(A0_8:_unit_object(A0_8:unit_name(), A0_8:object_name()))
+
+CoreSoundCutsceneKey.play = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	if l_5_2 then
+		l_5_0:stop()
+	elseif not l_5_3 then
+		if l_5_0:unit_name() ~= "" and l_5_0:object_name() ~= "" then
+			l_5_0:sound():set_output(l_5_0:_unit_object(l_5_0:unit_name(), l_5_0:object_name()))
 		end
-		A0_8:_trigger_sound()
+		l_5_0:_trigger_sound()
 	end
 end
-function CoreSoundCutsceneKey.update(A0_12, A1_13, A2_14)
-	if A0_12.is_in_cutscene_editor then
-		A0_12:handle_cutscene_editor_scrubbing(A1_13, A2_14)
+
+CoreSoundCutsceneKey.update = function(l_6_0, l_6_1, l_6_2)
+	if l_6_0.is_in_cutscene_editor then
+		l_6_0:handle_cutscene_editor_scrubbing(l_6_1, l_6_2)
 	end
 end
-function CoreSoundCutsceneKey.handle_cutscene_editor_scrubbing(A0_15, A1_16, A2_17)
-	if A0_15._last_evaluated_time then
-		if A2_17 == A0_15._last_evaluated_time then
-			A0_15._stopped_frame_count = (A0_15._stopped_frame_count or 0) + 1
-			if A0_15._stopped_frame_count > 10 then
-				A0_15._stopped_frame_count = nil
-				A0_15:stop()
+
+CoreSoundCutsceneKey.handle_cutscene_editor_scrubbing = function(l_7_0, l_7_1, l_7_2)
+	if l_7_2 == l_7_0._last_evaluated_time then
+		if not l_7_0._stopped_frame_count then
+			l_7_0._stopped_frame_count = (not l_7_0._last_evaluated_time or 0) + 1
+			if l_7_0._stopped_frame_count > 10 then
+				l_7_0._stopped_frame_count = nil
+				l_7_0:stop()
 			end
 		else
-			A0_15._stopped_frame_count = nil
-			if A0_15._sound_abort_func == nil or A2_17 < A0_15._last_evaluated_time or A2_17 - A0_15._last_evaluated_time > 1 then
-				A0_15:_trigger_sound(A2_17)
+			l_7_0._stopped_frame_count = nil
+		if l_7_0._sound_abort_func == nil or l_7_2 < l_7_0._last_evaluated_time or l_7_2 - l_7_0._last_evaluated_time > 1 then
 			end
+			l_7_0:_trigger_sound(l_7_2)
+		end
+		l_7_0._last_evaluated_time = l_7_2
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 11 
+end
+
+CoreSoundCutsceneKey.is_valid_unit_name = function(l_8_0, l_8_1)
+	if l_8_1 ~= nil and l_8_1 ~= "" then
+		local l_8_2 = CoreCutsceneKeyBase.is_valid_unit_name(l_8_0, l_8_1)
+		l_8_2 = l_8_2
+		return l_8_2
+	end
+end
+
+CoreSoundCutsceneKey.is_valid_object_name = function(l_9_0, l_9_1)
+	if l_9_1 ~= nil and l_9_1 ~= "" then
+		local l_9_2 = CoreCutsceneKeyBase.is_valid_object_name(l_9_0, l_9_1)
+		l_9_2 = l_9_2
+		return l_9_2
+	end
+end
+
+CoreSoundCutsceneKey.is_valid_bank = function(l_10_0, l_10_1)
+	do
+		return l_10_1 and ((l_10_1 ~= "" and table.contains(Sound:soundbanks(), l_10_1)))
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreSoundCutsceneKey.is_valid_cue = function(l_11_0, l_11_1)
+	do
+		return not l_11_1 or (l_11_1 ~= "" and not l_11_0:is_valid_bank(l_11_0:bank()) or Sound:make_bank(l_11_0:bank(), l_11_1) ~= nil)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreSoundCutsceneKey.refresh_control_for_bank = function(l_12_0, l_12_1)
+	l_12_1:freeze()
+	l_12_1:clear()
+	local l_12_2 = l_12_0:bank()
+	local l_12_6, l_12_7 = ipairs, Sound:soundbanks()
+	l_12_6 = l_12_6(l_12_7)
+	for i_0,i_1 in l_12_6 do
+		l_12_1:append(l_12_5)
+		if l_12_5 == l_12_2 then
+			l_12_1:set_value(l_12_2)
 		end
 	end
-	A0_15._last_evaluated_time = A2_17
+	l_12_1:thaw()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSoundCutsceneKey.is_valid_unit_name(A0_18, A1_19)
-	return A1_19 == nil or A1_19 == "" or CoreCutsceneKeyBase.is_valid_unit_name(A0_18, A1_19)
+
+CoreSoundCutsceneKey.refresh_control_for_unit_name = function(l_13_0, l_13_1)
+	CoreCutsceneKeyBase.refresh_control_for_unit_name(l_13_0, l_13_1)
+	l_13_1:append("")
+	if l_13_0:unit_name() == "" then
+		l_13_1:set_value("")
+	end
 end
-function CoreSoundCutsceneKey.is_valid_object_name(A0_20, A1_21)
-	return A1_21 == nil or A1_21 == "" or CoreCutsceneKeyBase.is_valid_object_name(A0_20, A1_21)
+
+CoreSoundCutsceneKey.refresh_control_for_object_name = function(l_14_0, l_14_1)
+	CoreCutsceneKeyBase.refresh_control_for_object_name(l_14_0, l_14_1)
+	l_14_1:append("")
+	if l_14_0:object_name() == "" then
+		l_14_1:set_value("")
+	end
 end
-function CoreSoundCutsceneKey.is_valid_bank(A0_22, A1_23)
-	return A1_23 and A1_23 ~= "" and table.contains(Sound:soundbanks(), A1_23)
+
+CoreSoundCutsceneKey.on_attribute_before_changed = function(l_15_0, l_15_1, l_15_2, l_15_3)
+	if l_15_1 ~= "sync_to_video" then
+		l_15_0:stop()
+	end
 end
-function CoreSoundCutsceneKey.is_valid_cue(A0_24, A1_25)
-	return A1_25 and A1_25 ~= "" and A0_24:is_valid_bank(A0_24:bank()) and Sound:make_bank(A0_24:bank(), A1_25) ~= nil
-end
-function CoreSoundCutsceneKey.refresh_control_for_bank(A0_26, A1_27)
-	local L2_28, L3_29, L4_30, L5_31, L6_32, L7_33
-	L2_28 = A1_27.freeze
-	L2_28(L3_29)
-	L2_28 = A1_27.clear
-	L2_28(L3_29)
-	L2_28 = A0_26.bank
-	L2_28 = L2_28(L3_29)
-	L7_33 = L4_30(L5_31)
-	for L6_32, L7_33 in L3_29(L4_30, L5_31, L6_32, L7_33, L4_30(L5_31)) do
-		A1_27:append(L7_33)
-		if L7_33 == L2_28 then
-			A1_27:set_value(L2_28)
+
+CoreSoundCutsceneKey.on_attribute_changed = function(l_16_0, l_16_1, l_16_2, l_16_3)
+	if l_16_1 == "bank" or l_16_1 == "cue" then
+		l_16_0._sound = nil
+	if l_16_0:is_valid() then
 		end
-	end
-	L3_29(L4_30)
-end
-function CoreSoundCutsceneKey.refresh_control_for_unit_name(A0_34, A1_35)
-	CoreCutsceneKeyBase.refresh_control_for_unit_name(A0_34, A1_35)
-	A1_35:append("")
-	if A0_34:unit_name() == "" then
-		A1_35:set_value("")
+		l_16_0:prime()
 	end
 end
-function CoreSoundCutsceneKey.refresh_control_for_object_name(A0_36, A1_37)
-	CoreCutsceneKeyBase.refresh_control_for_object_name(A0_36, A1_37)
-	A1_37:append("")
-	if A0_36:object_name() == "" then
-		A1_37:set_value("")
+
+CoreSoundCutsceneKey.sound = function(l_17_0)
+	if l_17_0._sound == nil then
+		l_17_0._sound = assert(Sound:make_bank(l_17_0:bank(), l_17_0:cue()), "Sound \"" .. l_17_0:bank() .. "/" .. l_17_0:cue() .. "\" not found.")
 	end
+	return l_17_0._sound
 end
-function CoreSoundCutsceneKey.on_attribute_before_changed(A0_38, A1_39, A2_40, A3_41)
-	if A1_39 ~= "sync_to_video" then
-		A0_38:stop()
+
+CoreSoundCutsceneKey.stop = function(l_18_0)
+	if l_18_0._sound_abort_func then
+		l_18_0._sound_abort_func()
+		l_18_0._sound_abort_func = nil
 	end
+	l_18_0._last_evaluated_time = nil
 end
-function CoreSoundCutsceneKey.on_attribute_changed(A0_42, A1_43, A2_44, A3_45)
-	if A1_43 == "bank" or A1_43 == "cue" then
-		A0_42._sound = nil
-		if A0_42:is_valid() then
-			A0_42:prime()
+
+CoreSoundCutsceneKey._trigger_sound = function(l_19_0, l_19_1)
+	l_19_0:stop()
+	local l_19_2, l_19_3 = l_19_0:sound():play, l_19_0:sound()
+	do
+		local l_19_4 = l_19_0:sync_to_video() and "running_offset" or "offset"
+	do
 		end
-	end
-end
-function CoreSoundCutsceneKey.sound(A0_46)
-	if A0_46._sound == nil then
-		A0_46._sound = assert(Sound:make_bank(A0_46:bank(), A0_46:cue()), "Sound \"" .. A0_46:bank() .. "/" .. A0_46:cue() .. "\" not found.")
-	end
-	return A0_46._sound
-end
-function CoreSoundCutsceneKey.stop(A0_47)
-	if A0_47._sound_abort_func then
-		A0_47._sound_abort_func()
-		A0_47._sound_abort_func = nil
-	end
-	A0_47._last_evaluated_time = nil
-end
-function CoreSoundCutsceneKey._trigger_sound(A0_48, A1_49)
-	local L2_50
-	L2_50 = A0_48.stop
-	L2_50(A0_48)
-	L2_50 = A0_48.sound
-	L2_50 = L2_50(A0_48)
-	L2_50 = L2_50.play
-	L2_50 = L2_50(L2_50, A0_48:sync_to_video() and "running_offset" or "offset", A1_49 or 0)
-	if alive(L2_50) then
-		function A0_48._sound_abort_func()
-			if alive(_UPVALUE0_) and _UPVALUE0_:is_playing() then
-				_UPVALUE0_:stop()
-			end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_19_2 = l_19_2(l_19_3, l_19_4, l_19_1 or 0)
+		l_19_3 = alive
+		l_19_3 = l_19_3(l_19_2)
+		if l_19_3 then
+			l_19_3 = function()
+		-- upvalues: l_19_2
+		if alive(l_19_2) and l_19_2:is_playing() then
+			l_19_2:stop()
 		end
+  end
+			l_19_0._sound_abort_func = l_19_3
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
+
+

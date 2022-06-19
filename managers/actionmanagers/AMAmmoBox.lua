@@ -1,18 +1,17 @@
-AMAmmoBox = AMAmmoBox or class(CoreActionElement)
-function AMAmmoBox.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
-	World:preload_unit(A0_0.unit_name)
+if not AMAmmoBox then
+	AMAmmoBox = class(CoreActionElement)
 end
-function AMAmmoBox.activate_now(A0_3)
-	local L1_4
-	L1_4 = World
-	L1_4 = L1_4.spawn_unit
-	L1_4 = L1_4(L1_4, A0_3.unit_name, A0_3.position, A0_3.rotation)
-	A0_3._unit = L1_4
-	L1_4 = A0_3._unit
-	L1_4 = L1_4.interact
-	L1_4 = L1_4(L1_4)
-	assert(L1_4)
-	L1_4:enable_interact()
-	A0_3:deactivate_now()
+AMAmmoBox.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+	World:preload_unit(l_1_0.unit_name)
 end
+
+AMAmmoBox.activate_now = function(l_2_0)
+	l_2_0._unit = World:spawn_unit(l_2_0.unit_name, l_2_0.position, l_2_0.rotation)
+	local l_2_1 = l_2_0._unit:interact()
+	assert(l_2_1)
+	l_2_1:enable_interact()
+	l_2_0:deactivate_now()
+end
+
+

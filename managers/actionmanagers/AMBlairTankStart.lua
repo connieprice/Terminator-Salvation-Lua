@@ -1,9 +1,14 @@
 require("managers/actionmanagers/AMPlayerTankStart")
-AMBlairTankStart = AMBlairTankStart or class(AMPlayerTankStart)
-function AMBlairTankStart.init(A0_0, A1_1, A2_2)
-	AMPlayerTankStart.init(A0_0, A1_1, A2_2, 2, "player2_tank")
+if not AMBlairTankStart then
+	AMBlairTankStart = class(AMPlayerTankStart)
 end
-function AMBlairTankStart._spawn(A0_3)
-	A0_3._player_slot = 2
-	AMPlayerTankStart._spawn(A0_3)
+AMBlairTankStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMPlayerTankStart.init(l_1_0, l_1_1, l_1_2, 2, "player2_tank")
 end
+
+AMBlairTankStart._spawn = function(l_2_0)
+	l_2_0._player_slot = 2
+	AMPlayerTankStart._spawn(l_2_0)
+end
+
+

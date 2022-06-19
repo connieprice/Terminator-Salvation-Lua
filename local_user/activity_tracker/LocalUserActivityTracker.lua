@@ -1,67 +1,65 @@
-LocalUserActivityTracker = LocalUserActivityTracker or class()
-function LocalUserActivityTracker.init(A0_0, A1_1, A2_2)
-	A0_0._local_user_activity_query = A1_1
-	A0_0._user_index = A2_2
+if not LocalUserActivityTracker then
+	LocalUserActivityTracker = class()
 end
-function LocalUserActivityTracker.update(A0_3, A1_4, A2_5)
-	local L3_6, L4_7, L5_8
-	L4_7 = A0_3
-	L3_6 = A0_3._activity
-	L3_6 = L3_6(L4_7)
-	if L3_6 == "in_game" then
-		L5_8 = A0_3
-		L4_7 = A0_3._game_mode
-		L4_7 = L4_7(L5_8)
-		L5_8 = A0_3._current_game_mode
-		if L4_7 ~= L5_8 then
-			A0_3._current_game_mode = L4_7
-			L5_8 = A0_3._game_mode_changed
-			L5_8(A0_3, L4_7)
+LocalUserActivityTracker.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._local_user_activity_query = l_1_1
+	l_1_0._user_index = l_1_2
+end
+
+LocalUserActivityTracker.update = function(l_2_0, l_2_1, l_2_2)
+	local l_2_3 = l_2_0:_activity()
+	if l_2_3 == "in_game" then
+		local l_2_4 = l_2_0:_game_mode()
+		if l_2_4 ~= l_2_0._current_game_mode then
+			l_2_0._current_game_mode = l_2_4
+			l_2_0:_game_mode_changed(l_2_4)
 		end
-		L5_8 = A0_3._world_info
-		L5_8 = L5_8(A0_3)
-		if L5_8 then
+		local l_2_5 = (l_2_0:_world_info())
+		local l_2_6 = nil
+		if l_2_5 then
+			l_2_6 = l_2_5.id
 		end
-		if L5_8.id ~= A0_3._current_world then
-			A0_3._current_world = L5_8.id
-			A0_3:_world_changed(L5_8)
+	if l_2_6 ~= l_2_0._current_world then
 		end
+		l_2_0._current_world = l_2_6
+		l_2_0:_world_changed(l_2_5)
 	end
-	L4_7 = A0_3._current_activity
-	if L3_6 ~= L4_7 then
-		A0_3._current_activity = L3_6
-		L5_8 = A0_3
-		L4_7 = A0_3._activity_changed
-		L4_7(L5_8, L3_6)
+	if l_2_3 ~= l_2_0._current_activity then
+		l_2_0._current_activity = l_2_3
+		l_2_0:_activity_changed(l_2_3)
 	end
 end
-function LocalUserActivityTracker._activity(A0_9)
-	if A0_9._local_user_activity_query:has_assigned_unit() then
+
+LocalUserActivityTracker._activity = function(l_3_0)
+	if l_3_0._local_user_activity_query:has_assigned_unit() then
 		return "in_game"
-	elseif A0_9._local_user_activity_query:is_menu_bound() then
-		return "menu"
+	else
+		if l_3_0._local_user_activity_query:is_menu_bound() then
+			return "menu"
+		end
 	else
 		return "idle"
 	end
 end
-function LocalUserActivityTracker._game_mode(A0_10)
+
+LocalUserActivityTracker._game_mode = function(l_4_0)
 	if managers.player_slot:number_of_occupied_slots() > 1 then
 		return "co_op"
 	else
 		return "single_player"
 	end
 end
-function LocalUserActivityTracker._world_info(A0_11)
-	local L1_12
-	L1_12 = managers
-	L1_12 = L1_12.game
-	L1_12 = L1_12.level_name
-	L1_12 = L1_12(L1_12)
-	if not L1_12 then
+
+LocalUserActivityTracker._world_info = function(l_5_0)
+	local l_5_1 = managers.game:level_name()
+	if not l_5_1 then
 		return nil
 	end
-	if not managers.world_info:info_from_name(L1_12) then
+	local l_5_2 = managers.world_info:info_from_name(l_5_1)
+	if not l_5_2 then
 		return nil
 	end
-	return (managers.world_info:info_from_name(L1_12))
+	return l_5_2
 end
+
+

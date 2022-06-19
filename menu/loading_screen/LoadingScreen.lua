@@ -1,83 +1,154 @@
 require("menu/loading_screen/LoadingScreenTweakData")
 require("menu/loading_screen/LoadingIconPanel")
 require("menu/ScreenFader")
-LoadingScreen = LoadingScreen or class()
-LoadingScreen.fonts = {
-	"faith_font_22"
-}
-LoadingScreen.textures = {
-	"gui_disc_icon"
-}
-function LoadingScreen.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7)
-	local L8_8
-	A0_0._resources = A1_1
-	A0_0._camera = A2_2
-	L8_8 = A3_3.create_scaled_screen_workspace
-	L8_8 = L8_8(A3_3, A6_6.width, A6_6.height, 0, 0, A7_7.width, A7_7.height)
-	A0_0._workspace = L8_8
-	A0_0._level_load_progress_func = A4_4
-	L8_8 = A0_0._workspace
-	L8_8 = L8_8.panel
-	L8_8 = L8_8(L8_8)
-	A0_0._panel = L8_8
-	L8_8 = A0_0._panel
-	L8_8 = L8_8.panel
-	L8_8 = L8_8(L8_8, {
-		name = "safe_panel",
-		valign = "grow",
-		halign = "grow"
-	})
-	A0_0._safe_panel = L8_8
-	L8_8 = A0_0._safe_panel
-	L8_8 = L8_8.set_shape
-	L8_8(L8_8, A5_5.x, A5_5.y, A5_5.w, A5_5.h)
-	L8_8 = ScreenFader
-	L8_8 = L8_8.new
-	L8_8 = L8_8(L8_8, A0_0._panel:panel({layer = 99}), "OverlayVertexColor")
-	A0_0._fader = L8_8
-	L8_8 = LoadingIconPanel
-	L8_8 = L8_8.new
-	L8_8 = L8_8(L8_8, A0_0._safe_panel)
-	A0_0._icon_panel = L8_8
-	L8_8 = loading_screen_tweak_data
-	L8_8 = L8_8.TEXT_INTENSITY
-	A0_0._loading_text = A0_0._safe_panel:text({
-		h = 2 * loading_screen_tweak_data.TEXT_SIZE,
-		color = Color(loading_screen_tweak_data.TEXT_ALPHA, L8_8, L8_8, L8_8),
-		align = "right",
-		vertical = "center",
-		font_size = loading_screen_tweak_data.TEXT_SIZE,
-		layer = 90,
-		font = "faith_font_22",
-		text_id = "loading_loading"
-	})
-	A0_0._loading_text:set_right(A0_0._icon_panel:panel():left() + loading_screen_tweak_data.TEXT_OFFSET_X)
-	A0_0._loading_text:set_center_y(A0_0._icon_panel:panel():center_y() + loading_screen_tweak_data.TEXT_OFFSET_Y)
-	A0_0._loading_text:set_render_template("OverlayVertexColorTextured")
-	A0_0:start()
+if not LoadingScreen then
+	LoadingScreen = class()
 end
-function LoadingScreen.destroy(A0_9)
-	A0_9._resources.head:set_slot(0)
-	A0_9._fader:destroy()
-	A0_9._icon_panel:destroy()
+local l_0_0 = LoadingScreen
+local l_0_1 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_0.textures, l_0_1 = l_0_1, {"faith_font_22"}
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7)
+	l_1_0._resources = l_1_1
+	l_1_0._camera = l_1_2
+	l_1_0._workspace = l_1_3:create_scaled_screen_workspace(l_1_6.width, l_1_6.height, 0, 0, l_1_7.width, l_1_7.height)
+	l_1_0._level_load_progress_func = l_1_4
+	l_1_0._panel = l_1_0._workspace:panel()
+	local l_1_8, l_1_9 = l_1_0._panel:panel, l_1_0._panel
+	local l_1_10 = {}
+	l_1_10.name = "safe_panel"
+	l_1_10.valign = "grow"
+	l_1_10.halign = "grow"
+	l_1_8 = l_1_8(l_1_9, l_1_10)
+	l_1_0._safe_panel = l_1_8
+	l_1_8 = l_1_0._safe_panel
+	l_1_8, l_1_9 = l_1_8:set_shape, l_1_8
+	l_1_10 = l_1_5.x
+	l_1_8(l_1_9, l_1_10, l_1_5.y, l_1_5.w, l_1_5.h)
+	l_1_8 = ScreenFader
+	l_1_8, l_1_9 = l_1_8:new, l_1_8
+	l_1_10 = l_1_0._panel
+	local l_1_11 = l_1_10
+	local l_1_12 = {}
+	l_1_12.layer = 99
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_11 = "OverlayVertexColor"
+	l_1_8 = l_1_8(l_1_9, l_1_10, l_1_11)
+	l_1_0._fader = l_1_8
+	l_1_8 = LoadingIconPanel
+	l_1_8, l_1_9 = l_1_8:new, l_1_8
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_8 = l_1_8(l_1_9, l_1_10)
+	l_1_0._icon_panel = l_1_8
+	l_1_8 = loading_screen_tweak_data
+	l_1_8 = l_1_8.TEXT_INTENSITY
+	l_1_9 = l_1_0._safe_panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_9 = l_1_9:text
+	l_1_12 = loading_screen_tweak_data
+	l_1_12 = l_1_12.TEXT_SIZE
+	l_1_12 = 2 * l_1_12
+	l_1_12 = Color
+	l_1_12 = l_1_12(loading_screen_tweak_data.TEXT_ALPHA, l_1_8, l_1_8, l_1_8)
+	l_1_12 = loading_screen_tweak_data
+	l_1_12 = l_1_12.TEXT_SIZE
+	l_1_9, l_1_11 = l_1_9(l_1_10, l_1_11), {h = l_1_12, color = l_1_12, align = "right", vertical = "center", font_size = l_1_12, layer = 90, font = "faith_font_22", text_id = "loading_loading"}
+	l_1_0._loading_text = l_1_9
+	l_1_9 = l_1_0._loading_text
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_9 = l_1_9:set_right
+	l_1_11 = l_1_0._icon_panel
+	l_1_11, l_1_12 = l_1_11:panel, l_1_11
+	l_1_11 = l_1_11(l_1_12)
+	l_1_11, l_1_12 = l_1_11:left, l_1_11
+	l_1_11 = l_1_11(l_1_12)
+	l_1_12 = loading_screen_tweak_data
+	l_1_12 = l_1_12.TEXT_OFFSET_X
+	l_1_11 = l_1_11 + l_1_12
+	l_1_9(l_1_10, l_1_11)
+	l_1_9 = l_1_0._loading_text
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_9 = l_1_9:set_center_y
+	l_1_11 = l_1_0._icon_panel
+	l_1_11, l_1_12 = l_1_11:panel, l_1_11
+	l_1_11 = l_1_11(l_1_12)
+	l_1_11, l_1_12 = l_1_11:center_y, l_1_11
+	l_1_11 = l_1_11(l_1_12)
+	l_1_12 = loading_screen_tweak_data
+	l_1_12 = l_1_12.TEXT_OFFSET_Y
+	l_1_11 = l_1_11 + l_1_12
+	l_1_9(l_1_10, l_1_11)
+	l_1_9 = l_1_0._loading_text
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_9 = l_1_9:set_render_template
+	l_1_11 = "OverlayVertexColorTextured"
+	l_1_9(l_1_10, l_1_11)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_9 = l_1_0:start
+	l_1_9(l_1_10)
 end
-function LoadingScreen.start(A0_10)
-	A0_10._panel:show()
-	A0_10._fader:set_speed(0.3)
-	A0_10._fader:fade_up()
-	A0_10._icon_panel:show()
+
+l_0_0.init = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_2_0)
+	l_2_0._resources.head:set_slot(0)
+	l_2_0._fader:destroy()
+	l_2_0._icon_panel:destroy()
 end
-function LoadingScreen.update(A0_11, A1_12)
-	A0_11._fader:update(A1_12)
-	A0_11._icon_panel:update(A1_12)
+
+l_0_0.destroy = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_3_0)
+	l_3_0._panel:show()
+	l_3_0._fader:set_speed(0.3)
+	l_3_0._fader:fade_up()
+	l_3_0._icon_panel:show()
 end
-function LoadingScreen.fade_down(A0_13)
-	A0_13._fader:set_speed(0.2)
-	A0_13._fader:fade_down()
+
+l_0_0.start = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_4_0, l_4_1)
+	l_4_0._fader:update(l_4_1)
+	l_4_0._icon_panel:update(l_4_1)
 end
-function LoadingScreen.is_fading_down(A0_14)
-	A0_14._fader:is_fading_down()
+
+l_0_0.update = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_5_0)
+	l_5_0._fader:set_speed(0.2)
+	l_5_0._fader:fade_down()
 end
-function LoadingScreen.fade_down_done(A0_15)
-	return A0_15._fader:fade_down_done()
+
+l_0_0.fade_down = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_6_0)
+	l_6_0._fader:is_fading_down()
 end
+
+l_0_0.is_fading_down = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_7_0)
+	local l_7_1, l_7_2 = l_7_0._fader:fade_down_done, l_7_0._fader
+	return l_7_1(l_7_2)
+end
+
+l_0_0.fade_down_done = l_0_1
+

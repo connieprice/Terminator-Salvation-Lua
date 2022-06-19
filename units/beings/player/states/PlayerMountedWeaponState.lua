@@ -1,73 +1,89 @@
 require("units/beings/player/states/PlayerMovementState")
-PlayerMountedWeaponState = PlayerMountedWeaponState or class(PlayerMovementState)
-function PlayerMountedWeaponState.init(A0_0, A1_1, A2_2)
-	PlayerMovementState.init(A0_0, A1_1, A2_2)
-	A0_0._right_hand_aim = A0_0._machine:get_modifier("ik_right_hand_stationary_weapon")
-	A0_0._left_hand_aim = A0_0._machine:get_modifier("ik_left_hand_stationary_weapon")
-	A0_0._unit:anim_state_machine():play("weapon_pose/idle")
+if not PlayerMountedWeaponState then
+	PlayerMountedWeaponState = class(PlayerMovementState)
 end
-function PlayerMountedWeaponState._setup_ik(A0_3)
-	A0_3._left_hand = A0_3._unit:get_object("a_weapon_left_front")
-	A0_3._left_hand_pos = A0_3._left_hand:local_position()
-	A0_3._left_hand_rot = A0_3._left_hand:local_rotation()
-	A0_3._right_hand = A0_3._unit:get_object("a_weapon_right_back")
-	A0_3._right_hand_pos = A0_3._right_hand:local_position()
-	A0_3._right_hand_rot = A0_3._right_hand:local_rotation()
-	A0_3._right_hand_aim:set_object(A0_3._weapon:get_object("a_weapon_left_right"))
-	A0_3._left_hand_aim:set_object(A0_3._weapon:get_object("a_weapon_left_front"))
+PlayerMountedWeaponState.init = function(l_1_0, l_1_1, l_1_2)
+	PlayerMovementState.init(l_1_0, l_1_1, l_1_2)
+	l_1_0._right_hand_aim = l_1_0._machine:get_modifier("ik_right_hand_stationary_weapon")
+	l_1_0._left_hand_aim = l_1_0._machine:get_modifier("ik_left_hand_stationary_weapon")
+	l_1_0._unit:anim_state_machine():play("weapon_pose/idle")
 end
-function PlayerMountedWeaponState._clear_ik(A0_4)
-	A0_4._left_hand:set_local_position(A0_4._left_hand_pos)
-	A0_4._left_hand:set_local_rotation(A0_4._left_hand_rot)
-	A0_4._right_hand:set_local_position(A0_4._right_hand_pos)
-	A0_4._right_hand:set_local_rotation(A0_4._right_hand_rot)
+
+PlayerMountedWeaponState._setup_ik = function(l_2_0)
+	l_2_0._left_hand = l_2_0._unit:get_object("a_weapon_left_front")
+	l_2_0._left_hand_pos = l_2_0._left_hand:local_position()
+	l_2_0._left_hand_rot = l_2_0._left_hand:local_rotation()
+	l_2_0._right_hand = l_2_0._unit:get_object("a_weapon_right_back")
+	l_2_0._right_hand_pos = l_2_0._right_hand:local_position()
+	l_2_0._right_hand_rot = l_2_0._right_hand:local_rotation()
+	l_2_0._right_hand_aim:set_object(l_2_0._weapon:get_object("a_weapon_left_right"))
+	l_2_0._left_hand_aim:set_object(l_2_0._weapon:get_object("a_weapon_left_front"))
 end
-function PlayerMountedWeaponState._link_player_to_turret(A0_5)
-	A0_5._unit:base():kill_mover()
+
+PlayerMountedWeaponState._clear_ik = function(l_3_0)
+	l_3_0._left_hand:set_local_position(l_3_0._left_hand_pos)
+	l_3_0._left_hand:set_local_rotation(l_3_0._left_hand_rot)
+	l_3_0._right_hand:set_local_position(l_3_0._right_hand_pos)
+	l_3_0._right_hand:set_local_rotation(l_3_0._right_hand_rot)
 end
-function PlayerMountedWeaponState.update(A0_6, A1_7, A2_8)
-	if A0_6._base:check_fully_damaged() then
-		return (A0_6._base:check_fully_damaged())
+
+PlayerMountedWeaponState._link_player_to_turret = function(l_4_0)
+	l_4_0._unit:base():kill_mover()
+end
+
+PlayerMountedWeaponState.update = function(l_5_0, l_5_1, l_5_2)
+	local l_5_3 = l_5_0._base:check_fully_damaged()
+	if l_5_3 then
+		return l_5_3
 	end
-	PlayerMovementState.update(A0_6, A1_7, A2_8)
-	A0_6:_update_aim_parameters(A2_8)
-	A0_6:_update_turret(A1_7, A2_8)
+	PlayerMovementState.update(l_5_0, l_5_1, l_5_2)
+	l_5_0:_update_aim_parameters(l_5_2)
+	l_5_0:_update_turret(l_5_1, l_5_2)
 end
-function PlayerMountedWeaponState.destroy(A0_9)
-	PlayerMovementState.destroy(A0_9)
+
+PlayerMountedWeaponState.destroy = function(l_6_0)
+	PlayerMovementState.destroy(l_6_0)
 end
-function PlayerMountedWeaponState.enter(A0_10)
-	PlayerMovementState.enter(A0_10)
-	A0_10._unit:base():kill_mover()
-	A0_10._unit:set_driving("script")
-	A0_10._unit:play("foley_cover_enter")
+
+PlayerMountedWeaponState.enter = function(l_7_0)
+	PlayerMovementState.enter(l_7_0)
+	l_7_0._unit:base():kill_mover()
+	l_7_0._unit:set_driving("script")
+	l_7_0._unit:play("foley_cover_enter")
 end
-function PlayerMountedWeaponState.leave(A0_11)
-	PlayerMovementState.leave(A0_11)
-	A0_11:_clear_ik()
-	if alive(A0_11._weapon) then
-		A0_11._weapon:weapon_data().fire_input = 0
-		A0_11._weapon = nil
+
+PlayerMountedWeaponState.leave = function(l_8_0)
+	PlayerMovementState.leave(l_8_0)
+	l_8_0:_clear_ik()
+	if alive(l_8_0._weapon) then
+		l_8_0._weapon:weapon_data().fire_input = 0
+		l_8_0._weapon = nil
 	end
-	A0_11._unit:set_driving("animation")
-	A0_11._unit:base():unequip_forced_weapon()
-	A0_11._unit:play("foley_cover_exit")
+	l_8_0._unit:set_driving("animation")
+	l_8_0._unit:base():unequip_forced_weapon()
+	l_8_0._unit:play("foley_cover_exit")
 end
-function PlayerMountedWeaponState.let_go_off_weapon(A0_12)
-	local L1_13
-	A0_12._dont_update_turret_weapon = true
+
+PlayerMountedWeaponState.let_go_off_weapon = function(l_9_0)
+	l_9_0._dont_update_turret_weapon = true
 end
-function PlayerMountedWeaponState.set_weapon(A0_14, A1_15)
-	A0_14._weapon = A1_15
-	A0_14:_setup_ik()
-	A0_14._unit:base():force_equip_weapon(A1_15)
-	A0_14:_link_player_to_turret()
+
+PlayerMountedWeaponState.set_weapon = function(l_10_0, l_10_1)
+	l_10_0._weapon = l_10_1
+	l_10_0:_setup_ik()
+	l_10_0._unit:base():force_equip_weapon(l_10_1)
+	l_10_0:_link_player_to_turret()
 end
-function PlayerMountedWeaponState._update_turret(A0_16, A1_17, A2_18)
-	if not A0_16._dont_update_turret_weapon then
-		A0_16._weapon:turret():set_aim_vec(A0_16._unit:get_object("aim"):rotation():y())
+
+PlayerMountedWeaponState._update_turret = function(l_11_0, l_11_1, l_11_2)
+	if not l_11_0._dont_update_turret_weapon then
+		l_11_0._weapon:turret():set_aim_vec(l_11_0._unit:get_object("aim"):rotation():y())
 	end
 end
-function PlayerMountedWeaponState._get_aim_constraints(A0_19, A1_20)
-	return A0_19._weapon:turret().pitch_neg_angle, A0_19._weapon:turret().pitch_pos_angle, A0_19._weapon:turret().yaw_pos_angle, A0_19._weapon:turret().yaw_neg_angle
+
+PlayerMountedWeaponState._get_aim_constraints = function(l_12_0, l_12_1)
+	local l_12_2 = l_12_0._weapon:turret()
+	return l_12_2.pitch_neg_angle, l_12_2.pitch_pos_angle, l_12_2.yaw_pos_angle, l_12_2.yaw_neg_angle
 end
+
+

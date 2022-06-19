@@ -1,203 +1,180 @@
 require("units/beings/player/new_gui/HudPanel")
-StickDirectionPanel = StickDirectionPanel or class(HudPanel)
-function StickDirectionPanel.init(A0_0, A1_1, A2_2)
-	HudPanel.init(A0_0, false)
-	A0_0._parent_panel = A1_1
-	A0_0._player_unit = A2_2
-	A0_0._player_data = A2_2:player_data()
-	A0_0._width = A0_0._parent_panel:width()
-	A0_0._height = A0_0._parent_panel:height()
-	A0_0._center_x = A0_0._parent_panel:width() / 2
-	A0_0._center_y = A0_0._parent_panel:height() / 2
-	A0_0._radius = 0
-	A0_0._current_angle = 0
-	A0_0._panel = A0_0._parent_panel:panel({
-		name = "stick_direction_panel",
-		width = A0_0._width,
-		height = A0_0._height,
-		valign = "center",
-		halign = "center"
-	})
-	A0_0._stick_dot_texture = A0_0._panel:bitmap({
-		name = "gui_hud_selection_dot",
-		texture = "gui_hud_selection_dot"
-	})
-	A0_0._alpha_interpolator = Interpolator:new(0, tweak_data.player.new_hud.stick_direction_panel.FADE_IN_SPEED)
-	A0_0._alpha_interpolator:set_target(0)
-	A0_0._angle_interpolator = Interpolator:new(0, tweak_data.player.new_hud.stick_direction_panel.ANGULAR_SPEED)
-	A0_0._angle_interpolator:set_target(0)
-	A0_0._radius_interpolator = Interpolator:new(0, tweak_data.player.new_hud.stick_direction_panel.RADIUS_SPEED)
-	A0_0._radius_interpolator:set_target(0)
-	A0_0:set_alpha(0)
+if not StickDirectionPanel then
+	StickDirectionPanel = class(HudPanel)
 end
-function StickDirectionPanel.panel(A0_3)
-	local L1_4
-	L1_4 = A0_3._panel
-	return L1_4
+StickDirectionPanel.init = function(l_1_0, l_1_1, l_1_2)
+	HudPanel.init(l_1_0, false)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._player_unit = l_1_2
+	l_1_0._player_data = l_1_2:player_data()
+	l_1_0._width = l_1_0._parent_panel:width()
+	l_1_0._height = l_1_0._parent_panel:height()
+	l_1_0._center_x = l_1_0._parent_panel:width() / 2
+	l_1_0._center_y = l_1_0._parent_panel:height() / 2
+	l_1_0._radius = 0
+	l_1_0._current_angle = 0
+	local l_1_3, l_1_4 = l_1_0._parent_panel:panel, l_1_0._parent_panel
+	local l_1_5 = {}
+	l_1_5.name = "stick_direction_panel"
+	l_1_5.width = l_1_0._width
+	l_1_5.height = l_1_0._height
+	l_1_5.valign = "center"
+	l_1_5.halign = "center"
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_0._panel = l_1_3
+	l_1_3 = l_1_0._panel
+	l_1_3, l_1_4 = l_1_3:bitmap, l_1_3
+	l_1_3, l_1_5 = l_1_3(l_1_4, l_1_5), {name = "gui_hud_selection_dot", texture = "gui_hud_selection_dot"}
+	l_1_0._stick_dot_texture = l_1_3
+	l_1_3 = Interpolator
+	l_1_3, l_1_4 = l_1_3:new, l_1_3
+	l_1_5 = 0
+	l_1_3 = l_1_3(l_1_4, l_1_5, tweak_data.player.new_hud.stick_direction_panel.FADE_IN_SPEED)
+	l_1_0._alpha_interpolator = l_1_3
+	l_1_3 = l_1_0._alpha_interpolator
+	l_1_3, l_1_4 = l_1_3:set_target, l_1_3
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = Interpolator
+	l_1_3, l_1_4 = l_1_3:new, l_1_3
+	l_1_5 = 0
+	l_1_3 = l_1_3(l_1_4, l_1_5, tweak_data.player.new_hud.stick_direction_panel.ANGULAR_SPEED)
+	l_1_0._angle_interpolator = l_1_3
+	l_1_3 = l_1_0._angle_interpolator
+	l_1_3, l_1_4 = l_1_3:set_target, l_1_3
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = Interpolator
+	l_1_3, l_1_4 = l_1_3:new, l_1_3
+	l_1_5 = 0
+	l_1_3 = l_1_3(l_1_4, l_1_5, tweak_data.player.new_hud.stick_direction_panel.RADIUS_SPEED)
+	l_1_0._radius_interpolator = l_1_3
+	l_1_3 = l_1_0._radius_interpolator
+	l_1_3, l_1_4 = l_1_3:set_target, l_1_3
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
+	l_1_3, l_1_4 = l_1_0:set_alpha, l_1_0
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
 end
-function StickDirectionPanel.set_angle(A0_5, A1_6)
-	local L2_7, L3_8, L4_9
-	L3_8 = tweak_data
-	L3_8 = L3_8.player
-	L3_8 = L3_8.new_hud
-	L3_8 = L3_8.stick_direction_panel
-	L3_8 = L3_8.USE_RADIUS_MOVEMENT
-	if L3_8 then
-		L2_7 = A0_5._radius
+
+StickDirectionPanel.panel = function(l_2_0)
+	return l_2_0._panel
+end
+
+StickDirectionPanel.set_angle = function(l_3_0, l_3_1)
+	local l_3_2 = nil
+	if tweak_data.player.new_hud.stick_direction_panel.USE_RADIUS_MOVEMENT then
+		l_3_2 = l_3_0._radius
 	else
-		L3_8 = tweak_data
-		L3_8 = L3_8.player
-		L3_8 = L3_8.new_hud
-		L3_8 = L3_8.stick_direction_panel
-		L2_7 = L3_8.RADIUS
+		l_3_2 = tweak_data.player.new_hud.stick_direction_panel.RADIUS
 	end
-	L3_8 = A0_5._center_x
-	L4_9 = math
-	L4_9 = L4_9.cos
-	L4_9 = L4_9(A1_6 - 90)
-	L4_9 = L2_7 * L4_9
-	L3_8 = L3_8 + L4_9
-	L4_9 = A0_5._center_y
-	L4_9 = L4_9 + L2_7 * math.sin(A1_6 - 90)
-	A0_5._current_angle = A1_6
-	A0_5._stick_dot_texture:set_rotation(A1_6)
-	A0_5._stick_dot_texture:set_center(L3_8, L4_9)
+	local l_3_3 = l_3_0._center_x + l_3_2 * math.cos(l_3_1 - 90)
+	l_3_0._stick_dot_texture:set_rotation(l_3_1)
+	l_3_0._stick_dot_texture:set_center(l_3_3, l_3_0._center_y + l_3_2 * math.sin(l_3_1 - 90))
 end
-function StickDirectionPanel.update_angle(A0_10)
-	A0_10:set_angle(A0_10._current_angle)
+
+StickDirectionPanel.update_angle = function(l_4_0)
+	l_4_0:set_angle(l_4_0._current_angle)
 end
-function StickDirectionPanel.set_radius(A0_11, A1_12)
-	A0_11._radius = A1_12
+
+StickDirectionPanel.set_radius = function(l_5_0, l_5_1)
+	l_5_0._radius = l_5_1
 end
-function StickDirectionPanel.show(A0_13)
-	A0_13._wants_to_hide = false
-	A0_13._alpha_interpolator:set_target(1)
-	A0_13._alpha_interpolator:set_speed(tweak_data.player.new_hud.stick_direction_panel.FADE_IN_SPEED)
-	if A0_13._alpha_interpolator:value() == 0 then
-		A0_13._radius = 0
+
+StickDirectionPanel.show = function(l_6_0)
+	l_6_0._wants_to_hide = false
+	l_6_0._alpha_interpolator:set_target(1)
+	l_6_0._alpha_interpolator:set_speed(tweak_data.player.new_hud.stick_direction_panel.FADE_IN_SPEED)
+	if l_6_0._alpha_interpolator:value() == 0 then
+		l_6_0._radius = 0
 	end
 end
-function StickDirectionPanel.hide(A0_14)
-	A0_14._wants_to_hide = true
-	A0_14._alpha_interpolator:set_target(0)
-	A0_14._alpha_interpolator:set_speed(tweak_data.player.new_hud.stick_direction_panel.FADE_OUT_SPEED)
+
+StickDirectionPanel.hide = function(l_7_0)
+	l_7_0._wants_to_hide = true
+	l_7_0._alpha_interpolator:set_target(0)
+	l_7_0._alpha_interpolator:set_speed(tweak_data.player.new_hud.stick_direction_panel.FADE_OUT_SPEED)
 end
-function StickDirectionPanel.visible(A0_15)
-	return A0_15._alpha > 0
+
+StickDirectionPanel.visible = function(l_8_0)
+	return l_8_0._alpha > 0
 end
-function StickDirectionPanel.get_alpha(A0_16)
-	local L1_17
-	L1_17 = A0_16._alpha
-	return L1_17
+
+StickDirectionPanel.get_alpha = function(l_9_0)
+	return l_9_0._alpha
 end
-function StickDirectionPanel.set_alpha(A0_18, A1_19)
-	HudPanel.set_alpha(A0_18, A1_19)
-	A0_18._stick_dot_texture:set_color(A0_18._stick_dot_texture:color():with_alpha(A0_18._alpha))
+
+StickDirectionPanel.set_alpha = function(l_10_0, l_10_1)
+	HudPanel.set_alpha(l_10_0, l_10_1)
+	l_10_0._stick_dot_texture:set_color(l_10_0._stick_dot_texture:color():with_alpha(l_10_0._alpha))
 end
-function StickDirectionPanel.update(A0_20, A1_21, A2_22, A3_23)
-	local L4_24, L5_25, L6_26, L7_27
-	L4_24 = A3_23
-	L5_25 = A2_22
-	if L5_25 and L5_25 >= 0 then
-		L6_26 = A0_20._init_angle
-		if not L6_26 then
-			A0_20._init_angle = L5_25
-			L6_26 = A0_20._angle_interpolator
-			L7_27 = L6_26
-			L6_26 = L6_26.set_value
-			L6_26(L7_27, L5_25)
+
+StickDirectionPanel.update = function(l_11_0, l_11_1, l_11_2, l_11_3)
+	local l_11_4 = l_11_3
+	local l_11_5 = l_11_2
+	if l_11_5 and l_11_5 >= 0 then
+		if not l_11_0._init_angle then
+			l_11_0._init_angle = l_11_5
+			l_11_0._angle_interpolator:set_value(l_11_5)
 		end
-		L6_26 = A0_20._angle_interpolator
-		L7_27 = L6_26
-		L6_26 = L6_26.value
-		L6_26 = L6_26(L7_27)
-		if L6_26 > 360 then
-			L6_26 = L6_26 - 360
-			L7_27 = A0_20._angle_interpolator
-			L7_27 = L7_27.set_value
-			L7_27(L7_27, L6_26)
+		if l_11_0._angle_interpolator:value() > 360 then
+			local l_11_6, l_11_7 = l_11_0._angle_interpolator:value() - 360
+			l_11_7 = l_11_0._angle_interpolator
+			l_11_7(l_11_7, l_11_6)
 		end
-		if L6_26 < 0 then
-			L6_26 = L6_26 + 360
-			L7_27 = A0_20._angle_interpolator
-			L7_27 = L7_27.set_value
-			L7_27(L7_27, L6_26)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_11_6 < 0 then
+			local l_11_8, l_11_9, l_11_10 = l_11_6 + 360, l_11_7
+			l_11_9 = l_11_0._angle_interpolator
+			l_11_9, l_11_10 = l_11_9:set_value, l_11_9
+			l_11_9(l_11_10, l_11_8)
 		end
-		L7_27 = L6_26 - L5_25
-		if L7_27 > 240 then
-			L5_25 = L5_25 + 360
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		local l_11_11 = nil
+		if l_11_8 - l_11_5 > 240 then
+			l_11_5 = l_11_5 + 360
 		end
-		if L7_27 < -240 then
-			L5_25 = L5_25 - 360
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_11_8 - l_11_5 < -240 then
+			l_11_5 = l_11_5 - 360
 		end
-		A0_20._angle_interpolator:set_target(L5_25)
+		l_11_0._angle_interpolator:set_target(l_11_5)
 	end
-	L6_26 = A0_20._angle_interpolator
-	L7_27 = L6_26
-	L6_26 = L6_26.update
-	L6_26(L7_27, A1_21)
-	L6_26 = A0_20._angle_interpolator
-	L7_27 = L6_26
-	L6_26 = L6_26.value
-	L6_26 = L6_26(L7_27)
-	L5_25 = L6_26
-	L7_27 = A0_20
-	L6_26 = A0_20.set_angle
-	L6_26(L7_27, L5_25)
-	if L4_24 == 0 then
-		A0_20._init_angle = nil
+	l_11_0._angle_interpolator:update(l_11_1)
+	l_11_5 = l_11_0._angle_interpolator:value()
+	l_11_0:set_angle(l_11_5)
+	if l_11_4 == 0 then
+		l_11_0._init_angle = nil
 	end
-	if L4_24 then
-		L6_26 = A0_20._wants_to_hide
-		if not L6_26 then
-			L6_26 = A0_20._radius_interpolator
-			L7_27 = L6_26
-			L6_26 = L6_26.set_target
-			L6_26(L7_27, L4_24 * tweak_data.player.new_hud.stick_direction_panel.RADIUS)
+	if l_11_4 and not l_11_0._wants_to_hide then
+		l_11_0._radius_interpolator:set_target(l_11_4 * tweak_data.player.new_hud.stick_direction_panel.RADIUS)
+	end
+	l_11_0._radius_interpolator:update(l_11_1)
+	local l_11_12 = l_11_0._radius_interpolator:value()
+	l_11_0:set_radius(l_11_12)
+	if not tweak_data.player.new_hud.stick_direction_panel.USE_RADIUS_MOVEMENT then
+		if l_11_12 > 0.98 then
+			l_11_0._alpha_interpolator:set_target(1)
+			l_11_0._alpha_interpolator:set_speed(tweak_data.player.new_hud.stick_direction_panel.FADE_IN_SPEED)
 		end
+	else
+		l_11_0._alpha_interpolator:set_target(0)
+		l_11_0._alpha_interpolator:set_speed(tweak_data.player.new_hud.stick_direction_panel.FADE_OUT_SPEED)
 	end
-	L6_26 = A0_20._radius_interpolator
-	L7_27 = L6_26
-	L6_26 = L6_26.update
-	L6_26(L7_27, A1_21)
-	L6_26 = A0_20._radius_interpolator
-	L7_27 = L6_26
-	L6_26 = L6_26.value
-	L6_26 = L6_26(L7_27)
-	L7_27 = A0_20.set_radius
-	L7_27(A0_20, L6_26)
-	L7_27 = tweak_data
-	L7_27 = L7_27.player
-	L7_27 = L7_27.new_hud
-	L7_27 = L7_27.stick_direction_panel
-	L7_27 = L7_27.USE_RADIUS_MOVEMENT
-	if not L7_27 then
-		if L6_26 > 0.98 then
-			L7_27 = A0_20._alpha_interpolator
-			L7_27 = L7_27.set_target
-			L7_27(L7_27, 1)
-			L7_27 = A0_20._alpha_interpolator
-			L7_27 = L7_27.set_speed
-			L7_27(L7_27, tweak_data.player.new_hud.stick_direction_panel.FADE_IN_SPEED)
-		else
-			L7_27 = A0_20._alpha_interpolator
-			L7_27 = L7_27.set_target
-			L7_27(L7_27, 0)
-			L7_27 = A0_20._alpha_interpolator
-			L7_27 = L7_27.set_speed
-			L7_27(L7_27, tweak_data.player.new_hud.stick_direction_panel.FADE_OUT_SPEED)
-		end
+	l_11_0._alpha_interpolator:update(l_11_1)
+	local l_11_13 = l_11_0._alpha_interpolator:value()
+	if l_11_0._alpha_interpolator:target() == 0 and l_11_0._alpha_interpolator:has_reached_target() then
+		l_11_0._radius_interpolator:set_target(0)
+		l_11_0._radius_interpolator:set_value(0)
+		l_11_0._init_angle = nil
 	end
-	L7_27 = A0_20._alpha_interpolator
-	L7_27 = L7_27.update
-	L7_27(L7_27, A1_21)
-	L7_27 = A0_20._alpha_interpolator
-	L7_27 = L7_27.value
-	L7_27 = L7_27(L7_27)
-	if A0_20._alpha_interpolator:target() == 0 and A0_20._alpha_interpolator:has_reached_target() then
-		A0_20._radius_interpolator:set_target(0)
-		A0_20._radius_interpolator:set_value(0)
-		A0_20._init_angle = nil
-	end
-	A0_20:set_alpha(L7_27)
+	l_11_0:set_alpha(l_11_13)
 end
+
+

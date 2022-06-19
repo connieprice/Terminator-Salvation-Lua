@@ -1,81 +1,46 @@
 require("managers/actionmanagers/AiUnitSpawn")
-AMPlayerTankStart = AMPlayerTankStart or class(AiUnitSpawn)
-function AMPlayerTankStart.init(A0_0, A1_1, A2_2, A3_3, A4_4)
-	AiUnitSpawn.init(A0_0, A1_1, A2_2, A3_3)
-	A4_4 = A4_4 or "player_tank"
-	A0_0:setup(A4_4)
-	A0_0._is_persistent = true
+if not AMPlayerTankStart then
+	AMPlayerTankStart = class(AiUnitSpawn)
 end
-function AMPlayerTankStart._spawn(A0_5)
-	local L1_6, L2_7, L3_8, L4_9
-	L1_6 = A0_5._player_slot
-	if not L1_6 then
-		A0_5._player_slot = 1
+AMPlayerTankStart.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4)
+	AiUnitSpawn.init(l_1_0, l_1_1, l_1_2, l_1_3)
+	if not l_1_4 then
+		l_1_4 = "player_tank"
 	end
-	L1_6 = nil
-	L2_7 = A0_5._is_persistent
-	if L2_7 then
-		L2_7 = managers
-		L2_7 = L2_7.drama_scene
-		L3_8 = L2_7
-		L2_7 = L2_7.unit_name_to_script_name
-		L4_9 = A0_5._spawn_unit_name
-		L2_7 = L2_7(L3_8, L4_9)
-		if L2_7 then
-			L3_8 = managers
-			L3_8 = L3_8.unit_scripting
-			L4_9 = L3_8
-			L3_8 = L3_8.get_unit_by_name
-			L3_8 = L3_8(L4_9, L2_7)
-			L1_6 = L3_8
+	l_1_0:setup(l_1_4)
+	l_1_0._is_persistent = true
+end
+
+AMPlayerTankStart._spawn = function(l_2_0)
+	if not l_2_0._player_slot then
+		l_2_0._player_slot = 1
+	end
+	local l_2_1 = nil
+	if l_2_0._is_persistent then
+		local l_2_2 = managers.drama_scene:unit_name_to_script_name(l_2_0._spawn_unit_name)
+		if l_2_2 then
+			l_2_1 = managers.unit_scripting:get_unit_by_name(l_2_2)
 		end
 	else
-		L2_7 = managers
-		L2_7 = L2_7.unit_scripting
-		L3_8 = L2_7
-		L2_7 = L2_7.get_unit_by_name
-		L4_9 = A0_5._name
-		L2_7 = L2_7(L3_8, L4_9)
-		L1_6 = L2_7
+		l_2_1 = managers.unit_scripting:get_unit_by_name(l_2_0._name)
 	end
-	L2_7, L3_8 = nil, nil
-	L4_9 = UnitSpawnUtility
-	L4_9 = L4_9.spawn_position
-	L3_8, L4_9 = A0_5.waypoint_paths, L4_9(A0_5.waypoint_paths, A0_5.position, A0_5.rotation)
-	L2_7 = L4_9
-	L4_9 = alive
-	L4_9 = L4_9(L1_6)
-	if L4_9 then
-		L4_9 = managers
-		L4_9 = L4_9.unit_scripting
-		L4_9 = L4_9.unit_script_name
-		L4_9 = L4_9(L4_9, L1_6)
-		managers.unit_scripting:register_new_unit_name(L4_9, A0_5._name, L1_6)
-		managers.drama_scene:set_unit_name_to_script_name(A0_5._spawn_unit_name, A0_5._name)
-		A0_5:deactivate_now()
-		return
+	local l_2_3, l_2_4 = nil, nil
+	l_2_3 = UnitSpawnUtility.spawn_position(l_2_0.waypoint_paths, l_2_0.position, l_2_0.rotation)
+	if alive(l_2_1) then
+		local l_2_5 = managers.unit_scripting:unit_script_name(l_2_1)
+		managers.unit_scripting:register_new_unit_name(l_2_5, l_2_0._name, l_2_1)
+		managers.drama_scene:set_unit_name_to_script_name(l_2_0._spawn_unit_name, l_2_0._name)
+		l_2_0:deactivate_now()
+		return 
 	end
-	L4_9 = World
-	L4_9 = L4_9.spawn_unit
-	L4_9 = L4_9(L4_9, A0_5._spawn_unit_name, L2_7, L3_8)
-	L1_6 = L4_9
-	L4_9 = A0_5._player_slot
-	if L4_9 then
-		L4_9 = assert
-		L4_9(not managers.player_slot:slot(A0_5._player_slot):spawned_unit())
-		L4_9 = managers
-		L4_9 = L4_9.player_slot
-		L4_9 = L4_9.set_unit
-		L4_9(L4_9, A0_5._player_slot, L1_6, L1_6:name(), L2_7, L3_8, false, true)
+	l_2_1 = World:spawn_unit(l_2_0._spawn_unit_name, l_2_3, l_2_4)
+	if l_2_0._player_slot then
+		assert(not managers.player_slot:slot(l_2_0._player_slot):spawned_unit())
+		managers.player_slot:set_unit(l_2_0._player_slot, l_2_1, l_2_1:name(), l_2_3, l_2_4, false, true)
 	end
-	L4_9 = managers
-	L4_9 = L4_9.unit_scripting
-	L4_9 = L4_9.register_unit
-	L4_9(L4_9, A0_5._name, L1_6)
-	L4_9 = managers
-	L4_9 = L4_9.drama_scene
-	L4_9 = L4_9.set_unit_name_to_script_name
-	L4_9(L4_9, A0_5._spawn_unit_name, A0_5._name)
-	L4_9 = A0_5.deactivate_now
-	L4_9(A0_5)
+	managers.unit_scripting:register_unit(l_2_0._name, l_2_1)
+	managers.drama_scene:set_unit_name_to_script_name(l_2_0._spawn_unit_name, l_2_0._name)
+	l_2_0:deactivate_now()
 end
+
+

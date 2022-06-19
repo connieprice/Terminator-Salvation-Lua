@@ -1,72 +1,73 @@
-local L0_0
-L0_0 = require
-L0_0("units/beings/machines/effects/MachineSound")
-L0_0 = require
-L0_0("TweakData")
-L0_0 = FlyerSound
-if not L0_0 then
-	L0_0 = class
-	L0_0 = L0_0(MachineSound)
+require("units/beings/machines/effects/MachineSound")
+require("TweakData")
+if not FlyerSound then
+	FlyerSound = class(MachineSound)
 end
-FlyerSound = L0_0
-L0_0 = "flyer_engine"
-function FlyerSound.init(A0_1, A1_2)
-	A0_1._unit = A1_2
-	managers.action_event:register_listener(A0_1, A1_2, A1_2)
-	A0_1._detect_sound = A0_1:_get_sound("flyer_detect")
-	A0_1._stun_sound = A0_1:_get_sound("flyer_stun")
-	A0_1._disabled_sound = A0_1:_get_sound("flyer_disabled")
-	A0_1._hurt_sound = A0_1:_get_sound("flyer_voice_hurt")
-	A0_1._chassi_body = A1_2:body("default_body")
-	A0_1:_setup_and_play_engine_sound()
+local l_0_0 = "flyer_engine"
+local l_0_1 = "t"
+local l_0_2 = 0.1
+FlyerSound.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	managers.action_event:register_listener(l_1_0, l_1_1, l_1_1)
+	l_1_0._detect_sound = l_1_0:_get_sound("flyer_detect")
+	l_1_0._stun_sound = l_1_0:_get_sound("flyer_stun")
+	l_1_0._disabled_sound = l_1_0:_get_sound("flyer_disabled")
+	l_1_0._hurt_sound = l_1_0:_get_sound("flyer_voice_hurt")
+	l_1_0._chassi_body = l_1_1:body("default_body")
+	l_1_0:_setup_and_play_engine_sound()
 end
-function FlyerSound.destroy(A0_3, A1_4)
-	managers.action_event:unregister_listener(A0_3)
-	if A0_3._engine_sound then
-		A0_3._engine_sound:stop()
+
+FlyerSound.destroy = function(l_2_0, l_2_1)
+	managers.action_event:unregister_listener(l_2_0)
+	local l_2_2 = l_2_0._engine_sound
+	if l_2_2 then
+		l_2_2:stop()
 	end
 end
-function FlyerSound._setup_and_play_engine_sound(A0_5)
-	Sound:make_bank(A0_5._soundbank_name, _UPVALUE0_):play()
-	Sound:make_bank(A0_5._soundbank_name, _UPVALUE0_):set_output(A0_5._unit:get_object(A0_5._sound_output_object_name))
-	Sound:make_bank(A0_5._soundbank_name, _UPVALUE0_):set_control(_UPVALUE1_, 0)
-	A0_5._engine_sound = Sound:make_bank(A0_5._soundbank_name, _UPVALUE0_)
+
+FlyerSound._setup_and_play_engine_sound = function(l_3_0)
+	-- upvalues: l_0_0 , l_0_1
+	local l_3_1 = Sound:make_bank(l_3_0._soundbank_name, l_0_0)
+	l_3_1:play()
+	l_3_1:set_output(l_3_0._unit:get_object(l_3_0._sound_output_object_name))
+	l_3_1:set_control(l_0_1, 0)
+	l_3_0._engine_sound = l_3_1
 end
-function FlyerSound.unit_dead(A0_6)
-	local L1_7
-	L1_7 = A0_6._disabled_sound_instance
-	if alive(L1_7) then
-		L1_7:stop()
+
+FlyerSound.unit_dead = function(l_4_0)
+	local l_4_1 = l_4_0._disabled_sound_instance
+	if alive(l_4_1) then
+		l_4_1:stop()
 	end
 end
-function FlyerSound.unit_fully_damaged(A0_8)
-	local L1_9
-	L1_9 = A0_8._engine_sound
-	if L1_9 then
-		L1_9:stop()
+
+FlyerSound.unit_fully_damaged = function(l_5_0)
+	local l_5_1 = l_5_0._engine_sound
+	if l_5_1 then
+		l_5_1:stop()
 	end
-	A0_8._disabled_sound_instance = A0_8._disabled_sound:play()
+	l_5_0._disabled_sound_instance = l_5_0._disabled_sound:play()
 end
-function FlyerSound.unit_detected_threat(A0_10)
-	A0_10._detect_sound:play()
+
+FlyerSound.unit_detected_threat = function(l_6_0)
+	l_6_0._detect_sound:play()
 end
-function FlyerSound.unit_stun_enter(A0_11)
-	A0_11._stun_sound:play()
+
+FlyerSound.unit_stun_enter = function(l_7_0)
+	l_7_0._stun_sound:play()
 end
-function FlyerSound.unit_hurt(A0_12)
-	A0_12._hurt_sound:play()
+
+FlyerSound.unit_hurt = function(l_8_0)
+	l_8_0._hurt_sound:play()
 end
-function FlyerSound.update_engine_sound(A0_13, A1_14)
-	local L2_15, L3_16, L4_17
-	L2_15 = math
-	L2_15 = L2_15.min
-	L3_16 = 1
-	L4_17 = _UPVALUE0_
-	L4_17 = L4_17.STRAFE_SPEED_MAX
-	L4_17 = A1_14 / L4_17
-	L2_15 = L2_15(L3_16, L4_17)
-	L3_16 = A0_13._engine_sound
-	L4_17 = L3_16.get_control
-	L4_17 = L4_17(L3_16, _UPVALUE1_)
-	L3_16:set_control_ramp(_UPVALUE1_, L4_17, L2_15, _UPVALUE2_)
+
+local l_0_3 = tweak_data.ai.machines.flyer
+FlyerSound.update_engine_sound = function(l_9_0, l_9_1)
+	-- upvalues: l_0_3 , l_0_1 , l_0_2
+	local l_9_2 = math.min(1, l_9_1 / l_0_3.STRAFE_SPEED_MAX)
+	local l_9_3 = l_9_0._engine_sound
+	local l_9_4 = l_9_3:get_control(l_0_1)
+	l_9_3:set_control_ramp(l_0_1, l_9_4, l_9_2, l_0_2)
 end
+
+

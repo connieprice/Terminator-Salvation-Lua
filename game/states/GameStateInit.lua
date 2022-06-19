@@ -1,9 +1,11 @@
-GameStateInit = GameStateInit or class(FiniteStateMachineState)
-function GameStateInit.init(A0_0)
-	local L1_1
+if not GameStateInit then
+	GameStateInit = class(FiniteStateMachineState)
 end
-function GameStateInit.transition(A0_2)
-	local L1_3
-	L1_3 = GameStatePreFrontend
-	return L1_3
+GameStateInit.init = function(l_1_0)
 end
+
+GameStateInit.transition = function(l_2_0)
+	return GameStatePreFrontend
+end
+
+

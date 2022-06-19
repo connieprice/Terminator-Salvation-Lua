@@ -1,5 +1,9 @@
 require("managers/actionmanagers/AMWeaponPickup")
-AMMagneticChargePickup = AMMagneticChargePickup or class(AMWeaponPickup)
-function AMMagneticChargePickup.init(A0_0, A1_1, A2_2)
-	AMWeaponPickup.init(A0_0, A1_1, A2_2, "charge_magnetic")
+if not AMMagneticChargePickup then
+	AMMagneticChargePickup = class(AMWeaponPickup)
 end
+AMMagneticChargePickup.init = function(l_1_0, l_1_1, l_1_2)
+	AMWeaponPickup.init(l_1_0, l_1_1, l_1_2, "charge_magnetic")
+end
+
+

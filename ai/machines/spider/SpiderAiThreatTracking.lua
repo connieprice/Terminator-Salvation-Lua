@@ -1,29 +1,35 @@
 require("ai/common/CommonAiThreatTracking")
-SpiderAiThreatTracking = SpiderAiThreatTracking or class(CommonAiThreatTracking)
-function SpiderAiThreatTracking.init_data(A0_0, A1_1)
-	CommonAiThreatTracking.init_data(A0_0, A1_1)
-	A1_1._threat_tracking._update_index = 1
+if not SpiderAiThreatTracking then
+	SpiderAiThreatTracking = class(CommonAiThreatTracking)
 end
-function SpiderAiThreatTracking.logic_spider_threat_tracking_main(A0_2, A1_3, A2_4, A3_5, A4_6, A5_7, A6_8, A7_9)
-	if A2_4:ai_data()._threat_tracking._update_index == 3 then
-		CommonAiThreatTracking:logic_common_threat_tracking_main(A1_3, A2_4, A3_5, A4_6, A5_7, A6_8, A7_9)
-		A2_4:ai_data()._threat_tracking._update_index = 1
-	else
-		if true then
-			A0_2:_minimal_threat_tracking(A1_3, A2_4)
-		end
-		A2_4:ai_data()._threat_tracking._update_index = A2_4:ai_data()._threat_tracking._update_index + 1
+SpiderAiThreatTracking.init_data = function(l_1_0, l_1_1)
+	CommonAiThreatTracking.init_data(l_1_0, l_1_1)
+	l_1_1._threat_tracking._update_index = 1
+end
+
+SpiderAiThreatTracking.logic_spider_threat_tracking_main = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	local l_2_8 = 3
+	local l_2_9 = l_2_2:ai_data()
+	local l_2_10 = false
+	if l_2_9.current_unit_eyes == l_2_9.UNIT_EYES.PATROL then
+		l_2_10 = true
 	end
+	if l_2_9._threat_tracking._update_index == l_2_8 then
+		CommonAiThreatTracking:logic_common_threat_tracking_main(l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+		l_2_9._threat_tracking._update_index = 1
+	elseif l_2_10 then
+		l_2_0:_minimal_threat_tracking(l_2_1, l_2_2)
+	end
+	l_2_9._threat_tracking._update_index = l_2_9._threat_tracking._update_index + 1
 end
-function SpiderAiThreatTracking._minimal_threat_tracking(A0_10, A1_11, A2_12)
-	local L3_13, L4_14, L5_15
-	L4_14 = A2_12
-	L3_13 = A2_12.ai_data
-	L3_13 = L3_13(L4_14)
-	L4_14 = L3_13._threat_tracking
-	L5_15 = A0_10._find_targets
-	L5_15 = L5_15(A0_10, A2_12, L3_13)
-	A0_10:_process_damages(A1_11, L4_14, L3_13.input.buffered_damages, A2_12)
-	A0_10:_scan_for_targets(A2_12, L3_13, L4_14._threats, L5_15, A1_11)
-	A0_10:_update_threats(L4_14._threats, A1_11)
+
+SpiderAiThreatTracking._minimal_threat_tracking = function(l_3_0, l_3_1, l_3_2)
+	local l_3_3 = l_3_2:ai_data()
+	local l_3_4 = l_3_3._threat_tracking
+	local l_3_5 = l_3_0:_find_targets(l_3_2, l_3_3)
+	l_3_0:_process_damages(l_3_1, l_3_4, l_3_3.input.buffered_damages, l_3_2)
+	l_3_0:_scan_for_targets(l_3_2, l_3_3, l_3_4._threats, l_3_5, l_3_1)
+	l_3_0:_update_threats(l_3_4._threats, l_3_1)
 end
+
+

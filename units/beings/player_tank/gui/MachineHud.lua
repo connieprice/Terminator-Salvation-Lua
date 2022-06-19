@@ -14,16 +14,19 @@ require("units/beings/player_tank/gui/MachineTutorialPanel")
 require("units/beings/player_tank/gui/OutlineHandler")
 require("units/beings/player/new_gui/HudUtility")
 require("units/beings/player/new_gui/HealthPanel")
-MachineHud = MachineHud or class()
-function MachineHud.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._player_data = A0_0._unit:player_data()
-	A0_0:_preload_textures()
-	managers.action_event:register_listener(A0_0, A1_1, A1_1)
-	A0_0._startup_sound = nil
-	A0_0._shutdown_sound = nil
+if not MachineHud then
+	MachineHud = class()
 end
-function MachineHud._preload_textures(A0_2)
+MachineHud.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._player_data = l_1_0._unit:player_data()
+	l_1_0:_preload_textures()
+	managers.action_event:register_listener(l_1_0, l_1_1, l_1_1)
+	l_1_0._startup_sound = nil
+	l_1_0._shutdown_sound = nil
+end
+
+MachineHud._preload_textures = function(l_2_0)
 	Overlay:gui():preload_font("diesel")
 	Overlay:gui():preload_font("faith_font_44")
 	Overlay:gui():preload_texture("gui_machine_radar_background")
@@ -51,353 +54,480 @@ function MachineHud._preload_textures(A0_2)
 	Overlay:gui():preload_texture("gui_healthmeter_edge")
 	Overlay:gui():preload_texture("gui_machine_bar_small")
 end
-function MachineHud.destroy(A0_3)
-	if alive(A0_3._panel) then
-		A0_3._panel:clear()
+
+MachineHud.destroy = function(l_3_0)
+	if alive(l_3_0._panel) then
+		l_3_0._panel:clear()
 	end
-	managers.action_event:unregister_listener(A0_3)
+	managers.action_event:unregister_listener(l_3_0)
 end
-function MachineHud.has_panel(A0_4)
-	local L1_5
-	L1_5 = A0_4._panel
-	return L1_5
+
+MachineHud.has_panel = function(l_4_0)
+	return l_4_0._panel
 end
-function MachineHud.release_gui_panel(A0_6)
-	if A0_6._panel then
-		A0_6._panel:clear()
+
+MachineHud.release_gui_panel = function(l_5_0)
+	if l_5_0._panel then
+		l_5_0._panel:clear()
 	end
-	A0_6._panel = nil
+	l_5_0._panel = nil
 end
-function MachineHud.set_gui_panel(A0_7, A1_8, A2_9)
-	if A0_7._user_viewport then
-		A0_7._new_resolution = true
+
+MachineHud.set_gui_panel = function(l_6_0, l_6_1, l_6_2)
+	if l_6_0._user_viewport then
+		l_6_0._new_resolution = true
 	end
-	A0_7._parent_panel_height = A1_8:height()
-	A0_7._user_viewport = A2_9
-	A0_7._panel = A1_8:panel({
-		name = "root_panel",
-		valign = "grow",
-		halign = "grow"
-	})
-	A0_7._panel:set_size(A1_8:size())
-	A0_7._panel_height = A0_7._panel:height()
-	A0_7._safe_panel = A0_7._panel:panel({
-		name = "safe_panel",
-		valign = "grow",
-		halign = "grow"
-	})
-	A0_7._safe_panel:set_shape(managers.menu:ingame_gui():safe_rect().x, managers.menu:ingame_gui():safe_rect().y, managers.menu:ingame_gui():safe_rect().w, managers.menu:ingame_gui():safe_rect().h)
-	A0_7._startups_initiated = false
-	A0_7._ready_to_startup = false
-	A0_7._startup_done = false
-	A0_7._starting_in_coop = HudUtility.is_split_screen()
-	A0_7._code_panel = CodePanel:new(A0_7._safe_panel)
-	A0_7._turret_panel = TurretPanel:new(A0_7._safe_panel)
-	A0_7._radar_panel = RadarPanel:new(A0_7._safe_panel, A0_7._unit)
-	A0_7._status_panel = StatusPanel:new(A0_7._safe_panel, A0_7._unit)
-	A0_7._powerup_panel = PowerUpPanel:new(A0_7._safe_panel, A0_7._unit)
-	A0_7._overheat_panel = OverHeatPanel:new(A0_7._safe_panel, A0_7._unit, true)
-	A0_7._tutorial_panel = MachineTutorialPanel:new(A0_7._safe_panel, A0_7._starting_in_coop, A0_7._unit)
-	A0_7._reticule_panel = MachineReticulePanel:new(A0_7._panel)
-	A0_7._target_panel = TargetPanel:new(A0_7._safe_panel, A0_7._unit)
-	A0_7._outline_handler = OutlineHandler:new(A0_7._unit)
-	A0_7._health_panel = HealthPanel:new(A0_7._panel, A0_7._safe_panel, A0_7._unit, tweak_data.machine.hud.MAIN_ALPHA, true, tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK, tweak_data.machine.hud.HEALTH_ICON)
-	if not A0_7._starting_in_coop then
-		A0_7:update_resolution_and_splitscreen()
-		A0_7._ready_to_startup = true
+	l_6_0._parent_panel_height = l_6_1:height()
+	l_6_0._user_viewport = l_6_2
+	local l_6_3, l_6_4 = l_6_1:panel, l_6_1
+	local l_6_5 = {}
+	l_6_5.name = "root_panel"
+	l_6_5.valign = "grow"
+	l_6_5.halign = "grow"
+	l_6_3 = l_6_3(l_6_4, l_6_5)
+	l_6_0._panel = l_6_3
+	l_6_3 = l_6_0._panel
+	l_6_3, l_6_4 = l_6_3:set_size, l_6_3
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_3(l_6_4, l_6_5)
+	l_6_3 = l_6_0._panel
+	l_6_3, l_6_4 = l_6_3:height, l_6_3
+	l_6_3 = l_6_3(l_6_4)
+	l_6_0._panel_height = l_6_3
+	l_6_3 = managers
+	l_6_3 = l_6_3.menu
+	l_6_3, l_6_4 = l_6_3:ingame_gui, l_6_3
+	l_6_3 = l_6_3(l_6_4)
+	l_6_3, l_6_4 = l_6_3:safe_rect, l_6_3
+	l_6_3 = l_6_3(l_6_4)
+	l_6_4 = l_6_0._panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:panel
+	local l_6_6 = {}
+	l_6_6.name = "safe_panel"
+	l_6_6.valign = "grow"
+	l_6_6.halign = "grow"
+	l_6_4 = l_6_4(l_6_5, l_6_6)
+	l_6_0._safe_panel = l_6_4
+	l_6_4 = l_6_0._safe_panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:set_shape
+	l_6_6 = l_6_3.x
+	l_6_4(l_6_5, l_6_6, l_6_3.y, l_6_3.w, l_6_3.h)
+	l_6_0._startups_initiated = false
+	l_6_0._ready_to_startup = false
+	l_6_0._startup_done = false
+	l_6_4 = HudUtility
+	l_6_4 = l_6_4.is_split_screen
+	l_6_4 = l_6_4()
+	l_6_0._starting_in_coop = l_6_4
+	l_6_4 = CodePanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6)
+	l_6_0._code_panel = l_6_4
+	l_6_4 = TurretPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6)
+	l_6_0._turret_panel = l_6_4
+	l_6_4 = RadarPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._unit)
+	l_6_0._radar_panel = l_6_4
+	l_6_4 = StatusPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._unit)
+	l_6_0._status_panel = l_6_4
+	l_6_4 = PowerUpPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._unit)
+	l_6_0._powerup_panel = l_6_4
+	l_6_4 = OverHeatPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._unit, true)
+	l_6_0._overheat_panel = l_6_4
+	l_6_4 = MachineTutorialPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._starting_in_coop, l_6_0._unit)
+	l_6_0._tutorial_panel = l_6_4
+	l_6_4 = MachineReticulePanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._panel
+	l_6_4 = l_6_4(l_6_5, l_6_6)
+	l_6_0._reticule_panel = l_6_4
+	l_6_4 = TargetPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._safe_panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._unit)
+	l_6_0._target_panel = l_6_4
+	l_6_4 = OutlineHandler
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._unit
+	l_6_4 = l_6_4(l_6_5, l_6_6)
+	l_6_0._outline_handler = l_6_4
+	l_6_4 = HealthPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:new
+	l_6_6 = l_6_0._panel
+	l_6_4 = l_6_4(l_6_5, l_6_6, l_6_0._safe_panel, l_6_0._unit, tweak_data.machine.hud.MAIN_ALPHA, true, tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK, tweak_data.machine.hud.HEALTH_ICON)
+	l_6_0._health_panel = l_6_4
+	l_6_4 = l_6_0._starting_in_coop
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if not l_6_4 then
+		l_6_4 = l_6_0:update_resolution_and_splitscreen
+		l_6_4(l_6_5)
+		l_6_0._ready_to_startup = true
 	end
-	A0_7._start_checkpoint = managers.save:profile().current_checkpoint_id
-	A0_7._quick_startup = A0_7._start_checkpoint > 1
-	A0_7._show_tutorial = not A0_7._quick_startup
-	managers.tank_display:startup()
-	managers.localizer_mapping:update_mapping()
+	l_6_4 = managers
+	l_6_4 = l_6_4.save
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:profile
+	l_6_4 = l_6_4(l_6_5)
+	l_6_4 = l_6_4.current_checkpoint_id
+	l_6_0._start_checkpoint = l_6_4
+	l_6_4 = l_6_0._start_checkpoint
+	l_6_4 = l_6_4 > 1
+	l_6_0._quick_startup = l_6_4
+	l_6_4 = l_6_0._quick_startup
+	l_6_4 = not l_6_4
+	l_6_0._show_tutorial = l_6_4
+	l_6_4 = managers
+	l_6_4 = l_6_4.tank_display
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:startup
+	l_6_4(l_6_5)
+	l_6_4 = managers
+	l_6_4 = l_6_4.localizer_mapping
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_4 = l_6_4:update_mapping
+	l_6_4(l_6_5)
 end
-function MachineHud.update(A0_10, A1_11, A2_12, A3_13)
-	if not A0_10:has_panel() then
-		return
+
+MachineHud.update = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	if not l_7_0:has_panel() then
+		return 
 	end
-	if not A0_10._unit:rail()._vehicle then
-		return
-	elseif not A0_10._tank then
-		A0_10._is_main_tank = A0_10._unit:rail()._vehicle:base().is_main_tank
-		if A0_10._is_main_tank == nil then
-			return
+	if not l_7_0._unit:rail()._vehicle then
+		return 
+	end
+	do return end
+	if not l_7_0._tank then
+		l_7_0._is_main_tank = l_7_0._unit:rail()._vehicle:base().is_main_tank
+		if l_7_0._is_main_tank == nil then
+			return 
 		end
-		if A0_10._is_main_tank then
-			A0_10._tank = A0_10._unit:rail()._vehicle
+		if l_7_0._is_main_tank then
+			l_7_0._tank = l_7_0._unit:rail()._vehicle
 		else
-			A0_10._tank = A0_10._unit:rail()._vehicle:base().main_tank
+			l_7_0._tank = l_7_0._unit:rail()._vehicle:base().main_tank
 		end
-		A0_10._turret = A0_10._tank:base():get_turret_object()
+		l_7_0._turret = l_7_0._tank:base():get_turret_object()
 	end
-	if A0_10._starting_in_coop and not A0_10._ready_to_startup and math.abs(A0_10._panel:height() - A0_10._parent_panel_height / 2) < 2 then
-		A0_10:update_resolution_and_splitscreen()
-		A0_10._ready_to_startup = true
+	if l_7_0._starting_in_coop and not l_7_0._ready_to_startup and math.abs(l_7_0._panel:height() - l_7_0._parent_panel_height / 2) < 2 then
+		l_7_0:update_resolution_and_splitscreen()
+		l_7_0._ready_to_startup = true
 	end
 	if managers.game:is_paused() then
-		A0_10:_hide_machine_hud()
-		return
-	elseif A0_10._hidden then
-		A0_10:_show_machine_hud()
+		l_7_0:_hide_machine_hud()
+		return 
+	elseif l_7_0._hidden then
+		l_7_0:_show_machine_hud()
 		managers.localizer_mapping:update_mapping()
 	end
-	A0_10:_update_directions()
-	A0_10:_update_target()
-	A0_10:_update_panels(A2_12, A3_13)
-	if A0_10._ready_to_startup and not A0_10._startups_initiated and managers.tank_display:startup_done() then
-		A0_10:startup_panels()
-		A0_10._tutorial_panel:show_tutorial(9, A0_10._powerup_panel, A0_10._overheat_panel)
-		A0_10._target_panel:hide()
-		A0_10._startups_initiated = true
+	l_7_0:_update_directions()
+	l_7_0:_update_target()
+	l_7_0:_update_panels(l_7_2, l_7_3)
+	if l_7_0._ready_to_startup and not l_7_0._startups_initiated and managers.tank_display:startup_done() then
+		l_7_0:startup_panels()
+		l_7_0._tutorial_panel:show_tutorial(9, l_7_0._powerup_panel, l_7_0._overheat_panel)
+		l_7_0._target_panel:hide()
+		l_7_0._startups_initiated = true
 	end
-	if A0_10:_tank_is_destroyed() and not A0_10._shutdowned then
+	if l_7_0:_tank_is_destroyed() and not l_7_0._shutdowned then
 		managers.tank_display:shutdown()
-		A0_10:shutdown_panels()
-		A0_10._target_panel:hide()
-		A0_10._shutdowned = true
+		l_7_0:shutdown_panels()
+		l_7_0._target_panel:hide()
+		l_7_0._shutdowned = true
 	end
 end
-function MachineHud._update_panels(A0_14, A1_15, A2_16)
-	A0_14._reticule_panel:update(A1_15, A2_16, A0_14._current_target)
-	if A0_14._shutdowned or not A0_14._startup_done then
-		if not A0_14._target_panel.hidden then
-			A0_14._target_panel:hide()
+
+MachineHud._update_panels = function(l_8_0, l_8_1, l_8_2)
+	l_8_0._reticule_panel:update(l_8_1, l_8_2, l_8_0._current_target)
+	if l_8_0._shutdowned or not l_8_0._startup_done then
+		if not l_8_0._target_panel.hidden then
+			l_8_0._target_panel:hide()
 		end
-		if not A0_14._health_panel:hidden() then
-			A0_14._health_panel:instant_hide()
+		if not l_8_0._health_panel:hidden() then
+			l_8_0._health_panel:instant_hide()
 		end
 	else
-		A0_14._target_panel:update(A1_15, A2_16, A0_14._current_target)
-		if A0_14._is_main_tank then
-			A0_14:_update_health_panel(A1_15, A2_16)
+		l_8_0._target_panel:update(l_8_1, l_8_2, l_8_0._current_target)
+	if l_8_0._is_main_tank then
 		end
+		l_8_0:_update_health_panel(l_8_1, l_8_2)
 	end
-	A0_14._outline_handler:update(A1_15, A2_16)
-	A0_14._powerup_panel:update(A1_15, A2_16)
-	A0_14._overheat_panel:update(A1_15, A2_16)
-	if not A0_14._code_panel._disabled then
-		A0_14._code_panel:update(A1_15, A2_16)
+	l_8_0._outline_handler:update(l_8_1, l_8_2)
+	l_8_0._powerup_panel:update(l_8_1, l_8_2)
+	l_8_0._overheat_panel:update(l_8_1, l_8_2)
+	if not l_8_0._code_panel._disabled then
+		l_8_0._code_panel:update(l_8_1, l_8_2)
 	end
-	if not A0_14._turret_panel._disabled then
-		A0_14._turret_panel:update(A1_15, A2_16, A0_14._tank_direction, A0_14._turret_direction)
+	if not l_8_0._turret_panel._disabled then
+		l_8_0._turret_panel:update(l_8_1, l_8_2, l_8_0._tank_direction, l_8_0._turret_direction)
 	end
-	if not A0_14._radar_panel._disabled then
-		A0_14._radar_panel:update(A1_15, A2_16)
+	if not l_8_0._radar_panel._disabled then
+		l_8_0._radar_panel:update(l_8_1, l_8_2)
 	end
-	if not A0_14._status_panel._disabled then
-		A0_14._status_panel:update(A1_15, A2_16)
+	if not l_8_0._status_panel._disabled then
+		l_8_0._status_panel:update(l_8_1, l_8_2)
 	end
-	if A0_14._show_tutorial and not A0_14._tutorial_finished then
-		A0_14._tutorial_finished = A0_14._tutorial_panel:tutorial_finished()
-		if not A0_14._tutorial_finished then
-			A0_14._tutorial_panel:update(A1_15, A2_16)
+	if l_8_0._show_tutorial and not l_8_0._tutorial_finished then
+		l_8_0._tutorial_finished = l_8_0._tutorial_panel:tutorial_finished()
+	if not l_8_0._tutorial_finished then
 		end
+		l_8_0._tutorial_panel:update(l_8_1, l_8_2)
 	end
-	if A0_14._startups_initiated and not A0_14._startup_done then
-		A0_14:update_startup()
+	if l_8_0._startups_initiated and not l_8_0._startup_done then
+		l_8_0:update_startup()
 	end
 end
-function MachineHud.update_startup(A0_17)
-	local L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._code_panel
-		L1_18 = L1_18.startup_done
+
+MachineHud.update_startup = function(l_9_0)
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._code_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._turret_panel
-		L1_18 = L1_18.startup_done
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._turret_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._radar_panel
-		L1_18 = L1_18.startup_done
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._radar_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._status_panel
-		L1_18 = L1_18.startup_done
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._status_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._overheat_panel
-		L1_18 = L1_18.startup_done
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._overheat_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._powerup_panel
-		L1_18 = L1_18.startup_done
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._powerup_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
-	L1_18 = A0_17._startup_done
-	if not L1_18 then
-		L1_18 = A0_17._reticule_panel
-		L1_18 = L1_18.startup_done
+	if not l_9_0._startup_done then
+		l_9_0._startup_done = l_9_0._reticule_panel.startup_done
 	end
-	A0_17._startup_done = L1_18
 end
-function MachineHud.startup_panels(A0_19)
-	if A0_19._quick_startup then
-		A0_19._code_panel:startup(0.2)
-		A0_19._turret_panel:startup(0.5)
-		A0_19._radar_panel:startup(0.3)
-		A0_19._status_panel:startup(0.4)
-		A0_19._overheat_panel:startup(0.4)
-		A0_19._powerup_panel:startup(0.2)
-		A0_19._reticule_panel:startup(0.4)
+
+MachineHud.startup_panels = function(l_10_0)
+	if l_10_0._quick_startup then
+		l_10_0._code_panel:startup(0.2)
+		l_10_0._turret_panel:startup(0.5)
+		l_10_0._radar_panel:startup(0.3)
+		l_10_0._status_panel:startup(0.4)
+		l_10_0._overheat_panel:startup(0.4)
+		l_10_0._powerup_panel:startup(0.2)
+		l_10_0._reticule_panel:startup(0.4)
 	else
-		A0_19._code_panel:startup(2)
-		A0_19._turret_panel:startup(5)
-		A0_19._radar_panel:startup(3)
-		A0_19._status_panel:startup(4)
-		A0_19._overheat_panel:startup(4)
-		A0_19._powerup_panel:startup(2)
-		A0_19._reticule_panel:startup(4)
+		l_10_0._code_panel:startup(2)
+		l_10_0._turret_panel:startup(5)
+		l_10_0._radar_panel:startup(3)
+		l_10_0._status_panel:startup(4)
+		l_10_0._overheat_panel:startup(4)
+		l_10_0._powerup_panel:startup(2)
+		l_10_0._reticule_panel:startup(4)
 	end
-	A0_19._startup_sound = A0_19._tank:play("tank_start_up")
+	l_10_0._startup_sound = l_10_0._tank:play("tank_start_up")
 end
-function MachineHud.shutdown_panels(A0_20)
-	A0_20._code_panel:shutdown(0.25, true)
-	A0_20._turret_panel:shutdown(0.5, true)
-	A0_20._radar_panel:shutdown(0.5, true)
-	A0_20._status_panel:shutdown(0.25, true)
-	A0_20._overheat_panel:shutdown(0.5, true)
-	A0_20._powerup_panel:shutdown(0.5, true)
-	A0_20._reticule_panel:shutdown(0.5, true)
-	A0_20._outline_handler:shutdown(0.5, true)
-	A0_20._shutdown_sound = A0_20._tank:play("tank_shut_down")
+
+MachineHud.shutdown_panels = function(l_11_0)
+	l_11_0._code_panel:shutdown(0.25, true)
+	l_11_0._turret_panel:shutdown(0.5, true)
+	l_11_0._radar_panel:shutdown(0.5, true)
+	l_11_0._status_panel:shutdown(0.25, true)
+	l_11_0._overheat_panel:shutdown(0.5, true)
+	l_11_0._powerup_panel:shutdown(0.5, true)
+	l_11_0._reticule_panel:shutdown(0.5, true)
+	l_11_0._outline_handler:shutdown(0.5, true)
+	l_11_0._shutdown_sound = l_11_0._tank:play("tank_shut_down")
 end
-function MachineHud.update_resolution_and_splitscreen(A0_21)
-	A0_21._split_screen = HudUtility.is_split_screen()
-	if A0_21._split_screen then
+
+MachineHud.update_resolution_and_splitscreen = function(l_12_0)
+	l_12_0._split_screen = HudUtility.is_split_screen()
+	if l_12_0._split_screen then
+		local l_12_1, l_12_2, l_12_3, l_12_4, l_12_5, l_12_6, l_12_7, l_12_8, l_12_9, l_12_10, l_12_11, l_12_12, l_12_13, l_12_14, l_12_15, l_12_16, l_12_17, l_12_18, l_12_19, l_12_20, l_12_21, l_12_22, l_12_23, l_12_24, l_12_25, l_12_26, l_12_27, l_12_28, l_12_29, l_12_30, l_12_31, l_12_32, l_12_33, l_12_34, l_12_35, l_12_36, l_12_37 = l_12_0._panel:height() * 2
 	end
-	if A0_21._panel:height() * 2 <= 720 then
-		A0_21._target_panel:use_size(0.75)
-		if A0_21._split_screen then
-			A0_21._reticule_panel:use_size(0.75)
-			A0_21._radar_panel:disable()
-			A0_21._code_panel:disable()
-			A0_21._status_panel:disable()
-			A0_21._turret_panel:disable()
-			A0_21._target_panel:use_position(0.6, 0)
-			A0_21._overheat_panel:enable(0.75, 0)
-			A0_21._powerup_panel:enable(0.75)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_12_1 <= 720 then
+		l_12_0._target_panel:use_size(0.75)
+		if l_12_0._split_screen then
+			l_12_0._reticule_panel:use_size(0.75)
+			l_12_0._radar_panel:disable()
+			l_12_0._code_panel:disable()
+			l_12_0._status_panel:disable()
+			l_12_0._turret_panel:disable()
+			l_12_0._target_panel:use_position(0.6, 0)
+			l_12_0._overheat_panel:enable(0.75, 0)
+			l_12_0._powerup_panel:enable(0.75)
 		else
-			A0_21._reticule_panel:use_size(1)
-			A0_21._radar_panel:enable(0.75)
-			A0_21._code_panel:enable(0.5)
-			A0_21._status_panel:enable(0.5)
-			A0_21._turret_panel:enable(0.75, 0.5)
-			A0_21._overheat_panel:enable(0.75, 0.5)
-			A0_21._powerup_panel:enable(0.75)
-			if A0_21._panel:height() * 2 <= 1024 then
-				A0_21._target_panel:use_position(0.6, 1)
-			else
-				A0_21._target_panel:use_position(0.8, 1.75)
-			end
-		end
-	else
-		A0_21._target_panel:use_size(1)
-		A0_21._reticule_panel:use_size(1)
-		if A0_21._split_screen then
-			A0_21._radar_panel:disable()
-			A0_21._code_panel:disable()
-			A0_21._status_panel:disable()
-			A0_21._turret_panel:disable()
-			A0_21._overheat_panel:enable(1, 0)
-			A0_21._powerup_panel:enable(1)
-			if A0_21._panel:height() * 2 <= 1024 then
-				A0_21._target_panel:use_position(1, 0)
-			else
-				A0_21._target_panel:use_position(1, 0.3)
+			l_12_0._reticule_panel:use_size(1)
+			l_12_0._radar_panel:enable(0.75)
+			l_12_0._code_panel:enable(0.5)
+			l_12_0._status_panel:enable(0.5)
+			l_12_0._turret_panel:enable(0.75, 0.5)
+			l_12_0._overheat_panel:enable(0.75, 0.5)
+			l_12_0._powerup_panel:enable(0.75)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			if l_12_1 <= 1024 then
+				l_12_0._target_panel:use_position(0.6, 1)
 			end
 		else
-			A0_21._radar_panel:enable(1)
-			A0_21._code_panel:enable(0.78)
-			A0_21._status_panel:enable(0.8)
-			A0_21._turret_panel:enable(1, 0.75)
-			A0_21._overheat_panel:enable(1, 0.8)
-			A0_21._powerup_panel:enable(1)
-			A0_21._target_panel:use_position(1, 2)
+			l_12_0._target_panel:use_position(0.8, 1.75)
 		end
-	end
-end
-function MachineHud._update_tint(A0_22)
-	local L1_23, L3_24
-	L1_23 = tweak_data
-	L1_23 = L1_23.machine
-	L1_23 = L1_23.hud
-	L1_23 = L1_23.TINT_COLOR
-	L3_24 = A0_22._red_tint_rectangle
-	L3_24 = L3_24.set_color
-	L3_24(L3_24, Color(L1_23.a, L1_23.r, L1_23.g, L1_23.b))
-end
-function MachineHud._update_directions(A0_25)
-	A0_25._tank_direction = A0_25._tank:rotation():roll()
-	A0_25._turret_direction = -Rotation:rotation_difference(A0_25._tank:rotation(), A0_25._turret:rotation()):roll()
-	A0_25._compass_direction = A0_25._tank_direction * 10
-	if A0_25._compass_direction < 0 then
-		A0_25._compass_direction = 3600 + A0_25._compass_direction
-	end
-end
-function MachineHud._update_target(A0_26)
-	if not A0_26._unit:player_data() then
-		return
-	end
-	A0_26._current_target = nil
-	if A0_26._unit:player_data().aim_target_unit and alive(A0_26._unit:player_data().aim_target_unit) and A0_26._unit:player_data().aim_target_unit:in_slot(managers.slot:get_mask("enemies")) and A0_26._unit:player_data().aim_target_unit:name() ~= "rail_vehicle_tank" then
-		A0_26._current_target = A0_26._unit:player_data().aim_target_unit
-	end
-end
-function MachineHud._tank_is_destroyed(A0_27)
-	return A0_27._tank:damage_data().damage >= A0_27._tank:damage_data().health
-end
-function MachineHud._update_health_panel(A0_28, A1_29, A2_30)
-	if A0_28._player_data.on_rail_vehicle then
-		if A0_28._unit:base():player_has_control() then
-		else
-			A0_28._health_panel:instant_hide()
-		end
-	elseif A0_28._player_data.on_destroyed_rail_vehicle then
 	else
+		l_12_0._target_panel:use_size(1)
+		l_12_0._reticule_panel:use_size(1)
+		if l_12_0._split_screen then
+			l_12_0._radar_panel:disable()
+			l_12_0._code_panel:disable()
+			l_12_0._status_panel:disable()
+			l_12_0._turret_panel:disable()
+			l_12_0._overheat_panel:enable(1, 0)
+			l_12_0._powerup_panel:enable(1)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			if l_12_1 <= 1024 then
+				l_12_0._target_panel:use_position(1, 0)
+			end
+		else
+			l_12_0._target_panel:use_position(1, 0.3)
+		end
+	else
+		l_12_0._radar_panel:enable(1)
+		l_12_0._code_panel:enable(0.78)
+		l_12_0._status_panel:enable(0.8)
+		l_12_0._turret_panel:enable(1, 0.75)
+		l_12_0._overheat_panel:enable(1, 0.8)
+		l_12_0._powerup_panel:enable(1)
+		l_12_0._target_panel:use_position(1, 2)
 	end
-	if A0_28._unit:damage_data().damage > 0 then
-		A0_28._health_panel:show()
-		A0_28._health_panel:update(A1_29, A2_30)
-	elseif A0_28._health_panel:visible() or A0_28._health_panel:hidden() then
-		A0_28._health_panel:update(A1_29, A2_30)
+end
+
+MachineHud._update_tint = function(l_13_0)
+	local l_13_1 = tweak_data.machine.hud.TINT_COLOR
+	l_13_0._red_tint_rectangle:set_color(Color(l_13_1.a, l_13_1.r, l_13_1.g, l_13_1.b))
+end
+
+MachineHud._update_directions = function(l_14_0)
+	l_14_0._tank_direction = l_14_0._tank:rotation():roll()
+	local l_14_1 = Rotation:rotation_difference(l_14_0._tank:rotation(), l_14_0._turret:rotation())
+	l_14_0._turret_direction = -l_14_1:roll()
+	l_14_0._compass_direction = l_14_0._tank_direction * 10
+	if l_14_0._compass_direction < 0 then
+		l_14_0._compass_direction = 3600 + l_14_0._compass_direction
 	end
 end
-function MachineHud._show_machine_hud(A0_31)
-	A0_31._code_panel:show()
-	A0_31._turret_panel:show()
-	A0_31._radar_panel:show()
-	A0_31._status_panel:show()
-	A0_31._powerup_panel:show()
-	A0_31._overheat_panel:show()
-	A0_31._reticule_panel:show()
-	A0_31._tutorial_panel:show()
-	A0_31._target_panel:show()
-	A0_31._health_panel:show()
-	A0_31._hidden = false
+
+MachineHud._update_target = function(l_15_0)
+	local l_15_1 = l_15_0._unit:player_data()
+	if not l_15_1 then
+		return 
+	end
+	l_15_0._current_target = nil
+	if l_15_1.aim_target_unit and alive(l_15_1.aim_target_unit) and l_15_1.aim_target_unit:in_slot(managers.slot:get_mask("enemies")) and l_15_1.aim_target_unit:name() ~= "rail_vehicle_tank" then
+		l_15_0._current_target = l_15_1.aim_target_unit
+	end
 end
-function MachineHud._hide_machine_hud(A0_32)
-	A0_32._code_panel:hide()
-	A0_32._turret_panel:hide()
-	A0_32._radar_panel:hide()
-	A0_32._status_panel:hide()
-	A0_32._powerup_panel:hide()
-	A0_32._overheat_panel:hide()
-	A0_32._reticule_panel:hide()
-	A0_32._tutorial_panel:hide()
-	A0_32._target_panel:hide()
-	A0_32._outline_handler:hide()
-	A0_32._health_panel:instant_hide()
-	A0_32._hidden = true
+
+MachineHud._tank_is_destroyed = function(l_16_0)
+	return l_16_0._tank:damage_data().health <= l_16_0._tank:damage_data().damage
 end
+
+MachineHud._update_health_panel = function(l_17_0, l_17_1, l_17_2)
+	local l_17_3 = false
+	if l_17_0._unit:base():player_has_control() then
+		if l_17_0._player_data.on_rail_vehicle:damage_data().damage <= 0 then
+			l_17_3 = not l_17_0._player_data.on_rail_vehicle
+	else
+		end
+	end
+	l_17_0._health_panel:instant_hide()
+	do return end
+	if l_17_0._player_data.on_destroyed_rail_vehicle then
+		l_17_3 = true
+	else
+		l_17_3 = l_17_0._unit:damage_data().damage > 0
+	end
+	if l_17_3 then
+		l_17_0._health_panel:show()
+		l_17_0._health_panel:update(l_17_1, l_17_2)
+	else
+		if l_17_0._health_panel:visible() or l_17_0._health_panel:hidden() then
+			l_17_0._health_panel:update(l_17_1, l_17_2)
+		end
+	end
+end
+
+MachineHud._show_machine_hud = function(l_18_0)
+	l_18_0._code_panel:show()
+	l_18_0._turret_panel:show()
+	l_18_0._radar_panel:show()
+	l_18_0._status_panel:show()
+	l_18_0._powerup_panel:show()
+	l_18_0._overheat_panel:show()
+	l_18_0._reticule_panel:show()
+	l_18_0._tutorial_panel:show()
+	l_18_0._target_panel:show()
+	l_18_0._health_panel:show()
+	l_18_0._hidden = false
+end
+
+MachineHud._hide_machine_hud = function(l_19_0)
+	l_19_0._code_panel:hide()
+	l_19_0._turret_panel:hide()
+	l_19_0._radar_panel:hide()
+	l_19_0._status_panel:hide()
+	l_19_0._powerup_panel:hide()
+	l_19_0._overheat_panel:hide()
+	l_19_0._reticule_panel:hide()
+	l_19_0._tutorial_panel:hide()
+	l_19_0._target_panel:hide()
+	l_19_0._outline_handler:hide()
+	l_19_0._health_panel:instant_hide()
+	l_19_0._hidden = true
+end
+
+

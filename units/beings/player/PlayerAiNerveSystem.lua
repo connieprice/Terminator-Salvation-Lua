@@ -1,845 +1,414 @@
-local L0_0
-L0_0 = require
-L0_0("units/beings/AiNerveSystem")
-L0_0 = require
-L0_0("shared/updatescheduler/UpdateSchedulerDtMethod")
-function L0_0(A0_1)
-	return alive(A0_1.external.paralyzed_by_unit)
+require("units/beings/AiNerveSystem")
+require("shared/updatescheduler/UpdateSchedulerDtMethod")
+local l_0_0 = function(l_1_0)
+	local l_1_1 = alive
+	local l_1_2 = l_1_0.external.paralyzed_by_unit
+	return l_1_1(l_1_2)
 end
-PlayerAiNerveSystem = PlayerAiNerveSystem or class(AiNerveSystem)
-function PlayerAiNerveSystem.init(A0_2, A1_3)
-	AiNerveSystem.init(A0_2, A1_3)
-	A0_2._look_at_rotation = Rotation()
-	A0_2._look_at_distance = 100000
-	A0_2._unit = A1_3
-	A0_2._low_frequency = UpdateSchedulerDtMethod:new(managers.update_scheduler:add_function(A0_2.low_frequency_update, "player_nervesystem"))
-	A0_2._aim_target_position = nil
-	A0_2._want_to_peek = false
-	A0_2._player_movement_utilities = PlayerMovementUtilities:new()
-end
-function PlayerAiNerveSystem._update_movement_blocked_max_time(A0_4)
-	local L1_5, L2_6, L3_7
-	L1_5 = tweak_data
-	L1_5 = L1_5.ai
-	L1_5 = L1_5.humans
-	L1_5 = L1_5.ai_player
-	L1_5 = L1_5.MOVEMENT_BLOCKED_TIME_NORMAL
-	L2_6 = tweak_data
-	L2_6 = L2_6.ai
-	L2_6 = L2_6.humans
-	L2_6 = L2_6.ai_player
-	L2_6 = L2_6.MOVEMENT_BLOCKED_TIME_THREATENED
-	L3_7 = {}
-	L3_7.normal = math.random(L1_5.rand_min, L1_5.rand_max)
-	L3_7.threatened = math.random(L2_6.rand_min, L2_6.rand_max)
-	A0_4._movement_blocked_max_time = L3_7
-end
-function PlayerAiNerveSystem.destroy(A0_8)
-	managers.ai.cover_manager:release_cover(A0_8._unit)
-	A0_8._low_frequency:remove()
-	AiNerveSystem.destroy(A0_8)
-end
-function PlayerAiNerveSystem.warp_to(A0_9, A1_10, A2_11)
-	local L3_12, L4_13
-	L3_12 = A0_9._ai_data
-	L3_12 = L3_12._behavior
-	L3_12 = L3_12.arrive_orders
-	L4_13 = AiNerveSystem
-	L4_13 = L4_13.warp_to
-	L4_13(A0_9, A1_10, A2_11)
-	L4_13 = A1_10.y
-	L4_13 = L4_13(A1_10)
-	L4_13 = 10000 * L4_13
-	L4_13 = A2_11 + L4_13
-	if A0_9:is_enabled() then
-		A0_9._unit:input():set_aim_target_position(L4_13)
-		A0_9._unit:input():set_eye_target_position(L4_13)
-	end
-	A0_9._next_update_eye_target = L4_13
-	A0_9._aim_target_position = L4_13
-	A0_9._ai_data._behavior.arrive_orders = L3_12
-end
-function PlayerAiNerveSystem.reset(A0_14)
-	AiNerveSystem.reset(A0_14)
-	A0_14:_reset_input()
-end
-function PlayerAiNerveSystem._reset_input(A0_15)
-	local L1_16, L2_17
-	L2_17 = A0_15
-	L1_16 = A0_15.is_enabled
-	L1_16 = L1_16(L2_17)
-	if L1_16 then
-		L1_16 = A0_15._unit
-		L2_17 = L1_16
-		L1_16 = L1_16.input
-		L1_16 = L1_16(L2_17)
-		L2_17 = L1_16.clear
-		L2_17(L1_16)
-		L2_17 = A0_15._unit
-		L2_17 = L2_17.position
-		L2_17 = L2_17(L2_17)
-		L2_17 = L2_17 + 10000 * A0_15._unit:rotation():y()
-		L1_16:set_aim_target_position(L2_17)
-		L1_16:set_eye_target_position(L2_17)
+
+local l_0_1 = function(l_2_0)
+	if l_2_0.cover then
+		return l_2_0.cover_point
 	end
 end
-function PlayerAiNerveSystem.update(A0_18, A1_19, A2_20, A3_21)
-	local L4_22, L5_23, L6_24
-	L4_22 = A0_18._ai_data
-	L4_22 = L4_22.input
-	L6_24 = A1_19
-	L5_23 = A1_19.player_data
-	L5_23 = L5_23(L6_24)
-	L6_24 = L5_23.entering_wounded
-	if not L6_24 then
-		L6_24 = L5_23.wounded
-		L6_24 = L6_24 or L5_23.exiting_wounded
+
+if not PlayerAiNerveSystem then
+	PlayerAiNerveSystem = class(AiNerveSystem)
+end
+PlayerAiNerveSystem.init = function(l_3_0, l_3_1)
+	AiNerveSystem.init(l_3_0, l_3_1)
+	l_3_0._look_at_rotation = Rotation()
+	l_3_0._look_at_distance = 100000
+	l_3_0._unit = l_3_1
+	l_3_0._low_frequency = UpdateSchedulerDtMethod:new(managers.update_scheduler:add_function(l_3_0.low_frequency_update, "player_nervesystem"))
+	l_3_0._aim_target_position = nil
+	l_3_0._want_to_peek = false
+	l_3_0._player_movement_utilities = PlayerMovementUtilities:new()
+end
+
+PlayerAiNerveSystem._update_movement_blocked_max_time = function(l_4_0)
+	local l_4_1 = tweak_data.ai.humans.ai_player.MOVEMENT_BLOCKED_TIME_NORMAL
+	local l_4_2 = tweak_data.ai.humans.ai_player.MOVEMENT_BLOCKED_TIME_THREATENED
+	local l_4_3 = {}
+	l_4_3.normal = math.random(l_4_1.rand_min, l_4_1.rand_max)
+	l_4_3.threatened = math.random(l_4_2.rand_min, l_4_2.rand_max)
+	l_4_0._movement_blocked_max_time = l_4_3
+end
+
+PlayerAiNerveSystem.destroy = function(l_5_0)
+	managers.ai.cover_manager:release_cover(l_5_0._unit)
+	l_5_0._low_frequency:remove()
+	AiNerveSystem.destroy(l_5_0)
+end
+
+PlayerAiNerveSystem.warp_to = function(l_6_0, l_6_1, l_6_2)
+	local l_6_3 = l_6_0._ai_data._behavior.arrive_orders
+	AiNerveSystem.warp_to(l_6_0, l_6_1, l_6_2)
+	local l_6_4 = l_6_2 + 10000 * l_6_1:y()
+	if l_6_0:is_enabled() then
+		local l_6_5 = l_6_0._unit:input()
+		l_6_5:set_aim_target_position(l_6_4)
+		l_6_5:set_eye_target_position(l_6_4)
 	end
-	L4_22.is_down = L6_24
-	L6_24 = L5_23.exiting_wounded
-	L4_22.exiting_wounded = L6_24
-	L6_24 = AiNerveSystem
-	L6_24 = L6_24.update
-	L6_24 = L6_24(A0_18, A1_19, A2_20, A3_21)
-	if not L6_24 then
-		L6_24 = A0_18._reset_input
-		L6_24(A0_18, A1_19:input())
-		L6_24 = A0_18._is_dead
-		L6_24 = L6_24(A0_18)
-		if L6_24 then
-			L6_24 = managers
-			L6_24 = L6_24.ai
-			L6_24 = L6_24.cover_manager
-			L6_24 = L6_24.release_cover
-			L6_24(L6_24, A0_18._unit)
+	l_6_0._next_update_eye_target = l_6_4
+	l_6_0._aim_target_position = l_6_4
+	l_6_0._ai_data._behavior.arrive_orders = l_6_3
+end
+
+PlayerAiNerveSystem.reset = function(l_7_0)
+	AiNerveSystem.reset(l_7_0)
+	l_7_0:_reset_input()
+end
+
+PlayerAiNerveSystem._reset_input = function(l_8_0)
+	if l_8_0:is_enabled() then
+		local l_8_1 = l_8_0._unit:input()
+		l_8_1:clear()
+		local l_8_2 = l_8_0._unit:position() + 10000 * l_8_0._unit:rotation():y()
+		l_8_1:set_aim_target_position(l_8_2)
+		l_8_1:set_eye_target_position(l_8_2)
+	end
+end
+
+PlayerAiNerveSystem.update = function(l_9_0, l_9_1, l_9_2, l_9_3)
+	local l_9_4 = l_9_0._ai_data.input
+	local l_9_5 = l_9_1:player_data()
+	if not l_9_5.entering_wounded and not l_9_5.wounded then
+		l_9_4.is_down = l_9_5.exiting_wounded
+	end
+	l_9_4.exiting_wounded = l_9_5.exiting_wounded
+	if not AiNerveSystem.update(l_9_0, l_9_1, l_9_2, l_9_3) then
+		l_9_0:_reset_input(l_9_1:input())
+		if l_9_0:_is_dead() then
+			managers.ai.cover_manager:release_cover(l_9_0._unit)
 		end
-		return
+		return 
 	end
-	L6_24 = A0_18.update_radius
-	L6_24(A0_18, L5_23, A0_18._ai_data)
-	L6_24 = A0_18._low_frequency
-	L6_24 = L6_24.update
-	L6_24(L6_24, A0_18, A3_21, A1_19, A2_20)
-	L6_24 = A0_18._calculate_look_at_position
-	L6_24 = L6_24(A0_18, A1_19, A0_18._unit_position, A3_21, A0_18._aim_target_position)
-	if A0_18._aim_target_position then
-		A1_19:input():set_aim_target_position(A0_18._aim_target_position)
+	l_9_0:update_radius(l_9_5, l_9_0._ai_data)
+	l_9_0._low_frequency:update(l_9_0, l_9_3, l_9_1, l_9_2)
+	local l_9_6 = l_9_0:_calculate_look_at_position(l_9_1, l_9_0._unit_position, l_9_3, l_9_0._aim_target_position)
+	local l_9_7 = l_9_1:input()
+	if l_9_0._aim_target_position then
+		l_9_7:set_aim_target_position(l_9_0._aim_target_position)
 	else
-		A1_19:input():set_aim_target_position(L6_24)
+		l_9_7:set_aim_target_position(l_9_6)
 	end
-	A1_19:input():set_eye_target_position(L6_24)
+	l_9_7:set_eye_target_position(l_9_6)
 end
-function PlayerAiNerveSystem.low_frequency_update(A0_25, A1_26, A2_27, A3_28)
-	local L4_29, L5_30, L6_31, L7_32, L8_33, L9_34, L10_35, L11_36, L12_37, L13_38, L14_39, L15_40, L16_41, L17_42
-	L4_29 = A0_25._ai_data
-	L4_29 = L4_29.input
-	L6_31 = A2_27
-	L5_30 = A2_27.player_data
-	L5_30 = L5_30(L6_31)
-	L6_31 = A0_25._ai_data
-	L6_31 = L6_31.output
-	L7_32, L8_33 = nil, nil
-	L9_34 = AiNerveSystem
-	L9_34 = L9_34.low_frequency_update
-	L10_35 = A0_25
-	L11_36 = A2_27
-	L12_37 = A3_28
-	L13_38 = A1_26
-	L9_34(L10_35, L11_36, L12_37, L13_38)
-	L9_34 = A0_25._move_to_position
-	if L9_34 then
-		L9_34 = A0_25._movement_blocked
-		if not L9_34 then
-			L9_34 = A0_25._unit_position
-			L10_35 = mvector3
-			L10_35 = L10_35.distance
-			L11_36 = A0_25._move_to_position
-			L12_37 = L9_34
-			L10_35 = L10_35(L11_36, L12_37)
-			L11_36 = A0_25._ai_data
-			L12_37 = L11_36
-			L11_36 = L11_36.path
-			L11_36 = L11_36(L12_37)
-			L12_37, L13_38 = nil, nil
-			L14_39 = tweak_data
-			L14_39 = L14_39.ai
-			L14_39 = L14_39.SLOW_DOWN_DISTANCE
-			if L10_35 < L14_39 then
-				L14_39 = A0_25._current_path_index
-				if L14_39 then
-					L14_39 = A0_25._current_path_index
-					L14_39 = L14_39 + 1
-					L15_40 = #L11_36
-					if L14_39 <= L15_40 then
-						L14_39 = A0_25._current_path_index
-						L14_39 = L14_39 + 1
-						L12_37 = L11_36[L14_39]
-						L14_39 = tweak_data
-						L14_39 = L14_39.ai
-						L14_39 = L14_39.SLOW_DOWN_DISTANCE
-						L13_38 = L10_35 / L14_39
-					end
-				end
-			else
-				L12_37 = A0_25._move_to_position
-				L14_39 = tweak_data
-				L14_39 = L14_39.ai
-				L13_38 = L14_39.SLOW_DOWN_SPEED_CHANGE
-			end
-			L14_39 = A0_25._unit_position
-			L14_39 = L12_37 - L14_39
-			L15_40 = A0_25._unit
-			L16_41 = L15_40
-			L15_40 = L15_40.rotation
-			L15_40 = L15_40(L16_41)
-			L16_41 = L15_40
-			L15_40 = L15_40.y
-			L15_40 = L15_40(L16_41)
-			L17_42 = L15_40
-			L16_41 = L15_40.angle
-			L16_41 = L16_41(L17_42, L14_39)
-			L17_42 = nil
-			if A0_25._waypoint_options and A0_25._waypoint_options.speed and A0_25._ai_data.SPEEDS then
-				L17_42 = A0_25._ai_data.SPEEDS[A0_25._waypoint_options.speed]
-				assert(L17_42)
-			else
-				L17_42 = L6_31.move_speed
-			end
-			if math.abs(L16_41) > tweak_data.ai.SLOW_DOWN_ANGLE then
-				L17_42 = L17_42 * L13_38
-			end
-			L8_33 = L17_42 / L10_35 * (A0_25._move_to_position - L9_34)
-		end
-	end
-	L10_35 = A2_27
-	L9_34 = A2_27.input
-	L9_34 = L9_34(L10_35)
-	L11_36 = L9_34
-	L10_35 = L9_34.clear
-	L10_35(L11_36)
-	if L8_33 then
-		L10_35 = _UPVALUE0_
-		L11_36 = A0_25._ai_data
-		L10_35 = L10_35(L11_36)
-		if not L10_35 then
-			L11_36 = L9_34
-			L10_35 = L9_34.set_movement
-			L12_37 = L8_33
-			L10_35(L11_36, L12_37)
-		end
-	end
-	L11_36 = A0_25
-	L10_35 = A0_25._update_cover
-	L12_37 = A2_27
-	L13_38 = L5_30
-	L14_39 = L9_34
-	L10_35(L11_36, L12_37, L13_38, L14_39)
-	L10_35 = alive
-	L11_36 = L6_31.firing_target
-	L10_35 = L10_35(L11_36)
-	if L10_35 then
-		L10_35 = L6_31.firing_target
-		L11_36 = L10_35
-		L10_35 = L10_35.targeting_info
-		L10_35 = L10_35(L11_36)
-		if L10_35 then
-			L12_37 = L10_35
-			L11_36 = L10_35.primary_target_position
-			L11_36 = L11_36(L12_37)
-			L7_32 = L11_36
+
+PlayerAiNerveSystem.low_frequency_update = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	-- upvalues: l_0_0
+	local l_10_4 = l_10_0._ai_data.input
+	local l_10_5 = l_10_2:player_data()
+	local l_10_6 = l_10_0._ai_data.output
+	local l_10_7, l_10_8 = nil, nil
+	AiNerveSystem.low_frequency_update(l_10_0, l_10_2, l_10_3, l_10_1)
+	if l_10_0._move_to_position and not l_10_0._movement_blocked then
+		local l_10_9 = l_10_0._unit_position
+		local l_10_10 = mvector3.distance(l_10_0._move_to_position, l_10_9)
+		local l_10_11 = (l_10_0._ai_data:path())
+		local l_10_12, l_10_13 = nil, nil
+		if l_10_10 < tweak_data.ai.SLOW_DOWN_DISTANCE and l_10_0._current_path_index and l_10_0._current_path_index + 1 <= #l_10_11 then
+			l_10_12 = l_10_11[l_10_0._current_path_index + 1]
+			l_10_13 = l_10_10 / tweak_data.ai.SLOW_DOWN_DISTANCE
 		else
-			L11_36 = L6_31.firing_target
-			L12_37 = L11_36
-			L11_36 = L11_36.oobb
-			L11_36 = L11_36(L12_37)
-			L12_37 = L11_36
-			L11_36 = L11_36.center
-			L11_36 = L11_36(L12_37)
-			L7_32 = L11_36
+			l_10_12 = l_10_0._move_to_position
+			l_10_13 = tweak_data.ai.SLOW_DOWN_SPEED_CHANGE
 		end
+		local l_10_14 = l_10_12 - l_10_0._unit_position
+		local l_10_15 = l_10_0._unit:rotation():y()
+		local l_10_16 = (l_10_15:angle(l_10_14))
+		local l_10_17 = nil
+		if l_10_0._waypoint_options and l_10_0._waypoint_options.speed and l_10_0._ai_data.SPEEDS then
+			l_10_17 = l_10_0._ai_data.SPEEDS[l_10_0._waypoint_options.speed]
+			assert(l_10_17)
+		else
+			l_10_17 = l_10_6.move_speed
+		end
+		if tweak_data.ai.SLOW_DOWN_ANGLE < math.abs(l_10_16) then
+			l_10_17 = l_10_17 * l_10_13
+		end
+		l_10_8 = l_10_17 / l_10_10 * (l_10_0._move_to_position - l_10_9)
 	end
-	L11_36 = A0_25
-	L10_35 = A0_25._update_fire
-	L12_37 = A2_27
-	L13_38 = L5_30
-	L14_39 = L7_32
-	L15_40 = L9_34
-	L16_41 = A1_26
-	L17_42 = A3_28
-	L10_35(L11_36, L12_37, L13_38, L14_39, L15_40, L16_41, L17_42)
-	L10_35 = L5_30.time_since_incoming_fire
-	if L10_35 > 0.5 then
-		L4_29.time_under_incoming_fire = 0
+	local l_10_18 = l_10_2:input()
+	l_10_18:clear()
+	if l_10_8 and not l_0_0(l_10_0._ai_data) then
+		l_10_18:set_movement(l_10_8)
+	end
+	l_10_0:_update_cover(l_10_2, l_10_5, l_10_18)
+	if alive(l_10_6.firing_target) then
+		local l_10_19 = l_10_6.firing_target:targeting_info()
+		if l_10_19 then
+			l_10_7 = l_10_19:primary_target_position()
+		end
 	else
-		L10_35 = L4_29.time_under_incoming_fire
-		L10_35 = L10_35 + A1_26
-		L4_29.time_under_incoming_fire = L10_35
+		l_10_7 = l_10_6.firing_target:oobb():center()
 	end
-	L10_35 = L5_30.time_since_incoming_fire
-	L4_29.time_since_incoming_fire = L10_35
-	L10_35 = L4_29.entering_target_cover
-	if L10_35 then
-		L10_35 = A0_25._ai_data
-		L11_36 = L10_35
-		L10_35 = L10_35.new_path_requested
-		L10_35 = L10_35(L11_36)
-		if L10_35 then
-			L10_35 = A0_25._ai_data
-			L11_36 = L10_35
-			L10_35 = L10_35.abort_new_path_request
-			L10_35(L11_36)
-		end
-	end
-	A0_25._aim_target_position = L7_32
-	L10_35 = L5_30.quick_moving
-	A0_25._animation_driven_movement = L10_35
-end
-function PlayerAiNerveSystem.update_radius(A0_43, A1_44, A2_45)
-	if _UPVALUE0_(A1_44) or A1_44.quick_moving or A1_44.leaving_cover then
-		A2_45.radius = 0.6 * tweak_data.ai.humans.ai_player.MOVER_IN_COVER_DIAMETER
+	l_10_0:_update_fire(l_10_2, l_10_5, l_10_7, l_10_18, l_10_1, l_10_3)
+	if l_10_5.time_since_incoming_fire > 0.5 then
+		l_10_4.time_under_incoming_fire = 0
 	else
-		A2_45.radius = 0.6 * tweak_data.ai.humans.ai_player.MOVER_ON_GROUND_DIAMETER
+		l_10_4.time_under_incoming_fire = l_10_4.time_under_incoming_fire + l_10_1
+	end
+	l_10_4.time_since_incoming_fire = l_10_5.time_since_incoming_fire
+	if l_10_4.entering_target_cover and l_10_0._ai_data:new_path_requested() then
+		l_10_0._ai_data:abort_new_path_request()
+	end
+	l_10_0._aim_target_position = l_10_7
+	l_10_0._animation_driven_movement = l_10_5.quick_moving
+end
+
+PlayerAiNerveSystem.update_radius = function(l_11_0, l_11_1, l_11_2)
+	-- upvalues: l_0_1
+	if l_0_1(l_11_1) or l_11_1.quick_moving or l_11_1.leaving_cover then
+		l_11_2.radius = 0.6 * tweak_data.ai.humans.ai_player.MOVER_IN_COVER_DIAMETER
+	else
+		l_11_2.radius = 0.6 * tweak_data.ai.humans.ai_player.MOVER_ON_GROUND_DIAMETER
 	end
 end
-function PlayerAiNerveSystem._update_fire(A0_46, A1_47, A2_48, A3_49, A4_50, A5_51, A6_52)
-	local L7_53, L8_54, L9_55
-	L7_53 = A0_46._ai_data
-	L7_53 = L7_53.output
-	L8_54 = alive
-	L9_55 = L7_53.firing_target
-	L8_54 = L8_54(L9_55)
-	L9_55 = L7_53.allowed_to_fire
-	L9_55 = L9_55 and not L9_55 and L8_54
-	if L9_55 and L7_53.hide_in_cover and not A0_46._burst_end_time and _UPVALUE0_(A2_48) then
-		L9_55 = false
-	end
-	if L9_55 and IntelUtilities.ai_friendly_fire(A1_47, A3_49) then
-		L9_55 = false
-	end
-	if A0_46:_burst_fire(A6_52, L9_55, A2_48.firing) then
-		A4_50:set_fire(1, true)
-		A4_50:set_precision_aiming()
-		A4_50:set_miss_dispersion(A0_46:_update_weapons_dispersions(A1_47, {
-			L7_53.firing_target
-		}, A5_51)[1])
-	elseif A0_46._burst_start_time then
-		A4_50:set_precision_aiming()
-	end
-end
-function PlayerAiNerveSystem._update_cover(A0_56, A1_57, A2_58, A3_59)
-	local L4_60, L5_61, L6_62, L7_63, L8_64, L9_65, L10_66, L11_67, L12_68, L13_69, L14_70, L15_71
-	L4_60 = A0_56._ai_data
-	L4_60 = L4_60.output
-	L4_60 = L4_60.target_cover_info
-	if L4_60 then
-		L5_61 = managers
-		L5_61 = L5_61.cover
-		L6_62 = L5_61
-		L5_61 = L5_61.is_valid_cover
-		L8_64 = L4_60
-		L7_63 = L4_60.cover
-		L15_71 = L7_63(L8_64)
-		L5_61 = L5_61(L6_62, L7_63, L8_64, L9_65, L10_66, L11_67, L12_68, L13_69, L14_70, L15_71, L7_63(L8_64))
-		if not L5_61 then
-			L4_60 = nil
+
+PlayerAiNerveSystem._update_fire = function(l_12_0, l_12_1, l_12_2, l_12_3, l_12_4, l_12_5, l_12_6)
+	-- upvalues: l_0_1
+	local l_12_7 = l_12_0._ai_data.output
+	local l_12_8 = alive(l_12_7.firing_target)
+	if l_12_7.allowed_to_fire then
+		if not l_12_2.is_down then
+			local l_12_9 = l_12_8
 		end
+	else
+		if (not false or not l_12_7.hide_in_cover or l_12_0._burst_end_time or not l_0_1(l_12_2) or false) and IntelUtilities.ai_friendly_fire(l_12_1, l_12_3) then
+			local l_12_10, l_12_11, l_12_12, l_12_13, l_12_18 = false
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_12_0:_burst_fire(l_12_6, l_12_10, l_12_2.firing) then
+			l_12_4:set_fire(1, true)
+			l_12_4:set_precision_aiming()
+			local l_12_14, l_12_15 = , l_12_0:_update_weapons_dispersions
+			local l_12_16 = l_12_0
+			local l_12_17 = l_12_1
+			l_12_15 = l_12_15(l_12_16, l_12_17, {l_12_7.firing_target}, l_12_5)
+			l_12_16, l_12_17 = l_12_4:set_miss_dispersion, l_12_4
+			l_12_16(l_12_17, l_12_15[1])
+		elseif l_12_0._burst_start_time then
+			l_12_4:set_precision_aiming()
+		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L5_61 = _UPVALUE0_
-	L6_62 = A2_58
-	L5_61 = L5_61(L6_62)
-	if not L4_60 then
-		L6_62 = L5_61 and L6_62.use_covers
-	elseif L6_62 then
-		L6_62 = A0_56._ai_data
-		L6_62 = L6_62.input
-		L6_62 = L6_62.is_down
-		L6_62 = not L6_62
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 16 
+end
+
+PlayerAiNerveSystem._update_cover = function(l_13_0, l_13_1, l_13_2, l_13_3)
+	-- upvalues: l_0_1 , l_0_0
+	local l_13_4 = l_13_0._ai_data.output.target_cover_info
+	if l_13_4 and not managers.cover:is_valid_cover(l_13_4:cover()) then
+		l_13_4 = nil
 	end
-	if L6_62 then
-		L7_63 = nil
-		if L5_61 then
-			L8_64 = A2_58.cover_point
-			L10_66 = L8_64
-			L9_65 = L8_64.position
-			L9_65 = L9_65(L10_66)
-			L7_63 = L9_65
-			if L4_60 then
-				L9_65 = A0_56._move_to_position
-				if L9_65 then
-					L9_65 = A0_56._move_to_position_waypoint
-					if not L9_65 then
-						L10_66 = L4_60
-						L9_65 = L4_60.closest_cover_point
-						L9_65 = L9_65(L10_66)
-						L10_66 = L9_65
-						L9_65 = L9_65.position
-						L9_65 = L9_65(L10_66)
-						L9_65 = L9_65 - L7_63
-						L10_66 = L9_65
-						L9_65 = L9_65.length
-						L9_65 = L9_65(L10_66)
-						if L9_65 < 1 then
-							L10_66 = A0_56
-							L9_65 = A0_56._set_move_to_position
-							L11_67 = nil
-							L9_65(L10_66, L11_67)
-							L9_65 = A0_56._ai_data
-							L10_66 = L9_65
-							L9_65 = L9_65.set_current_path_completed
-							L9_65(L10_66)
-							L9_65 = A0_56._ai_data
-							L10_66 = L9_65
-							L9_65 = L9_65.request_new_path
-							L9_65(L10_66)
-						end
-					end
-				end
+	local l_13_5 = l_0_1(l_13_2)
+	if l_13_4 or l_13_5 and l_13_0._ai_data._behavior.use_covers and l_13_0._ai_data._cover.threat then
+		local l_13_7, l_13_24, l_13_25, l_13_26 = not l_13_0._ai_data.input.is_down
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_13_7 then
+		local l_13_8 = nil
+		if l_13_5 then
+			local l_13_9 = nil
+			l_13_9 = l_13_2.cover_point:position()
+			if l_13_4 and l_13_0._move_to_position and not l_13_0._move_to_position_waypoint and l_13_4:closest_cover_point():position() - l_13_9:length() < 1 then
+				l_13_0:_set_move_to_position(nil)
+				l_13_0._ai_data:set_current_path_completed()
+				l_13_0._ai_data:request_new_path()
 			end
-			L9_65 = A0_56._move_to_position
-			if L9_65 then
-				L9_65 = A2_58.cover_outer_position
-				if L9_65 then
-					L10_66 = A3_59
-					L9_65 = A3_59.set_leave_cover
-					L9_65(L10_66)
+			if l_13_0._move_to_position then
+				if l_13_2.cover_outer_position then
+					l_13_3:set_leave_cover()
+				end
+			else
+				local l_13_10 = nil
+				local l_13_11 = nil
+			 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+			if l_13_2.cover_point_edge == CoverEdgeType.NOT_EDGE and l_13_2.cover_normal:dot(l_13_0._move_to_position - l_13_9:normalized()) > 0.8 then
+				end
+				l_13_3:set_leave_cover()
+			end
+			do return end
+			local l_13_12 = nil
+			if not l_13_2.cover_point_edge == CoverEdgeType.LEFT then
+				local l_13_16 = nil
+				if -l_13_2.cover_normal:cross(math.UP):dot(l_13_11) > 0 then
+					l_13_3:set_leave_cover()
+					 -- DECOMPILER ERROR: Confused about usage of registers!
+
+					local l_13_17, l_13_18 = nil
+				if l_13_0:_update_cover_quick_move(l_13_2, l_13_9, l_13_11, l_13_2.cover_point_edge == CoverEdgeType.LEFT) then
+					end
+					l_13_3:set_quick_move_info_index(l_13_0:_update_cover_quick_move(l_13_2, l_13_9, l_13_11, l_13_2.cover_point_edge == CoverEdgeType.LEFT), R19_PC130)
+				end
+				if l_13_2.cover_outer_position and not l_13_3:leave_cover() then
+					local l_13_19 = nil
+					 -- DECOMPILER ERROR: Confused about usage of registers!
+
+				if (l_13_4 or not managers.ai.cover_manager:reserved_overlaps_human_player(l_13_0._unit)) and (not l_13_0._ai_data._cover.cover_info or managers.cover_util:can_enter_cover(l_13_0._unit, l_13_0._ai_data._cover.cover_info, tweak_data.ai.humans.ai_player.MAX_ENTER_COVER_DISTANCE, true)) then
+					end
+					l_13_3:set_enter_inner_cover_position()
+				end
+				if not l_13_2.cover_outer_position and not l_13_3:leave_cover() then
+					local l_13_21 = nil
+				if managers.ai.cover_manager:reserved_overlaps_human_player(l_13_0._unit) then
+					end
+					l_13_3:set_enter_outer_cover_position()
+				end
+				if not l_13_0._move_to_position and not l_13_0._ai_data.output.hide_in_cover and not l_13_3:leave_cover() then
+					if not l_13_2.peeking_up and not l_13_2.peeking_side then
+						l_13_0._want_to_peek = true
+					end
+					l_13_3:set_precision_aiming()
+					 -- DECOMPILER ERROR: Confused about usage of registers!
+
+					if not l_13_3:aim_target_position() then
+						l_13_3:set_aim_target_position(l_13_21 + math.UP * 120 - 10000 * l_13_2.cover_normal)
+					end
+				if l_13_0._want_to_peek then
+					end
+				if l_13_2.peeking_up or l_13_2.peeking_side then
+					end
+					l_13_0._want_to_peek = false
+					l_13_0:_forced_targeting_update()
+				end
+				if not l_13_0._move_to_position and not l_0_0(l_13_0._ai_data) and l_13_2.cover_point_edge ~= CoverEdgeType.NOT_EDGE and managers.cover_util:high_cover(l_13_2.cover) then
+					if l_13_2.cover_point_edge == CoverEdgeType.LEFT and l_13_2.facing_right_in_cover then
+						l_13_3:set_movement(-l_13_2.cover:right())
+					end
 				else
-					L9_65 = A0_56._move_to_position
-					L9_65 = L9_65 - L7_63
-					L10_66 = L9_65
-					L9_65 = L9_65.normalized
-					L9_65 = L9_65(L10_66)
-					L10_66 = A2_58.cover_normal
-					L11_67 = L10_66
-					L10_66 = L10_66.dot
-					L12_68 = L9_65
-					L10_66 = L10_66(L11_67, L12_68)
-					L11_67 = A2_58.cover_point_edge
-					L12_68 = CoverEdgeType
-					L12_68 = L12_68.NOT_EDGE
-					if L11_67 == L12_68 then
-						if L10_66 > 0.8 then
-							L12_68 = A3_59
-							L11_67 = A3_59.set_leave_cover
-							L11_67(L12_68)
+					if l_13_2.cover_point_edge == CoverEdgeType.RIGHT and not l_13_2.facing_right_in_cover then
+						l_13_3:set_movement(l_13_2.cover:right())
+					end
+				else
+					if l_13_0._ai_data:current_path_completed() then
+						l_13_4:update_distance(l_13_0._unit_position)
+					if managers.cover_util:can_enter_cover(l_13_0._unit, l_13_4, tweak_data.ai.humans.ai_player.MAX_ENTER_COVER_DISTANCE, true) then
 						end
-					else
-						L11_67 = A2_58.cover_normal
-						L12_68 = L11_67
-						L11_67 = L11_67.cross
-						L13_69 = math
-						L13_69 = L13_69.UP
-						L11_67 = L11_67(L12_68, L13_69)
-						L12_68 = A2_58.cover_point_edge
-						L13_69 = CoverEdgeType
-						L13_69 = L13_69.LEFT
-						L12_68 = L12_68 == L13_69
-						if not L12_68 then
-							L11_67 = -L11_67
-						end
-						L14_70 = L11_67
-						L13_69 = L11_67.dot
-						L15_71 = L9_65
-						L13_69 = L13_69(L14_70, L15_71)
-						if L13_69 > 0 then
-							L15_71 = A3_59
-							L14_70 = A3_59.set_leave_cover
-							L14_70(L15_71)
-							L15_71 = A0_56
-							L14_70 = A0_56._update_cover_quick_move
-							L15_71 = L14_70(L15_71, A2_58, L7_63, L9_65, L12_68)
-							if L14_70 then
-								A3_59:set_quick_move_info_index(L14_70, L15_71)
-							end
-						end
+						local l_13_22 = nil
+						l_13_3:set_enter_cover(l_13_4, managers.ai.cover_manager:overlaps_human_player(l_13_4:cover(), l_13_4:closest_cover_point():position()))
 					end
 				end
-			end
-			L9_65 = A2_58.cover_outer_position
-			if L9_65 then
-				L10_66 = A3_59
-				L9_65 = A3_59.leave_cover
-				L9_65 = L9_65(L10_66)
-				if not L9_65 then
-					L9_65 = managers
-					L9_65 = L9_65.ai
-					L9_65 = L9_65.cover_manager
-					L10_66 = L9_65
-					L9_65 = L9_65.reserved_overlaps_human_player
-					L11_67 = A0_56._unit
-					L9_65 = L9_65(L10_66, L11_67)
-					L10_66 = L4_60 or L10_66.cover_info
-					if not L9_65 then
-						if L10_66 then
-							L11_67 = managers
-							L11_67 = L11_67.cover_util
-							L12_68 = L11_67
-							L11_67 = L11_67.can_enter_cover
-							L13_69 = A0_56._unit
-							L14_70 = L10_66
-							L15_71 = tweak_data
-							L15_71 = L15_71.ai
-							L15_71 = L15_71.humans
-							L15_71 = L15_71.ai_player
-							L15_71 = L15_71.MAX_ENTER_COVER_DISTANCE
-							L11_67 = L11_67(L12_68, L13_69, L14_70, L15_71, true)
-						elseif L11_67 then
-							L12_68 = A3_59
-							L11_67 = A3_59.set_enter_inner_cover_position
-							L11_67(L12_68)
-						end
-					end
+				local l_13_23 = nil
+				 -- DECOMPILER ERROR: Confused about usage of registers!
+
+				if not managers.ai.cover_manager:get_reserved_position(l_13_1) or managers.ai.cover_manager:get_reserved_position(l_13_1) - l_13_4:closest_cover_point():position():length() > 5 then
+					managers.ai.cover_manager:reserve_cover(l_13_1, l_13_4:closest_cover_point():position(), 0.5 * tweak_data.ai.humans.ai_player.RESERVE_COVER_WIDTH)
 				end
-			end
-			L9_65 = A2_58.cover_outer_position
-			if not L9_65 then
-				L10_66 = A3_59
-				L9_65 = A3_59.leave_cover
-				L9_65 = L9_65(L10_66)
-				if not L9_65 then
-					L9_65 = managers
-					L9_65 = L9_65.ai
-					L9_65 = L9_65.cover_manager
-					L10_66 = L9_65
-					L9_65 = L9_65.reserved_overlaps_human_player
-					L11_67 = A0_56._unit
-					L9_65 = L9_65(L10_66, L11_67)
-					if L9_65 then
-						L11_67 = A3_59
-						L10_66 = A3_59.set_enter_outer_cover_position
-						L10_66(L11_67)
-					end
-				end
-			end
-			L9_65 = A0_56._move_to_position
-			if not L9_65 then
-				L9_65 = A0_56._ai_data
-				L9_65 = L9_65.output
-				L9_65 = L9_65.hide_in_cover
-				if not L9_65 then
-					L10_66 = A3_59
-					L9_65 = A3_59.leave_cover
-					L9_65 = L9_65(L10_66)
-					if not L9_65 then
-						L9_65 = A2_58.peeking_up
-						if not L9_65 then
-							L9_65 = A2_58.peeking_side
-							if not L9_65 then
-								A0_56._want_to_peek = true
-							end
-						end
-						L10_66 = A3_59
-						L9_65 = A3_59.set_precision_aiming
-						L9_65(L10_66)
-						L10_66 = A3_59
-						L9_65 = A3_59.aim_target_position
-						L9_65 = L9_65(L10_66)
-						if not L9_65 then
-							L10_66 = A3_59
-							L9_65 = A3_59.set_aim_target_position
-							L11_67 = math
-							L11_67 = L11_67.UP
-							L11_67 = L11_67 * 120
-							L11_67 = L7_63 + L11_67
-							L12_68 = A2_58.cover_normal
-							L12_68 = 10000 * L12_68
-							L11_67 = L11_67 - L12_68
-							L9_65(L10_66, L11_67)
-						end
-						L9_65 = A0_56._want_to_peek
-						if L9_65 then
-							L9_65 = A2_58.peeking_up
-							if not L9_65 then
-								L9_65 = A2_58.peeking_side
-							elseif L9_65 then
-								A0_56._want_to_peek = false
-								L10_66 = A0_56
-								L9_65 = A0_56._forced_targeting_update
-								L9_65(L10_66)
-							end
-						end
-					end
-				end
-			end
-			L9_65 = A0_56._move_to_position
-			if not L9_65 then
-				L9_65 = _UPVALUE1_
-				L10_66 = A0_56._ai_data
-				L9_65 = L9_65(L10_66)
-				if not L9_65 then
-					L9_65 = A2_58.cover_point_edge
-					L10_66 = CoverEdgeType
-					L10_66 = L10_66.NOT_EDGE
-					if L9_65 ~= L10_66 then
-						L9_65 = managers
-						L9_65 = L9_65.cover_util
-						L10_66 = L9_65
-						L9_65 = L9_65.high_cover
-						L11_67 = A2_58.cover
-						L9_65 = L9_65(L10_66, L11_67)
-						if L9_65 then
-							L9_65 = A2_58.cover_point_edge
-							L10_66 = CoverEdgeType
-							L10_66 = L10_66.LEFT
-							if L9_65 == L10_66 then
-								L9_65 = A2_58.facing_right_in_cover
-								if L9_65 then
-									L10_66 = A3_59
-									L9_65 = A3_59.set_movement
-									L11_67 = A2_58.cover
-									L12_68 = L11_67
-									L11_67 = L11_67.right
-									L11_67 = L11_67(L12_68)
-									L11_67 = -L11_67
-									L9_65(L10_66, L11_67)
-								end
-							else
-								L9_65 = A2_58.cover_point_edge
-								L10_66 = CoverEdgeType
-								L10_66 = L10_66.RIGHT
-								if L9_65 == L10_66 then
-									L9_65 = A2_58.facing_right_in_cover
-									if not L9_65 then
-										L10_66 = A3_59
-										L9_65 = A3_59.set_movement
-										L11_67 = A2_58.cover
-										L12_68 = L11_67
-										L11_67 = L11_67.right
-										L15_71 = L11_67(L12_68)
-										L9_65(L10_66, L11_67, L12_68, L13_69, L14_70, L15_71, L11_67(L12_68))
-									end
-								end
-							end
-						end
-					end
-				end
-			end
-		else
-			L8_64 = A0_56._ai_data
-			L9_65 = L8_64
-			L8_64 = L8_64.current_path_completed
-			L8_64 = L8_64(L9_65)
-			if L8_64 then
-				L9_65 = L4_60
-				L8_64 = L4_60.update_distance
-				L10_66 = A0_56._unit_position
-				L8_64(L9_65, L10_66)
-				L8_64 = managers
-				L8_64 = L8_64.cover_util
-				L9_65 = L8_64
-				L8_64 = L8_64.can_enter_cover
-				L10_66 = A0_56._unit
-				L11_67 = L4_60
-				L12_68 = tweak_data
-				L12_68 = L12_68.ai
-				L12_68 = L12_68.humans
-				L12_68 = L12_68.ai_player
-				L12_68 = L12_68.MAX_ENTER_COVER_DISTANCE
-				L13_69 = true
-				L8_64 = L8_64(L9_65, L10_66, L11_67, L12_68, L13_69)
-				if L8_64 then
-					L8_64 = managers
-					L8_64 = L8_64.ai
-					L8_64 = L8_64.cover_manager
-					L9_65 = L8_64
-					L8_64 = L8_64.overlaps_human_player
-					L11_67 = L4_60
-					L10_66 = L4_60.cover
-					L10_66 = L10_66(L11_67)
-					L12_68 = L4_60
-					L11_67 = L4_60.closest_cover_point
-					L11_67 = L11_67(L12_68)
-					L12_68 = L11_67
-					L11_67 = L11_67.position
-					L15_71 = L11_67(L12_68)
-					L8_64 = L8_64(L9_65, L10_66, L11_67, L12_68, L13_69, L14_70, L15_71, L11_67(L12_68))
-					L10_66 = A3_59
-					L9_65 = A3_59.set_enter_cover
-					L11_67 = L4_60
-					L12_68 = L8_64
-					L9_65(L10_66, L11_67, L12_68)
-				end
-			end
-			L9_65 = L4_60
-			L8_64 = L4_60.closest_cover_point
-			L8_64 = L8_64(L9_65)
-			L9_65 = L8_64
-			L8_64 = L8_64.position
-			L8_64 = L8_64(L9_65)
-			L7_63 = L8_64
-		end
-		L8_64 = managers
-		L8_64 = L8_64.ai
-		L8_64 = L8_64.cover_manager
-		L9_65 = L8_64
-		L8_64 = L8_64.get_reserved_position
-		L10_66 = A1_57
-		L8_64 = L8_64(L9_65, L10_66)
-		if L8_64 then
-			L9_65 = L8_64 - L7_63
-			L10_66 = L9_65
-			L9_65 = L9_65.length
-			L9_65 = L9_65(L10_66)
-		elseif L9_65 > 5 then
-			L9_65 = managers
-			L9_65 = L9_65.ai
-			L9_65 = L9_65.cover_manager
-			L10_66 = L9_65
-			L9_65 = L9_65.reserve_cover
-			L11_67 = A1_57
-			L12_68 = L7_63
-			L13_69 = tweak_data
-			L13_69 = L13_69.ai
-			L13_69 = L13_69.humans
-			L13_69 = L13_69.ai_player
-			L13_69 = L13_69.RESERVE_COVER_WIDTH
-			L13_69 = 0.5 * L13_69
-			L9_65(L10_66, L11_67, L12_68, L13_69)
-		end
-	elseif L5_61 then
-		L8_64 = A3_59
-		L7_63 = A3_59.set_leave_cover
-		L7_63(L8_64)
-	else
-		L7_63 = managers
-		L7_63 = L7_63.ai
-		L7_63 = L7_63.cover_manager
-		L8_64 = L7_63
-		L7_63 = L7_63.get_reserved_position
-		L9_65 = A1_57
-		L7_63 = L7_63(L8_64, L9_65)
-		if L7_63 then
-			L7_63 = managers
-			L7_63 = L7_63.ai
-			L7_63 = L7_63.cover_manager
-			L8_64 = L7_63
-			L7_63 = L7_63.release_cover
-			L9_65 = A1_57
-			L7_63(L8_64, L9_65)
-		end
-	end
-	L7_63 = A0_56._ai_data
-	L7_63 = L7_63.input
-	L8_64 = L4_60 and L5_61
-	L7_63.in_target_cover = L8_64
-	L7_63 = A0_56._ai_data
-	L7_63 = L7_63.input
-	L9_65 = A3_59
-	L8_64 = A3_59.enter_cover
-	L8_64 = L8_64(L9_65)
-	L7_63.entering_target_cover = L8_64
-end
-function PlayerAiNerveSystem._update_cover_quick_move(A0_72, A1_73, A2_74, A3_75, A4_76)
-	local L5_77, L6_78, L7_79, L8_80, L9_81, L10_82, L11_83, L12_84, L13_85, L14_86, L15_87, L16_88, L17_89, L18_90, L19_91
-	L5_77 = A1_73.quick_move_infos
-	L6_78 = A1_73.cover_point
-	L7_79, L8_80, L9_81, L10_82 = nil, nil, nil, nil
-	L11_83 = A0_72._move_to_position
-	L12_84 = A2_74 - L11_83
-	L12_84 = L12_84.length
-	L12_84 = L12_84(L13_85)
-	if L12_84 < 150 then
-		L11_83 = L13_85
-		if L11_83 then
-			L12_84 = L13_85
-		else
-			L11_83 = A0_72._move_to_position
-		end
-	end
-	for L16_88, L17_89 in L13_85(L14_86) do
-		L19_91 = L17_89
-		L18_90 = L17_89.possible_from_cover_point
-		L18_90 = L18_90(L19_91, A4_76, L6_78)
-		if L18_90 then
-			L19_91 = L17_89
-			L18_90 = L17_89.target_cover_point
-			L18_90 = L18_90(L19_91, L6_78)
-			L19_91 = L18_90.position
-			L19_91 = L19_91(L18_90)
-			if not managers.ai.cover_manager:is_cover_reserved(L17_89:target_cover(), L19_91) and (L19_91 - A2_74):length() > 0 and L12_84 > (L19_91 - L11_83):length() and (not L9_81 or L9_81 > (L19_91 - L11_83):length()) then
-				L7_79 = L17_89
-				L9_81, L8_80 = (L19_91 - L11_83):length(), L16_88
-				L10_82 = L18_90
-			end
-		end
-	end
-	if L7_79 then
-		L16_88 = L7_79
-		L17_89 = L6_78
-		L18_90 = L10_82
-		if L13_85 then
-			return L14_86, L15_87
-		end
-	end
-	return L13_85
-end
-function PlayerAiNerveSystem._calculate_look_at_position(A0_92, A1_93, A2_94, A3_95, A4_96)
-	local L5_97, L6_98, L7_99, L8_100
-	L5_97 = 500
-	L6_98 = nil
-	if A4_96 then
-		L6_98 = A4_96
-	else
-		L7_99 = A0_92._waypoint_rotation_look_at_position
-		if L7_99 then
-			L7_99 = A0_92._waypoint_rotation_look_at_position
-			return L7_99
-		else
-			L7_99 = A0_92._move_to_position
-			if L7_99 then
-				L6_98 = A0_92._move_to_position
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			elseif l_13_5 then
+				l_13_3:set_leave_cover()
 			else
-				L7_99 = A0_92._ai_data
-				L7_99 = L7_99.output
-				L6_98 = L7_99.look_at_position
+				if managers.ai.cover_manager:get_reserved_position(l_13_1) then
+					managers.ai.cover_manager:release_cover(l_13_1)
+				end
 			end
+			local l_13_27 = nil
+			do
+				l_13_0._ai_data.input.in_target_cover = not l_13_4 or l_13_27
+				l_13_0._ai_data.input.entering_target_cover = l_13_3:enter_cover()
+			end
+			 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+			 -- WARNING: missing end command somewhere! Added here
+		end
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 113 
+end
+
+PlayerAiNerveSystem._update_cover_quick_move = function(l_14_0, l_14_1, l_14_2, l_14_3, l_14_4)
+	local l_14_17, l_14_18, l_14_19, l_14_20, l_14_21, l_14_22 = nil
+	local l_14_5 = l_14_1.quick_move_infos
+	local l_14_6 = l_14_1.cover_point
+	local l_14_7, l_14_8, l_14_9, l_14_10 = nil, nil, nil, nil
+	if l_14_2 - l_14_0._move_to_position:length() < 150 then
+		local l_14_11, l_14_12 = l_14_0:_next_path_position()
+		if l_14_11 then
+			l_14_12 = l_14_2 - l_14_11:length()
+			local l_14_13 = nil
+		end
+	else
+		l_14_11 = l_14_0._move_to_position
+	end
+	for i_0,i_1 in pairs(l_14_5) do
+		local l_14_14, l_14_15 = nil
+		if i_1:possible_from_cover_point(l_14_4, l_14_6) and not managers.ai.cover_manager:is_cover_reserved(i_1:target_cover(), i_1:target_cover_point(l_14_6):position()) and i_1:target_cover_point(l_14_6):position() - l_14_2:length() > 0 then
+			local l_14_27 = nil
+		if i_1:target_cover_point(l_14_6):position() - l_14_14:length() < l_14_15 and (not l_14_9 or i_1:target_cover_point(l_14_6):position() - l_14_14:length() < l_14_9) then
+			end
+			l_14_7 = l_14_26
+			l_14_8 = l_14_25
+			l_14_9 = i_1:target_cover_point(l_14_6):position() - l_14_14:length()
+			l_14_10 = l_14_27
 		end
 	end
-	L7_99 = A0_92._next_update_eye_target
-	if L7_99 then
-		if L6_98 then
-			A0_92._next_update_eye_target = nil
-		else
-			L6_98 = A0_92._next_update_eye_target
-		end
+	if l_14_7 and l_14_0._player_movement_utilities:is_quick_move_path_free(l_14_0._unit, l_14_7, l_14_6, l_14_10) then
+		return l_14_8, l_14_1.quick_move_infos_id
 	end
-	if not L6_98 then
-		L8_100 = A1_93
-		L7_99 = A1_93.rotation
-		L7_99 = L7_99(L8_100)
-		L8_100 = L7_99
-		L7_99 = L7_99.y
-		L7_99 = L7_99(L8_100)
-		L7_99 = 10000 * L7_99
-		L6_98 = A2_94 + L7_99
+	return nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+PlayerAiNerveSystem._calculate_look_at_position = function(l_15_0, l_15_1, l_15_2, l_15_3, l_15_4)
+	local l_15_5 = 500
+	local l_15_6 = nil
+	if l_15_4 then
+		l_15_6 = l_15_4
+	elseif l_15_0._waypoint_rotation_look_at_position then
+		return l_15_0._waypoint_rotation_look_at_position
+	elseif l_15_0._move_to_position then
+		l_15_6 = l_15_0._move_to_position
+	else
+		l_15_6 = l_15_0._ai_data.output.look_at_position
 	end
-	L7_99 = mvector3
-	L7_99 = L7_99.distance
-	L8_100 = L6_98
-	L7_99 = L7_99(L8_100, A2_94)
-	if L5_97 < L7_99 then
-		return L6_98
+	if l_15_0._next_update_eye_target and l_15_6 then
+		l_15_0._next_update_eye_target = nil
+	else
+		l_15_6 = l_15_0._next_update_eye_target
 	end
-	L8_100 = L6_98 - A2_94
-	L8_100 = L8_100 + (L5_97 - L7_99) * L8_100:flat(math.UP):normalized()
-	L7_99 = L5_97
-	A0_92._look_at_rotation = Rotation:look_at(L8_100, math.UP)
-	A0_92._look_at_distance = L7_99
-	return A2_94 + A0_92._look_at_distance * A0_92._look_at_rotation:y()
+	if not l_15_6 then
+		l_15_6 = l_15_2 + 10000 * l_15_1:rotation():y()
+	end
+	local l_15_7 = mvector3.distance(l_15_6, l_15_2)
+	if l_15_5 < l_15_7 then
+		return l_15_6
+	end
+	local l_15_8 = l_15_6 - l_15_2
+	l_15_8 = l_15_8 + (l_15_5 - l_15_7) * l_15_8:flat(math.UP):normalized()
+	l_15_7 = l_15_5
+	l_15_0._look_at_rotation = Rotation:look_at(l_15_8, math.UP)
+	l_15_0._look_at_distance = l_15_7
+	return l_15_2 + l_15_0._look_at_distance * l_15_0._look_at_rotation:y()
 end
-function PlayerAiNerveSystem._burst_fire(A0_101, A1_102, A2_103, A3_104)
-	local L4_105
-	L4_105 = tweak_data
-	L4_105 = L4_105.ai
-	L4_105 = L4_105.humans
-	L4_105 = L4_105.ai_player
-	A0_101._burst_mean_time = L4_105.BURST_LENGTH
-	A0_101._burst_standard_deviation_time = 2 * L4_105.BURST_LENGTH
-	A0_101._burst_max_deviation_time = 0.4 * L4_105.BURST_LENGTH
-	A0_101._burst_pause_mean_time = L4_105.TIME_BETWEEN_BURSTS
-	A0_101._burst_pause_standard_deviation_time = 2 * L4_105.TIME_BETWEEN_BURSTS
-	A0_101._burst_pause_max_deviation_time = 0.4 * L4_105.TIME_BETWEEN_BURSTS
-	return AiNerveSystem._burst_fire(A0_101, A1_102, A2_103, A3_104)
+
+PlayerAiNerveSystem._burst_fire = function(l_16_0, l_16_1, l_16_2, l_16_3)
+	local l_16_4 = tweak_data.ai.humans.ai_player
+	l_16_0._burst_mean_time = l_16_4.BURST_LENGTH
+	l_16_0._burst_standard_deviation_time = 2 * l_16_4.BURST_LENGTH
+	l_16_0._burst_max_deviation_time = 0.4 * l_16_4.BURST_LENGTH
+	l_16_0._burst_pause_mean_time = l_16_4.TIME_BETWEEN_BURSTS
+	l_16_0._burst_pause_standard_deviation_time = 2 * l_16_4.TIME_BETWEEN_BURSTS
+	l_16_0._burst_pause_max_deviation_time = 0.4 * l_16_4.TIME_BETWEEN_BURSTS
+	local l_16_5 = AiNerveSystem._burst_fire
+	local l_16_6 = l_16_0
+	local l_16_7 = l_16_1
+	local l_16_8 = l_16_2
+	local l_16_9 = l_16_3
+	return l_16_5(l_16_6, l_16_7, l_16_8, l_16_9)
 end
-function PlayerAiNerveSystem._is_dead(A0_106)
-	return A0_106._unit:damage_data():is_fully_damaged() and not A0_106._unit:player_data().revive_when_fully_damaged
+
+PlayerAiNerveSystem._is_dead = function(l_17_0)
+	if l_17_0._unit:damage_data():is_fully_damaged() then
+		return not l_17_0._unit:player_data().revive_when_fully_damaged
+	end
 end
+
+

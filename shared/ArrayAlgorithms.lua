@@ -1,84 +1,78 @@
-local L0_0, L1_1
-L0_0 = {}
-ArrayAlgorithms = L0_0
-L0_0 = ArrayAlgorithms
-function L1_1(A0_2, A1_3)
-	local L2_4, L3_5, L4_6, L5_7, L6_8
-	for L5_7, L6_8 in L2_4(L3_5) do
-		table.insert(A0_2, L6_8)
+ArrayAlgorithms = {}
+ArrayAlgorithms.insert = function(l_1_0, l_1_1)
+	local l_1_5, l_1_6, l_1_7, l_1_8 = nil
+	for i_0,i_1 in ipairs(l_1_1) do
+		table.insert(l_1_0, i_1)
 	end
 end
-L0_0.insert = L1_1
-L0_0 = ArrayAlgorithms
-function L1_1(A0_9, A1_10)
-	local L2_11, L3_12, L4_13, L5_14, L6_15, L7_16
-	L2_11 = {}
-	for L6_15, L7_16 in L3_12(L4_13) do
-		table.insert(L2_11, L7_16)
+
+ArrayAlgorithms.concatenate = function(l_2_0, l_2_1)
+	local l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_11, l_2_12, l_2_13 = nil
+	local l_2_2 = {}
+	for i_0,i_1 in ipairs(l_2_0) do
+		table.insert(l_2_2, i_1)
 	end
-	for L6_15, L7_16 in L3_12(L4_13) do
-		table.insert(L2_11, L7_16)
+	for i_0,i_1 in ipairs(l_2_1) do
+		table.insert(l_2_2, i_1)
 	end
-	return L2_11
+	return l_2_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-L0_0.concatenate = L1_1
-L0_0 = ArrayAlgorithms
-function L1_1(A0_17, A1_18)
-	local L2_19
-	L2_19 = #A0_17
-	assert(A1_18 <= L2_19)
-	for _FORV_6_ = A1_18, L2_19 do
-		A0_17[_FORV_6_] = nil
+
+ArrayAlgorithms.erase_from_index = function(l_3_0, l_3_1)
+	local l_3_2 = #l_3_0
+	local l_3_3 = assert
+	l_3_3(l_3_1 <= l_3_2)
+	l_3_3 = l_3_1
+	for i = l_3_3, l_3_2 do
+		l_3_0[l_3_8] = nil
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-L0_0.erase_from_index = L1_1
-L0_0 = ArrayAlgorithms
-function L1_1(A0_20, A1_21)
-	local L2_22, L3_23, L4_24, L5_25, L6_26
-	for L5_25, L6_26 in L2_22(L3_23) do
-		if A1_21(L6_26) then
-			return L5_25
+
+ArrayAlgorithms.find_first_match = function(l_4_0, l_4_1)
+	local l_4_5, l_4_6, l_4_7 = nil
+	for i_0,i_1 in ipairs(l_4_0) do
+		if l_4_1(i_1) then
+			return i_0
 		end
 	end
 end
-L0_0.find_first_match = L1_1
-L0_0 = ArrayAlgorithms
-function L1_1(A0_27, A1_28)
-	local L2_29
-	L2_29 = A0_27 < A1_28
-	return L2_29
+
+ArrayAlgorithms.insert_sorted_comparator_func_default = function(l_5_0, l_5_1)
+	return l_5_0 < l_5_1
 end
-L0_0.insert_sorted_comparator_func_default = L1_1
-L0_0 = ArrayAlgorithms
-function L1_1(A0_30, A1_31, A2_32)
-	local L3_33, L4_34, L5_35, L6_36, L7_37
-	if not A2_32 then
-		L3_33 = ArrayAlgorithms
-		A2_32 = L3_33.insert_sorted_comparator_func_default
+
+ArrayAlgorithms.insert_sorted = function(l_6_0, l_6_1, l_6_2)
+	if not l_6_2 then
+		l_6_2 = ArrayAlgorithms.insert_sorted_comparator_func_default
 	end
-	L3_33 = 1
-	L4_34 = #A0_30
-	L5_35 = 1
-	L6_36 = 0
-	while L3_33 <= L4_34 do
-		L7_37 = math
-		L7_37 = L7_37.floor
-		L7_37 = L7_37((L3_33 + L4_34) / 2)
-		L5_35 = L7_37
-		L7_37 = A2_32
-		L7_37 = L7_37(A1_31, A0_30[L5_35])
-		if L7_37 then
-			L7_37 = L5_35 - 1
-			L6_36 = 0
-			L4_34 = L7_37
-		else
-			L7_37 = L5_35 + 1
-			L6_36 = 1
-			L3_33 = L7_37
+	local l_6_3 = 1
+	local l_6_4 = #l_6_0
+	local l_6_5 = 1
+	while 1 do
+		local l_6_6 = 0
+		while 1 do
+			while l_6_3 <= l_6_4 do
+				l_6_5 = math.floor((l_6_3 + l_6_4) / 2)
+				if l_6_2(l_6_1, l_6_0[l_6_5]) then
+					l_6_4 = l_6_5 - 1
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				l_6_3 = l_6_5 + 1
+			end
+			do
+				local l_6_7 = l_6_5 + l_6_6
+				table.insert(l_6_0, l_6_7, l_6_1)
+				return l_6_7
+			end
+			 -- WARNING: missing end command somewhere! Added here
 		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L7_37 = L5_35 + L6_36
-	table.insert(A0_30, L7_37, A1_31)
-	return L7_37
 end
-L0_0.insert_sorted = L1_1
+
+

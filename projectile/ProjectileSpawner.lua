@@ -1,10 +1,17 @@
-ProjectileSpawner = ProjectileSpawner or class()
-function ProjectileSpawner.init(A0_0, A1_1)
+if not ProjectileSpawner then
+	ProjectileSpawner = class()
 end
-function ProjectileSpawner.destroy(A0_2)
-	local L1_3
+ProjectileSpawner.init = function(l_1_0, l_1_1)
 end
-function ProjectileSpawner.spawn_projectile(A0_4, A1_5, A2_6, A3_7)
-	local L4_8
-	return L4_8
+
+ProjectileSpawner.destroy = function(l_2_0)
 end
+
+ProjectileSpawner.spawn_projectile = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_4 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_3_4
+end
+
+

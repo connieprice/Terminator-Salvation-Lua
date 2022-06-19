@@ -1,10 +1,13 @@
-MenuStateGrinMovie = MenuStateGrinMovie or class(MenuStateMovie)
-function MenuStateGrinMovie.init(A0_0)
-	MenuStateMovie.init(A0_0)
-	A0_0:play("grin_logo")
+if not MenuStateGrinMovie then
+	MenuStateGrinMovie = class(MenuStateMovie)
 end
-function MenuStateGrinMovie.next_state(A0_1)
-	local L1_2
-	L1_2 = MenuStatePublisher2Movie
-	return L1_2
+MenuStateGrinMovie.init = function(l_1_0)
+	MenuStateMovie.init(l_1_0)
+	l_1_0:play("grin_logo")
 end
+
+MenuStateGrinMovie.next_state = function(l_2_0)
+	return MenuStatePublisher2Movie
+end
+
+

@@ -1,9 +1,11 @@
-MenuStateInit = MenuStateInit or class(FiniteStateMachineState)
-function MenuStateInit.transition(A0_0)
-	local L1_1
-	L1_1 = managers
-	L1_1 = L1_1.game
-	L1_1 = L1_1.menu_frontend_type
-	L1_1 = L1_1(L1_1)
-	return A0_0._menu:_frontend_end_sync_state(L1_1)
+if not MenuStateInit then
+	MenuStateInit = class(FiniteStateMachineState)
 end
+MenuStateInit.transition = function(l_1_0)
+	local l_1_1 = managers.game:menu_frontend_type()
+	local l_1_2, l_1_3 = l_1_0._menu:_frontend_end_sync_state, l_1_0._menu
+	local l_1_4 = l_1_1
+	return l_1_2(l_1_3, l_1_4)
+end
+
+

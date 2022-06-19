@@ -1,151 +1,111 @@
-local L0_0
-L0_0 = FindTargetObject
-if not L0_0 then
-	L0_0 = class
-	L0_0 = L0_0()
+if not FindTargetObject then
+	FindTargetObject = class()
 end
-FindTargetObject = L0_0
-L0_0 = FindTargetObject
-function L0_0.init(A0_1, A1_2)
-	A0_1._ai_data = A1_2:ai_data()
-	A0_1._unit = A1_2
-	IntelUtilities.ai_update_eyes(A1_2)
-	A0_1:_setup_eyes()
-	A0_1._world_slot_mask = managers.slot:get_mask("visibility_blockers")
-	A0_1._enemy_slot_mask = managers.slot:get_mask(A1_2:ai_data().input.enemy_slot_mask)
-	A0_1._unit_visibility_query = A1_2:visibility_query()
-	A0_1._hit_callback = callback(A0_1, A0_1, "hit_callback")
-	A0_1._passed_callback = callback(A0_1, A0_1, "passed_callback")
-	A0_1:reset_query()
+FindTargetObject.init = function(l_1_0, l_1_1)
+	local l_1_2 = l_1_1:ai_data()
+	l_1_0._ai_data = l_1_2
+	l_1_0._unit = l_1_1
+	IntelUtilities.ai_update_eyes(l_1_1)
+	l_1_0:_setup_eyes()
+	l_1_0._world_slot_mask = managers.slot:get_mask("visibility_blockers")
+	l_1_0._enemy_slot_mask = managers.slot:get_mask(l_1_2.input.enemy_slot_mask)
+	l_1_0._unit_visibility_query = l_1_1:visibility_query()
+	l_1_0._hit_callback = callback(l_1_0, l_1_0, "hit_callback")
+	l_1_0._passed_callback = callback(l_1_0, l_1_0, "passed_callback")
+	l_1_0:reset_query()
 end
-L0_0 = false
-function FindTargetObject.start_query(A0_3, A1_4)
-	local L2_5, L3_6, L4_7, L5_8, L6_9, L7_10, L8_11, L9_12, L10_13, L11_14, L12_15, L13_16, L14_17, L15_18, L16_19, L17_20, L18_21, L19_22
-	L3_6 = A0_3
-	L2_5 = A0_3.reset_query
-	L2_5(L3_6)
-	L3_6 = A0_3
-	L2_5 = A0_3._setup_eyes
-	L2_5(L3_6)
-	L2_5 = World
-	L3_6 = L2_5
-	L2_5 = L2_5.find_units_quick
-	L4_7 = "sphere"
-	L5_8 = A1_4
-	L6_9 = A0_3._max_range
-	L7_10 = A0_3._enemy_slot_mask
-	L2_5 = L2_5(L3_6, L4_7, L5_8, L6_9, L7_10)
-	L3_6, L4_7, L5_8, L6_9, L7_10 = nil, nil, nil, nil, nil
-	L8_11 = math
-	L8_11 = L8_11.UP
-	for L12_15, L13_16 in L9_12(L10_13) do
-		L4_7 = L14_17
-		if L4_7 then
-		elseif L14_17 then
-			L3_6 = L14_17
-			if L14_17 then
-			elseif L14_17 then
-				L5_8 = L14_17
-				for L17_20, L18_21 in L14_17(L15_18) do
-					L19_22 = A0_3._unit_eyes
-					L19_22 = #L19_22
-					if L19_22 ~= 1 then
-						L19_22 = mvector3
-						L19_22 = L19_22.distance
-						L19_22 = L19_22(L3_6, L18_21.position)
-					else
-						if L19_22 < L18_21.range then
-							L19_22 = L18_21.position
-							L6_9 = L3_6 - L19_22
-							L19_22 = L6_9.to_polar_with_reference
-							L19_22 = L19_22(L6_9, L18_21.forward, L8_11)
-							L7_10 = L19_22
-							L19_22 = math
-							L19_22 = L19_22.abs
-							L19_22 = L19_22(L7_10.spin)
-							if L19_22 < L18_21.half_fov then
-								L19_22 = math
-								L19_22 = L19_22.abs
-								L19_22 = L19_22(L7_10.pitch)
-								if L19_22 < L18_21.half_zfov then
-									if L5_8 then
-										L19_22 = L5_8.primary_target_position
-										L19_22 = L19_22(L5_8)
-										L3_6 = L19_22
-									else
-										L19_22 = L13_16.oobb
-										L19_22 = L19_22(L13_16)
-										L19_22 = L19_22.center
-										L19_22 = L19_22(L19_22)
-										L3_6 = L19_22
-									end
-									L19_22 = _UPVALUE0_
-									if L19_22 then
-										L19_22 = World
-										L19_22 = L19_22.issue_raycast
-										L19_22 = L19_22(L19_22, A0_3._hit_callback, "ray", L18_21.position, L3_6, "passed", A0_3._passed_callback, "slot_mask", A0_3._world_slot_mask, "ignore_unit", A0_3._unit)
-										A0_3._ray_targets[L19_22] = L13_16
-										A0_3._waiting_for_ray_casts = A0_3._waiting_for_ray_casts + 1
-									else
-										L19_22 = A0_3._ray_targets
-										L19_22[1] = L13_16
-										A0_3._waiting_for_ray_casts = 1
-										L19_22 = World
-										L19_22 = L19_22.raycast
-										L19_22 = L19_22(L19_22, "ray", L18_21.position, L3_6, "slot_mask", A0_3._world_slot_mask)
-										A0_3._hit_callback(1, L19_22)
-									end
-								end
-							end
+
+local l_0_0 = false
+FindTargetObject.start_query = function(l_2_0, l_2_1)
+	-- upvalues: l_0_0
+	local l_2_12, l_2_13, l_2_14, l_2_15, l_2_16, l_2_17, l_2_18, l_2_19, l_2_23, l_2_24, l_2_25, l_2_26, l_2_27, l_2_28, l_2_29, l_2_30, l_2_31, l_2_32, l_2_33, l_2_34, l_2_35, l_2_36, l_2_37, l_2_38, l_2_40, l_2_41, l_2_42, l_2_43, l_2_44, l_2_45 = nil
+	l_2_0:reset_query()
+	l_2_0:_setup_eyes()
+	local l_2_2 = (World:find_units_quick("sphere", l_2_1, l_2_0._max_range, l_2_0._enemy_slot_mask))
+	local l_2_3, l_2_4, l_2_5, l_2_6, l_2_7 = nil, nil, nil, nil, nil
+	local l_2_8 = math.UP
+	for i_0,i_1 in pairs(l_2_2) do
+		l_2_4 = i_1:visibility_query()
+		if not l_2_4 or l_2_4:visible_from_position(l_2_1) then
+			l_2_3 = i_1:position()
+		if not l_2_0._unit_visibility_query or l_2_0._unit_visibility_query:visible_from_position(l_2_3) then
+			end
+			l_2_5 = i_1:targeting_info()
+			for i_0,i_1 in pairs(l_2_0._unit_eyes) do
+				if #l_2_0._unit_eyes == 1 or mvector3.distance(l_2_3, i_1.position) < i_1.range then
+					l_2_6 = l_2_3 - i_1.position
+					l_2_7 = l_2_6:to_polar_with_reference(i_1.forward, l_2_8)
+				if math.abs(l_2_7.spin) < i_1.half_fov then
 					end
+					if math.abs(l_2_7.pitch) < i_1.half_zfov then
+						if l_2_5 then
+							l_2_3 = l_2_5:primary_target_position()
+						else
+							l_2_3 = l_2_21:oobb():center()
+						end
+						if l_0_0 then
+							l_2_0._ray_targets[World:issue_raycast(l_2_0._hit_callback, "ray", i_1.position, l_2_3, "passed", l_2_0._passed_callback, "slot_mask", l_2_0._world_slot_mask, "ignore_unit", l_2_0._unit)] = l_2_21
+							l_2_0._waiting_for_ray_casts = l_2_0._waiting_for_ray_casts + 1
+						end
 					else
+						l_2_0._ray_targets[1] = l_2_21
+						l_2_0._waiting_for_ray_casts = 1
+						local l_2_46 = nil
+						l_2_0._hit_callback(1, World:raycast("ray", i_1.position, l_2_3, "slot_mask", l_2_0._world_slot_mask))
 					end
-				end
 			end
 		end
 	end
-	if L9_12 then
-		L9_12(L10_13, L11_14)
+	if Global.category_debug_render["ai.eyes"] then
+		IntelUtilities._debug_render_unit_eyes(unit, unit_eyes)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function FindTargetObject.is_query_done(A0_23)
-	return A0_23._waiting_for_ray_casts == 0
+
+FindTargetObject.is_query_done = function(l_3_0)
+	return l_3_0._waiting_for_ray_casts == 0
 end
-function FindTargetObject.reset_query(A0_24)
-	local L1_25
-	L1_25 = {}
-	A0_24._targets = L1_25
-	L1_25 = {}
-	A0_24._ray_targets = L1_25
-	A0_24._waiting_for_ray_casts = 0
+
+FindTargetObject.reset_query = function(l_4_0)
+	l_4_0._targets = {}
+	l_4_0._ray_targets = {}
+	l_4_0._waiting_for_ray_casts = 0
 end
-function FindTargetObject.get_result(A0_26)
-	local L1_27
-	L1_27 = A0_26._targets
-	return L1_27
+
+FindTargetObject.get_result = function(l_5_0)
+	return l_5_0._targets
 end
-function FindTargetObject.hit_callback(A0_28, A1_29, A2_30)
-	local L3_31
-	L3_31 = A0_28._waiting_for_ray_casts
-	if L3_31 == 0 then
-		return
+
+FindTargetObject.hit_callback = function(l_6_0, l_6_1, l_6_2)
+	if l_6_0._waiting_for_ray_casts == 0 then
+		return 
 	end
-	L3_31 = A0_28._waiting_for_ray_casts
-	L3_31 = L3_31 - 1
-	A0_28._waiting_for_ray_casts = L3_31
-	if not A2_30 then
-		L3_31 = A0_28._ray_targets
-		L3_31 = L3_31[A1_29]
-		assert(L3_31)
-		if alive(L3_31) then
-			A0_28._targets[L3_31:key()] = L3_31
+	l_6_0._waiting_for_ray_casts = l_6_0._waiting_for_ray_casts - 1
+	if not l_6_2 then
+		local l_6_3 = l_6_0._ray_targets[l_6_1]
+		assert(l_6_3)
+	if alive(l_6_3) then
+		end
+		local l_6_4 = l_6_3:key()
+		l_6_0._targets[l_6_4] = l_6_3
+	end
+end
+
+FindTargetObject.passed_callback = function(l_7_0, l_7_1, l_7_2)
+end
+
+FindTargetObject._setup_eyes = function(l_8_0)
+	local l_8_4, l_8_5, l_8_6, l_8_7, l_8_8, l_8_9 = nil
+	assert(l_8_0._ai_data.current_unit_eyes)
+	if l_8_0._unit_eyes ~= l_8_0._ai_data.current_unit_eyes then
+		l_8_0._unit_eyes = l_8_0._ai_data.current_unit_eyes
+		for i_0,i_1 in pairs(l_8_0._unit_eyes) do
+			if not l_8_0._max_range or l_8_0._max_range < i_1.range then
+				l_8_0._max_range = i_1.range
+			end
 		end
 	end
 end
-function FindTargetObject.passed_callback(A0_32, A1_33, A2_34)
-end
-function FindTargetObject._setup_eyes(A0_35)
-	assert(A0_35._ai_data.current_unit_eyes)
-	if A0_35._unit_eyes ~= A0_35._ai_data.current_unit_eyes then
-		A0_35._unit_eyes = A0_35._ai_data.current_unit_eyes
-		for 
+
+

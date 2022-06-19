@@ -1,72 +1,63 @@
-SensoryEvent = SensoryEvent or class()
+if not SensoryEvent then
+	SensoryEvent = class()
+end
 SensoryEvent._next_event_instance_id = 1
-function SensoryEvent.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	local L7_7, L8_8
-	L7_7 = SensoryEvent
-	L7_7 = L7_7._next_event_instance_id
-	A0_0._instance_id = L7_7
-	L7_7 = SensoryEvent
-	L8_8 = SensoryEvent
-	L8_8 = L8_8._next_event_instance_id
-	L8_8 = L8_8 + 1
-	L7_7._next_event_instance_id = L8_8
-	A0_0._definition = A2_2
-	A0_0._type_id = A1_1
-	A0_0._duration = 0
-	A0_0._start_time = A6_6
-	A0_0._start_position = A4_4
-	A0_0._position = A4_4
-	A0_0._follow_unit = A5_5
-	A0_0._unit = A3_3
+SensoryEvent.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	l_1_0._instance_id = SensoryEvent._next_event_instance_id
+	SensoryEvent._next_event_instance_id = SensoryEvent._next_event_instance_id + 1
+	l_1_0._definition = l_1_2
+	l_1_0._type_id = l_1_1
+	l_1_0._duration = 0
+	l_1_0._start_time = l_1_6
+	l_1_0._start_position = l_1_4
+	l_1_0._position = l_1_4
+	l_1_0._follow_unit = l_1_5
+	l_1_0._unit = l_1_3
 end
-function SensoryEvent.instance_id(A0_9)
-	local L1_10
-	L1_10 = A0_9._instance_id
-	return L1_10
+
+SensoryEvent.instance_id = function(l_2_0)
+	return l_2_0._instance_id
 end
-function SensoryEvent.type_id(A0_11)
-	local L1_12
-	L1_12 = A0_11._type_id
-	return L1_12
+
+SensoryEvent.type_id = function(l_3_0)
+	return l_3_0._type_id
 end
-function SensoryEvent.source_type_id(A0_13)
-	return A0_13._definition.source_type_id
+
+SensoryEvent.source_type_id = function(l_4_0)
+	return l_4_0._definition.source_type_id
 end
-function SensoryEvent.position(A0_14)
-	local L1_15
-	L1_15 = A0_14._position
-	return L1_15
+
+SensoryEvent.position = function(l_5_0)
+	return l_5_0._position
 end
-function SensoryEvent.sound_level_at_position(A0_16, A1_17)
-	local L2_18, L3_19, L4_20
-	L2_18 = mvector3
-	L2_18 = L2_18.distance
-	L3_19 = A1_17
-	L4_20 = A0_16._position
-	L2_18 = L2_18(L3_19, L4_20)
-	L3_19 = A0_16._definition
-	L3_19 = L3_19.sound_level_reference_distance
-	L3_19 = L2_18 / L3_19
-	L4_20 = 1.0E-5
-	L3_19 = math.max(L3_19, L4_20)
-	return A0_16._definition.sound_level - 20 * math.log10(L3_19)
+
+SensoryEvent.sound_level_at_position = function(l_6_0, l_6_1)
+	local l_6_2 = mvector3.distance(l_6_1, l_6_0._position)
+	local l_6_3 = l_6_2 / l_6_0._definition.sound_level_reference_distance
+	local l_6_4 = 1e-005
+	l_6_3 = math.max(l_6_3, l_6_4)
+	return l_6_0._definition.sound_level - 20 * math.log10(l_6_3)
 end
-function SensoryEvent.duration(A0_21)
-	local L1_22
-	L1_22 = A0_21._duration
-	return L1_22
+
+SensoryEvent.duration = function(l_7_0)
+	return l_7_0._duration
 end
-function SensoryEvent.start_time(A0_23)
-	local L1_24
-	L1_24 = A0_23._start_time
-	return L1_24
+
+SensoryEvent.start_time = function(l_8_0)
+	return l_8_0._start_time
 end
-function SensoryEvent.valid(A0_25)
-	return alive(A0_25._unit)
+
+SensoryEvent.valid = function(l_9_0)
+	local l_9_1 = alive
+	local l_9_2 = l_9_0._unit
+	return l_9_1(l_9_2)
 end
-function SensoryEvent.update(A0_26, A1_27, A2_28)
-	A0_26._duration = A0_26._duration + A2_28
-	if A0_26._follow_unit and alive(A0_26._unit) then
-		A0_26._position = A0_26._unit:position()
+
+SensoryEvent.update = function(l_10_0, l_10_1, l_10_2)
+	l_10_0._duration = l_10_0._duration + l_10_2
+	if l_10_0._follow_unit and alive(l_10_0._unit) then
+		l_10_0._position = l_10_0._unit:position()
 	end
 end
+
+

@@ -1,146 +1,121 @@
 require("menu/2D/Menu2DMouseStates")
-Menu2DMouse = Menu2DMouse or class()
-function Menu2DMouse.init(A0_0, A1_1)
-	A0_0._root_panel = A1_1
-	A0_0._cursor_position = {
-		x = A1_1:width() / 2,
-		y = A1_1:height() / 2
-	}
-	A0_0._cursor = A0_0._root_panel:bitmap({
-		texture = "gui_pc_mouse_cursor",
-		x = A0_0._cursor_position.x,
-		y = A0_0._cursor_position.y,
-		layer = 10000,
-		rotation = 0,
-		visible = false
-	})
-	A0_0._visible = false
-	A0_0._hot_spot = {x = 11, y = 8}
-	A0_0._idle_timer = 0
-	A0_0._state_machine = FiniteStateMachine:new(A0_0, "_mouse", Menu2DMouseStateInvisible)
+if not Menu2DMouse then
+	Menu2DMouse = class()
 end
-function Menu2DMouse.destroy(A0_2)
-	A0_2._state_machine:destroy()
-	A0_2._root_panel:remove(A0_2._cursor)
+Menu2DMouse.init = function(l_1_0, l_1_1)
+	l_1_0._root_panel = l_1_1
+	local l_1_2 = {}
+	l_1_2.x = l_1_1:width() / 2
+	l_1_2.y = l_1_1:height() / 2
+	l_1_0._cursor_position = l_1_2
+	l_1_2 = l_1_0._root_panel
+	local l_1_3 = l_1_2
+	local l_1_4 = {}
+	l_1_4.texture = "gui_pc_mouse_cursor"
+	l_1_4.x = l_1_0._cursor_position.x
+	l_1_4.y = l_1_0._cursor_position.y
+	l_1_4.layer = 10000
+	l_1_4.rotation = 0
+	l_1_4.visible = false
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._cursor = l_1_2
+	l_1_0._visible = false
+	l_1_0._hot_spot, l_1_2 = l_1_2, {x = 11, y = 8}
+	l_1_0._idle_timer = 0
+	l_1_2 = FiniteStateMachine
+	l_1_2, l_1_3 = l_1_2:new, l_1_2
+	l_1_4 = l_1_0
+	l_1_2 = l_1_2(l_1_3, l_1_4, "_mouse", Menu2DMouseStateInvisible)
+	l_1_0._state_machine = l_1_2
 end
-function Menu2DMouse.update(A0_3, A1_4, A2_5)
-	local L3_6
-	A0_3._menu_active = A2_5
-	L3_6 = A0_3._update_input
-	L3_6 = L3_6(A0_3)
-	A0_3:_update_cursor(L3_6, A1_4)
-	A0_3._state_data = {input = L3_6}
-	A0_3._state_machine:update(A1_4)
-	A0_3._state_data.input = nil
-	return L3_6
+
+Menu2DMouse.destroy = function(l_2_0)
+	l_2_0._state_machine:destroy()
+	l_2_0._root_panel:remove(l_2_0._cursor)
 end
-function Menu2DMouse._update_input(A0_7)
-	local L1_8, L2_9, L3_10, L4_11, L5_12, L6_13, L7_14, L8_15, L9_16, L10_17, L11_18
-	L1_8 = {}
-	L2_9 = managers
-	L2_9 = L2_9.menu_input
-	L4_11 = A0_7
-	L3_10 = A0_7.active
-	L3_10 = L3_10(L4_11)
-	if L3_10 then
-		L4_11 = L2_9
-		L3_10 = L2_9.mouse_axis
-		L3_10 = L3_10(L4_11)
-		L5_12 = L2_9
-		L4_11 = L2_9.mouse_button_pressed
-		L6_13 = "menu_mouse_select"
-		L4_11 = L4_11(L5_12, L6_13)
-		L6_13 = L2_9
-		L5_12 = L2_9.mouse_button_released
-		L7_14 = "menu_mouse_select"
-		L5_12 = L5_12(L6_13, L7_14)
-		L7_14 = L2_9
-		L6_13 = L2_9.mouse_button_bool
-		L8_15 = "menu_mouse_select"
-		L6_13 = L6_13(L7_14, L8_15)
-		L7_14 = false
-		L9_16 = L2_9
-		L8_15 = L2_9.mouse_connection_enabled
-		L10_17 = "menu_mouse_back"
-		L8_15 = L8_15(L9_16, L10_17)
-		if L8_15 then
-			L9_16 = L2_9
-			L8_15 = L2_9.mouse_button_pressed
-			L10_17 = "menu_mouse_back"
-			L8_15 = L8_15(L9_16, L10_17)
-			L7_14 = L8_15
+
+Menu2DMouse.update = function(l_3_0, l_3_1, l_3_2)
+	l_3_0._menu_active = l_3_2
+	local l_3_3 = l_3_0:_update_input()
+	l_3_0:_update_cursor(l_3_3, l_3_1)
+	local l_3_4 = {}
+	l_3_4.input = l_3_3
+	l_3_0._state_data = l_3_4
+	l_3_4 = l_3_0._state_machine
+	l_3_4(l_3_4, l_3_1)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_4.input = nil
+	return l_3_3
+end
+
+Menu2DMouse._update_input = function(l_4_0)
+	local l_4_1 = {}
+	local l_4_2 = managers.menu_input
+	if l_4_0:active() then
+		local l_4_3 = l_4_2:mouse_axis()
+		local l_4_4 = l_4_2:mouse_button_pressed("menu_mouse_select")
+		local l_4_5 = l_4_2:mouse_button_released("menu_mouse_select")
+		local l_4_6 = l_4_2:mouse_button_bool("menu_mouse_select")
+		local l_4_7 = false
+		if l_4_2:mouse_connection_enabled("menu_mouse_back") then
+			l_4_7 = l_4_2:mouse_button_pressed("menu_mouse_back")
 		end
-		L8_15, L9_16 = nil, nil
-		L11_18 = L3_10
-		L10_17 = L3_10.length
-		L10_17 = L10_17(L11_18)
-		if L10_17 > 0 or L6_13 or L5_12 then
-			L11_18 = A0_7
-			L10_17 = A0_7._move_cursor_position
-			L10_17(L11_18, L3_10)
-			L8_15 = L3_10
-			L9_16 = A0_7._cursor_position
+		local l_4_8, l_4_9 = nil, nil
+		if l_4_3:length() > 0 or l_4_6 or l_4_5 then
+			l_4_0:_move_cursor_position(l_4_3)
+			l_4_8 = l_4_3
+			l_4_9 = l_4_0._cursor_position
 		end
-		L10_17 = false
-		L11_18 = false
-		if L2_9:mouse_connection_enabled("menu_mouse_wheel_up") then
-			L10_17 = L2_9:mouse_button_pressed("menu_mouse_wheel_up")
+		local l_4_10 = false
+		local l_4_11 = false
+		if l_4_2:mouse_connection_enabled("menu_mouse_wheel_up") then
+			l_4_10 = l_4_2:mouse_button_pressed("menu_mouse_wheel_up")
 		end
-		if L2_9:mouse_connection_enabled("menu_mouse_wheel_down") then
-			L11_18 = L2_9:mouse_button_pressed("menu_mouse_wheel_down")
+		if l_4_2:mouse_connection_enabled("menu_mouse_wheel_down") then
+			l_4_11 = l_4_2:mouse_button_pressed("menu_mouse_wheel_down")
 		end
-		L1_8 = {
-			cursor_movement = L8_15,
-			cursor_position = L9_16,
-			select = L5_12,
-			select_pressed = L4_11,
-			select_down = L6_13,
-			back = L7_14,
-			wheel_up = L10_17,
-			wheel_down = L11_18
-		}
-	else
-		L3_10 = A0_7._visible
-		if L3_10 then
-			L4_11 = A0_7
-			L3_10 = A0_7.request_hide
-			L3_10(L4_11)
-		end
+		local l_4_12 = {}
+		l_4_12.cursor_movement = l_4_8
+		l_4_12.cursor_position = l_4_9
+		l_4_12.select = l_4_5
+		l_4_12.select_pressed = l_4_4
+		l_4_12.select_down = l_4_6
+		l_4_12.back = l_4_7
+		l_4_12.wheel_up = l_4_10
+		l_4_12.wheel_down = l_4_11
+		l_4_1 = l_4_12
+	elseif l_4_0._visible then
+		l_4_0:request_hide()
 	end
-	return L1_8
+	return l_4_1
 end
-function Menu2DMouse._move_cursor_position(A0_19, A1_20)
-	local L2_21, L3_22, L4_23
-	L2_21 = A0_19._cursor_position
-	L3_22 = math
-	L3_22 = L3_22.clamp
-	L4_23 = A0_19._cursor_position
-	L4_23 = L4_23.x
-	L4_23 = L4_23 + A1_20.x
-	L3_22 = L3_22(L4_23, A0_19._root_panel:world_left(), A0_19._root_panel:world_right())
-	L2_21.x = L3_22
-	L2_21 = A0_19._cursor_position
-	L3_22 = math
-	L3_22 = L3_22.clamp
-	L4_23 = A0_19._cursor_position
-	L4_23 = L4_23.y
-	L4_23 = L4_23 - A1_20.y
-	L3_22 = L3_22(L4_23, A0_19._root_panel:world_top(), A0_19._root_panel:world_bottom())
-	L2_21.y = L3_22
+
+Menu2DMouse._move_cursor_position = function(l_5_0, l_5_1)
+	l_5_0._cursor_position.x = math.clamp(l_5_0._cursor_position.x + l_5_1.x, l_5_0._root_panel:world_left(), l_5_0._root_panel:world_right())
+	l_5_0._cursor_position.y = math.clamp(l_5_0._cursor_position.y - l_5_1.y, l_5_0._root_panel:world_top(), l_5_0._root_panel:world_bottom())
 end
-function Menu2DMouse._update_cursor(A0_24, A1_25, A2_26, A3_27)
-	if A1_25.cursor_position then
-		A0_24._cursor:set_world_position(A0_24._cursor_position.x - A0_24._hot_spot.x, A0_24._cursor_position.y - A0_24._hot_spot.y)
+
+Menu2DMouse._update_cursor = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	local l_6_4 = l_6_1.cursor_position
+	if l_6_4 then
+		l_6_0._cursor:set_world_position(l_6_0._cursor_position.x - l_6_0._hot_spot.x, l_6_0._cursor_position.y - l_6_0._hot_spot.y)
 	end
 end
-function Menu2DMouse.request_show(A0_28)
-	local L1_29
-	A0_28._request_show = true
+
+Menu2DMouse.request_show = function(l_7_0)
+	l_7_0._request_show = true
 end
-function Menu2DMouse.request_hide(A0_30)
-	local L1_31
-	A0_30._request_hide = true
+
+Menu2DMouse.request_hide = function(l_8_0)
+	l_8_0._request_hide = true
 end
-function Menu2DMouse.active(A0_32)
-	return managers.menu_input:mouse_active() and A0_32._menu_active
+
+Menu2DMouse.active = function(l_9_0)
+	if managers.menu_input:mouse_active() then
+		return l_9_0._menu_active
+	end
 end
+
+

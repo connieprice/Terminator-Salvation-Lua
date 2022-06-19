@@ -1,27 +1,33 @@
-MenuTrigger = MenuTrigger or class(CoreTriggerBase)
-function MenuTrigger.init(A0_0, A1_1, A2_2, A3_3)
-	CoreTriggerBase.init(A0_0, A1_1, A2_2, A3_3)
-	managers.menu_trigger:add_menu_trigger(A0_0)
+if not MenuTrigger then
+	MenuTrigger = class(CoreTriggerBase)
 end
-function MenuTrigger.destroy(A0_4)
-	managers.menu_trigger:remove_menu_trigger(A0_4._mode)
+MenuTrigger.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	CoreTriggerBase.init(l_1_0, l_1_1, l_1_2, l_1_3)
+	managers.menu_trigger:add_menu_trigger(l_1_0)
 end
-function MenuTrigger.menu_changed(A0_5, A1_6)
-	if A1_6 == "mainmenu_to_difficulty_level" then
-		A0_5._user:trigger_activated(A0_5._id, 1)
-	elseif A1_6 == "difficulty_level_to_mainmenu" then
-		A0_5._user:trigger_activated(A0_5._id, 2)
-	elseif A1_6 == "mainmenu_to_checkpoints" then
-		A0_5._user:trigger_activated(A0_5._id, 3)
-	elseif A1_6 == "checkpoints_to_mainmenu" then
-		A0_5._user:trigger_activated(A0_5._id, 4)
-	elseif A1_6 == "mainmenu_to_options" then
-		A0_5._user:trigger_activated(A0_5._id, 5)
-	elseif A1_6 == "options_to_mainmenu" then
-		A0_5._user:trigger_activated(A0_5._id, 6)
-	elseif A1_6 == "difficulty_level_to_mode_select" then
-		A0_5._user:trigger_activated(A0_5._id, 7)
-	elseif A1_6 == "mode_select_to_difficulty_level" then
-		A0_5._user:trigger_activated(A0_5._id, 8)
+
+MenuTrigger.destroy = function(l_2_0)
+	managers.menu_trigger:remove_menu_trigger(l_2_0._mode)
+end
+
+MenuTrigger.menu_changed = function(l_3_0, l_3_1)
+	if l_3_1 == "mainmenu_to_difficulty_level" then
+		l_3_0._user:trigger_activated(l_3_0._id, 1)
+	elseif l_3_1 == "difficulty_level_to_mainmenu" then
+		l_3_0._user:trigger_activated(l_3_0._id, 2)
+	elseif l_3_1 == "mainmenu_to_checkpoints" then
+		l_3_0._user:trigger_activated(l_3_0._id, 3)
+	elseif l_3_1 == "checkpoints_to_mainmenu" then
+		l_3_0._user:trigger_activated(l_3_0._id, 4)
+	elseif l_3_1 == "mainmenu_to_options" then
+		l_3_0._user:trigger_activated(l_3_0._id, 5)
+	elseif l_3_1 == "options_to_mainmenu" then
+		l_3_0._user:trigger_activated(l_3_0._id, 6)
+	elseif l_3_1 == "difficulty_level_to_mode_select" then
+		l_3_0._user:trigger_activated(l_3_0._id, 7)
+	elseif l_3_1 == "mode_select_to_difficulty_level" then
+		l_3_0._user:trigger_activated(l_3_0._id, 8)
 	end
 end
+
+

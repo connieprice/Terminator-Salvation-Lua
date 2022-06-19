@@ -1,91 +1,105 @@
 require("units/beings/player_tank/gui/MachineText")
 require("units/beings/player_tank/gui/ReticuleAngularArrowStates")
-ReticuleAngularArrow = ReticuleAngularArrow or class()
-function ReticuleAngularArrow.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7, A8_8)
-	A0_0.parent_panel = A1_1
-	A0_0._size_modifier = A8_8 or 1
-	A0_0._centre_x = A3_3
-	A0_0._centre_y = A4_4
-	A0_0._radius = A5_5 * A0_0._size_modifier
-	A0_0._angle = A6_6
-	A0_0._end_angle = A7_7
-	A0_0._current_angle = 0
-	A0_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
-	A0_0._arrow_texture = A0_0.parent_panel:bitmap({name = A2_2, texture = A2_2})
-	A0_0._arrow_texture:set_size(32 * A0_0._size_modifier, 32 * A0_0._size_modifier)
-	A0_0._state = FiniteStateMachine:new(A0_0, "_reticule_angular_arrow", ReticuleAngularArrowIdleState)
-	A0_0._state:set_debug(false)
-	A0_0:set_angle(A6_6)
-	A0_0:set_alpha(1)
+if not ReticuleAngularArrow then
+	ReticuleAngularArrow = class()
 end
-function ReticuleAngularArrow.set_angle(A0_9, A1_10)
-	local L2_11, L3_12
-	L2_11 = A0_9._centre_x
-	L3_12 = A0_9._radius
-	L3_12 = L3_12 * math.cos(A1_10 - 90)
-	L2_11 = L2_11 + L3_12
-	L3_12 = A0_9._centre_y
-	L3_12 = L3_12 + A0_9._radius * math.sin(A1_10 - 90)
-	A0_9._current_angle = A1_10
-	A0_9._arrow_texture:set_rotation(A1_10)
-	A0_9:set_position(L2_11, L3_12)
+ReticuleAngularArrow.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7, l_1_8)
+	l_1_0.parent_panel = l_1_1
+	l_1_0._size_modifier = l_1_8 or 1
+	l_1_0._centre_x = l_1_3
+	l_1_0._centre_y = l_1_4
+	l_1_0._radius = l_1_5 * l_1_0._size_modifier
+	l_1_0._angle = l_1_6
+	l_1_0._end_angle = l_1_7
+	l_1_0._current_angle = 0
+	l_1_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
+	local l_1_10 = l_1_0.parent_panel:bitmap
+	do
+		local l_1_11 = l_1_0.parent_panel
+		l_1_10 = l_1_10(l_1_11, {name = l_1_2, texture = l_1_2})
+		l_1_0._arrow_texture = l_1_10
+		l_1_10 = l_1_0._arrow_texture
+		l_1_10, l_1_11 = l_1_10:set_size, l_1_10
+		l_1_10(l_1_11, 32 * l_1_0._size_modifier, 32 * l_1_0._size_modifier)
+		l_1_10 = FiniteStateMachine
+		l_1_10, l_1_11 = l_1_10:new, l_1_10
+		l_1_10 = l_1_10(l_1_11, l_1_0, "_reticule_angular_arrow", ReticuleAngularArrowIdleState)
+		l_1_0._state = l_1_10
+		l_1_10 = l_1_0._state
+		l_1_10, l_1_11 = l_1_10:set_debug, l_1_10
+		l_1_10(l_1_11, false)
+		l_1_10, l_1_11 = l_1_0:set_angle, l_1_0
+		l_1_10(l_1_11, l_1_6)
+		l_1_10, l_1_11 = l_1_0:set_alpha, l_1_0
+		l_1_10(l_1_11, 1)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function ReticuleAngularArrow.set_position(A0_13, A1_14, A2_15)
-	A0_13._arrow_texture:set_center_x(A1_14)
-	A0_13._arrow_texture:set_center_y(A2_15)
+
+ReticuleAngularArrow.set_angle = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0._centre_x + l_2_0._radius * math.cos(l_2_1 - 90)
+	local l_2_3 = l_2_0._centre_y + l_2_0._radius * math.sin(l_2_1 - 90)
+	l_2_0._current_angle = l_2_1
+	l_2_0._arrow_texture:set_rotation(l_2_1)
+	l_2_0:set_position(l_2_2, l_2_3)
 end
-function ReticuleAngularArrow.set_radius(A0_16, A1_17)
-	A0_16._radius = A1_17 * A0_16._size_modifier
-	A0_16:set_angle(A0_16._current_angle)
+
+ReticuleAngularArrow.set_position = function(l_3_0, l_3_1, l_3_2)
+	l_3_0._arrow_texture:set_center_x(l_3_1)
+	l_3_0._arrow_texture:set_center_y(l_3_2)
 end
-function ReticuleAngularArrow.set_alpha(A0_18, A1_19)
-	local L3_20
-	A0_18._alpha = A1_19
-	L3_20 = A0_18._arrow_texture
-	L3_20 = L3_20.set_color
-	L3_20(L3_20, A0_18._color:with_alpha(A1_19 * tweak_data.machine.hud.MAIN_ALPHA))
+
+ReticuleAngularArrow.set_radius = function(l_4_0, l_4_1)
+	l_4_0._radius = l_4_1 * l_4_0._size_modifier
+	l_4_0:set_angle(l_4_0._current_angle)
 end
-function ReticuleAngularArrow.get_current_angle(A0_21)
-	local L1_22
-	L1_22 = A0_21._current_angle
-	return L1_22
+
+ReticuleAngularArrow.set_alpha = function(l_5_0, l_5_1)
+	l_5_0._alpha = l_5_1
+	l_5_0._arrow_texture:set_color(l_5_0._color:with_alpha(l_5_1 * tweak_data.machine.hud.MAIN_ALPHA))
 end
-function ReticuleAngularArrow.get_end_angle(A0_23)
-	local L1_24
-	L1_24 = A0_23._end_angle
-	return L1_24
+
+ReticuleAngularArrow.get_current_angle = function(l_6_0)
+	return l_6_0._current_angle
 end
-function ReticuleAngularArrow.get_original_angle(A0_25)
-	local L1_26
-	L1_26 = A0_25._angle
-	return L1_26
+
+ReticuleAngularArrow.get_end_angle = function(l_7_0)
+	return l_7_0._end_angle
 end
-function ReticuleAngularArrow.wants_to_rotate_right(A0_27)
-	local L1_28
-	L1_28 = A0_27._wants_to_rotate_right
-	return L1_28
+
+ReticuleAngularArrow.get_original_angle = function(l_8_0)
+	return l_8_0._angle
 end
-function ReticuleAngularArrow.wants_to_rotate_left(A0_29)
-	local L1_30
-	L1_30 = A0_29._wants_to_rotate_left
-	return L1_30
+
+ReticuleAngularArrow.wants_to_rotate_right = function(l_9_0)
+	return l_9_0._wants_to_rotate_right
 end
-function ReticuleAngularArrow.rotate_right(A0_31)
-	local L1_32
-	A0_31._wants_to_rotate_right = true
-	A0_31._wants_to_rotate_left = false
+
+ReticuleAngularArrow.wants_to_rotate_left = function(l_10_0)
+	return l_10_0._wants_to_rotate_left
 end
-function ReticuleAngularArrow.rotate_left(A0_33)
-	local L1_34
-	A0_33._wants_to_rotate_right = false
-	A0_33._wants_to_rotate_left = true
+
+ReticuleAngularArrow.rotate_right = function(l_11_0)
+	l_11_0._wants_to_rotate_right = true
+	l_11_0._wants_to_rotate_left = false
 end
-function ReticuleAngularArrow.update(A0_35, A1_36, A2_37)
-	A0_35._state:update(A2_37)
+
+ReticuleAngularArrow.rotate_left = function(l_12_0)
+	l_12_0._wants_to_rotate_right = false
+	l_12_0._wants_to_rotate_left = true
 end
-function ReticuleAngularArrow.at_end_position(A0_38)
-	return math.abs(A0_38._current_angle - A0_38._end_angle) < 0.01
+
+ReticuleAngularArrow.update = function(l_13_0, l_13_1, l_13_2)
+	l_13_0._state:update(l_13_2)
 end
-function ReticuleAngularArrow.at_start_position(A0_39)
-	return math.abs(A0_39._current_angle - A0_39._angle) < 0.01
+
+ReticuleAngularArrow.at_end_position = function(l_14_0)
+	return math.abs(l_14_0._current_angle - l_14_0._end_angle) < 0.01
 end
+
+ReticuleAngularArrow.at_start_position = function(l_15_0)
+	return math.abs(l_15_0._current_angle - l_15_0._angle) < 0.01
+end
+
+

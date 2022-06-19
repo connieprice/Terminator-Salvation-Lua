@@ -1,202 +1,165 @@
 require("units/weapons/GenericWeapon")
-RPG7GrenadeLauncher = RPG7GrenadeLauncher or class(GenericWeapon)
-function RPG7GrenadeLauncher.init(A0_0, A1_1)
-	GenericWeapon.init(A0_0, A1_1)
-	A0_0._grenade_align = A0_0._unit:get_object(A0_0._grenade_align_object_name)
-	A0_0._grenade_position_name = A0_0._grenade_position_name or "fire"
-	A0_0._grenade_align:set_position(A0_0._unit:get_object(A0_0._grenade_position_name):position())
-	A0_0._weapon_root = A0_0._unit:orientation_object()
-	A0_0._loaded_grenade = A0_0._unit:get_object(A0_0._grenade_object_name)
-	A0_0._loaded_grenade:set_visibility(A0_0._wdata._bullets_in_clip > 0)
-	A0_0._hand_align_name = A0_0._hand_align_name or "a_weapon_left_front"
-	A0_0._movement_history = {}
-	A0_0._velocity = Vector3(0, 0, 0)
-	A0_0._time_sum = 0
-	A0_0._movement_sum = Vector3(0, 0, 0)
-	A0_0._relinked = false
-	A0_0._attached_grenade_local_rotation = {}
-	A0_0._attached_grenade_local_rotation.x = 0
-	A0_0._attached_grenade_local_rotation.y = 0
-	A0_0._attached_grenade_local_rotation.z = 0
-	A0_0._play_fire_anim = false
+if not RPG7GrenadeLauncher then
+	RPG7GrenadeLauncher = class(GenericWeapon)
 end
-function RPG7GrenadeLauncher.destroy(A0_2)
-	GenericWeapon.destroy(A0_2)
-end
-function RPG7GrenadeLauncher.update(A0_3, A1_4, A2_5, A3_6)
-	if not A0_3._user_unit or not A0_3._user_unit:player_data().reloading then
-		A0_3._loaded_grenade:set_visibility(A0_3._wdata._bullets_in_clip > 0)
+RPG7GrenadeLauncher.init = function(l_1_0, l_1_1)
+	GenericWeapon.init(l_1_0, l_1_1)
+	l_1_0._grenade_align = l_1_0._unit:get_object(l_1_0._grenade_align_object_name)
+	l_1_0._grenade_position_name = l_1_0._grenade_position_name or "fire"
+	l_1_0._grenade_align:set_position(l_1_0._unit:get_object(l_1_0._grenade_position_name):position())
+	l_1_0._weapon_root = l_1_0._unit:orientation_object()
+	l_1_0._loaded_grenade = l_1_0._unit:get_object(l_1_0._grenade_object_name)
+	local l_1_2, l_1_3 = l_1_0._loaded_grenade:set_visibility, l_1_0._loaded_grenade
+	l_1_2(l_1_3, l_1_0._wdata._bullets_in_clip > 0)
+	l_1_2 = l_1_0._hand_align_name
+	if not l_1_2 then
+		l_1_2 = "a_weapon_left_front"
 	end
-	A0_3:_update_velocity(A3_6)
-	if A0_3._extension_enabled and not A0_3._enabled then
-		A0_3:_enable_extension(false)
+	l_1_0._hand_align_name = l_1_2
+	l_1_0._movement_history, l_1_2 = l_1_2, {}
+	l_1_2 = Vector3
+	l_1_3 = 0
+	l_1_2 = l_1_2(l_1_3, 0, 0)
+	l_1_0._velocity = l_1_2
+	l_1_0._time_sum = 0
+	l_1_2 = Vector3
+	l_1_3 = 0
+	l_1_2 = l_1_2(l_1_3, 0, 0)
+	l_1_0._movement_sum = l_1_2
+	l_1_0._relinked = false
+	l_1_0._attached_grenade_local_rotation, l_1_2 = l_1_2, {}
+	l_1_2 = l_1_0._attached_grenade_local_rotation
+	l_1_2.x = 0
+	l_1_2 = l_1_0._attached_grenade_local_rotation
+	l_1_2.y = 0
+	l_1_2 = l_1_0._attached_grenade_local_rotation
+	l_1_2.z = 0
+	l_1_0._play_fire_anim = false
+end
+
+RPG7GrenadeLauncher.destroy = function(l_2_0)
+	GenericWeapon.destroy(l_2_0)
+end
+
+RPG7GrenadeLauncher.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	if not l_3_0._user_unit or not l_3_0._user_unit:player_data().reloading then
+		local l_3_4, l_3_5 = l_3_0._loaded_grenade:set_visibility, l_3_0._loaded_grenade
+		l_3_4(l_3_5, l_3_0._wdata._bullets_in_clip > 0)
 	end
-end
-function RPG7GrenadeLauncher._enable_extension(A0_7, A1_8)
-	A0_7._extension_enabled = A1_8
-	A0_7._unit:set_extension_update_enabled("base", A1_8)
-end
-function RPG7GrenadeLauncher.attach_grenade_to_left_hand(A0_9)
-	local L1_10, L2_11
-	L1_10 = A0_9._relinked
-	if not L1_10 then
-		L1_10 = A0_9._user_unit
-		L2_11 = L1_10
-		L1_10 = L1_10.get_object
-		L1_10 = L1_10(L2_11, A0_9._hand_align_name)
-		L2_11 = A0_9._loaded_grenade
-		L2_11 = L2_11.set_visibility
-		L2_11(L2_11, true)
-		L2_11 = A0_9._grenade_align
-		L2_11 = L2_11.unlink
-		L2_11(L2_11)
-		L2_11 = A0_9._user_unit
-		L2_11 = L2_11.link
-		L2_11(L2_11, A0_9._hand_align_name, A0_9._unit, A0_9._grenade_align_object_name, true)
-		L2_11 = A0_9._grenade_align
-		L2_11 = L2_11.set_position
-		L2_11(L2_11, L1_10:position())
-		L2_11 = A0_9._grenade_align
-		L2_11 = L2_11.new_set_rotation
-		L2_11(L2_11, L1_10:rotation())
-		L2_11 = Rotation
-		L2_11 = L2_11(A0_9._attached_grenade_local_rotation.x, A0_9._attached_grenade_local_rotation.y, A0_9._attached_grenade_local_rotation.z)
-		A0_9._grenade_align:set_local_rotation(L2_11)
-		A0_9._relinked = true
+	l_3_0:_update_velocity(l_3_3)
+	if l_3_0._extension_enabled and not l_3_0._enabled then
+		l_3_0:_enable_extension(false)
 	end
 end
-function RPG7GrenadeLauncher.on_extension_update_enabled(A0_12, A1_13)
-	A0_12._enabled = A1_13
-	if A1_13 then
-		A0_12:_enable_extension(true)
+
+RPG7GrenadeLauncher._enable_extension = function(l_4_0, l_4_1)
+	l_4_0._extension_enabled = l_4_1
+	l_4_0._unit:set_extension_update_enabled("base", l_4_1)
+end
+
+RPG7GrenadeLauncher.attach_grenade_to_left_hand = function(l_5_0)
+	if not l_5_0._relinked then
+		local l_5_1 = l_5_0._user_unit:get_object(l_5_0._hand_align_name)
+		l_5_0._loaded_grenade:set_visibility(true)
+		l_5_0._grenade_align:unlink()
+		l_5_0._user_unit:link(l_5_0._hand_align_name, l_5_0._unit, l_5_0._grenade_align_object_name, true)
+		l_5_0._grenade_align:set_position(l_5_1:position())
+		l_5_0._grenade_align:new_set_rotation(l_5_1:rotation())
+		local l_5_2 = Rotation(l_5_0._attached_grenade_local_rotation.x, l_5_0._attached_grenade_local_rotation.y, l_5_0._attached_grenade_local_rotation.z)
+		l_5_0._grenade_align:set_local_rotation(l_5_2)
+		l_5_0._relinked = true
 	end
 end
-function RPG7GrenadeLauncher.detach_grenade_from_left_hand(A0_14)
-	local L1_15
-	L1_15 = A0_14._relinked
-	if L1_15 then
-		L1_15 = A0_14._unit
-		L1_15 = L1_15.get_object
-		L1_15 = L1_15(L1_15, A0_14._grenade_position_name)
-		A0_14._grenade_align:unlink()
-		A0_14._grenade_align:link(L1_15)
-		A0_14._grenade_align:set_position(L1_15:position())
-		A0_14._grenade_align:new_set_rotation(L1_15:rotation())
-		A0_14._relinked = false
+
+RPG7GrenadeLauncher.on_extension_update_enabled = function(l_6_0, l_6_1)
+	l_6_0._enabled = l_6_1
+	if l_6_1 then
+		l_6_0:_enable_extension(true)
 	end
 end
-function RPG7GrenadeLauncher.reload_release(A0_16)
-	if not A0_16._relinked then
-		A0_16:attach_grenade_to_left_hand()
-		A0_16._relinked = true
+
+RPG7GrenadeLauncher.detach_grenade_from_left_hand = function(l_7_0)
+	if l_7_0._relinked then
+		local l_7_1 = l_7_0._unit:get_object(l_7_0._grenade_position_name)
+		l_7_0._grenade_align:unlink()
+		l_7_0._grenade_align:link(l_7_1)
+		l_7_0._grenade_align:set_position(l_7_1:position())
+		l_7_0._grenade_align:new_set_rotation(l_7_1:rotation())
+		l_7_0._relinked = false
 	end
 end
-function RPG7GrenadeLauncher.reload_attach(A0_17)
-	if A0_17._relinked then
-		A0_17:detach_grenade_from_left_hand()
-		managers.sequence:run_sequence_simple("reload_rpg7", A0_17._unit)
-		A0_17._relinked = false
+
+RPG7GrenadeLauncher.reload_release = function(l_8_0)
+	if not l_8_0._relinked then
+		l_8_0:attach_grenade_to_left_hand()
+		l_8_0._relinked = true
 	end
 end
-function RPG7GrenadeLauncher._update_velocity(A0_18, A1_19)
-	if A0_18._prev_position then
-		A0_18._time_sum = A0_18._time_sum + A1_19
-		A0_18._movement_sum = A0_18._movement_sum + (A0_18._obj_fire:position() - A0_18._prev_position)
-		A0_18._velocity = A0_18._movement_sum / A0_18._time_sum
-		table.insert(A0_18._movement_history, {
-			delta_move = A0_18._obj_fire:position() - A0_18._prev_position,
-			dt = A1_19
-		})
+
+RPG7GrenadeLauncher.reload_attach = function(l_9_0)
+	if l_9_0._relinked then
+		l_9_0:detach_grenade_from_left_hand()
+		managers.sequence:run_sequence_simple("reload_rpg7", l_9_0._unit)
+		l_9_0._relinked = false
 	end
-	if #A0_18._movement_history >= 20 then
-		A0_18._time_sum = A0_18._time_sum - A0_18._movement_history[1].dt
-		A0_18._movement_sum = A0_18._movement_sum - A0_18._movement_history[1].delta_move
-		table.remove(A0_18._movement_history, 1)
-	end
-	A0_18._prev_position = A0_18._obj_fire:position()
 end
-function RPG7GrenadeLauncher.fire(A0_20, A1_21)
-	local L2_22, L3_23, L4_24, L5_25, L6_26, L7_27, L8_28, L9_29
-	L2_22 = A0_20._play_fire_anim
-	if L2_22 then
-		L2_22 = A0_20._unit
-		L3_23 = L2_22
-		L2_22 = L2_22.anim_set_time
-		L4_24 = "fire"
-		L5_25 = 0
-		L2_22(L3_23, L4_24, L5_25)
-		L2_22 = A0_20._unit
-		L3_23 = L2_22
-		L2_22 = L2_22.anim_play
-		L4_24 = "fire"
-		L2_22(L3_23, L4_24)
+
+RPG7GrenadeLauncher._update_velocity = function(l_10_0, l_10_1)
+	if l_10_0._prev_position then
+		local l_10_2 = l_10_0._obj_fire:position() - l_10_0._prev_position
+		l_10_0._time_sum = l_10_0._time_sum + l_10_1
+		l_10_0._movement_sum = l_10_0._movement_sum + l_10_2
+		l_10_0._velocity = l_10_0._movement_sum / l_10_0._time_sum
+		local l_10_3 = table.insert
+		local l_10_4 = l_10_0._movement_history
+		local l_10_5 = {}
+		l_10_5.delta_move = l_10_2
+		l_10_5.dt = l_10_1
+		l_10_3(l_10_4, l_10_5)
 	end
-	L2_22 = Rotation
-	L3_23 = Vector3
-	L4_24 = 0
-	L5_25 = 0
-	L6_26 = 1
-	L3_23 = L3_23(L4_24, L5_25, L6_26)
-	L4_24 = 0
-	L2_22 = L2_22(L3_23, L4_24)
-	L3_23 = A0_20._fire_effect
-	if L3_23 then
-		L3_23 = World
-		L4_24 = L3_23
-		L3_23 = L3_23.effect_manager
-		L3_23 = L3_23(L4_24)
-		L4_24 = L3_23
-		L3_23 = L3_23.spawn
-		L5_25 = {}
-		L6_26 = A0_20._fire_effect
-		L5_25.effect = L6_26
-		L6_26 = A0_20._unit
-		L7_27 = L6_26
-		L6_26 = L6_26.get_object
-		L8_28 = A0_20._fire_effect_object
-		L6_26 = L6_26(L7_27, L8_28)
-		L5_25.parent = L6_26
-		L6_26 = Vector3
-		L7_27 = 0
-		L8_28 = 1
-		L9_29 = 0
-		L6_26 = L6_26(L7_27, L8_28, L9_29)
-		L5_25.normal = L6_26
-		L5_25.force_synch = true
-		L3_23(L4_24, L5_25)
+	if #l_10_0._movement_history >= 20 then
+		l_10_0._time_sum = l_10_0._time_sum - l_10_0._movement_history[1].dt
+		l_10_0._movement_sum = l_10_0._movement_sum - l_10_0._movement_history[1].delta_move
+		table.remove(l_10_0._movement_history, 1)
 	end
-	L3_23 = A0_20._projectile_spawner
-	L4_24, L5_25 = nil, nil
-	A0_20.target_dir = nil
-	A0_20._fire_time = A1_21
-	L6_26 = A0_20._wdata
-	L6_26 = L6_26.aim_target_position
-	L7_27 = L3_23
-	L9_29 = L7_27
-	L8_28 = L7_27.position
-	L8_28 = L8_28(L9_29)
-	A0_20.source_pos = L8_28
-	L8_28 = A0_20.source_pos
-	L8_28 = L6_26 - L8_28
-	L9_29 = L8_28
-	L8_28 = L8_28.normalized
-	L8_28 = L8_28(L9_29)
-	L5_25 = L8_28
-	L8_28 = VectorUtilities
-	L8_28 = L8_28.angle_constraint_direction
-	L9_29 = L5_25
-	L8_28 = L8_28(L9_29, L7_27:rotation():y(), A0_20._max_fire_object_and_aim_angle_diff)
-	L5_25 = L8_28
-	L8_28 = A0_20._wdata
-	L9_29 = A0_20.get_target_dir
-	L9_29 = L9_29(A0_20, A0_20.source_pos, L5_25, L8_28)
-	A0_20.target_dir = L9_29
-	L9_29 = Rotation
-	L9_29 = L9_29(A0_20.target_dir, L7_27:rotation():z())
-	A0_20._event_emitter:unit_weapon_fire_change(A0_20._unit, A0_20.source_pos, L9_29, A0_20._projectile_spawner)
-	A0_20._projectile_spawner:base():spawn_projectile(A0_20._user_unit, A0_20.source_pos, L9_29):base()._inherited_velocity = A0_20._velocity
-	A0_20._loaded_grenade:set_visibility(false)
+	l_10_0._prev_position = l_10_0._obj_fire:position()
 end
-function RPG7GrenadeLauncher.weapon_stocked(A0_30, A1_31)
-	PlayerBaseWeapon.weapon_stocked(A0_30, A1_31)
+
+RPG7GrenadeLauncher.fire = function(l_11_0, l_11_1)
+	if l_11_0._play_fire_anim then
+		l_11_0._unit:anim_set_time("fire", 0)
+		l_11_0._unit:anim_play("fire")
+	end
+	local l_11_2 = Rotation(Vector3(0, 0, 1), 0)
+	if l_11_0._fire_effect then
+		local l_11_3, l_11_4 = World:effect_manager():spawn, World:effect_manager()
+		local l_11_5 = {}
+		l_11_5.effect = l_11_0._fire_effect
+		l_11_5.parent = l_11_0._unit:get_object(l_11_0._fire_effect_object)
+		l_11_5.normal = Vector3(0, 1, 0)
+		l_11_5.force_synch = true
+		l_11_3(l_11_4, l_11_5)
+	end
+	local l_11_6 = l_11_0._projectile_spawner
+	local l_11_7, l_11_8 = nil, nil
+	l_11_0.target_dir = nil
+	l_11_0._fire_time = l_11_1
+	local l_11_9 = l_11_0._wdata.aim_target_position
+	local l_11_10 = l_11_6
+	l_11_0.source_pos = l_11_10:position()
+	l_11_8 = l_11_9 - l_11_0.source_pos:normalized()
+	l_11_8 = VectorUtilities.angle_constraint_direction(l_11_8, l_11_10:rotation():y(), l_11_0._max_fire_object_and_aim_angle_diff)
+	local l_11_11 = l_11_0._wdata
+	l_11_0.target_dir = l_11_0:get_target_dir(l_11_0.source_pos, l_11_8, l_11_11)
+	local l_11_12 = Rotation(l_11_0.target_dir, l_11_10:rotation():z())
+	l_11_0._event_emitter:unit_weapon_fire_change(l_11_0._unit, l_11_0.source_pos, l_11_12, l_11_0._projectile_spawner)
+	local l_11_13 = l_11_0._projectile_spawner:base():spawn_projectile(l_11_0._user_unit, l_11_0.source_pos, l_11_12)
+	l_11_13:base()._inherited_velocity = l_11_0._velocity
+	l_11_0._loaded_grenade:set_visibility(false)
 end
+
+RPG7GrenadeLauncher.weapon_stocked = function(l_12_0, l_12_1)
+	PlayerBaseWeapon.weapon_stocked(l_12_0, l_12_1)
+end
+
+

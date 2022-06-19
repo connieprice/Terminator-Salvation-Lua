@@ -1,41 +1,51 @@
-Menu2DWidgetBase = Menu2DWidgetBase or class()
+if not Menu2DWidgetBase then
+	Menu2DWidgetBase = class()
+end
 Menu2DWidgetBase._tile_size = 64
-function Menu2DWidgetBase.init(A0_0, A1_1)
-	A0_0._params = A1_1
-	A0_0:parse(A1_1)
+Menu2DWidgetBase.init = function(l_1_0, l_1_1)
+	l_1_0._params = l_1_1
+	l_1_0:parse(l_1_1)
 end
-function Menu2DWidgetBase.post_init(A0_2, A1_3)
+
+Menu2DWidgetBase.post_init = function(l_2_0, l_2_1)
 end
-function Menu2DWidgetBase.update(A0_4, A1_5)
+
+Menu2DWidgetBase.update = function(l_3_0, l_3_1)
 end
-function Menu2DWidgetBase.parse(A0_6, A1_7)
+
+Menu2DWidgetBase.parse = function(l_4_0, l_4_1)
 end
-function Menu2DWidgetBase.create_gui(A0_8)
-	local L1_9
-	A0_8._created_gui = true
+
+Menu2DWidgetBase.create_gui = function(l_5_0)
+	l_5_0._created_gui = true
 end
-function Menu2DWidgetBase.set_active(A0_10)
-	local L1_11
+
+Menu2DWidgetBase.set_active = function(l_6_0)
 end
-function Menu2DWidgetBase.set_inactive(A0_12)
-	local L1_13
+
+Menu2DWidgetBase.set_inactive = function(l_7_0)
 end
-function Menu2DWidgetBase.activate(A0_14)
-	local L1_15
+
+Menu2DWidgetBase.activate = function(l_8_0)
 end
-function Menu2DWidgetBase.show(A0_16, A1_17, A2_18)
-	A0_16._root_panel = A1_17
-	A0_16._params.panel = A2_18
-	A0_16:create_gui()
+
+Menu2DWidgetBase.show = function(l_9_0, l_9_1, l_9_2)
+	l_9_0._root_panel = l_9_1
+	l_9_0._params.panel = l_9_2
+	l_9_0:create_gui()
 end
-function Menu2DWidgetBase.hide(A0_19)
-	A0_19._params.panel:hide()
+
+Menu2DWidgetBase.hide = function(l_10_0)
+	l_10_0._params.panel:hide()
 end
-function Menu2DWidgetBase.destroy(A0_20)
-	local L1_21
+
+Menu2DWidgetBase.destroy = function(l_11_0)
 end
-function Menu2DWidgetBase.animate(A0_22, A1_23, A2_24)
+
+Menu2DWidgetBase.animate = function(l_12_0, l_12_1, l_12_2)
 end
-function Menu2DWidgetBase.selection_changed(A0_25)
-	local L1_26
+
+Menu2DWidgetBase.selection_changed = function(l_13_0)
 end
+
+

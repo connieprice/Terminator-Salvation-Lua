@@ -1,90 +1,115 @@
 require("shared/TableSerializer")
 require("network/replay/ReplayCommands")
-ReadReplay = ReadReplay or class()
-function ReadReplay.init(A0_0)
-	A0_0.TYPE_KEY_FRAME = "k"
-	A0_0.TYPE_CONTROL_INPUT = "c"
-	A0_0._file = File:open("data/replays/replay.txt", "r")
-	A0_0._frame = 0
-	A0_0.STATE_DONE = 2
-	A0_0.STATE_PLAYING = 3
-	A0_0._state = A0_0.STATE_PLAYING
+if not ReadReplay then
+	ReadReplay = class()
 end
-function ReadReplay.read_chunk_ex(A0_1)
-	local L1_2
-	L1_2 = A0_1._file
-	L1_2 = L1_2.gets
-	L1_2 = L1_2(L1_2)
-	L1_2 = String.strip(L1_2)
-	if not L1_2 or L1_2 == "" then
+ReadReplay.init = function(l_1_0)
+	l_1_0.TYPE_KEY_FRAME = "k"
+	l_1_0.TYPE_CONTROL_INPUT = "c"
+	l_1_0._file = File:open("data/replays/replay.txt", "r")
+	l_1_0._frame = 0
+	l_1_0.STATE_DONE = 2
+	l_1_0.STATE_PLAYING = 3
+	l_1_0._state = l_1_0.STATE_PLAYING
+end
+
+ReadReplay.read_chunk_ex = function(l_2_0)
+	local l_2_1 = l_2_0._file:gets()
+	l_2_1 = String.strip(l_2_1)
+	if not l_2_1 or l_2_1 == "" then
 		return nil
 	end
-	assert(TableSerializer.load(L1_2).chunk_type)
-	return (TableSerializer.load(L1_2))
+	local l_2_2 = TableSerializer.load(l_2_1)
+	assert(l_2_2.chunk_type)
+	return l_2_2
 end
-function ReadReplay.read_chunk(A0_3)
-	local L1_4
-	L1_4 = A0_3._state
-	if L1_4 == A0_3.STATE_DONE then
-		return
+
+ReadReplay.read_chunk = function(l_3_0)
+	if l_3_0._state == l_3_0.STATE_DONE then
+		return 
 	end
-	L1_4 = A0_3.read_chunk_ex
-	L1_4 = L1_4(A0_3)
-	if not L1_4 then
-		A0_3._state = A0_3.STATE_DONE
-		return
+	local l_3_1 = l_3_0:read_chunk_ex()
+	if not l_3_1 then
+		l_3_0._state = l_3_0.STATE_DONE
+		return 
 	end
-	if L1_4.chunk_type == ReplayCommands.KEY_FRAME then
-		A0_3:read_keyframe(L1_4.data)
-		L1_4 = A0_3:read_chunk_ex()
-	elseif L1_4.chunk_type == ReplayCommands.CONTROL_INPUT then
-		A0_3:read_input(L1_4.data)
-	elseif L1_4.chunk_type == ReplayCommands.USER_JOINED_GAME then
-		A0_3:read_user_joined_game(L1_4.data)
-	elseif L1_4.chunk_type == ReplayCommands.USER_LEFT_GAME then
-		A0_3:read_user_left_game(L1_4.data)
-	elseif L1_4.chunk_type == ReplayCommands.ARBITRATE_INTERACT then
-		A0_3:read_arbitrate_interact(L1_4.data)
-	elseif L1_4.chunk_type == ReplayCommands.INTERACT then
-		A0_3:read_interact(L1_4.data)
-	elseif L1_4.chunk_type == ReplayCommands.ARBITRATE_PICKUP then
-		A0_3:read_arbitrate_pickup(L1_4.data)
-	elseif L1_4.chunk_type == ReplayCommands.PICKUP then
-		A0_3:read_pickup(L1_4.data)
+	if l_3_1.chunk_type == ReplayCommands.KEY_FRAME then
+		l_3_0:read_keyframe(l_3_1.data)
+		l_3_1 = l_3_0:read_chunk_ex()
+	else
+		if l_3_1.chunk_type == ReplayCommands.CONTROL_INPUT then
+			l_3_0:read_input(l_3_1.data)
+		end
+	else
+		if l_3_1.chunk_type == ReplayCommands.USER_JOINED_GAME then
+			l_3_0:read_user_joined_game(l_3_1.data)
+		end
+	else
+		if l_3_1.chunk_type == ReplayCommands.USER_LEFT_GAME then
+			l_3_0:read_user_left_game(l_3_1.data)
+		end
+	else
+		if l_3_1.chunk_type == ReplayCommands.ARBITRATE_INTERACT then
+			l_3_0:read_arbitrate_interact(l_3_1.data)
+		end
+	else
+		if l_3_1.chunk_type == ReplayCommands.INTERACT then
+			l_3_0:read_interact(l_3_1.data)
+		end
+	else
+		if l_3_1.chunk_type == ReplayCommands.ARBITRATE_PICKUP then
+			l_3_0:read_arbitrate_pickup(l_3_1.data)
+		end
+	else
+		if l_3_1.chunk_type == ReplayCommands.PICKUP then
+			l_3_0:read_pickup(l_3_1.data)
+		end
 	end
 end
-function ReadReplay.update(A0_5)
-	if A0_5._state == A0_5.STATE_DONE then
-		return
+
+ReadReplay.update = function(l_4_0)
+	if l_4_0._state == l_4_0.STATE_DONE then
+		return 
 	end
-	A0_5:read_chunk()
+	l_4_0:read_chunk()
 end
-function ReadReplay.destroy(A0_6)
-	A0_6._state = A0_6.STATE_DONE
-	A0_6._file = nil
+
+ReadReplay.destroy = function(l_5_0)
+	l_5_0._state = l_5_0.STATE_DONE
+	l_5_0._file = nil
 end
-function ReadReplay.read_keyframe(A0_7, A1_8)
-	managers.network:peer():load_units(A1_8)
+
+ReadReplay.read_keyframe = function(l_6_0, l_6_1)
+	managers.network:peer():load_units(l_6_1)
 end
-function ReadReplay.read_input(A0_9, A1_10)
-	local L2_11
-	managers.network:peer():player_input(A1_10.id, A1_10.input, L2_11)
+
+ReadReplay.read_input = function(l_7_0, l_7_1)
+	local l_7_2 = nil
+	managers.network:peer():player_input(l_7_1.id, l_7_1.input, l_7_2)
 end
-function ReadReplay.read_user_joined_game(A0_12, A1_13)
-	managers.network:peer():user_joined_game(A1_13.user_id, A1_13.slot_id)
+
+ReadReplay.read_user_joined_game = function(l_8_0, l_8_1)
+	managers.network:peer():user_joined_game(l_8_1.user_id, l_8_1.slot_id)
 end
-function ReadReplay.read_user_left_game(A0_14, A1_15)
-	managers.network:peer():user_left_game(A1_15.user_id)
+
+ReadReplay.read_user_left_game = function(l_9_0, l_9_1)
+	managers.network:peer():user_left_game(l_9_1.user_id)
 end
-function ReadReplay.read_interact(A0_16, A1_17)
-	managers.network:peer():interact(A1_17.interactable_unit_id, A1_17.player_unit_id)
+
+ReadReplay.read_interact = function(l_10_0, l_10_1)
+	managers.network:peer():interact(l_10_1.interactable_unit_id, l_10_1.player_unit_id)
 end
-function ReadReplay.read_arbitrate_interact(A0_18, A1_19)
-	managers.network:peer():arbitrate_interact(A1_19.interactable_unit_id, A1_19.player_unit_id)
+
+ReadReplay.read_arbitrate_interact = function(l_11_0, l_11_1)
+	managers.network:peer():arbitrate_interact(l_11_1.interactable_unit_id, l_11_1.player_unit_id)
 end
-function ReadReplay.read_arbitrate_pick_up(A0_20, A1_21)
-	managers.network:peer():arbitrate_pick_up(A1_21.player_unit_id, A1_21.interactable_unit_id)
+
+ReadReplay.read_arbitrate_pick_up = function(l_12_0, l_12_1)
+	managers.network:peer():arbitrate_pick_up(l_12_1.player_unit_id, l_12_1.interactable_unit_id)
 end
-function ReadReplay.read_pick_up(A0_22, A1_23, A2_24)
+
+ReadReplay.read_pick_up = function(l_13_0, l_13_1, l_13_2)
 	managers.network:peer():pick_up(input_data.player_unit_id, input_data.interactable_unit_id)
 end
+
+

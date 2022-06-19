@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMKlempStart = AMKlempStart or class(AMNpcStart)
-AMKlempStart.unit_type = "klemp"
-function AMKlempStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMKlempStart.unit_type)
+if not AMKlempStart then
+	AMKlempStart = class(AMNpcStart)
 end
+AMKlempStart.unit_type = "klemp"
+AMKlempStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMKlempStart.unit_type)
+end
+
+

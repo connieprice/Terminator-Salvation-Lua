@@ -1,4 +1,7 @@
-MachineAiSetup = MachineAiSetup or class()
-function MachineAiSetup.init(A0_0)
-	local L1_1
+if not MachineAiSetup then
+	MachineAiSetup = class()
 end
+MachineAiSetup.init = function(l_1_0)
+end
+
+

@@ -1,150 +1,175 @@
 require("units/beings/player/states/PlayerRailTurretState")
 require("units/beings/player/states/PlayerRailTrainState")
 require("units/beings/player_tank/gui/MachineHud")
-PlayerTank = PlayerTank or class(Player)
-function PlayerTank.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._player_data = A0_0._unit:player_data()
-	A0_0._input = A0_0._unit:input()
-	A0_0._emitter = managers.action_event:create_emitter(A1_1)
-	A0_0._inventory = PlayerInventory:new(A1_1, A0_0._inventory_setup)
-	A0_0:spawn_weapons(A0_0._weapons)
-	A0_0._input:set_eye_target_position(Vector3(0, 0, 0))
-	A0_0._input:set_aim_target_position(Vector3(0, 0, 0))
-	A0_0:set_drama_name()
+if not PlayerTank then
+	PlayerTank = class(Player)
 end
-function PlayerTank.destroy(A0_2)
-	A0_2._unit = nil
-	A0_2._emitter:destroy()
+PlayerTank.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._player_data = l_1_0._unit:player_data()
+	l_1_0._input = l_1_0._unit:input()
+	l_1_0._emitter = managers.action_event:create_emitter(l_1_1)
+	l_1_0._inventory = PlayerInventory:new(l_1_1, l_1_0._inventory_setup)
+	l_1_0:spawn_weapons(l_1_0._weapons)
+	l_1_0._input:set_eye_target_position(Vector3(0, 0, 0))
+	l_1_0._input:set_aim_target_position(Vector3(0, 0, 0))
+	l_1_0:set_drama_name()
 end
-function PlayerTank.update(A0_3, A1_4, A2_5, A3_6)
-	A0_3._unit:camera_data().eye_target_position = A0_3._input:eye_target_position()
-	A0_3:_update_weapon(A0_3._primary_weapon_l, A0_3._input:primary_fire_l(), A0_3._input:aim_target_position())
-	A0_3:_update_weapon(A0_3._primary_weapon_r, A0_3._input:primary_fire_r(), A0_3._input:aim_target_position())
-	A0_3:_update_weapon(A0_3._secondary_weapon_l, A0_3._input:secondary_fire_l(), A0_3._input:aim_target_position())
-	A0_3:_update_weapon(A0_3._secondary_weapon_r, A0_3._input:secondary_fire_r(), A0_3._input:aim_target_position())
-	A0_3:_update_turret_rotation()
-	A0_3:_update_shake()
+
+PlayerTank.destroy = function(l_2_0)
+	l_2_0._unit = nil
+	l_2_0._emitter:destroy()
 end
-function PlayerTank.set_drama_name(A0_7)
-	if A0_7.character_name then
-		managers.unit_scripting:register_unit(A0_7.character_name, A0_7._unit)
-		managers.drama_scene:set_unit_name_to_script_name(A0_7.character_name, A0_7.character_name)
+
+PlayerTank.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	l_3_0._unit:camera_data().eye_target_position = l_3_0._input:eye_target_position()
+	l_3_0:_update_weapon(l_3_0._primary_weapon_l, l_3_0._input:primary_fire_l(), l_3_0._input:aim_target_position())
+	l_3_0:_update_weapon(l_3_0._primary_weapon_r, l_3_0._input:primary_fire_r(), l_3_0._input:aim_target_position())
+	l_3_0:_update_weapon(l_3_0._secondary_weapon_l, l_3_0._input:secondary_fire_l(), l_3_0._input:aim_target_position())
+	l_3_0:_update_weapon(l_3_0._secondary_weapon_r, l_3_0._input:secondary_fire_r(), l_3_0._input:aim_target_position())
+	l_3_0:_update_turret_rotation()
+	l_3_0:_update_shake()
+end
+
+PlayerTank.set_drama_name = function(l_4_0)
+	if l_4_0.character_name then
+		managers.unit_scripting:register_unit(l_4_0.character_name, l_4_0._unit)
+		managers.drama_scene:set_unit_name_to_script_name(l_4_0.character_name, l_4_0.character_name)
 	end
 end
-function PlayerTank._update_shake(A0_8)
-	if A0_8._unit:rail()._vehicle and A0_8._unit:rail()._vehicle:base():get_speed_vector():length() > tweak_data.rail.vehicle.rail_vehicle_tank.SHAKE_START_SPEED then
-		A0_8._player_data.rail_vehicle_shake = "tank"
+
+PlayerTank._update_shake = function(l_5_0)
+	local l_5_1 = l_5_0._unit:rail()._vehicle
+	if l_5_1 and tweak_data.rail.vehicle.rail_vehicle_tank.SHAKE_START_SPEED < l_5_1:base():get_speed_vector():length() then
+		l_5_0._player_data.rail_vehicle_shake = "tank"
 	else
-		A0_8._player_data.rail_vehicle_shake = nil
+		l_5_0._player_data.rail_vehicle_shake = nil
 	end
 end
-function PlayerTank._update_turret_rotation(A0_9)
-	local L1_10
-	L1_10 = A0_9._turret_object
-	if L1_10 then
-		L1_10 = Rotation
-		L1_10 = L1_10.look_at
-		L1_10 = L1_10(L1_10, A0_9._turret_object:position(), A0_9._input:eye_target_position(), Vector3(0, 0, 1))
-		L1_10 = Rotation(L1_10:yaw(), 0, L1_10:roll())
-		A0_9._unit:rail()._vehicle:base():set_turret_rotation(L1_10, A0_9._input:look_input_axis())
+
+PlayerTank._update_turret_rotation = function(l_6_0)
+	if l_6_0._turret_object then
+		local l_6_1 = Rotation:look_at(l_6_0._turret_object:position(), l_6_0._input:eye_target_position(), Vector3(0, 0, 1))
+		l_6_1 = Rotation(l_6_1:yaw(), 0, l_6_1:roll())
+		local l_6_2 = l_6_0._unit:rail()._vehicle
+		l_6_2:base():set_turret_rotation(l_6_1, l_6_0._input:look_input_axis())
 	end
 end
-function PlayerTank._update_weapon(A0_11, A1_12, A2_13, A3_14)
-	if A1_12 and alive(A1_12) then
-		if A2_13 and not (A1_12:weapon_data()._bullets_in_clip == 0) then
-			A1_12:weapon_data().fire_input = 1
+
+PlayerTank._update_weapon = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	if l_7_1 and alive(l_7_1) then
+		local l_7_4 = l_7_1:weapon_data()
+		local l_7_5 = l_7_1:base()
+		if l_7_2 and not l_7_4._bullets_in_clip == 0 then
+			l_7_4.fire_input = 1
 		else
-			A1_12:weapon_data().fire_input = 0
+			l_7_4.fire_input = 0
 		end
-		A1_12:weapon_data().aim_target_position = A3_14
-		if A1_12:weapon_data()._bullets_in_clip == 0 then
-			A1_12:base():reload()
+		l_7_4.aim_target_position = l_7_3
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_7_4._bullets_in_clip == 0 then
+		end
+		l_7_1:base():reload()
+	end
+end
+
+PlayerTank.get_weapon_overheat_percent = function(l_8_0)
+	local l_8_1 = 0
+	local l_8_2 = 0
+	local l_8_3 = false
+	local l_8_4 = false
+	if l_8_0._primary_weapon_l then
+		l_8_1 = l_8_0._primary_weapon_l:logic():get_overheat_percent()
+		l_8_3 = l_8_0._primary_weapon_l:logic():is_overheated()
+	end
+	if l_8_0._primary_weapon_r then
+		l_8_2 = l_8_0._primary_weapon_r:logic():get_overheat_percent()
+		l_8_4 = l_8_0._primary_weapon_r:logic():is_overheated()
+	end
+	local l_8_5 = {}
+	l_8_5.primary_l = l_8_1
+	l_8_5.primary_r = l_8_2
+	local l_8_6 = {}
+	l_8_6.primary_l = l_8_3
+	l_8_6.primary_r = l_8_4
+	return l_8_5, l_8_6
+end
+
+PlayerTank.get_weapon_power_up_percent = function(l_9_0)
+	local l_9_1 = 0
+	local l_9_2 = 0
+	if l_9_0._secondary_weapon_l then
+		l_9_1 = l_9_0:_fire_delay_percent(l_9_0._secondary_weapon_l)
+	end
+	if l_9_0._secondary_weapon_r then
+		l_9_2 = l_9_0:_fire_delay_percent(l_9_0._secondary_weapon_r)
+	end
+	local l_9_3 = {}
+	l_9_3.secondary_l = l_9_1
+	l_9_3.secondary_r = l_9_2
+	return l_9_3
+end
+
+PlayerTank._fire_delay_percent = function(l_10_0, l_10_1)
+	if (Application:time() - l_10_1:logic()._fire_time) / l_10_1:logic()._fire_delay > 1 then
+		return 1
+	end
+end
+
+PlayerTank.enter_rail = function(l_11_0)
+	local l_11_1 = l_11_0._unit:rail()._vehicle
+	local l_11_2 = l_11_1:base():get_primary_weapons()
+	local l_11_3 = l_11_1:base():get_secondary_weapons()
+	l_11_0._primary_weapon_l = l_11_2[1]
+	l_11_0._primary_weapon_r = l_11_2[2]
+	l_11_0._secondary_weapon_l = l_11_3[1]
+	l_11_0._secondary_weapon_r = l_11_3[2]
+	l_11_0._turret_object = l_11_1:base():get_turret_object()
+	l_11_0._unit:look():set_yaw_angle(l_11_1:rotation():roll())
+end
+
+PlayerTank.in_cover = function(l_12_0)
+	return false
+end
+
+PlayerTank.spawn_weapon_state = function(l_13_0, l_13_1)
+	local l_13_5, l_13_6, l_13_7, l_13_8, l_13_9, l_13_10, l_13_11, l_13_12, l_13_13, l_13_14 = nil
+	l_13_0:destroy_weapons()
+	for i_0,i_1 in ipairs(l_13_1) do
+		if i_1.name ~= "" and i_1.name ~= nil then
+			l_13_0:spawn_weapon(i_1.name, i_1.ammo)
 		end
 	end
 end
-function PlayerTank.get_weapon_overheat_percent(A0_15)
-	local L1_16, L2_17, L3_18, L4_19, L5_20, L6_21
-	L1_16 = 0
-	L2_17 = 0
-	L3_18 = false
-	L4_19 = false
-	L5_20 = A0_15._primary_weapon_l
-	if L5_20 then
-		L5_20 = A0_15._primary_weapon_l
-		L6_21 = L5_20
-		L5_20 = L5_20.logic
-		L5_20 = L5_20(L6_21)
-		L6_21 = L5_20
-		L5_20 = L5_20.get_overheat_percent
-		L5_20 = L5_20(L6_21)
-		L1_16 = L5_20
-		L5_20 = A0_15._primary_weapon_l
-		L6_21 = L5_20
-		L5_20 = L5_20.logic
-		L5_20 = L5_20(L6_21)
-		L6_21 = L5_20
-		L5_20 = L5_20.is_overheated
-		L5_20 = L5_20(L6_21)
-		L3_18 = L5_20
+
+PlayerTank.spawn_weapons = function(l_14_0, l_14_1)
+	l_14_0:destroy_weapons()
+	for l_14_5 = 1, #l_14_1 do
+		l_14_0:spawn_weapon(l_14_1[l_14_5], nil)
 	end
-	L5_20 = A0_15._primary_weapon_r
-	if L5_20 then
-		L5_20 = A0_15._primary_weapon_r
-		L6_21 = L5_20
-		L5_20 = L5_20.logic
-		L5_20 = L5_20(L6_21)
-		L6_21 = L5_20
-		L5_20 = L5_20.get_overheat_percent
-		L5_20 = L5_20(L6_21)
-		L2_17 = L5_20
-		L5_20 = A0_15._primary_weapon_r
-		L6_21 = L5_20
-		L5_20 = L5_20.logic
-		L5_20 = L5_20(L6_21)
-		L6_21 = L5_20
-		L5_20 = L5_20.is_overheated
-		L5_20 = L5_20(L6_21)
-		L4_19 = L5_20
+end
+
+PlayerTank.destroy_weapons = function(l_15_0)
+	local l_15_5, l_15_6, l_15_7, l_15_8 = nil
+	local l_15_1 = l_15_0._inventory:all_items()
+	for i_0,i_1 in ipairs(l_15_1) do
+		i_1:set_slot(0)
 	end
-	L5_20 = {}
-	L5_20.primary_l = L1_16
-	L5_20.primary_r = L2_17
-	L6_21 = {}
-	L6_21.primary_l = L3_18
-	L6_21.primary_r = L4_19
-	return L5_20, L6_21
+	l_15_0._inventory:clear()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function PlayerTank.get_weapon_power_up_percent(A0_22)
-	local L1_23, L2_24
-	L1_23 = 0
-	L2_24 = 0
-	if A0_22._secondary_weapon_l then
-		L1_23 = A0_22:_fire_delay_percent(A0_22._secondary_weapon_l)
+
+PlayerTank.spawn_weapon = function(l_16_0, l_16_1, l_16_2)
+	local l_16_3 = World:spawn_unit(l_16_1, l_16_0._unit:position(), l_16_0._unit:rotation())
+	assert(l_16_3)
+	if l_16_2 then
+		l_16_3:logic():set_ammo(l_16_2)
 	end
-	if A0_22._secondary_weapon_r then
-		L2_24 = A0_22:_fire_delay_percent(A0_22._secondary_weapon_r)
-	end
-	;({}).secondary_l = L1_23
-	;({}).secondary_r = L2_24
-	return {}
+	local l_16_4 = l_16_0._weapon_types[l_16_3:name()]
+	l_16_0._inventory:insert_item(l_16_3, l_16_0._inventory:find_free_slot(l_16_4), l_16_4)
+	l_16_3:set_visible(false)
 end
-function PlayerTank._fire_delay_percent(A0_25, A1_26)
-	return 1
-end
-function PlayerTank.enter_rail(A0_27)
-	A0_27._primary_weapon_l = A0_27._unit:rail()._vehicle:base():get_primary_weapons()[1]
-	A0_27._primary_weapon_r = A0_27._unit:rail()._vehicle:base():get_primary_weapons()[2]
-	A0_27._secondary_weapon_l = A0_27._unit:rail()._vehicle:base():get_secondary_weapons()[1]
-	A0_27._secondary_weapon_r = A0_27._unit:rail()._vehicle:base():get_secondary_weapons()[2]
-	A0_27._turret_object = A0_27._unit:rail()._vehicle:base():get_turret_object()
-	A0_27._unit:look():set_yaw_angle(A0_27._unit:rail()._vehicle:rotation():roll())
-end
-function PlayerTank.in_cover(A0_28)
-	local L1_29
-	L1_29 = false
-	return L1_29
-end
-function PlayerTank.spawn_weapon_state(A0_30, A1_31)
-	A0_30:destroy_weapons()
-	for 
+
+

@@ -1,19 +1,38 @@
-PostUpdateManager = PostUpdateManager or class()
-function PostUpdateManager.init(A0_0)
-	A0_0._extensions = {}
+if not PostUpdateManager then
+	PostUpdateManager = class()
 end
-function PostUpdateManager.register(A0_1, A1_2, A2_3)
-	table.insert(A0_1._extensions, {_unit = A1_2, _extension = A2_3})
+PostUpdateManager.init = function(l_1_0)
+	l_1_0._extensions = {}
 end
-function PostUpdateManager.update(A0_4)
-	local L1_5, L2_6
-	L1_5, L2_6 = next(A0_4._extensions, L1_5)
-	while L1_5 do
-		L1_5, L2_6 = next(A0_4._extensions, L1_5)
-		if alive(L2_6._unit) then
-			L2_6._extension:post_update()
-		else
-			A0_4._extensions[L1_5] = nil
+
+PostUpdateManager.register = function(l_2_0, l_2_1, l_2_2)
+	local l_2_3 = table.insert
+	local l_2_4 = l_2_0._extensions
+	local l_2_5 = {}
+	l_2_5._unit = l_2_1
+	l_2_5._extension = l_2_2
+	l_2_3(l_2_4, l_2_5)
+end
+
+PostUpdateManager.update = function(l_3_0)
+	local l_3_1, l_3_2 = nil, nil
+	l_3_1 = next(l_3_0._extensions, l_3_1)
+	while 1 do
+		while 1 do
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			if l_3_1 then
+				if alive(l_3_2._unit) then
+					l_3_2._extension:post_update()
+				end
+				l_3_0._extensions[l_3_1] = nil
+			end
+			 -- WARNING: missing end command somewhere! Added here
 		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
 end
+
+

@@ -1,69 +1,79 @@
-HunterKillerAiDefence = HunterKillerAiDefence or class()
-function HunterKillerAiDefence.init_data(A0_0, A1_1)
-	local L2_2
-	L2_2 = {}
-	A1_1._defence = L2_2
-	L2_2 = A1_1._defence
-	L2_2.forced_flares = {}
-	L2_2 = A1_1._defence
-	L2_2.forced_flare_cnt = nil
-	L2_2 = A1_1._defence
-	L2_2.forced_flare_start = nil
+if not HunterKillerAiDefence then
+	HunterKillerAiDefence = class()
 end
-function HunterKillerAiDefence.logic_hk_defence_init(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	local L8_11
-	L8_11 = 0
-	return L8_11
+HunterKillerAiDefence.init_data = function(l_1_0, l_1_1)
+	l_1_1._defence = {}
+	l_1_1._defence.forced_flares = {}
+	l_1_1._defence.forced_flare_cnt = nil
+	l_1_1._defence.forced_flare_start = nil
 end
-function HunterKillerAiDefence.logic_hk_defence_passive(A0_12, A1_13, A2_14, A3_15, A4_16, A5_17, A6_18, A7_19)
-	if #A2_14:ai_data().input.forced_flares > 0 then
-		A2_14:ai_data()._defence.forced_flares = A2_14:ai_data().input.forced_flares
-		A2_14:ai_data()._defence.forced_flare_cnt = 1
+
+HunterKillerAiDefence.logic_hk_defence_init = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	return 0
+end
+
+HunterKillerAiDefence.logic_hk_defence_passive = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4, l_3_5, l_3_6, l_3_7)
+	local l_3_8 = l_3_2:ai_data()
+	if #l_3_8.input.forced_flares > 0 then
+		l_3_8._defence.forced_flares = l_3_8.input.forced_flares
+		l_3_8._defence.forced_flare_cnt = 1
 		return 0
 	end
-	A2_14:ai_data().output.allowed_to_release_flare = false
+	l_3_8.output.allowed_to_release_flare = false
 	return nil
 end
-function HunterKillerAiDefence.logic_hk_defence_forced_flare(A0_20, A1_21, A2_22, A3_23, A4_24, A5_25, A6_26, A7_27)
-	if #A2_22:ai_data().input.forced_flares > 0 then
-		A0_20:_hk_defence_forced_flare(A2_22, A1_21, 1)
+
+HunterKillerAiDefence.logic_hk_defence_forced_flare = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6, l_4_7)
+	local l_4_8 = l_4_2:ai_data()
+	if #l_4_8.input.forced_flares > 0 then
+		l_4_0:_hk_defence_forced_flare(l_4_2, l_4_1, 1)
 	end
-	if #A2_22:ai_data().input.forced_flares == 0 then
-		A2_22:ai_data().output.allowed_to_release_flare = false
+	if #l_4_8.input.forced_flares == 0 then
+		l_4_8.output.allowed_to_release_flare = false
 		return 0
 	end
 	return nil
 end
-function HunterKillerAiDefence.logic_hk_defence_flare(A0_28, A1_29, A2_30, A3_31, A4_32, A5_33, A6_34, A7_35)
+
+HunterKillerAiDefence.logic_hk_defence_flare = function(l_5_0, l_5_1, l_5_2, l_5_3, l_5_4, l_5_5, l_5_6, l_5_7)
 	return nil
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function HunterKillerAiDefence._hk_defence_forced_flare(A0_36, A1_37, A2_38)
-	A0_36:_update_forced_flare_rounds(A1_37, A2_38)
-	if #A1_37:ai_data().input.forced_flares == 0 then
-		A1_37:ai_data().output.allowed_to_release_flare = false
-		return
+
+HunterKillerAiDefence._hk_defence_forced_flare = function(l_6_0, l_6_1, l_6_2)
+	local l_6_3 = l_6_1:ai_data()
+	l_6_0:_update_forced_flare_rounds(l_6_1, l_6_2)
+	if #l_6_3.input.forced_flares == 0 then
+		l_6_3.output.allowed_to_release_flare = false
+		return 
 	end
-	if A1_37:ai_data()._defence.forced_flare_cnt % 2 == 0 then
-		A1_37:ai_data().output.allowed_to_release_flare = false
-		return
+	if l_6_3._defence.forced_flare_cnt % 2 == 0 then
+		l_6_3.output.allowed_to_release_flare = false
+		return 
 	end
-	if 0 < #A1_37:ai_data()._defence.forced_flares then
-		A1_37:ai_data().output.allowed_to_release_flare = true
+	if #l_6_3._defence.forced_flares > 0 then
+		l_6_3.output.allowed_to_release_flare = true
 	else
-		A1_37:ai_data().output.allowed_to_release_flare = false
+		l_6_3.output.allowed_to_release_flare = false
 	end
 end
-function HunterKillerAiDefence._update_forced_flare_rounds(A0_39, A1_40, A2_41)
-	if A1_40:ai_data()._defence.forced_flare_cnt <= #A1_40:ai_data()._defence.forced_flares then
-		if not A1_40:ai_data()._defence.forced_flare_start then
-			A1_40:ai_data()._defence.forced_flare_start = A2_41
+
+HunterKillerAiDefence._update_forced_flare_rounds = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_1:ai_data()
+	if l_7_3._defence.forced_flare_cnt <= #l_7_3._defence.forced_flares then
+		if not l_7_3._defence.forced_flare_start then
+			l_7_3._defence.forced_flare_start = l_7_2
 		end
-		if A2_41 > A1_40:ai_data()._defence.forced_flare_start + tonumber(A1_40:ai_data()._defence.forced_flares[A1_40:ai_data()._defence.forced_flare_cnt]) then
-			A1_40:ai_data()._defence.forced_flare_cnt = A1_40:ai_data()._defence.forced_flare_cnt + 1
-			A1_40:ai_data()._defence.forced_flare_start = nil
-			if A1_40:ai_data()._defence.forced_flare_cnt > #A1_40:ai_data()._defence.forced_flares then
-				A1_40:ai_data().input.forced_flares = {}
-			end
+		local l_7_4 = tonumber(l_7_3._defence.forced_flares[l_7_3._defence.forced_flare_cnt])
+		local l_7_5 = l_7_3._defence.forced_flare_start + l_7_4
+	if l_7_5 < l_7_2 then
 		end
+		l_7_3._defence.forced_flare_cnt = l_7_3._defence.forced_flare_cnt + 1
+		l_7_3._defence.forced_flare_start = nil
+	if #l_7_3._defence.forced_flares < l_7_3._defence.forced_flare_cnt then
+		end
+		l_7_3.input.forced_flares = {}
 	end
 end
+
+

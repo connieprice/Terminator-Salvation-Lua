@@ -1,6 +1,10 @@
 require("menu/2D/states/Menu2DState")
-Menu2DStateInactive = Menu2DStateInactive or class(Menu2DState)
-function Menu2DStateInactive.init(A0_0)
-	Menu2DState.init(A0_0, Menu2DStateInactive)
-	A0_0._state_data.menu.components.island = nil
+if not Menu2DStateInactive then
+	Menu2DStateInactive = class(Menu2DState)
 end
+Menu2DStateInactive.init = function(l_1_0)
+	Menu2DState.init(l_1_0, Menu2DStateInactive)
+	l_1_0._state_data.menu.components.island = nil
+end
+
+

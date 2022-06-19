@@ -1,39 +1,44 @@
-SpiderState = SpiderState or class()
-function SpiderState.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._can_move = true
-	A0_0._can_rotate = true
-	A0_0._emitter = managers.action_event:create_emitter(A0_0._unit)
-	A0_0._base = A1_1:base()
+if not SpiderState then
+	SpiderState = class()
 end
-function SpiderState.leave(A0_2)
-	A0_2._emitter:destroy()
+SpiderState.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._can_move = true
+	l_1_0._can_rotate = true
+	l_1_0._emitter = managers.action_event:create_emitter(l_1_0._unit)
+	l_1_0._base = l_1_1:base()
 end
-function SpiderState._set_can_move(A0_3, A1_4)
-	A0_3._can_move = A1_4
+
+SpiderState.leave = function(l_2_0)
+	l_2_0._emitter:destroy()
 end
-function SpiderState._set_can_rotate(A0_5, A1_6)
-	A0_5._can_rotate = A1_6
+
+SpiderState._set_can_move = function(l_3_0, l_3_1)
+	l_3_0._can_move = l_3_1
 end
-function SpiderState.can_move(A0_7)
-	local L1_8
-	L1_8 = A0_7._can_move
-	return L1_8
+
+SpiderState._set_can_rotate = function(l_4_0, l_4_1)
+	l_4_0._can_rotate = l_4_1
 end
-function SpiderState.can_rotate(A0_9)
-	local L1_10
-	L1_10 = A0_9._can_rotate
-	return L1_10
+
+SpiderState.can_move = function(l_5_0)
+	return l_5_0._can_move
 end
-function SpiderState._request_stun(A0_11)
-	local L1_12
-	L1_12 = "stun"
-	L1_12 = L1_12 .. math.random(1, 4)
-	A0_11._unit:play_redirect(L1_12)
+
+SpiderState.can_rotate = function(l_6_0)
+	return l_6_0._can_rotate
 end
-function SpiderState._request_scan(A0_13)
-	A0_13._unit:play_redirect("scan")
+
+SpiderState._request_stun = function(l_7_0)
+	local l_7_1 = "stun" .. math.random(1, 4)
+	l_7_0._unit:play_redirect(l_7_1)
 end
-function SpiderState.update(A0_14)
-	local L1_15
+
+SpiderState._request_scan = function(l_8_0)
+	l_8_0._unit:play_redirect("scan")
 end
+
+SpiderState.update = function(l_9_0)
+end
+
+

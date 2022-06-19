@@ -5,131 +5,182 @@ core:require_module("CoreTable")
 core:require_module("CoreSubtitlePresenter")
 core:require_module("CoreSubtitleSequence")
 core:require_module("CoreSubtitleSequencePlayer")
-SubtitleManager = SubtitleManager or CoreClass.class()
-function SubtitleManager.init(A0_0, A1_1, A2_2)
-	A0_0.__sequence_file_path = A1_1 or "data/lib/managers/xml/subtitle_sequence.xml"
-	A0_0.__presenter = A2_2 or CoreSubtitlePresenter.OverlayPresenter:new()
-	A0_0:_update_presenter_visibility()
-	A0_0:_parse_xml()
+if not SubtitleManager then
+	SubtitleManager = CoreClass.class()
 end
-function SubtitleManager.destroy(A0_3)
-	A0_3:_set_presenter(nil)
-end
-function SubtitleManager.update(A0_4, A1_5, A2_6)
-	if A0_4.__player then
-		A0_4.__player:update(A1_5, A2_6)
-		if A0_4.__player:is_done() then
-			A0_4.__player = nil
+SubtitleManager.init = function(l_1_0, l_1_1, l_1_2)
+	do
+		l_1_0.__sequence_file_path = l_1_1 or "data/lib/managers/xml/subtitle_sequence.xml"
+		if not l_1_2 then
+			l_1_0.__presenter = CoreSubtitlePresenter.OverlayPresenter:new()
 		end
+		l_1_0:_update_presenter_visibility()
+		l_1_0:_parse_xml()
 	end
-	A0_4:_presenter():update(A1_5, A2_6)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function SubtitleManager.enabled(A0_7)
-	local L1_8
-	L1_8 = Global
-	L1_8 = L1_8.__SubtitleManager__enabled
-	L1_8 = L1_8 or false
-	return L1_8
+
+SubtitleManager.destroy = function(l_2_0)
+	l_2_0:_set_presenter(nil)
 end
-function SubtitleManager.set_enabled(A0_9, A1_10)
-	Global.__SubtitleManager__enabled = not not A1_10
-	A0_9:_update_presenter_visibility()
-end
-function SubtitleManager.visible(A0_11)
-	return not A0_11.__hidden
-end
-function SubtitleManager.set_visible(A0_12, A1_13)
-	A0_12.__hidden = not A1_13 or nil
-	A0_12:_update_presenter_visibility()
-end
-function SubtitleManager.clear_subtitle(A0_14)
-	A0_14:show_subtitle_localized("")
-end
-function SubtitleManager.is_showing_subtitles(A0_15)
-	return A0_15:enabled() and A0_15:visible() and A0_15.__player ~= nil
-end
-function SubtitleManager.show_subtitle(A0_16, A1_17, A2_18, A3_19)
-	A0_16:show_subtitle_localized(managers.localization:text(A1_17, A3_19), A2_18)
-end
-function SubtitleManager.show_subtitle_localized(A0_20, A1_21, A2_22)
-	local L3_23
-	L3_23 = CoreSubtitleSequence
-	L3_23 = L3_23.SubtitleSequence
-	L3_23 = L3_23.new
-	L3_23 = L3_23(L3_23)
-	L3_23:add_subtitle(CoreSubtitleSequence.Subtitle:new(A1_21, 0, A2_22 or 3))
-	A0_20.__player = CoreSubtitleSequencePlayer.SubtitleSequencePlayer:new(L3_23, A0_20:_presenter())
-end
-function SubtitleManager.run_subtitle_sequence(A0_24, A1_25)
-	local L2_26, L3_27
-	L2_26 = A1_25 and L2_26(L3_27, string.format("Sequence \"%s\" not found in \"%s\".", A1_25, A0_24.__sequence_file_path))
-	L3_27 = L2_26 and L3_27(L3_27, L2_26, A0_24:_presenter())
-	A0_24.__player = L3_27
-end
-function SubtitleManager.subtitle_sequence_ids(A0_28)
-	return CoreTable.table.map_keys(A0_28.__subtitle_sequences or {})
-end
-function SubtitleManager.has_subtitle_sequence(A0_29, A1_30)
-	local L2_31
-	L2_31 = A0_29.__subtitle_sequences
-	if L2_31 then
-		L2_31 = A0_29.__subtitle_sequences
-		L2_31 = L2_31[A1_30]
+
+SubtitleManager.update = function(l_3_0, l_3_1, l_3_2)
+	if l_3_0.__player then
+		l_3_0.__player:update(l_3_1, l_3_2)
+	if l_3_0.__player:is_done() then
+		end
+		l_3_0.__player = nil
 	end
-	L2_31 = L2_31 ~= nil
-	return L2_31
+	l_3_0:_presenter():update(l_3_1, l_3_2)
 end
-function SubtitleManager._presenter(A0_32)
-	return assert(A0_32.__presenter, "Invalid presenter. SubtitleManager has been destroyed.")
+
+SubtitleManager.enabled = function(l_4_0)
+	return Global.__SubtitleManager__enabled or false
 end
-function SubtitleManager._set_presenter(A0_33, A1_34)
-	assert(A1_34 == nil or type(A1_34.preprocess_sequence) == "function", "Invalid presenter.")
-	if A0_33.__presenter then
-		A0_33.__presenter:destroy()
+
+SubtitleManager.set_enabled = function(l_5_0, l_5_1)
+	Global.__SubtitleManager__enabled = not not l_5_1
+	l_5_0:_update_presenter_visibility()
+end
+
+SubtitleManager.visible = function(l_6_0)
+	return not l_6_0.__hidden
+end
+
+SubtitleManager.set_visible = function(l_7_0, l_7_1)
+	if l_7_1 then
+		local l_7_2 = nil
+		l_7_2 = l_7_2
 	end
-	A0_33.__presenter = A1_34
+	l_7_0.__hidden = l_7_2
+	l_7_2(l_7_0)
 end
-function SubtitleManager._update_presenter_visibility(A0_35)
-	local L1_36
-	L1_36 = A0_35._presenter
-	L1_36 = L1_36(A0_35)
-	L1_36[A0_35:enabled() and A0_35:visible() and "show" or "hide"](L1_36)
+
+SubtitleManager.clear_subtitle = function(l_8_0)
+	l_8_0:show_subtitle_localized("")
 end
-function SubtitleManager._parse_xml(A0_37)
-	local L1_38, L2_39, L3_40, L4_41, L5_42
-	L1_38 = {}
-	A0_37.__subtitle_sequences = L1_38
-	L1_38 = A0_37.__sequence_file_path
-	if L1_38 then
-		L1_38 = File
-		L1_38 = L1_38.exists
-		L1_38 = L1_38(L2_39, L3_40)
-		if L1_38 then
-			L1_38 = CoreDebug
-			L1_38 = L1_38.cat_print
-			L5_42 = A0_37.__sequence_file_path
-			L5_42 = L3_40(L4_41, L5_42)
-			L1_38(L2_39, L3_40, L4_41, L5_42, L3_40(L4_41, L5_42))
-			L1_38 = File
-			L1_38 = L1_38.parse_xml
-			L1_38 = L1_38(L2_39, L3_40)
-			if L1_38 then
-				if L2_39 == "subtitle_sequence" then
-					for L5_42 in L2_39(L3_40) do
-						if L5_42:name() == "sequence" then
-							A0_37.__subtitle_sequences[CoreSubtitleSequence.SubtitleSequence:new(L5_42):name()] = CoreSubtitleSequence.SubtitleSequence:new(L5_42)
-						end
-					end
-				end
+
+SubtitleManager.is_showing_subtitles = function(l_9_0)
+	return not l_9_0:enabled() or not l_9_0:visible() or l_9_0.__player ~= nil
+end
+
+SubtitleManager.show_subtitle = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	l_10_0:show_subtitle_localized(managers.localization:text(l_10_1, l_10_3), l_10_2)
+end
+
+SubtitleManager.show_subtitle_localized = function(l_11_0, l_11_1, l_11_2)
+	local l_11_3 = CoreSubtitleSequence.SubtitleSequence:new()
+	local l_11_4, l_11_5 = l_11_3:add_subtitle, l_11_3
+	local l_11_6, l_11_7 = CoreSubtitleSequence.Subtitle:new, CoreSubtitleSequence.Subtitle
+	local l_11_8 = l_11_1
+	local l_11_9 = 0
+	do
+		l_11_7, l_11_6 = .end, l_11_6(l_11_7, l_11_8, l_11_9, l_11_2 or 3)
+		l_11_4(l_11_5, l_11_6, l_11_7, l_11_8, l_11_9)
+		l_11_4 = CoreSubtitleSequencePlayer
+		l_11_4 = l_11_4.SubtitleSequencePlayer
+		l_11_4, l_11_5 = l_11_4:new, l_11_4
+		l_11_6 = l_11_3
+		l_11_7, l_11_8 = l_11_0:_presenter, l_11_0
+		l_11_8, l_11_7 = .end, l_11_7(l_11_8)
+		l_11_4 = l_11_4(l_11_5, l_11_6, l_11_7, l_11_8, l_11_9)
+		l_11_0.__player = l_11_4
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+SubtitleManager.run_subtitle_sequence = function(l_12_0, l_12_1)
+	do
+		if not l_12_1 or assert(l_12_0.__subtitle_sequences[l_12_1], string.format("Sequence \"%s\" not found in \"%s\".", l_12_1, l_12_0.__sequence_file_path)) then
+			l_12_0.__player = CoreSubtitleSequencePlayer.SubtitleSequencePlayer:new(assert(l_12_0.__subtitle_sequences[l_12_1], string.format("Sequence \"%s\" not found in \"%s\".", l_12_1, l_12_0.__sequence_file_path)), l_12_0:_presenter())
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+SubtitleManager.subtitle_sequence_ids = function(l_13_0)
+	local l_13_1 = CoreTable.table.map_keys
+	if not l_13_0.__subtitle_sequences then
+		local l_13_2 = {}
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_13_1(l_13_2)
+end
+
+SubtitleManager.has_subtitle_sequence = function(l_14_0, l_14_1)
+	return l_14_0.__subtitle_sequences and l_14_0.__subtitle_sequences[l_14_1] ~= nil
+end
+
+SubtitleManager._presenter = function(l_15_0)
+	local l_15_1 = assert
+	local l_15_2 = l_15_0.__presenter
+	local l_15_3 = "Invalid presenter. SubtitleManager has been destroyed."
+	return l_15_1(l_15_2, l_15_3)
+end
+
+SubtitleManager._set_presenter = function(l_16_0, l_16_1)
+	local l_16_2 = assert
+	l_16_2(l_16_1 == nil or type(l_16_1.preprocess_sequence) == "function", "Invalid presenter.")
+	l_16_2 = l_16_0.__presenter
+	if l_16_2 then
+		l_16_2 = l_16_0.__presenter
+		l_16_2(l_16_2)
+	end
+	l_16_0.__presenter = l_16_1
+end
+
+SubtitleManager._update_presenter_visibility = function(l_17_0)
+	local l_17_1 = l_17_0:_presenter()
+	if l_17_0:enabled() then
+		local l_17_2 = l_17_0:visible()
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_17_1[l_17_2 and "show" or "hide"](l_17_1)
+end
+
+SubtitleManager._parse_xml = function(l_18_0)
+	l_18_0.__subtitle_sequences = {}
+	if l_18_0.__sequence_file_path and File:exists(l_18_0.__sequence_file_path) then
+		local l_18_5 = CoreDebug.cat_print
+		l_18_5("spam", string.format("[SubtitleManager] Parsing subtitle sequences from \"%s\"", l_18_0.__sequence_file_path))
+		l_18_5 = File
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_18_1 = nil
+	if l_18_5 then
+		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_18_1 == "subtitle_sequence" then
+		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		for i_0 in l_18_1 do
+			if l_18_4:name() == "sequence" then
+				local l_18_6 = CoreSubtitleSequence.SubtitleSequence:new(l_18_4)
+				l_18_0.__subtitle_sequences[l_18_6:name()] = l_18_6
 			end
 		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function SubtitleManager.show(A0_43)
+
+SubtitleManager.show = function(l_19_0)
 	Application:stack_dump_error("SubtitleManager:show() is deprecated. Use SubtitleManager:set_visible(true) instead.")
-	A0_43:set_visible(true)
+	l_19_0:set_visible(true)
 end
-function SubtitleManager.hide(A0_44)
+
+SubtitleManager.hide = function(l_20_0)
 	Application:stack_dump_error("SubtitleManager:hide() is deprecated. Use SubtitleManager:set_visible(false) instead.")
-	A0_44:set_visible(false)
+	l_20_0:set_visible(false)
 end
+
+

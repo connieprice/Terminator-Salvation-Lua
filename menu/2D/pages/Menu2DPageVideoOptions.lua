@@ -1,89 +1,96 @@
 require("menu/2D/pages/Menu2DPageNormal")
-Menu2DPageVideoOptions = Menu2DPageVideoOptions or class(Menu2DPageNormal)
-Menu2DPageVideoOptions.aspect_ratios = {
-	{x = 4, y = 3},
-	{x = 5, y = 4},
-	{x = 16, y = 9},
-	{x = 16, y = 10}
-}
-function Menu2DPageVideoOptions.open(A0_0, ...)
-	A0_0:_populate_resolutions()
-	A0_0:_populate_aspect_ratios()
-	Menu2DPageNormal.open(A0_0, ...)
+if not Menu2DPageVideoOptions then
+	Menu2DPageVideoOptions = class(Menu2DPageNormal)
 end
-function Menu2DPageVideoOptions._populate_resolutions(A0_2)
-	local L1_3, L2_4, L3_5, L4_6, L5_7, L6_8, L7_9, L8_10, L9_11, L10_12, L11_13, L12_14
-	L3_5 = RenderSettings
-	L3_5 = L3_5.resolution
-	L5_7 = A0_2
-	L4_6 = A0_2._find_choice
-	L4_6 = L4_6(L5_7, L6_8)
-	L5_7 = L4_6.widget
-	L5_7 = L5_7(L6_8)
-	L6_8(L7_9)
-	for L9_11, L10_12 in L6_8(L7_9) do
-		L11_13 = L10_12.x
-		L12_14 = "x"
-		L11_13 = L11_13 .. L12_14 .. L10_12.y .. " (" .. L10_12.z .. ")"
-		L12_14 = L10_12.x
-		if L12_14 == L3_5.x then
-			L12_14 = L10_12.y
-			if L12_14 == L3_5.y then
-				L12_14 = L10_12.z
-				if L12_14 == L3_5.z then
-					L2_4 = L9_11
-				end
-			end
+local l_0_0 = Menu2DPageVideoOptions
+local l_0_1 = {}
+local l_0_2 = {}
+l_0_2.x = 4
+l_0_2.y = 3
+local l_0_3 = {}
+l_0_3.x = 5
+l_0_3.y = 4
+local l_0_4 = {}
+l_0_4.x = 16
+l_0_4.y = 9
+local l_0_5 = {}
+l_0_5.x = 16
+l_0_5.y = 10
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+l_0_0.aspect_ratios = l_0_1
+l_0_0 = Menu2DPageVideoOptions
+l_0_1 = function(l_1_0, ...)
+	l_1_0:_populate_resolutions()
+	l_1_0:_populate_aspect_ratios()
+	Menu2DPageNormal.open(l_1_0, ...)
+end
+
+l_0_0.open = l_0_1
+l_0_0 = Menu2DPageVideoOptions
+l_0_1 = function(l_2_0)
+	local l_2_1, l_2_2, l_2_7, l_2_8, l_2_9, l_2_10, l_2_11, l_2_12, l_2_13, l_2_14, l_2_15, l_2_16, l_2_17, l_2_18, l_2_19, l_2_20, l_2_21 = nil, nil
+	local l_2_3 = RenderSettings.resolution
+	l_2_0:_find_choice("resolution"):widget():clear()
+	for i_0,i_1 in pairs(RenderSettings.modes) do
+		local l_2_4, l_2_5 = nil
+		if i_1.x == l_2_3.x and i_1.y == l_2_3.y and i_1.z == l_2_3.z then
+			l_2_5:add_choice({text = i_1.x .. "x" .. i_1.y .. " (" .. i_1.z .. ")", ignore_localization = true})
 		end
-		L12_14 = {}
-		L12_14.text = L11_13
-		L12_14.ignore_localization = true
-		L5_7:add_choice(L12_14)
+		l_2_5:set_selected_choice(l_2_2)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L6_8(L7_9, L8_10)
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 35 
 end
-function Menu2DPageVideoOptions._populate_aspect_ratios(A0_15)
-	local L1_16, L2_17, L3_18, L4_19, L5_20, L6_21, L7_22, L8_23, L9_24, L10_25, L11_26, L12_27
-	L1_16 = 0.01
-	L3_18 = A0_15
-	L2_17 = A0_15._find_choice
-	L4_19 = "aspect_ratio"
-	L2_17 = L2_17(L3_18, L4_19)
-	L4_19 = L2_17
-	L3_18 = L2_17.widget
-	L3_18 = L3_18(L4_19)
-	L5_20 = L3_18
-	L4_19 = L3_18.clear
-	L4_19(L5_20)
-	L4_19, L5_20 = nil, nil
-	L6_21 = core_setup
-	L6_21 = L6_21.aspect_ratio
-	for L10_25, L11_26 in L7_22(L8_23) do
-		L12_27 = {}
-		L12_27.text = L11_26.x .. ":" .. L11_26.y
-		L12_27.ignore_localization = true
-		if L1_16 > math.abs(L11_26.x / L11_26.y - L6_21) and (not L5_20 or L5_20 > math.abs(L11_26.x / L11_26.y - L6_21)) then
-			L5_20, L4_19 = math.abs(L11_26.x / L11_26.y - L6_21), L10_25
+
+l_0_0._populate_resolutions = l_0_1
+l_0_0 = Menu2DPageVideoOptions
+l_0_1 = function(l_3_0)
+	local l_3_10, l_3_11, l_3_12, l_3_13, l_3_14, l_3_15, l_3_16, l_3_17 = nil
+	local l_3_1 = 0.01
+	local l_3_2 = l_3_0:_find_choice("aspect_ratio")
+	local l_3_3 = l_3_2:widget()
+	l_3_3:clear()
+	local l_3_4, l_3_5 = nil, nil
+	local l_3_6 = core_setup.aspect_ratio
+	for i_0,i_1 in pairs(Menu2DPageVideoOptions.aspect_ratios) do
+		if math.abs(i_1.x / i_1.y - l_3_6) < l_3_1 and (not l_3_5 or math.abs(i_1.x / i_1.y - l_3_6) < l_3_5) then
+			l_3_4 = l_3_18
+			l_3_5 = math.abs(i_1.x / i_1.y - l_3_6)
 		end
-		L3_18:add_choice(L12_27)
+		l_3_3:add_choice({text = i_1.x .. ":" .. i_1.y, ignore_localization = true})
 	end
-	L10_25 = {}
-	L10_25.text = "menu_auto_aspect_ratio"
-	L10_25.ignore_localization = false
-	L8_23(L9_24, L10_25)
-	if L8_23 then
-		L4_19 = L8_23 + 1
+	do
+		local l_3_20 = {}
+		l_3_3:add_choice(l_3_20)
+		if managers.save:profile().video_settings.auto_aspect_ratio then
+			l_3_4 = #Menu2DPageVideoOptions.aspect_ratios + 1
+		end
+		l_3_3:set_selected_choice(l_3_20)
 	end
-	L10_25 = L4_19
-	L8_23(L9_24, L10_25)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function Menu2DPageVideoOptions.set_island_data(A0_28)
-	managers.menu2d:menu_island_instance_data().video_mode = RenderSettings.modes[A0_28:_find_choice("resolution"):widget():selected_choice()]
-	if A0_28:_find_choice("aspect_ratio"):widget():selected_choice() > #Menu2DPageVideoOptions.aspect_ratios then
-		managers.menu2d:menu_island_instance_data().auto_aspect_ratio = true
-		managers.menu2d:menu_island_instance_data().aspect_ratio = nil
+
+l_0_0._populate_aspect_ratios = l_0_1
+l_0_0 = Menu2DPageVideoOptions
+l_0_1 = function(l_4_0)
+	local l_4_1 = l_4_0:_find_choice("resolution"):widget()
+	local l_4_2 = l_4_0:_find_choice("aspect_ratio"):widget()
+	local l_4_3 = managers.menu2d:menu_island_instance_data()
+	l_4_3.video_mode = RenderSettings.modes[l_4_1:selected_choice()]
+	local l_4_4 = l_4_2:selected_choice()
+	if #Menu2DPageVideoOptions.aspect_ratios < l_4_4 then
+		l_4_3.auto_aspect_ratio = true
+		l_4_3.aspect_ratio = nil
 	else
-		managers.menu2d:menu_island_instance_data().auto_aspect_ratio = false
-		managers.menu2d:menu_island_instance_data().aspect_ratio = Menu2DPageVideoOptions.aspect_ratios[A0_28:_find_choice("aspect_ratio"):widget():selected_choice()].x / Menu2DPageVideoOptions.aspect_ratios[A0_28:_find_choice("aspect_ratio"):widget():selected_choice()].y
+		local l_4_5 = Menu2DPageVideoOptions.aspect_ratios[l_4_4]
+		l_4_3.auto_aspect_ratio = false
+		l_4_3.aspect_ratio = l_4_5.x / l_4_5.y
 	end
 end
+
+l_0_0.set_island_data = l_0_1
+

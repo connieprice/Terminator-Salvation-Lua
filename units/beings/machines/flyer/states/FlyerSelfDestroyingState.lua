@@ -1,21 +1,30 @@
 require("units/beings/machines/flyer/states/FlyerState")
 require("units/beings/machines/flyer/states/FlyerDeadState")
-FlyerSelfDestroyingState = FlyerSelfDestroyingState or class(FlyerState)
-function FlyerSelfDestroyingState.init(A0_0, A1_1)
-	FlyerState.init(A0_0, A1_1)
-	A0_0._enemy_data = A1_1:enemy_data()
-	A0_0._time_out = tweak_data.enemy.flyer.SELF_DESTROY_TIME
+if not FlyerSelfDestroyingState then
+	FlyerSelfDestroyingState = class(FlyerState)
 end
-function FlyerSelfDestroyingState.enter(A0_2)
-	A0_2._emitter:unit_self_destroying(A0_2._unit)
-	managers.unit_scripting:unit_dead(A0_2._unit)
+FlyerSelfDestroyingState.init = function(l_1_0, l_1_1)
+	FlyerState.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_1:enemy_data()
+	l_1_0._time_out = tweak_data.enemy.flyer.SELF_DESTROY_TIME
 end
-function FlyerSelfDestroyingState.leave(A0_3)
-	A0_3._emitter:unit_self_destroyed(A0_3._unit)
+
+FlyerSelfDestroyingState.enter = function(l_2_0)
+	l_2_0._emitter:unit_self_destroying(l_2_0._unit)
+	managers.unit_scripting:unit_dead(l_2_0._unit)
 end
-function FlyerSelfDestroyingState.update(A0_4, A1_5)
-	A0_4._time_out = A0_4._time_out - A1_5
-	if A0_4._time_out < 0 then
-		return FlyerDeadState:new(A0_4._unit)
+
+FlyerSelfDestroyingState.leave = function(l_3_0)
+	l_3_0._emitter:unit_self_destroyed(l_3_0._unit)
+end
+
+FlyerSelfDestroyingState.update = function(l_4_0, l_4_1)
+	l_4_0._time_out = l_4_0._time_out - l_4_1
+	if l_4_0._time_out < 0 then
+		local l_4_2, l_4_3 = FlyerDeadState:new, FlyerDeadState
+		local l_4_4 = l_4_0._unit
+		return l_4_2(l_4_3, l_4_4)
 	end
 end
+
+

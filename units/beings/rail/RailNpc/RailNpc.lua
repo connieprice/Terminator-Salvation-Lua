@@ -1,48 +1,61 @@
-RailNpc = RailNpc or class()
-function RailNpc.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._anim_machine = A0_0._unit:anim_state_machine()
+if not RailNpc then
+	RailNpc = class()
 end
-function RailNpc.set_vehicle(A0_2, A1_3)
-	A0_2._vehicle = A1_3
+RailNpc.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._anim_machine = l_1_0._unit:anim_state_machine()
 end
-function RailNpc.ragdoll(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9, L6_10, L7_11, L8_12
-	L1_5 = {}
-	L1_5.rag_Hips = "Hips"
-	L1_5.rag_Head = "Head"
-	L1_5.rag_LeftUpLeg = "LeftUpLeg"
-	L1_5.rag_RightUpLeg = "RightUpLeg"
-	L1_5.rag_LeftLeg = "LeftLeg"
-	L1_5.rag_RightLeg = "RightLeg"
-	L1_5.rag_Spine = "Spine1"
-	L1_5.rag_Spine2 = "Spine2"
-	L1_5.rag_LeftForeArm = "LeftForeArm"
-	L1_5.rag_RightForeArm = "RightForeArm"
-	L1_5.rag_LeftArm = "LeftArm"
-	L1_5.rag_RightArm = "RightArm"
-	L2_6 = {}
-	L3_7 = {}
-	for L7_11, L8_12 in L4_8(L5_9) do
-		L2_6[L7_11] = A0_4._unit:body(L8_12):velocity()
-		L3_7[L7_11] = A0_4._unit:body(L8_12):angular_velocity()
+
+RailNpc.set_vehicle = function(l_2_0, l_2_1)
+	l_2_0._vehicle = l_2_1
+end
+
+RailNpc.ragdoll = function(l_3_0)
+	local l_3_7, l_3_8, l_3_9, l_3_10, l_3_13 = nil
+	local l_3_1 = {}
+	l_3_1.rag_Hips = "Hips"
+	l_3_1.rag_Head = "Head"
+	l_3_1.rag_LeftUpLeg = "LeftUpLeg"
+	l_3_1.rag_RightUpLeg = "RightUpLeg"
+	l_3_1.rag_LeftLeg = "LeftLeg"
+	l_3_1.rag_RightLeg = "RightLeg"
+	l_3_1.rag_Spine = "Spine1"
+	l_3_1.rag_Spine2 = "Spine2"
+	l_3_1.rag_LeftForeArm = "LeftForeArm"
+	l_3_1.rag_RightForeArm = "RightForeArm"
+	l_3_1.rag_LeftArm = "LeftArm"
+	l_3_1.rag_RightArm = "RightArm"
+	local l_3_2 = {}
+	local l_3_3 = {}
+	for i_0,i_1 in pairs(l_3_1) do
+		l_3_2[l_3_11] = l_3_0._unit:body(i_1):velocity()
+		l_3_3[l_3_11] = l_3_0._unit:body(i_1):angular_velocity()
 	end
-	L7_11 = false
-	L4_8(L5_9, L6_10, L7_11)
-	L7_11 = A0_4._unit
-	L4_8(L5_9, L6_10, L7_11)
-	for L7_11, L8_12 in L4_8(L5_9) do
-		A0_4._unit:body(L7_11):set_velocity(L2_6[L7_11] * 2)
-		A0_4._unit:body(L7_11):set_angular_velocity(L3_7[L7_11])
+	l_3_0._unit:set_animatable_enabled("all", false)
+	local l_3_12 = l_3_0._unit
+	managers.sequence:run_sequence_simple("ragdoll", l_3_12)
+	for l_3_12,i_1 in pairs(l_3_1) do
+		do
+			l_3_0._unit:body(l_3_12):set_velocity(l_3_2[l_3_12] * 2)
+			l_3_0._unit:body(l_3_12):set_angular_velocity(l_3_3[l_3_12])
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function RailNpc.remove(A0_13)
-	A0_13._vehicle = nil
-	A0_13._unit:set_slot(0)
+
+RailNpc.remove = function(l_4_0)
+	l_4_0._vehicle = nil
+	l_4_0._unit:set_slot(0)
 end
-function RailNpc.destroy(A0_14)
-	local L1_15
-	A0_14._unit = nil
+
+RailNpc.destroy = function(l_5_0)
+	l_5_0._unit = nil
 end
-function RailNpc.update(A0_16, A1_17, A2_18, A3_19)
+
+RailNpc.update = function(l_6_0, l_6_1, l_6_2, l_6_3)
 end
+
+

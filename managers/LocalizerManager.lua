@@ -1,61 +1,46 @@
-LocalizerManager = LocalizerManager or class()
-function LocalizerManager.init(A0_0)
-	local L1_1, L2_2, L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12
-	L1_1 = {}
-	A0_0._table = L1_1
-	L1_1 = File
-	L1_1 = L1_1.list_config_files
-	L1_1 = L1_1(L2_2, L3_3, L4_4)
-	for L5_5, L6_6 in L2_2(L3_3) do
-		L7_7 = ""
-		L8_8 = 0
-		for L12_12 in L9_9(L10_10, L11_11) do
-			if L12_12 == "xml" then
+if not LocalizerManager then
+	LocalizerManager = class()
+end
+LocalizerManager.init = function(l_1_0)
+	local l_1_5, l_1_6, l_1_7, l_1_8, l_1_14, l_1_15, l_1_16 = nil
+	l_1_0._table = {}
+	local l_1_1 = File:list_config_files("data/strings/", "*")
+	for i_0,i_1 in ipairs(l_1_1) do
+		for i_0 in string.gmatch(l_1_10, "%a+") do
+			local l_1_11, l_1_12 = "", 0
+			if i_0 == "xml" then
+				do return end
+			end
+			if l_1_12 == 0 then
+				l_1_11 = i_0
 			else
-				if L8_8 == 0 then
-					L7_7 = L12_12
-				else
-					L7_7 = L7_7 .. "_" .. L12_12
-				end
-				L8_8 = L8_8 + 1
+				l_1_11 = l_1_11 .. "_" .. i_0
 			end
+			l_1_12 = l_1_12 + 1
 		end
-		L9_9(L10_10, L11_11)
+		l_1_0:parse_xml(l_1_11)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function LocalizerManager.parse_xml(A0_13, A1_14)
-	local L2_15, L3_16, L4_17, L5_18, L6_19, L7_20, L8_21
-	L2_15 = "data/strings/"
-	L3_16 = A1_14
-	L2_15 = L2_15 .. L3_16 .. L4_17
-	L3_16 = Localizer
-	L3_16 = L3_16.load
-	L3_16(L4_17, L5_18)
-	L3_16 = File
-	L3_16 = L3_16.config_exists
-	L3_16 = L3_16(L4_17, L5_18)
-	if L3_16 then
-		L3_16 = File
-		L3_16 = L3_16.is_dir
-		L3_16 = L3_16(L4_17, L5_18)
-		if not L3_16 then
-			L3_16 = File
-			L3_16 = L3_16.parse_xml
-			L3_16 = L3_16(L4_17, L5_18)
-			for L7_20 in L4_17(L5_18) do
-				L8_21 = A0_13._table
-				L8_21 = L8_21[A1_14]
-				if L8_21 == nil then
-					L8_21 = A0_13._table
-					L8_21[A1_14] = {}
-				end
-				L8_21 = L7_20.parameter
-				L8_21 = L8_21(L7_20, "id")
-				table.insert(A0_13._table[A1_14], L8_21)
+
+LocalizerManager.parse_xml = function(l_2_0, l_2_1)
+	local l_2_7, l_2_8, l_2_9 = nil
+	local l_2_2 = "data/strings/" .. l_2_1 .. ".xml"
+	Localizer:load(l_2_2)
+	if File:config_exists(l_2_2) and not File:is_dir(l_2_2) then
+		local l_2_3 = File:parse_xml(l_2_2)
+		for i_0 in l_2_3:children() do
+			if l_2_0._table[l_2_1] == nil then
+				l_2_0._table[l_2_1] = {}
 			end
+			table.insert(l_2_0._table[l_2_1], i_0:parameter("id"))
 		end
 	end
 end
-function LocalizerManager.string_map(A0_22, A1_23)
-	return A0_22._table[A1_23]
+
+LocalizerManager.string_map = function(l_3_0, l_3_1)
+	return l_3_0._table[l_3_1]
 end
+
+

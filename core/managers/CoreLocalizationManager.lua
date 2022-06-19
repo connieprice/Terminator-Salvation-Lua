@@ -1,144 +1,169 @@
 core:module("CoreLocalizationManager")
 core:require_module("CoreClass")
 core:require_module("CoreEvent")
-LocalizationManager = LocalizationManager or CoreClass.class()
-function LocalizationManager.init(A0_0)
-	local L1_1, L2_2, L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12
-	L1_1 = Localizer
-	L1_1 = L1_1.set_post_processor
-	L5_5 = A0_0
-	L6_6 = "_localizer_post_process"
-	L12_12 = L3_3(L4_4, L5_5, L6_6)
-	L1_1(L2_2, L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12, L3_3(L4_4, L5_5, L6_6))
-	L1_1 = {}
-	A0_0._default_macros = L1_1
-	L1_1 = A0_0.set_default_macro
-	L1_1(L2_2, L3_3, L4_4)
-	L1_1 = A0_0.set_default_macro
-	L1_1(L2_2, L3_3, L4_4)
-	L1_1 = {}
-	A0_0._string_map = L1_1
-	L1_1 = File
-	L1_1 = L1_1.list_config_files
-	L1_1 = L1_1(L2_2, L3_3, L4_4)
-	for L5_5, L6_6 in L2_2(L3_3) do
-		L7_7 = ""
-		L8_8 = 0
-		for L12_12 in L9_9(L10_10, L11_11) do
-			if L12_12 == "xml" then
+if not LocalizationManager then
+	LocalizationManager = CoreClass.class()
+end
+LocalizationManager.init = function(l_1_0)
+	local l_1_5, l_1_6, l_1_12 = Localizer:set_post_processor, Localizer, CoreEvent.callback(l_1_0, l_1_0, "_localizer_post_process")
+	l_1_5(l_1_6, l_1_12)
+	l_1_0._default_macros, l_1_5 = l_1_5, {}
+	l_1_5, l_1_6 = l_1_0:set_default_macro, l_1_0
+	l_1_12 = "NL"
+	l_1_5(l_1_6, l_1_12, "\n")
+	l_1_5, l_1_6 = l_1_0:set_default_macro, l_1_0
+	l_1_12 = "EMPTY"
+	l_1_5(l_1_6, l_1_12, "")
+	l_1_0._string_map, l_1_5 = l_1_5, {}
+	l_1_5 = File
+	l_1_5, l_1_6 = l_1_5:list_config_files, l_1_5
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_5 = l_1_5(l_1_6, l_1_12, "*")
+	local l_1_1 = nil
+	l_1_6 = ipairs
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_6 = l_1_6(l_1_12)
+	for i_0,i_1 in l_1_6 do
+		local l_1_4 = nil
+		l_1_4 = ""
+		local l_1_7 = nil
+		l_1_7 = 0
+		local l_1_8 = nil
+		l_1_8 = string
+		l_1_8 = l_1_8.gmatch
+		l_1_8 = l_1_8(l_1_3, "%a+")
+		for i_0 in l_1_8 do
+			if l_1_11 == "xml" then
+				do return end
+			end
+			if l_1_7 == 0 then
+				l_1_4 = l_1_11
 			else
-				if L8_8 == 0 then
-					L7_7 = L12_12
-				else
-					L7_7 = L7_7 .. "_" .. L12_12
-				end
-				L8_8 = L8_8 + 1
+				l_1_4 = l_1_4 .. "_" .. l_1_11
 			end
+			l_1_7 = l_1_7 + 1
 		end
-		L9_9(L10_10, L11_11)
+		l_1_0:_parse_xml(l_1_4)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
-	A0_0._macro_context = nil
+	l_1_0._macro_context = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function LocalizationManager.string_map(A0_13, A1_14)
-	return A0_13._string_map[A1_14]
+
+LocalizationManager.string_map = function(l_2_0, l_2_1)
+	return l_2_0._string_map[l_2_1]
 end
-function LocalizationManager.xml_names(A0_15)
-	return table.map_keys(A0_15._string_map)
+
+LocalizationManager.xml_names = function(l_3_0)
+	local l_3_1 = table.map_keys
+	local l_3_2 = l_3_0._string_map
+	return l_3_1(l_3_2)
 end
-function LocalizationManager.add_default_macro(A0_16, A1_17, A2_18)
-	A0_16:set_default_macro(A1_17, A2_18)
+
+LocalizationManager.add_default_macro = function(l_4_0, l_4_1, l_4_2)
+	l_4_0:set_default_macro(l_4_1, l_4_2)
 end
-function LocalizationManager.set_default_macro(A0_19, A1_20, A2_21)
-	local L3_22
-	L3_22 = A0_19._default_macros
-	if not L3_22 then
-		L3_22 = {}
-		A0_19._default_macros = L3_22
+
+LocalizationManager.set_default_macro = function(l_5_0, l_5_1, l_5_2)
+	if not l_5_0._default_macros then
+		l_5_0._default_macros = {}
 	end
-	L3_22 = A0_19._default_macros
-	L3_22["$" .. A1_20 .. ";"] = tostring(A2_21)
+	local l_5_3 = l_5_0._default_macros
+	local l_5_4 = "$" .. l_5_1 .. ";"
+	l_5_3[l_5_4] = tostring(l_5_2)
 end
-function LocalizationManager.exists(A0_23, A1_24)
-	return Localizer:exists(A1_24)
+
+LocalizationManager.exists = function(l_6_0, l_6_1)
+	local l_6_2, l_6_3 = Localizer:exists, Localizer
+	local l_6_4 = l_6_1
+	return l_6_2(l_6_3, l_6_4)
 end
-function LocalizationManager.text(A0_25, A1_26, A2_27)
-	local L3_28, L4_29
-	L3_28 = "ERROR: "
-	L4_29 = A1_26
-	L3_28 = L3_28 .. L4_29
-	L4_29 = nil
-	if not A1_26 or A1_26 == "" then
-		L3_28 = ""
-	elseif A0_25:exists(A1_26 .. "_" .. SystemInfo:platform()) then
-		L4_29 = A1_26 .. "_" .. SystemInfo:platform()
-	elseif A0_25:exists(A1_26) then
-		L4_29 = A1_26
-	end
-	if L4_29 then
-		A0_25._macro_context = A2_27
-		L3_28 = Localizer:lookup(L4_29)
-		A0_25._macro_context = nil
-	end
-	return L3_28
-end
-function LocalizationManager._master_strings_dir(A0_30)
-	local L1_31
-	L1_31 = "data/strings/"
-	return L1_31
-end
-function LocalizationManager._localizer_post_process(A0_32, A1_33)
-	local L2_34, L3_35, L4_36, L5_37, L6_38, L7_39, L8_40
-	L2_34 = A1_33
-	L3_35 = {}
-	if L4_36 ~= "table" then
-		A0_32._macro_context = L4_36
-	end
-	if L4_36 then
-		L4_36(L5_37)
-	end
-	for L7_39, L8_40 in L4_36(L5_37) do
-		L3_35[L7_39] = L8_40
-	end
-	for L7_39, L8_40 in L4_36(L5_37) do
-		L3_35["$" .. L7_39 .. ";"] = tostring(L8_40)
-	end
-	L7_39 = L3_35
-	L2_34 = L4_36
-	return L2_34
-end
-function LocalizationManager._parse_xml(A0_41, A1_42)
-	local L2_43, L3_44, L4_45, L5_46, L6_47, L7_48, L8_49
-	L3_44 = A0_41
-	L2_43 = A0_41._master_strings_dir
-	L2_43 = L2_43(L3_44)
-	L3_44 = A1_42
-	L2_43 = L2_43 .. L3_44 .. L4_45
-	L3_44 = Localizer
-	L3_44 = L3_44.load
-	L7_48 = ".xml"
-	L3_44(L4_45, L5_46)
-	L3_44 = File
-	L3_44 = L3_44.config_exists
-	L3_44 = L3_44(L4_45, L5_46)
-	if L3_44 then
-		L3_44 = File
-		L3_44 = L3_44.is_dir
-		L3_44 = L3_44(L4_45, L5_46)
-		if not L3_44 then
-			L3_44 = File
-			L3_44 = L3_44.parse_xml
-			L3_44 = L3_44(L4_45, L5_46)
-			for L7_48 in L4_45(L5_46) do
-				L8_49 = A0_41._string_map
-				L8_49 = L8_49[A1_42]
-				if L8_49 == nil then
-					L8_49 = A0_41._string_map
-					L8_49[A1_42] = {}
-				end
-				L8_49 = L7_48.parameter
-				L8_49 = L8_49(L7_48, "id")
-				table.insert(A0_41._string_map[A1_42], L8_49)
-			end
+
+LocalizationManager.text = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = "ERROR: " .. l_7_1
+	local l_7_4 = nil
+	if not l_7_1 or l_7_1 == "" then
+		l_7_3 = ""
+	else
+		if l_7_0:exists(l_7_1 .. "_" .. SystemInfo:platform()) then
+			l_7_4 = l_7_1 .. "_" .. SystemInfo:platform()
+		end
+	else
+		if l_7_0:exists(l_7_1) then
+			l_7_4 = l_7_1
 		end
 	end
+	if l_7_4 then
+		l_7_0._macro_context = l_7_2
+		l_7_3 = Localizer:lookup(l_7_4)
+		l_7_0._macro_context = nil
+	end
+	return l_7_3
 end
+
+LocalizationManager._master_strings_dir = function(l_8_0)
+	return "data/strings/"
+end
+
+LocalizationManager._localizer_post_process = function(l_9_0, l_9_1)
+	local l_9_7, l_9_8, l_9_9, l_9_10, l_9_11, l_9_12, l_9_13 = nil
+	local l_9_2 = l_9_1
+	local l_9_3 = {}
+	if type(l_9_0._macro_context) ~= "table" then
+		l_9_0._macro_context = {}
+	end
+	if l_9_0._pre_process_func then
+		l_9_0._pre_process_func(l_9_3)
+	end
+	for i_0,i_1 in pairs(l_9_0._default_macros) do
+		l_9_3[i_0] = i_1
+	end
+	for i_0,i_1 in pairs(l_9_0._macro_context) do
+		l_9_3["$" .. i_0 .. ";"] = tostring(i_1)
+	end
+	l_9_2 = l_9_1.gsub(l_9_2, "%b$;", l_9_3)
+	return l_9_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+LocalizationManager._parse_xml = function(l_10_0, l_10_1)
+	local l_10_2 = l_10_0:_master_strings_dir() .. l_10_1 .. ".xml"
+	local l_10_7 = Localizer:load
+	l_10_7(Localizer, "data/strings/" .. l_10_1 .. ".xml")
+	l_10_7 = File
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_10_7 and not l_10_7 then
+		local l_10_3 = nil
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		for i_0 in l_10_3 do
+			if l_10_0._string_map[l_10_1] == nil then
+				l_10_0._string_map[l_10_1] = {}
+			end
+			local l_10_8 = l_10_6:parameter("id")
+			table.insert(l_10_0._string_map[l_10_1], l_10_8)
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+

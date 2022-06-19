@@ -1,24 +1,32 @@
-AmmoBox = AmmoBox or class(Interactable)
-function AmmoBox.init(A0_0, A1_1)
-	Interactable.init(A0_0, A1_1)
-	A0_0._type = "ammo_box"
+if not AmmoBox then
+	AmmoBox = class(Interactable)
 end
-function AmmoBox.weapon_name(A0_2)
-	local L1_3
-	L1_3 = A0_2._weapon_name
-	return L1_3
+AmmoBox.init = function(l_1_0, l_1_1)
+	Interactable.init(l_1_0, l_1_1)
+	l_1_0._type = "ammo_box"
 end
-function AmmoBox.can_interact_with_player(A0_4, A1_5)
-	if not A1_5:base():inventory() or not A1_5:base():inventory():item(A0_4._weapon_name) then
+
+AmmoBox.weapon_name = function(l_2_0)
+	return l_2_0._weapon_name
+end
+
+AmmoBox.can_interact_with_player = function(l_3_0, l_3_1)
+	if not l_3_1:base():inventory() or not l_3_1:base():inventory():item(l_3_0._weapon_name) then
 		return false
 	end
-	return A0_4.super.can_interact_with_player(A0_4, A1_5)
+	local l_3_2 = l_3_0.super.can_interact_with_player
+	local l_3_3 = l_3_0
+	local l_3_4 = l_3_1
+	return l_3_2(l_3_3, l_3_4)
 end
-function AmmoBox.interactable_type(A0_6)
-	local L1_7
-	L1_7 = A0_6._type
-	return L1_7
+
+AmmoBox.interactable_type = function(l_4_0)
+	return l_4_0._type
 end
-function AmmoBox.interact(A0_8, A1_9)
-	A1_9:base():pick_up_ammo(A0_8._weapon_name)
+
+AmmoBox.interact = function(l_5_0, l_5_1)
+	local l_5_2 = l_5_1:base()
+	l_5_2:pick_up_ammo(l_5_0._weapon_name)
 end
+
+

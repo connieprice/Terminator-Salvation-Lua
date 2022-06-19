@@ -1,67 +1,113 @@
-FireLogicPowerUp = FireLogicPowerUp or class(FireLogic)
-function FireLogicPowerUp.init(A0_0, A1_1)
-	FireLogic.init(A0_0, A1_1)
-	A0_0._trigger_down_time = 0
-	A0_0._delay = 0
-	A0_0._is_max = false
+if not FireLogicPowerUp then
+	FireLogicPowerUp = class(FireLogic)
 end
-function FireLogicPowerUp.fire(A0_2, A1_3)
+FireLogicPowerUp.init = function(l_1_0, l_1_1)
+	FireLogic.init(l_1_0, l_1_1)
+	l_1_0._trigger_down_time = 0
+	l_1_0._delay = 0
+	l_1_0._is_max = false
 end
-function FireLogicPowerUp.fire_end(A0_4, A1_5)
-	if not A0_4._only_fire_on_max_power or A0_4._only_fire_on_max_power and A0_4._trigger_down_time >= A0_4._time_to_max_power then
-		assert(A0_4._wdata._bullets_in_clip > 0)
-		A0_4._fire_time = A1_5
-		A0_4._wdata._bullets_in_clip = A0_4._wdata._bullets_in_clip - 1
-		A0_4._burst_count = math.max(A0_4._burst_count - 1, 0)
-		A0_4._wdata._on_fire = true
-		if A0_4._unit:base().fire then
-			A0_4._unit:base():fire(A1_5)
+
+FireLogicPowerUp.fire = function(l_2_0, l_2_1)
+end
+
+FireLogicPowerUp.fire_end = function(l_3_0, l_3_1)
+	if not l_3_0._only_fire_on_max_power or l_3_0._only_fire_on_max_power and l_3_0._time_to_max_power <= l_3_0._trigger_down_time then
+		local l_3_2 = assert
+		l_3_2(l_3_0._wdata._bullets_in_clip > 0)
+		l_3_0._fire_time = l_3_1
+		l_3_2 = l_3_0._wdata
+		l_3_2._bullets_in_clip = l_3_0._wdata._bullets_in_clip - 1
+		l_3_2 = math
+		l_3_2 = l_3_2.max
+		l_3_2 = l_3_2(l_3_0._burst_count - 1, 0)
+		l_3_0._burst_count = l_3_2
+		l_3_2 = l_3_0._wdata
+		l_3_2._on_fire = true
+		l_3_2 = l_3_0._unit
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_3_2 then
+			l_3_2(l_3_2, l_3_1)
 		end
-		A0_4._firing = false
-		A0_4:_reset_burst_count()
-		A0_4._wdata._fire_end = true
-		if A0_4._unit:base().fire_end then
-			A0_4._unit:base():fire_end(A1_5)
+		l_3_0._firing = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_3_2(l_3_0)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_3_2._fire_end = true
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_3_2 then
+			l_3_2(l_3_2, l_3_1)
 		end
-		A0_4._trigger_down_time = 0
-		A0_4._delay = 0
+		l_3_0._trigger_down_time = 0
+		l_3_0._delay = 0
 	end
 end
-function FireLogicPowerUp.update(A0_6, A1_7, A2_8, A3_9)
-	FireLogic.update(A0_6, A1_7, A2_8, A3_9)
-	A0_6:_update_power_up(A2_8, A3_9)
+
+FireLogicPowerUp.update = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	FireLogic.update(l_4_0, l_4_1, l_4_2, l_4_3)
+	l_4_0:_update_power_up(l_4_2, l_4_3)
 end
-function FireLogicPowerUp._update_power_up(A0_10, A1_11, A2_12)
-	if A0_10._firing and A0_10._delay >= A0_10._power_up_delay then
-		A0_10._trigger_down_time = A0_10._trigger_down_time + A2_12
-	elseif not A0_10._firing and A0_10._trigger_down_time > 0 then
-		A0_10._trigger_down_time = A0_10._trigger_down_time - A2_12
+
+FireLogicPowerUp._update_power_up = function(l_5_0, l_5_1, l_5_2)
+	if l_5_0._firing and l_5_0._power_up_delay <= l_5_0._delay then
+		l_5_0._trigger_down_time = l_5_0._trigger_down_time + l_5_2
+	elseif not l_5_0._firing and l_5_0._trigger_down_time > 0 then
+		l_5_0._trigger_down_time = l_5_0._trigger_down_time - l_5_2
 	end
-	if A0_10._auto_fire_on_max_power and A0_10._trigger_down_time >= A0_10._time_to_max_power then
-		A0_10:fire_end(A1_11)
-		A0_10._wdata._firing = A0_10._firing
+	if l_5_0._auto_fire_on_max_power and l_5_0._time_to_max_power <= l_5_0._trigger_down_time then
+		l_5_0:fire_end(l_5_1)
+		l_5_0._wdata._firing = l_5_0._firing
 	end
-	A0_10._delay = A0_10._delay + A2_12
+	l_5_0._delay = l_5_0._delay + l_5_2
 end
-function FireLogicPowerUp._draw_text(A0_13, A1_14, A2_15)
-	Draw:brush():set_blend_mode("add")
-	Draw:brush():set_font("editor_font", 48)
-	Draw:brush():set_color(Color(1, 1, 1, 1))
-	Draw:brush():text(A1_14, A2_15)
-	Draw:brush():text(A1_14, A2_15)
-	Draw:brush():text(A1_14, A2_15)
-	Draw:brush():text(A1_14, A2_15)
-	Draw:brush():text(A1_14, A2_15)
+
+FireLogicPowerUp._draw_text = function(l_6_0, l_6_1, l_6_2)
+	local l_6_3 = Draw:brush()
+	l_6_3:set_blend_mode("add")
+	l_6_3:set_font("editor_font", 48)
+	l_6_3:set_color(Color(1, 1, 1, 1))
+	l_6_3:text(l_6_1, l_6_2)
+	l_6_3:text(l_6_1, l_6_2)
+	l_6_3:text(l_6_1, l_6_2)
+	l_6_3:text(l_6_1, l_6_2)
+	l_6_3:text(l_6_1, l_6_2)
 end
-function FireLogicPowerUp.get_power_up_percent(A0_16)
-	local L1_17
-	L1_17 = A0_16._trigger_down_time
-	L1_17 = L1_17 / A0_16._time_to_max_power
-	if L1_17 < 0 then
-		L1_17 = 0
+
+FireLogicPowerUp.get_power_up_percent = function(l_7_0)
+	if l_7_0._trigger_down_time / l_7_0._time_to_max_power < 0 then
+		return 0
 	end
-	return L1_17
 end
-function FireLogicPowerUp.destroy(A0_18)
-	local L1_19
+
+FireLogicPowerUp.destroy = function(l_8_0)
 end
+
+

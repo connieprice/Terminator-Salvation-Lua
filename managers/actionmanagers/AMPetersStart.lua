@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMPetersStart = AMPetersStart or class(AMNpcStart)
-AMPetersStart.unit_type = "peters"
-function AMPetersStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMPetersStart.unit_type)
+if not AMPetersStart then
+	AMPetersStart = class(AMNpcStart)
 end
+AMPetersStart.unit_type = "peters"
+AMPetersStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMPetersStart.unit_type)
+end
+
+

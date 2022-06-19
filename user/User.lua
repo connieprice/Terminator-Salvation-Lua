@@ -1,28 +1,34 @@
-User = User or class()
-function User.init(A0_0, A1_1)
-	A0_0._local_user_index = A1_1
+if not User then
+	User = class()
 end
-function User.local_user_index(A0_2)
-	local L1_3
-	L1_3 = A0_2._local_user_index
-	return L1_3
+User.init = function(l_1_0, l_1_1)
+	l_1_0._local_user_index = l_1_1
 end
-function User.set_assigned_unit(A0_4, A1_5)
-	A0_4._assigned_unit = A1_5
+
+User.local_user_index = function(l_2_0)
+	return l_2_0._local_user_index
 end
-function User.release_assigned_unit(A0_6)
-	local L1_7
-	A0_6._assigned_unit = nil
+
+User.set_assigned_unit = function(l_3_0, l_3_1)
+	l_3_0._assigned_unit = l_3_1
 end
-function User.assigned_unit(A0_8)
-	if not alive(A0_8._assigned_unit) then
-		A0_8:release_assigned_unit()
-		assert(not A0_8._assigned_unit)
+
+User.release_assigned_unit = function(l_4_0)
+	l_4_0._assigned_unit = nil
+end
+
+User.assigned_unit = function(l_5_0)
+	if not alive(l_5_0._assigned_unit) then
+		l_5_0:release_assigned_unit()
+		assert(not l_5_0._assigned_unit)
 	end
-	return A0_8._assigned_unit
+	return l_5_0._assigned_unit
 end
-function User.update(A0_9, A1_10)
-	if not alive(A0_9._assigned_unit) then
-		A0_9:release_assigned_unit()
+
+User.update = function(l_6_0, l_6_1)
+	if not alive(l_6_0._assigned_unit) then
+		l_6_0:release_assigned_unit()
 	end
 end
+
+

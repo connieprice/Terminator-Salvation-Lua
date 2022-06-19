@@ -1,7 +1,12 @@
 require("menu/2D/states/Menu2DStateIngamePaused")
-Menu2DStateIngamePausedNormal = Menu2DStateIngamePausedNormal or class(Menu2DStateIngamePaused)
-function Menu2DStateIngamePausedNormal.init(A0_0)
-	Menu2DStateIngamePaused.init(A0_0, Menu2DStateIngamePausedNormal)
-	A0_0._state_data.menu.components.island = Menu2DIsland:new()
-	Menu2DIsland:new():change_page("pause")
+if not Menu2DStateIngamePausedNormal then
+	Menu2DStateIngamePausedNormal = class(Menu2DStateIngamePaused)
 end
+Menu2DStateIngamePausedNormal.init = function(l_1_0)
+	Menu2DStateIngamePaused.init(l_1_0, Menu2DStateIngamePausedNormal)
+	local l_1_1 = Menu2DIsland:new()
+	l_1_0._state_data.menu.components.island = l_1_1
+	l_1_1:change_page("pause")
+end
+
+

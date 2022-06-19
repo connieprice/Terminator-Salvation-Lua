@@ -1,28 +1,37 @@
-MissionObjectiveTimer = MissionObjectiveTimer or class()
-function MissionObjectiveTimer.init(A0_0, A1_1, A2_2)
-	A0_0._callback_object = A1_1
-	assert(A2_2 >= 0)
-	A0_0._time = A2_2
-	A0_0._start_time = A2_2
-	A0_0._timed_out = false
+if not MissionObjectiveTimer then
+	MissionObjectiveTimer = class()
 end
-function MissionObjectiveTimer.update(A0_3, A1_4)
-	if A0_3._timed_out then
-		return
+MissionObjectiveTimer.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._callback_object = l_1_1
+	local l_1_3 = assert
+	l_1_3(l_1_2 >= 0)
+	l_1_0._time = l_1_2
+	l_1_0._start_time = l_1_2
+	l_1_0._timed_out = false
+end
+
+MissionObjectiveTimer.update = function(l_2_0, l_2_1)
+	if l_2_0._timed_out then
+		return 
 	end
-	A0_3._time = A0_3._time - A1_4
-	if A0_3._time > 0 then
-		return
+	l_2_0._time = l_2_0._time - l_2_1
+	if l_2_0._time > 0 then
+		return 
 	end
-	if A0_3._callback_object then
-		A0_3._callback_object:timed_out()
+	if l_2_0._callback_object then
+		l_2_0._callback_object:timed_out()
 	end
-	A0_3._timed_out = true
+	l_2_0._timed_out = true
 end
-function MissionObjectiveTimer.time_left(A0_5)
-	return A0_5._time + 1
+
+MissionObjectiveTimer.time_left = function(l_3_0)
+	return l_3_0._time + 1
 end
-function MissionObjectiveTimer.set_callback_object(A0_6, A1_7)
-	assert(A0_6._callback_object == nil)
-	A0_6._callback_object = A1_7
+
+MissionObjectiveTimer.set_callback_object = function(l_4_0, l_4_1)
+	local l_4_2 = assert
+	l_4_2(l_4_0._callback_object == nil)
+	l_4_0._callback_object = l_4_1
 end
+
+

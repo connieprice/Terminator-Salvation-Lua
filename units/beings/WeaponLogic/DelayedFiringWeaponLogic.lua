@@ -1,84 +1,73 @@
 require("units/beings/WeaponLogic/WeaponLogic")
-DelayedFiringWeaponLogic = DelayedFiringWeaponLogic or class(WeaponLogic)
-function DelayedFiringWeaponLogic.init(A0_0, A1_1, A2_2, A3_3)
-	WeaponLogic.init(A0_0, A1_1, A2_2)
-	A0_0._enemy_data = A1_1:enemy_data()
-	A0_0._setup = A3_3
-	A0_0._waiting_to_fire = false
+if not DelayedFiringWeaponLogic then
+	DelayedFiringWeaponLogic = class(WeaponLogic)
 end
-function DelayedFiringWeaponLogic.update(A0_4, A1_5, A2_6, A3_7, A4_8, A5_9, A6_10)
-	local L7_11, L8_12, L9_13, L10_14, L11_15, L12_16, L13_17, L14_18
-	L7_11 = A0_4._enemy_data
-	L8_12 = A0_4._setup
-	L9_13 = L8_12.prepared_variable_name
-	L9_13 = L7_11[L9_13]
-	L10_14 = A3_7 > 0
-	if L10_14 and not L9_13 then
-		A0_4._waiting_to_fire = true
-		L11_15 = assert
-		L12_16 = A4_8
-		L11_15(L12_16)
-		A0_4._waiting_to_fire_aim_target_position = A4_8
+DelayedFiringWeaponLogic.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	WeaponLogic.init(l_1_0, l_1_1, l_1_2)
+	l_1_0._enemy_data = l_1_1:enemy_data()
+	l_1_0._setup = l_1_3
+	l_1_0._waiting_to_fire = false
+end
+
+DelayedFiringWeaponLogic.update = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6)
+	local l_2_7 = l_2_0._enemy_data
+	local l_2_8 = l_2_0._setup
+	local l_2_9 = l_2_7[l_2_8.prepared_variable_name]
+	if l_2_3 > 0 and not l_2_9 then
+		l_2_0._waiting_to_fire = true
+		assert(l_2_4)
+		l_2_0._waiting_to_fire_aim_target_position = l_2_4
 	end
-	L11_15, L12_16 = nil, nil
-	if A2_6 or A3_7 > 0 then
-		L13_17 = L8_12.keep_prepared_time
-		A0_4._keep_prepared_timer = L13_17
-	else
-		L13_17 = A0_4._keep_prepared_timer
-		if L13_17 then
-			L13_17 = A0_4._keep_prepared_timer
-			L13_17 = L13_17 - A1_5
-			A0_4._keep_prepared_timer = L13_17
-			L13_17 = A0_4._keep_prepared_timer
-			if L13_17 < 0 then
-				A0_4._keep_prepared_timer = nil
-			end
-		end
+	local l_2_14, l_2_15 = , nil
+	if l_2_2 or l_2_3 > 0 then
+		do return end
 	end
-	L13_17 = A2_6 or A3_7 > 0 or A0_4._waiting_to_fire
-	if L9_13 then
-		L14_18 = A0_4._waiting_to_fire
-		if L14_18 then
-			L12_16 = A0_4._waiting_to_fire_aim_target_position
-			L14_18 = A0_4._aiming_at_target
-			L14_18 = L14_18(A0_4, L12_16, A6_10)
-			if not L14_18 then
-				L14_18 = A0_4._fire_object
-				assert(L14_18)
-				L12_16 = L14_18:position() + L14_18:rotation():y() * 1000
-			end
-			L11_15 = 1
-			A0_4._waiting_to_fire = false
-		else
-			L12_16 = A4_8
-			if L10_14 then
-				L14_18 = A0_4._aiming_at_target
-				L14_18 = L14_18(A0_4, L12_16, A6_10)
-				if L14_18 then
-					L11_15 = 1
+	do
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_2_9 then
+			if l_2_0._waiting_to_fire then
+				if not l_2_0:_aiming_at_target(nil, l_2_6) then
+					local l_2_17 = nil
+					assert(l_2_0._fire_object)
+					 -- DECOMPILER ERROR: Confused about usage of registers!
+
+					 -- DECOMPILER ERROR: Confused about usage of registers!
+
 				end
-			else
-				L11_15 = 0
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			elseif l_2_14 and l_2_0:_aiming_at_target(l_2_17, l_2_6) then
+				do return end
 			end
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if not (l_2_0._keep_prepared_timer and l_2_0._keep_prepared_timer < 0 and l_2_2) or l_2_3 > 0 or l_2_0._waiting_to_fire or not l_2_0._keep_prepared_timer or l_2_0._keep_prepared_timer >= 0 then
+				l_2_0:_unprepare()
+			end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		elseif (l_2_0._keep_prepared_timer and l_2_0._keep_prepared_timer < 0 and l_2_2) or l_2_3 > 0 or l_2_0._waiting_to_fire or not l_2_0._keep_prepared_timer or l_2_0._keep_prepared_timer >= 0 then
+			l_2_0:_prepare()
 		end
-		if not L13_17 then
-			L14_18 = A0_4._unprepare
-			L14_18(A0_4)
-		end
-	else
-		L11_15 = 0
-		if L13_17 then
-			L14_18 = A0_4._prepare
-			L14_18(A0_4)
-		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0:_update_weapon_data(l_2_2, l_2_15, l_2_17, l_2_5)
 	end
-	L14_18 = A0_4._update_weapon_data
-	L14_18(A0_4, A2_6, L11_15, L12_16, A5_9)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function DelayedFiringWeaponLogic._prepare(A0_19)
-	A0_19._unit:play_redirect(A0_19._setup.prepare_redirect)
+
+DelayedFiringWeaponLogic._prepare = function(l_3_0)
+	l_3_0._unit:play_redirect(l_3_0._setup.prepare_redirect)
 end
-function DelayedFiringWeaponLogic._unprepare(A0_20)
-	A0_20._unit:play_redirect(A0_20._setup.unprepare_redirect)
+
+DelayedFiringWeaponLogic._unprepare = function(l_4_0)
+	l_4_0._unit:play_redirect(l_4_0._setup.unprepare_redirect)
 end
+
+

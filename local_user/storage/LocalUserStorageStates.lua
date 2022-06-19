@@ -1,403 +1,486 @@
 require("shared/FiniteStateMachineState")
-LocalUserStorageStateInit = LocalUserStorageStateInit or class(FiniteStateMachineState)
-function LocalUserStorageStateInit.init(A0_0)
-	A0_0.storage:_clear_data()
-	A0_0.storage:clear_wants_to_init()
-	A0_0.storage:_clear_want_to_skip_sign_in()
-	A0_0.storage:clear_is_storage_canceled()
-	A0_0.storage:_clear_wants_to_load()
-	A0_0.storage:clear_user_has_signed_in()
-	A0_0.storage:clear_user_has_signed_out()
-	if managers.save and managers.save:has_primary_user() and A0_0.storage == managers.save:primary_user()._storage then
+if not LocalUserStorageStateInit then
+	LocalUserStorageStateInit = class(FiniteStateMachineState)
+end
+LocalUserStorageStateInit.init = function(l_1_0)
+	l_1_0.storage:_clear_data()
+	l_1_0.storage:clear_wants_to_init()
+	l_1_0.storage:_clear_want_to_skip_sign_in()
+	l_1_0.storage:clear_is_storage_canceled()
+	l_1_0.storage:_clear_wants_to_load()
+	l_1_0.storage:clear_user_has_signed_in()
+	l_1_0.storage:clear_user_has_signed_out()
+	if managers.save and managers.save:has_primary_user() and l_1_0.storage == managers.save:primary_user()._storage then
 		managers.save:release_primary_user()
 	end
-	A0_0.storage._callback_user:clear_wanted_slot_id()
+	l_1_0.storage._callback_user:clear_wanted_slot_id()
 end
-function LocalUserStorageStateInit.exit(A0_1)
-	A0_1.storage:clear_wants_to_init()
-	A0_1.storage:clear_user_has_signed_out()
+
+LocalUserStorageStateInit.exit = function(l_2_0)
+	l_2_0.storage:clear_wants_to_init()
+	l_2_0.storage:clear_user_has_signed_out()
 end
-function LocalUserStorageStateInit.transition(A0_2)
-	if A0_2.storage:_wants_to_load() then
-		if A0_2.storage._callback_user:wanted_player_slot_id() == 2 and (SystemInfo:platform() == "PS3" or SystemInfo:platform() == "WIN32") then
+
+LocalUserStorageStateInit.transition = function(l_3_0)
+	if l_3_0.storage:_wants_to_load() then
+		if l_3_0.storage._callback_user:wanted_player_slot_id() == 2 and (SystemInfo:platform() == "PS3" or SystemInfo:platform() == "WIN32") then
 			return LocalUserStorageUserConfirmedNoSaving
 		end
-		if A0_2.storage:user_is_signed_in() then
+		if l_3_0.storage:user_is_signed_in() then
 			return LocalUserStorageStateOpenSelectForLoading
-		elseif A0_2.storage:want_to_skip_sign_in() then
+		else
+			if l_3_0.storage:want_to_skip_sign_in() then
+				return LocalUserStorageStateNotFound
+			end
+		else
+			if l_3_0.storage:want_to_skip_sign_in() then
+				return LocalUserStorageStateNotFound
+			end
+		end
+		 -- WARNING: missing end command somewhere! Added here
+	end
+end
+
+if not LocalUserStorageStateDetectSignOut then
+	LocalUserStorageStateDetectSignOut = class(FiniteStateMachineState)
+end
+LocalUserStorageStateDetectSignOut.init = function(l_4_0)
+	l_4_0._parent_transition = l_4_0.transition
+	assert(l_4_0._parent_transition)
+	l_4_0.transition = LocalUserStorageStateDetectSignOut.transition
+end
+
+LocalUserStorageStateDetectSignOut.transition = function(l_5_0)
+	if l_5_0.storage:user_has_signed_out() then
+		return LocalUserStorageStateOwnerSignedOut
+	else
+		if l_5_0.storage:wants_to_init() then
+			return LocalUserStorageStateInit
+		end
+	end
+	local l_5_1 = l_5_0:_parent_transition()
+	if l_5_1 then
+		l_5_0.transition = l_5_0._parent_transition
+		return l_5_1
+	end
+end
+
+if not LocalUserStorageStateOwnerSignedOut then
+	LocalUserStorageStateOwnerSignedOut = class(FiniteStateMachineState)
+end
+LocalUserStorageStateOwnerSignedOut.init = function(l_6_0)
+	l_6_0.storage:clear_user_has_signed_out()
+end
+
+LocalUserStorageStateOwnerSignedOut.transition = function(l_7_0)
+	return LocalUserStorageStateInit
+end
+
+if not LocalUserStorageStateOpenSelectForLoading then
+	LocalUserStorageStateOpenSelectForLoading = class(LocalUserStorageStateDetectSignOut)
+end
+LocalUserStorageStateOpenSelectForLoading.init = function(l_8_0)
+	LocalUserStorageStateDetectSignOut.init(l_8_0)
+	local l_8_1 = false
+	l_8_0.storage:clear_storage_dialog_failed()
+	l_8_0.storage:clear_user_has_signed_in()
+	l_8_0.storage:open_storage_select(l_8_1)
+end
+
+LocalUserStorageStateOpenSelectForLoading.transition = function(l_9_0)
+	if l_9_0.storage:did_storage_dialog_fail() then
+		return LocalUserStorageStateOpenSelectForLoading
+	else
+		if l_9_0.storage:is_storage_selected() then
+			return LocalUserStorageStateLoading
+		end
+	else
+		if l_9_0.storage:is_storage_canceled() then
 			return LocalUserStorageStateNotFound
 		end
-	elseif A0_2.storage:want_to_skip_sign_in() then
-		return LocalUserStorageStateNotFound
 	end
 end
-LocalUserStorageStateDetectSignOut = LocalUserStorageStateDetectSignOut or class(FiniteStateMachineState)
-function LocalUserStorageStateDetectSignOut.init(A0_3)
-	A0_3._parent_transition = A0_3.transition
-	assert(A0_3._parent_transition)
-	A0_3.transition = LocalUserStorageStateDetectSignOut.transition
+
+if not LocalUserStorageStateLoading then
+	LocalUserStorageStateLoading = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateDetectSignOut.transition(A0_4)
-	if A0_4.storage:user_has_signed_out() then
-		return LocalUserStorageStateOwnerSignedOut
-	elseif A0_4.storage:wants_to_init() then
-		return LocalUserStorageStateInit
+LocalUserStorageStateLoading.init = function(l_10_0)
+	LocalUserStorageStateDetectSignOut.init(l_10_0)
+	l_10_0.storage:_load()
+end
+
+LocalUserStorageStateLoading.exit = function(l_11_0)
+	l_11_0.storage:_close_load_task()
+end
+
+LocalUserStorageStateLoading.transition = function(l_12_0)
+	local l_12_1 = l_12_0.storage:_load_status()
+	if not l_12_1 then
+		return 
 	end
-	if A0_4:_parent_transition() then
-		A0_4.transition = A0_4._parent_transition
-		return (A0_4:_parent_transition())
-	end
-end
-LocalUserStorageStateOwnerSignedOut = LocalUserStorageStateOwnerSignedOut or class(FiniteStateMachineState)
-function LocalUserStorageStateOwnerSignedOut.init(A0_5)
-	A0_5.storage:clear_user_has_signed_out()
-end
-function LocalUserStorageStateOwnerSignedOut.transition(A0_6)
-	local L1_7
-	L1_7 = LocalUserStorageStateInit
-	return L1_7
-end
-LocalUserStorageStateOpenSelectForLoading = LocalUserStorageStateOpenSelectForLoading or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateOpenSelectForLoading.init(A0_8)
-	local L1_9
-	L1_9 = LocalUserStorageStateDetectSignOut
-	L1_9 = L1_9.init
-	L1_9(A0_8)
-	L1_9 = false
-	A0_8.storage:clear_storage_dialog_failed()
-	A0_8.storage:clear_user_has_signed_in()
-	A0_8.storage:open_storage_select(L1_9)
-end
-function LocalUserStorageStateOpenSelectForLoading.transition(A0_10)
-	if A0_10.storage:did_storage_dialog_fail() then
-		return LocalUserStorageStateOpenSelectForLoading
-	elseif A0_10.storage:is_storage_selected() then
-		return LocalUserStorageStateLoading
-	elseif A0_10.storage:is_storage_canceled() then
-		return LocalUserStorageStateNotFound
-	end
-end
-LocalUserStorageStateLoading = LocalUserStorageStateLoading or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateLoading.init(A0_11)
-	LocalUserStorageStateDetectSignOut.init(A0_11)
-	A0_11.storage:_load()
-end
-function LocalUserStorageStateLoading.exit(A0_12)
-	A0_12.storage:_close_load_task()
-end
-function LocalUserStorageStateLoading.transition(A0_13)
-	if not A0_13.storage:_load_status() then
-		return
-	end
-	if A0_13.storage:_load_status() == SaveData.OK then
+	if l_12_1 == SaveData.OK then
 		return LocalUserStorageStateReady
-	elseif A0_13.storage:_load_status() == SaveData.FILE_NOT_FOUND then
-		return LocalUserStorageStateNoSaveGameFound
+	else
+		if l_12_1 == SaveData.FILE_NOT_FOUND then
+			return LocalUserStorageStateNoSaveGameFound
+		end
 	else
 		return LocalUserStorageStateLoadError
 	end
 end
-LocalUserStorageStateLoadError = LocalUserStorageStateLoadError or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateLoadError.init(A0_14)
-	A0_14.storage:_clear_wants_to_load()
-	A0_14.storage:clear_wants_to_select_storage_for_loading()
-	A0_14.storage:clear_wants_to_overwrite()
-	A0_14.storage._waits_for_retry_loading = true
+
+if not LocalUserStorageStateLoadError then
+	LocalUserStorageStateLoadError = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateLoadError.exit(A0_15)
-	A0_15.storage._waits_for_retry_loading = false
+LocalUserStorageStateLoadError.init = function(l_13_0)
+	l_13_0.storage:_clear_wants_to_load()
+	l_13_0.storage:clear_wants_to_select_storage_for_loading()
+	l_13_0.storage:clear_wants_to_overwrite()
+	l_13_0.storage._waits_for_retry_loading = true
 end
-function LocalUserStorageStateLoadError.transition(A0_16)
-	local L1_17, L2_18
-	L1_17 = A0_16.storage
-	L2_18 = L1_17
-	L1_17 = L1_17._wants_to_load
-	L1_17 = L1_17(L2_18)
-	if L1_17 then
-		L1_17 = LocalUserStorageStateLoading
-		return L1_17
+
+LocalUserStorageStateLoadError.exit = function(l_14_0)
+	l_14_0.storage._waits_for_retry_loading = false
+end
+
+LocalUserStorageStateLoadError.transition = function(l_15_0)
+	if l_15_0.storage:_wants_to_load() then
+		return LocalUserStorageStateLoading
 	else
-		L1_17 = A0_16.storage
-		L2_18 = L1_17
-		L1_17 = L1_17.wants_to_select_storage_for_loading
-		L1_17 = L1_17(L2_18)
-		if L1_17 then
-			L1_17 = LocalUserStorageStateOpenSelectForLoading
-			return L1_17
-		else
-			L1_17 = A0_16.storage
-			L2_18 = L1_17
-			L1_17 = L1_17.wants_to_overwrite
-			L1_17 = L1_17(L2_18)
-			if L1_17 then
-				L1_17 = A0_16.storage
-				L1_17 = L1_17._callback_user
-				L2_18 = L1_17
-				L1_17 = L1_17.settings_defaults
-				L1_17 = L1_17(L2_18)
-				L2_18 = {}
-				SaveManager.new_profile(L2_18, L1_17)
-				A0_16.storage:_data_loaded(L2_18)
-				A0_16.storage._save_for_the_first_time = true
-				return LocalUserStorageStateSaving
-			end
+		if l_15_0.storage:wants_to_select_storage_for_loading() then
+			return LocalUserStorageStateOpenSelectForLoading
+		end
+	else
+		if l_15_0.storage:wants_to_overwrite() then
+			local l_15_1 = l_15_0.storage._callback_user:settings_defaults()
+			local l_15_2 = {}
+			SaveManager.new_profile(l_15_2, l_15_1)
+			l_15_0.storage:_data_loaded(l_15_2)
+			l_15_0.storage._save_for_the_first_time = true
+			return LocalUserStorageStateSaving
 		end
 	end
 end
-LocalUserStorageStateNoSaveGameFound = LocalUserStorageStateNoSaveGameFound or class(FiniteStateMachineState)
-function LocalUserStorageStateNoSaveGameFound.init(A0_19)
-	local L1_20, L2_21
-	L1_20 = A0_19.storage
-	L1_20 = L1_20._callback_user
-	L2_21 = L1_20
-	L1_20 = L1_20.settings_defaults
-	L1_20 = L1_20(L2_21)
-	L2_21 = {}
-	SaveManager.new_profile(L2_21, L1_20)
-	A0_19.storage:_data_loaded(L2_21)
-	A0_19.storage._save_for_the_first_time = true
+
+if not LocalUserStorageStateNoSaveGameFound then
+	LocalUserStorageStateNoSaveGameFound = class(FiniteStateMachineState)
 end
-function LocalUserStorageStateNoSaveGameFound.transition(A0_22)
-	local L1_23
-	L1_23 = LocalUserStorageStateReady
-	return L1_23
+LocalUserStorageStateNoSaveGameFound.init = function(l_16_0)
+	local l_16_1 = l_16_0.storage._callback_user:settings_defaults()
+	local l_16_2 = {}
+	SaveManager.new_profile(l_16_2, l_16_1)
+	l_16_0.storage:_data_loaded(l_16_2)
+	l_16_0.storage._save_for_the_first_time = true
 end
-LocalUserStorageStateNotFound = LocalUserStorageStateNotFound or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateNotFound.init(A0_24)
-	LocalUserStorageStateDetectSignOut.init(A0_24)
-	A0_24.storage:_clear_want_to_skip_sign_in()
-	A0_24.storage:clear_wants_to_init()
-	A0_24.storage:clear_do_not_want_to_continue_without_saving()
-	A0_24.storage:clear_wants_to_continue_without_saving()
-	A0_24.storage._waits_for_continue_without_saving = true
+
+LocalUserStorageStateNoSaveGameFound.transition = function(l_17_0)
+	return LocalUserStorageStateReady
 end
-function LocalUserStorageStateNotFound.exit(A0_25)
-	A0_25.storage._waits_for_continue_without_saving = false
-	A0_25.storage:clear_user_has_signed_in()
-	A0_25.storage:clear_do_not_want_to_continue_without_saving()
+
+if not LocalUserStorageStateNotFound then
+	LocalUserStorageStateNotFound = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateNotFound.transition(A0_26)
-	if A0_26.storage:wants_to_continue_without_saving() then
+LocalUserStorageStateNotFound.init = function(l_18_0)
+	LocalUserStorageStateDetectSignOut.init(l_18_0)
+	l_18_0.storage:_clear_want_to_skip_sign_in()
+	l_18_0.storage:clear_wants_to_init()
+	l_18_0.storage:clear_do_not_want_to_continue_without_saving()
+	l_18_0.storage:clear_wants_to_continue_without_saving()
+	l_18_0.storage._waits_for_continue_without_saving = true
+end
+
+LocalUserStorageStateNotFound.exit = function(l_19_0)
+	l_19_0.storage._waits_for_continue_without_saving = false
+	l_19_0.storage:clear_user_has_signed_in()
+	l_19_0.storage:clear_do_not_want_to_continue_without_saving()
+end
+
+LocalUserStorageStateNotFound.transition = function(l_20_0)
+	if l_20_0.storage:wants_to_continue_without_saving() then
 		return LocalUserStorageUserConfirmedNoSaving
-	elseif A0_26.storage:user_has_signed_in() then
-		return LocalUserStorageStateOpenSelectForLoading
-	elseif A0_26.storage:do_not_want_to_continue_without_saving() then
-		return LocalUserStorageStateInit
+	else
+		if l_20_0.storage:user_has_signed_in() then
+			return LocalUserStorageStateOpenSelectForLoading
+		end
+	else
+		if l_20_0.storage:do_not_want_to_continue_without_saving() then
+			return LocalUserStorageStateInit
+		end
 	end
 end
-LocalUserStorageUserConfirmedNoSaving = LocalUserStorageUserConfirmedNoSaving or class(FiniteStateMachineState)
-function LocalUserStorageUserConfirmedNoSaving.init(A0_27)
-	local L1_28, L2_29
-	L1_28 = A0_27.storage
-	L2_29 = L1_28
-	L1_28 = L1_28.clear_wants_to_init
-	L1_28(L2_29)
-	L1_28 = A0_27.storage
-	L2_29 = L1_28
-	L1_28 = L1_28.clear_wants_to_continue_without_saving
-	L1_28(L2_29)
-	L1_28 = {}
-	L2_29 = A0_27.storage
-	L2_29 = L2_29._callback_user
-	L2_29 = L2_29.settings_defaults
-	L2_29 = L2_29(L2_29)
-	SaveManager.new_profile(L1_28, L2_29)
-	A0_27.storage:_data_loaded(L1_28)
-	A0_27.storage:_clear_wants_to_load()
+
+if not LocalUserStorageUserConfirmedNoSaving then
+	LocalUserStorageUserConfirmedNoSaving = class(FiniteStateMachineState)
 end
-function LocalUserStorageUserConfirmedNoSaving.transition(A0_30)
-	local L1_31
-	L1_31 = LocalUserStorageStateNoSaving
-	return L1_31
+LocalUserStorageUserConfirmedNoSaving.init = function(l_21_0)
+	l_21_0.storage:clear_wants_to_init()
+	l_21_0.storage:clear_wants_to_continue_without_saving()
+	local l_21_1 = {}
+	local l_21_2 = l_21_0.storage._callback_user:settings_defaults()
+	SaveManager.new_profile(l_21_1, l_21_2)
+	l_21_0.storage:_data_loaded(l_21_1)
+	l_21_0.storage:_clear_wants_to_load()
 end
-LocalUserStorageStateNoSaving = LocalUserStorageStateNoSaving or class(FiniteStateMachineState)
-function LocalUserStorageStateNoSaving.init(A0_32)
-	A0_32.storage:clear_storage_device_lost()
-	A0_32.storage:clear_user_has_signed_in()
-	A0_32.storage._no_saving = true
+
+LocalUserStorageUserConfirmedNoSaving.transition = function(l_22_0)
+	return LocalUserStorageStateNoSaving
 end
-function LocalUserStorageStateNoSaving.exit(A0_33)
-	A0_33.storage._no_saving = false
+
+if not LocalUserStorageStateNoSaving then
+	LocalUserStorageStateNoSaving = class(FiniteStateMachineState)
 end
-function LocalUserStorageStateNoSaving.transition(A0_34)
-	if A0_34.storage:wants_to_init() then
+LocalUserStorageStateNoSaving.init = function(l_23_0)
+	l_23_0.storage:clear_storage_device_lost()
+	l_23_0.storage:clear_user_has_signed_in()
+	l_23_0.storage._no_saving = true
+end
+
+LocalUserStorageStateNoSaving.exit = function(l_24_0)
+	l_24_0.storage._no_saving = false
+end
+
+LocalUserStorageStateNoSaving.transition = function(l_25_0)
+	if l_25_0.storage:wants_to_init() then
 		return LocalUserStorageStateInit
-	elseif A0_34.storage:user_has_signed_in() then
-		return LocalUserStorageStateInit
-	elseif A0_34.storage:wants_to_select_storage_for_saving() then
-		return LocalUserStorageStateOpenSelectForSaving
+	else
+		if l_25_0.storage:user_has_signed_in() then
+			return LocalUserStorageStateInit
+		end
+	else
+		if l_25_0.storage:wants_to_select_storage_for_saving() then
+			return LocalUserStorageStateOpenSelectForSaving
+		end
 	end
 end
-LocalUserStorageStateDebugJoin = LocalUserStorageStateDebugJoin or class(FiniteStateMachineState)
-function LocalUserStorageStateDebugJoin.init(A0_35)
-	local L1_36, L2_37
-	L1_36 = {}
-	L2_37 = {}
-	SaveManager.new_profile(L1_36, L2_37)
-	A0_35.storage:_data_loaded(L1_36)
+
+if not LocalUserStorageStateDebugJoin then
+	LocalUserStorageStateDebugJoin = class(FiniteStateMachineState)
 end
-function LocalUserStorageStateDebugJoin.transition(A0_38)
-	local L1_39
-	L1_39 = LocalUserStorageStateDoNothing
-	return L1_39
+LocalUserStorageStateDebugJoin.init = function(l_26_0)
+	local l_26_1 = {}
+	local l_26_2 = {}
+	SaveManager.new_profile(l_26_1, l_26_2)
+	l_26_0.storage:_data_loaded(l_26_1)
 end
-LocalUserStorageStateDoNothing = LocalUserStorageStateDoNothing or class(FiniteStateMachineState)
-function LocalUserStorageStateDoNothing.transition(A0_40)
-	local L1_41
+
+LocalUserStorageStateDebugJoin.transition = function(l_27_0)
+	return LocalUserStorageStateDoNothing
 end
-LocalUserStorageStateReady = LocalUserStorageStateReady or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateReady.init(A0_42)
-	LocalUserStorageStateDetectSignOut.init(A0_42)
-	A0_42.storage:_clear_wants_to_load()
-	A0_42.storage:clear_storage_device_lost()
+
+if not LocalUserStorageStateDoNothing then
+	LocalUserStorageStateDoNothing = class(FiniteStateMachineState)
 end
-function LocalUserStorageStateReady.transition(A0_43)
-	if A0_43.storage:_wants_to_save() then
-		if A0_43.storage:is_storage_device_lost() then
+LocalUserStorageStateDoNothing.transition = function(l_28_0)
+end
+
+if not LocalUserStorageStateReady then
+	LocalUserStorageStateReady = class(LocalUserStorageStateDetectSignOut)
+end
+LocalUserStorageStateReady.init = function(l_29_0)
+	LocalUserStorageStateDetectSignOut.init(l_29_0)
+	l_29_0.storage:_clear_wants_to_load()
+	l_29_0.storage:clear_storage_device_lost()
+end
+
+LocalUserStorageStateReady.transition = function(l_30_0)
+	if l_30_0.storage:_wants_to_save() then
+		if l_30_0.storage:is_storage_device_lost() then
 			return LocalUserStorageStateLost
 		else
 			return LocalUserStorageStateSaving
 		end
-	elseif A0_43.storage:wants_to_select_storage_for_saving() then
-		return LocalUserStorageStateOpenSelectForSaving
+	else
+		if l_30_0.storage:wants_to_select_storage_for_saving() then
+			return LocalUserStorageStateOpenSelectForSaving
+		end
 	end
 end
-LocalUserStorageStateOpenSelectForSaving = LocalUserStorageStateOpenSelectForSaving or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateOpenSelectForSaving.init(A0_44)
-	local L1_45
-	L1_45 = LocalUserStorageStateDetectSignOut
-	L1_45 = L1_45.init
-	L1_45(A0_44)
-	L1_45 = A0_44.storage
-	L1_45 = L1_45.clear_wants_to_select_storage_for_saving
-	L1_45(L1_45)
-	L1_45 = true
-	A0_44.storage:open_storage_select(L1_45)
+
+if not LocalUserStorageStateOpenSelectForSaving then
+	LocalUserStorageStateOpenSelectForSaving = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateOpenSelectForSaving.transition(A0_46)
-	if A0_46.storage:is_storage_selected() and A0_46.storage:last_saved_to_device_id() == A0_46.storage:device_id() then
+LocalUserStorageStateOpenSelectForSaving.init = function(l_31_0)
+	LocalUserStorageStateDetectSignOut.init(l_31_0)
+	l_31_0.storage:clear_wants_to_select_storage_for_saving()
+	local l_31_1 = true
+	l_31_0.storage:open_storage_select(l_31_1)
+end
+
+LocalUserStorageStateOpenSelectForSaving.transition = function(l_32_0)
+	if l_32_0.storage:is_storage_selected() and l_32_0.storage:last_saved_to_device_id() == l_32_0.storage:device_id() then
 		return LocalUserStorageStateReady
-	elseif A0_46.storage:is_storage_canceled() then
-		return LocalUserStorageStateNotFoundForSaving
-	elseif A0_46.storage:is_storage_selected() then
-		return LocalUserStorageStateCheckOverwrite
+	else
+		if l_32_0.storage:is_storage_canceled() then
+			return LocalUserStorageStateNotFoundForSaving
+		end
+	else
+		if l_32_0.storage:is_storage_selected() then
+			return LocalUserStorageStateCheckOverwrite
+		end
 	end
 end
-LocalUserStorageStateCheckOverwrite = LocalUserStorageStateCheckOverwrite or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateCheckOverwrite.init(A0_47)
-	LocalUserStorageStateDetectSignOut.init(A0_47)
-	A0_47.storage:clear_storage_device_lost()
-	A0_47.storage:_exists()
+
+if not LocalUserStorageStateCheckOverwrite then
+	LocalUserStorageStateCheckOverwrite = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateCheckOverwrite.exit(A0_48)
-	A0_48.storage:_close_exists_task()
+LocalUserStorageStateCheckOverwrite.init = function(l_33_0)
+	LocalUserStorageStateDetectSignOut.init(l_33_0)
+	l_33_0.storage:clear_storage_device_lost()
+	l_33_0.storage:_exists()
 end
-function LocalUserStorageStateCheckOverwrite.transition(A0_49)
-	if A0_49.storage:_exists_status() == nil then
-		return
+
+LocalUserStorageStateCheckOverwrite.exit = function(l_34_0)
+	l_34_0.storage:_close_exists_task()
+end
+
+LocalUserStorageStateCheckOverwrite.transition = function(l_35_0)
+	local l_35_1 = l_35_0.storage:_exists_status()
+	if l_35_1 == nil then
+		return 
 	end
-	if A0_49.storage:_exists_status() then
+	if l_35_1 then
 		return LocalUserStorageStateAskOverwrite
 	else
 		return LocalUserStorageStateSaving
 	end
 end
-LocalUserStorageStateAskOverwrite = LocalUserStorageStateAskOverwrite or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateAskOverwrite.init(A0_50)
-	LocalUserStorageStateDetectSignOut.init(A0_50)
-	A0_50.storage:clear_wants_to_overwrite()
-	A0_50.storage:clear_wants_to_select_storage_for_saving()
-	A0_50.storage._waits_for_overwrite_confirmation = true
+
+if not LocalUserStorageStateAskOverwrite then
+	LocalUserStorageStateAskOverwrite = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateAskOverwrite.exit(A0_51)
-	A0_51.storage._waits_for_overwrite_confirmation = false
+LocalUserStorageStateAskOverwrite.init = function(l_36_0)
+	LocalUserStorageStateDetectSignOut.init(l_36_0)
+	l_36_0.storage:clear_wants_to_overwrite()
+	l_36_0.storage:clear_wants_to_select_storage_for_saving()
+	l_36_0.storage._waits_for_overwrite_confirmation = true
 end
-function LocalUserStorageStateAskOverwrite.transition(A0_52)
-	if A0_52.storage:wants_to_overwrite() then
+
+LocalUserStorageStateAskOverwrite.exit = function(l_37_0)
+	l_37_0.storage._waits_for_overwrite_confirmation = false
+end
+
+LocalUserStorageStateAskOverwrite.transition = function(l_38_0)
+	if l_38_0.storage:wants_to_overwrite() then
 		return LocalUserStorageStateSaving
-	elseif A0_52.storage:wants_to_select_storage_for_saving() then
-		return LocalUserStorageStateOpenSelectForSaving
+	else
+		if l_38_0.storage:wants_to_select_storage_for_saving() then
+			return LocalUserStorageStateOpenSelectForSaving
+		end
 	end
 end
-LocalUserStorageStateNotFoundForSaving = LocalUserStorageStateNotFoundForSaving or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateNotFoundForSaving.init(A0_53)
-	LocalUserStorageStateDetectSignOut.init(A0_53)
-	A0_53.storage:clear_wants_to_select_storage_for_saving()
-	A0_53.storage:clear_wants_to_continue_without_saving()
-	A0_53.storage:clear_do_not_want_to_continue_without_saving()
-	A0_53.storage._waits_for_continue_without_saving = true
+
+if not LocalUserStorageStateNotFoundForSaving then
+	LocalUserStorageStateNotFoundForSaving = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateNotFoundForSaving.exit(A0_54)
-	A0_54.storage._waits_for_continue_without_saving = nil
+LocalUserStorageStateNotFoundForSaving.init = function(l_39_0)
+	LocalUserStorageStateDetectSignOut.init(l_39_0)
+	l_39_0.storage:clear_wants_to_select_storage_for_saving()
+	l_39_0.storage:clear_wants_to_continue_without_saving()
+	l_39_0.storage:clear_do_not_want_to_continue_without_saving()
+	l_39_0.storage._waits_for_continue_without_saving = true
 end
-function LocalUserStorageStateNotFoundForSaving.transition(A0_55)
-	if A0_55.storage:wants_to_continue_without_saving() then
+
+LocalUserStorageStateNotFoundForSaving.exit = function(l_40_0)
+	l_40_0.storage._waits_for_continue_without_saving = nil
+end
+
+LocalUserStorageStateNotFoundForSaving.transition = function(l_41_0)
+	if l_41_0.storage:wants_to_continue_without_saving() then
 		return LocalUserStorageStateNoSaving
-	elseif A0_55.storage:do_not_want_to_continue_without_saving() then
-		return LocalUserStorageStateOpenSelectForSaving
-	elseif A0_55.storage:wants_to_select_storage_for_saving() then
-		return LocalUserStorageStateOpenSelectForSaving
+	else
+		if l_41_0.storage:do_not_want_to_continue_without_saving() then
+			return LocalUserStorageStateOpenSelectForSaving
+		end
+	else
+		if l_41_0.storage:wants_to_select_storage_for_saving() then
+			return LocalUserStorageStateOpenSelectForSaving
+		end
 	end
 end
-LocalUserStorageStateSaving = LocalUserStorageStateSaving or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateSaving.init(A0_56)
-	LocalUserStorageStateDetectSignOut.init(A0_56)
-	A0_56.storage:_save()
+
+if not LocalUserStorageStateSaving then
+	LocalUserStorageStateSaving = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateSaving.exit(A0_57)
-	A0_57.storage:_close_save_task()
+LocalUserStorageStateSaving.init = function(l_42_0)
+	LocalUserStorageStateDetectSignOut.init(l_42_0)
+	local l_42_1 = nil
+	l_42_0.storage:_save()
 end
-function LocalUserStorageStateSaving.transition(A0_58)
-	if not A0_58.storage:_save_status() then
-		return
+
+LocalUserStorageStateSaving.exit = function(l_43_0)
+	l_43_0.storage:_close_save_task()
+end
+
+LocalUserStorageStateSaving.transition = function(l_44_0)
+	local l_44_1 = l_44_0.storage:_save_status()
+	if not l_44_1 then
+		return 
 	end
-	if A0_58.storage:_save_status() == SaveData.OK then
-		A0_58.storage._save_for_the_first_time = nil
+	if l_44_1 == SaveData.OK then
+		l_44_0.storage._save_for_the_first_time = nil
 		return LocalUserStorageStateSaved
-	elseif A0_58.storage:_save_status() == SaveData.XBOX_CONTENT then
-		return LocalUserStorageStateLost
+	else
+		if l_44_1 == SaveData.XBOX_CONTENT then
+			return LocalUserStorageStateLost
+		end
 	else
 		return LocalUserStorageStateSaveFailed
 	end
 end
-LocalUserStorageStateSaveFailed = LocalUserStorageStateSaveFailed or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateSaveFailed.init(A0_59)
-	LocalUserStorageStateDetectSignOut.init(A0_59)
-	A0_59.storage:_clear_wants_to_save()
-	A0_59.storage._waits_for_retry_saving = true
+
+if not LocalUserStorageStateSaveFailed then
+	LocalUserStorageStateSaveFailed = class(LocalUserStorageStateDetectSignOut)
 end
-function LocalUserStorageStateSaveFailed.exit(A0_60)
-	A0_60.storage._waits_for_retry_saving = false
+LocalUserStorageStateSaveFailed.init = function(l_45_0)
+	LocalUserStorageStateDetectSignOut.init(l_45_0)
+	l_45_0.storage:_clear_wants_to_save()
+	l_45_0.storage._waits_for_retry_saving = true
 end
-function LocalUserStorageStateSaveFailed.transition(A0_61)
-	if A0_61.storage:_wants_to_save() then
+
+LocalUserStorageStateSaveFailed.exit = function(l_46_0)
+	l_46_0.storage._waits_for_retry_saving = false
+end
+
+LocalUserStorageStateSaveFailed.transition = function(l_47_0)
+	if l_47_0.storage:_wants_to_save() then
 		return LocalUserStorageStateSaving
-	elseif A0_61.storage:wants_to_select_storage_for_saving() then
+	else
+		if l_47_0.storage:wants_to_select_storage_for_saving() then
+			return LocalUserStorageStateOpenSelectForSaving
+		end
+	end
+end
+
+if not LocalUserStorageStateSaved then
+	LocalUserStorageStateSaved = class(FiniteStateMachineState)
+end
+LocalUserStorageStateSaved.init = function(l_48_0)
+	l_48_0.storage:_clear_wants_to_save()
+end
+
+LocalUserStorageStateSaved.transition = function(l_49_0)
+	return LocalUserStorageStateReady
+end
+
+if not LocalUserStorageStateLost then
+	LocalUserStorageStateLost = class(LocalUserStorageStateDetectSignOut)
+end
+LocalUserStorageStateLost.init = function(l_50_0)
+	LocalUserStorageStateDetectSignOut.init(l_50_0)
+	l_50_0.storage._waits_for_storage_lost = true
+	l_50_0.storage:clear_last_saved_to_device_id()
+	l_50_0.storage:clear_storage_device_lost()
+end
+
+LocalUserStorageStateLost.exit = function(l_51_0)
+	l_51_0.storage._waits_for_storage_lost = false
+	l_51_0.storage:clear_wants_to_select_storage_after_lost()
+end
+
+LocalUserStorageStateLost.transition = function(l_52_0)
+	if l_52_0.storage:wants_to_select_storage_after_lost() then
 		return LocalUserStorageStateOpenSelectForSaving
 	end
 end
-LocalUserStorageStateSaved = LocalUserStorageStateSaved or class(FiniteStateMachineState)
-function LocalUserStorageStateSaved.init(A0_62)
-	A0_62.storage:_clear_wants_to_save()
-end
-function LocalUserStorageStateSaved.transition(A0_63)
-	local L1_64
-	L1_64 = LocalUserStorageStateReady
-	return L1_64
-end
-LocalUserStorageStateLost = LocalUserStorageStateLost or class(LocalUserStorageStateDetectSignOut)
-function LocalUserStorageStateLost.init(A0_65)
-	LocalUserStorageStateDetectSignOut.init(A0_65)
-	A0_65.storage._waits_for_storage_lost = true
-	A0_65.storage:clear_last_saved_to_device_id()
-	A0_65.storage:clear_storage_device_lost()
-end
-function LocalUserStorageStateLost.exit(A0_66)
-	A0_66.storage._waits_for_storage_lost = false
-	A0_66.storage:clear_wants_to_select_storage_after_lost()
-end
-function LocalUserStorageStateLost.transition(A0_67)
-	if A0_67.storage:wants_to_select_storage_after_lost() then
-		return LocalUserStorageStateOpenSelectForSaving
-	end
-end
+
+

@@ -1,13 +1,15 @@
 require("shared/FiniteStateMachineState")
-WalkerState = WalkerState or class(FiniteStateMachineState)
-function WalkerState.init(A0_0)
-	local L1_1, L2_2
-	L1_1 = A0_0._base
-	L2_2 = L1_1._unit
-	A0_0._unit = L2_2
-	L2_2 = L1_1._emitter
-	A0_0._emitter = L2_2
+if not WalkerState then
+	WalkerState = class(FiniteStateMachineState)
 end
-function WalkerState._request_stun(A0_3)
-	A0_3._unit:play_redirect("pre_stun")
+WalkerState.init = function(l_1_0)
+	local l_1_1 = l_1_0._base
+	l_1_0._unit = l_1_1._unit
+	l_1_0._emitter = l_1_1._emitter
 end
+
+WalkerState._request_stun = function(l_2_0)
+	l_2_0._unit:play_redirect("pre_stun")
+end
+
+

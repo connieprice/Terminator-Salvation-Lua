@@ -1,5 +1,9 @@
 require("menu/2D/states/Menu2DState")
-Menu2DStateSyncingToIngame = Menu2DStateSyncingToIngame or class(Menu2DState)
-function Menu2DStateSyncingToIngame.init(A0_0)
-	Menu2DState.init(A0_0, Menu2DStateSyncingToIngame)
+if not Menu2DStateSyncingToIngame then
+	Menu2DStateSyncingToIngame = class(Menu2DState)
 end
+Menu2DStateSyncingToIngame.init = function(l_1_0)
+	Menu2DState.init(l_1_0, Menu2DStateSyncingToIngame)
+end
+
+

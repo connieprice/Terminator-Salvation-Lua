@@ -1,70 +1,57 @@
-Scheduler = Scheduler or class()
-function Scheduler.init(A0_0)
-	A0_0._operation_infos = {}
+if not Scheduler then
+	Scheduler = class()
 end
-function Scheduler.insert_operation(A0_1, A1_2, A2_3, A3_4, A4_5)
-	local L5_6
-	L5_6 = {}
-	L5_6.operation = A1_2
-	L5_6.done_callback = A4_5
-	A0_1._operation_infos[A1_2] = L5_6
-	assert(TableAlgorithms.count(A0_1._operation_infos) < 100)
+Scheduler.init = function(l_1_0)
+	l_1_0._operation_infos = {}
 end
-function Scheduler.remove_operation(A0_7, A1_8)
-	local L2_9
-	L2_9 = A0_7._operation_infos
-	L2_9 = L2_9[A1_8]
-	if L2_9 then
-		L2_9.removed = true
+
+Scheduler.insert_operation = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4)
+	local l_2_5 = {}
+	l_2_5.operation = l_2_1
+	l_2_5.done_callback = l_2_4
+	l_2_0._operation_infos[l_2_1] = l_2_5
+	local l_2_6 = assert
+	l_2_6(TableAlgorithms.count(l_2_0._operation_infos) < 100)
+end
+
+Scheduler.remove_operation = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0._operation_infos[l_3_1]
+	if l_3_2 then
+		l_3_2.removed = true
 	end
 end
-function Scheduler.update(A0_10, A1_11)
-	local L2_12, L3_13, L4_14
-	L3_13 = A0_10
-	L2_12 = A0_10._operation_info
-	L2_12 = L2_12(L3_13)
-	if L2_12 then
-		L3_13 = L2_12.operation
-		L4_14 = L2_12.started
-		if not L4_14 then
-			L4_14 = L3_13.start
-			L4_14(L3_13)
-			L2_12.started = true
+
+Scheduler.update = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0:_operation_info()
+	if l_4_2 then
+		local l_4_3 = l_4_2.operation
+		if not l_4_2.started then
+			l_4_3:start()
+			l_4_2.started = true
 		end
-		L4_14 = L3_13.update
-		L4_14(L3_13, A1_11)
-		L4_14 = L3_13.done
-		L4_14 = L4_14(L3_13)
-		if L4_14 then
-			L4_14 = L2_12.done_callback
-			if L4_14 then
-				L4_14(L3_13)
-			end
-			A0_10:remove_operation(L3_13)
+		l_4_3:update(l_4_1)
+	if l_4_3:done() then
 		end
+		local l_4_4 = l_4_2.done_callback
+		if l_4_4 then
+			l_4_4(l_4_3)
+		end
+		l_4_0:remove_operation(l_4_3)
 	end
-	L3_13 = TableAlgorithms
-	L3_13 = L3_13.remove_if
-	L4_14 = A0_10._operation_infos
-	L3_13(L4_14, function(A0_15)
-		local L1_16
-		L1_16 = A0_15.removed
-		return L1_16
-	end)
+	TableAlgorithms.remove_if(l_4_0._operation_infos, function(l_5_0)
+		return l_5_0.removed
+  end)
 end
-function Scheduler._operation_info(A0_17)
-	local L1_18, L2_19
-	L1_18 = A0_17._current_operation_info
-	if L1_18 ~= nil then
-		L1_18 = A0_17._current_operation_info
-		L1_18 = L1_18.removed
-	elseif L1_18 then
-		L1_18, L2_19 = nil, nil
+
+Scheduler._operation_info = function(l_5_0)
+	if l_5_0._current_operation_info == nil or l_5_0._current_operation_info.removed then
+		local l_5_1, l_5_2 = nil, nil
 		repeat
-			L1_18, L2_19 = next(A0_17._operation_infos, L1_18)
-		until L2_19 == nil or not L2_19.removed
-		A0_17._current_operation_info = L2_19
+			l_5_1 = next(l_5_0._operation_infos, l_5_1)
+		until l_5_2 == nil or not l_5_2.removed
+		l_5_0._current_operation_info = l_5_2
 	end
-	L1_18 = A0_17._current_operation_info
-	return L1_18
+	return l_5_0._current_operation_info
 end
+
+

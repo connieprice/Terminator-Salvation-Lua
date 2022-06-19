@@ -1,199 +1,144 @@
 require("units/beings/AiNerveSystem")
-HunterKillerAiNerveSystem = HunterKillerAiNerveSystem or class(AiNerveSystem)
-function HunterKillerAiNerveSystem.init(A0_0, A1_1)
-	AiNerveSystem.init(A0_0, A1_1)
-	A0_0._locked_firing_target = nil
+if not HunterKillerAiNerveSystem then
+	HunterKillerAiNerveSystem = class(AiNerveSystem)
 end
-function HunterKillerAiNerveSystem.init_default_ai_data(A0_2)
-	local L1_3, L2_4
-	L1_3 = A0_2._unit
-	L2_4 = L1_3
-	L1_3 = L1_3.ai_data
-	L1_3 = L1_3(L2_4)
-	L2_4 = L1_3.input
-	L2_4.forced_target_selection = L1_3.default_forced_target_selection
-	L2_4 = L1_3.input
-	L2_4.forced_target_units = {}
-	L2_4 = L1_3.input
-	L2_4 = L2_4.forced_target_units
-	L2_4[1] = L1_3.default_forced_target_units
-	L2_4 = L1_3.input
-	L2_4 = L2_4.forced_target_units
-	L2_4[2] = L1_3.default_forced_target_units
-	L2_4 = L1_3.input
-	L2_4.forced_target_locations = {}
-	L2_4 = L1_3.input
-	L2_4 = L2_4.forced_target_locations
-	L2_4[1] = L1_3.default_forced_target_locations
-	L2_4 = L1_3.input
-	L2_4 = L2_4.forced_target_locations
-	L2_4[2] = L1_3.default_forced_target_locations
-	L2_4 = L1_3.input
-	L2_4.forced_attacks = {}
-	L2_4 = L1_3.input
-	L2_4 = L2_4.forced_attacks
-	L2_4[1] = L1_3.default_forced_primary_attacks or {}
-	L2_4 = L1_3.input
-	L2_4 = L2_4.forced_attacks
-	L2_4[2] = L1_3.default_forced_secondary_attacks or {}
-	L2_4 = L1_3.input
-	L2_4.override_previous_forced_attacks = L1_3.default_override_previous_forced_attacks
-	L2_4 = L1_3.input
-	L2_4.forced_flares = L1_3.default_forced_flares or {}
-	L2_4 = L1_3.default_primary_attack_properties
-	if L2_4 then
-		L2_4 = L1_3.default_primary_attack_properties
-		L2_4 = L2_4.clip
-		if L2_4 and tonumber(L2_4) then
-			A0_2._unit:base():set_number_of_primary_bolts(tonumber(L2_4))
+HunterKillerAiNerveSystem.init = function(l_1_0, l_1_1)
+	AiNerveSystem.init(l_1_0, l_1_1)
+	l_1_0._locked_firing_target = nil
+end
+
+HunterKillerAiNerveSystem.init_default_ai_data = function(l_2_0)
+	local l_2_1 = l_2_0._unit:ai_data()
+	l_2_1.input.forced_target_selection = l_2_1.default_forced_target_selection
+	l_2_1.input.forced_target_units = {}
+	l_2_1.input.forced_target_units[1] = l_2_1.default_forced_target_units
+	l_2_1.input.forced_target_units[2] = l_2_1.default_forced_target_units
+	l_2_1.input.forced_target_locations = {}
+	l_2_1.input.forced_target_locations[1] = l_2_1.default_forced_target_locations
+	l_2_1.input.forced_target_locations[2] = l_2_1.default_forced_target_locations
+	l_2_1.input.forced_attacks = {}
+	if not l_2_1.default_forced_primary_attacks then
+		l_2_1.input.forced_attacks[1] = {}
+	end
+	if not l_2_1.default_forced_secondary_attacks then
+		l_2_1.input.forced_attacks[2] = {}
+	end
+	l_2_1.input.override_previous_forced_attacks = l_2_1.default_override_previous_forced_attacks
+	if not l_2_1.default_forced_flares then
+		l_2_1.input.forced_flares = {}
+	end
+	if l_2_1.default_primary_attack_properties then
+		local l_2_2 = l_2_1.default_primary_attack_properties.clip
+	if l_2_2 then
+		end
+	if tonumber(l_2_2) then
+		end
+		l_2_0._unit:base():set_number_of_primary_bolts(tonumber(l_2_2))
+	end
+	if l_2_1.default_secondary_attack_properties then
+		local l_2_3 = l_2_1.default_secondary_attack_properties.clip
+	if l_2_3 then
+		end
+	if tonumber(l_2_3) then
+		end
+		l_2_0._unit:base():set_number_of_secondary_bolts(tonumber(l_2_3))
+	end
+end
+
+HunterKillerAiNerveSystem.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	if l_3_1:damage_data():is_fully_damaged() then
+		l_3_0:_update_dead(l_3_1, l_3_2, l_3_3)
+		return 
+	end
+	if not AiNerveSystem.update(l_3_0, l_3_1, l_3_2, l_3_3) then
+		return 
+	end
+	local l_3_4 = l_3_1:ai_data()
+	local l_3_5 = l_3_1:enemy_data()
+	local l_3_6 = l_3_1:input()
+	local l_3_7 = l_3_1:base()
+	local l_3_8 = l_3_1:base()._weapon_primary
+	local l_3_9 = l_3_1:base()._weapon_secondary
+	l_3_6:clear()
+	if alive(l_3_8) and l_3_4.output.allowed_to_fire[1] then
+		local l_3_10 = l_3_7._weapon_primary:base()._speed
+		l_3_6:set_primary_aim_target_position(l_3_0:_get_aim_target_position(l_3_1, l_3_10, 1, l_3_0._unit:base()._aim_object[1]))
+		l_3_6:set_primary_fire()
+	end
+	if alive(l_3_9) and l_3_4.output.allowed_to_fire[2] then
+		local l_3_11 = l_3_7._weapon_secondary:base()._speed
+		l_3_6:set_secondary_aim_target_position(l_3_0:_get_aim_target_position(l_3_1, l_3_11, 2, l_3_0._unit:base()._aim_object[2]))
+		l_3_6:set_secondary_fire()
+	end
+	l_3_6:set_flare(l_3_4.output.allowed_to_release_flare)
+end
+
+HunterKillerAiNerveSystem._register = function(l_4_0)
+	l_4_0._registered = true
+end
+
+HunterKillerAiNerveSystem._unregister = function(l_5_0)
+	l_5_0._registered = false
+end
+
+HunterKillerAiNerveSystem._get_aim_target_position = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	local l_6_5 = (l_6_1:ai_data())
+	local l_6_6 = nil
+	if l_6_5.output.firing_target_unit[l_6_3] and alive(l_6_5.output.firing_target_unit[l_6_3]) then
+		l_6_6 = l_6_0:_aim_moving_target2(l_6_0, l_6_5.output.firing_target_unit[l_6_3], l_6_2, l_6_4)
+	else
+		if l_6_5.output.firing_target_position[l_6_3] then
+			l_6_6 = l_6_5.output.firing_target_position[l_6_3]
 		end
 	end
-	L2_4 = L1_3.default_secondary_attack_properties
-	if L2_4 then
-		L2_4 = L1_3.default_secondary_attack_properties
-		L2_4 = L2_4.clip
-		if L2_4 and tonumber(L2_4) then
-			A0_2._unit:base():set_number_of_secondary_bolts(tonumber(L2_4))
+	return l_6_6
+end
+
+HunterKillerAiNerveSystem._aim_moving_target = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	local l_7_4 = l_7_1:position()
+	local l_7_5 = l_7_4 + l_7_1:velocity()
+	local l_7_6 = l_7_5 - l_7_3:position()
+	return l_7_4 + l_7_1:velocity() * (l_7_6:length() / l_7_2)
+end
+
+HunterKillerAiNerveSystem._aim_moving_target2 = function(l_8_0, l_8_1, l_8_2, l_8_3)
+	local l_8_4 = l_8_3:position()
+	local l_8_5 = l_8_1:position()
+	local l_8_6 = l_8_5
+	local l_8_7 = l_8_6
+	local l_8_8 = l_8_1:velocity()
+	local l_8_9 = 10000
+	local l_8_10 = l_8_9
+	do
+		local l_8_11 = 0
+		while l_8_9 >= 100 and 0 < 5 do
+			l_8_10 = l_8_9
+			l_8_7 = l_8_6
+			l_8_11 = l_8_6 - l_8_4:length() / l_8_2
+			l_8_6 = l_8_5 + l_8_8 * (l_8_11)
+			l_8_9 = l_8_6 - l_8_7:length()
+			if l_8_10 < l_8_9 then
+				return l_8_7
+			end
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
 		end
+		return l_8_6
 	end
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function HunterKillerAiNerveSystem.update(A0_5, A1_6, A2_7, A3_8)
-	local L4_9, L5_10, L6_11, L7_12, L8_13, L9_14, L10_15
-	L5_10 = A1_6
-	L4_9 = A1_6.damage_data
-	L4_9 = L4_9(L5_10)
-	L5_10 = L4_9
-	L4_9 = L4_9.is_fully_damaged
-	L4_9 = L4_9(L5_10)
-	if L4_9 then
-		L5_10 = A0_5
-		L4_9 = A0_5._update_dead
-		L6_11 = A1_6
-		L7_12 = A2_7
-		L8_13 = A3_8
-		L4_9(L5_10, L6_11, L7_12, L8_13)
-		return
+
+HunterKillerAiNerveSystem._is_dead = function(l_9_0)
+	return l_9_0._unit:enemy_data().dead
+end
+
+HunterKillerAiNerveSystem._update_dead = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	if not l_10_0._braindead then
+		l_10_0:_kill_brain()
 	end
-	L4_9 = AiNerveSystem
-	L4_9 = L4_9.update
-	L5_10 = A0_5
-	L6_11 = A1_6
-	L7_12 = A2_7
-	L8_13 = A3_8
-	L4_9 = L4_9(L5_10, L6_11, L7_12, L8_13)
-	if not L4_9 then
-		return
-	end
-	L5_10 = A1_6
-	L4_9 = A1_6.ai_data
-	L4_9 = L4_9(L5_10)
-	L6_11 = A1_6
-	L5_10 = A1_6.enemy_data
-	L5_10 = L5_10(L6_11)
-	L7_12 = A1_6
-	L6_11 = A1_6.input
-	L6_11 = L6_11(L7_12)
-	L8_13 = A1_6
-	L7_12 = A1_6.base
-	L7_12 = L7_12(L8_13)
-	L9_14 = A1_6
-	L8_13 = A1_6.base
-	L8_13 = L8_13(L9_14)
-	L8_13 = L8_13._weapon_primary
-	L10_15 = A1_6
-	L9_14 = A1_6.base
-	L9_14 = L9_14(L10_15)
-	L9_14 = L9_14._weapon_secondary
-	L10_15 = L6_11.clear
-	L10_15(L6_11)
-	L10_15 = alive
-	L10_15 = L10_15(L8_13)
-	if L10_15 then
-		L10_15 = L4_9.output
-		L10_15 = L10_15.allowed_to_fire
-		L10_15 = L10_15[1]
-		if L10_15 then
-			L10_15 = L7_12._weapon_primary
-			L10_15 = L10_15.base
-			L10_15 = L10_15(L10_15)
-			L10_15 = L10_15._speed
-			L6_11:set_primary_aim_target_position(A0_5:_get_aim_target_position(A1_6, L10_15, 1, A0_5._unit:base()._aim_object[1]))
-			L6_11:set_primary_fire()
-		end
-	end
-	L10_15 = alive
-	L10_15 = L10_15(L9_14)
-	if L10_15 then
-		L10_15 = L4_9.output
-		L10_15 = L10_15.allowed_to_fire
-		L10_15 = L10_15[2]
-		if L10_15 then
-			L10_15 = L7_12._weapon_secondary
-			L10_15 = L10_15.base
-			L10_15 = L10_15(L10_15)
-			L10_15 = L10_15._speed
-			L6_11:set_secondary_aim_target_position(A0_5:_get_aim_target_position(A1_6, L10_15, 2, A0_5._unit:base()._aim_object[2]))
-			L6_11:set_secondary_fire()
-		end
-	end
-	L10_15 = L6_11.set_flare
-	L10_15(L6_11, L4_9.output.allowed_to_release_flare)
+	AiNerveSystem.update(l_10_0, l_10_1, l_10_2, l_10_3)
+	local l_10_4 = l_10_1:input()
+	l_10_4:clear()
 end
-function HunterKillerAiNerveSystem._register(A0_16)
-	local L1_17
-	A0_16._registered = true
-end
-function HunterKillerAiNerveSystem._unregister(A0_18)
-	local L1_19
-	A0_18._registered = false
-end
-function HunterKillerAiNerveSystem._get_aim_target_position(A0_20, A1_21, A2_22, A3_23, A4_24)
-	local L5_25, L6_26
-	L6_26 = A1_21
-	L5_25 = A1_21.ai_data
-	L5_25 = L5_25(L6_26)
-	L6_26 = nil
-	if L5_25.output.firing_target_unit[A3_23] and alive(L5_25.output.firing_target_unit[A3_23]) then
-		L6_26 = A0_20:_aim_moving_target2(L5_25.output.firing_target_unit[A3_23], A2_22, A4_24)
-	elseif L5_25.output.firing_target_position[A3_23] then
-		L6_26 = L5_25.output.firing_target_position[A3_23]
-	end
-	return L6_26
-end
-function HunterKillerAiNerveSystem._aim_moving_target(A0_27, A1_28, A2_29, A3_30)
-	return A1_28:position() + A1_28:velocity() * ((A1_28:position() + A1_28:velocity() - A3_30:position()):length() / A2_29)
-end
-function HunterKillerAiNerveSystem._aim_moving_target2(A0_31, A1_32, A2_33, A3_34)
-	local L4_35, L5_36, L6_37, L7_38, L8_39, L9_40
-	L5_36 = A3_34
-	L4_35 = A3_34.position
-	L4_35 = L4_35(L5_36)
-	L6_37 = A1_32
-	L5_36 = A1_32.position
-	L5_36 = L5_36(L6_37)
-	L6_37 = L5_36
-	L7_38 = L6_37
-	L9_40 = A1_32
-	L8_39 = A1_32.velocity
-	L8_39 = L8_39(L9_40)
-	L9_40 = 10000
-	while L9_40 >= 100 and 0 < 5 do
-		L7_38 = L6_37
-		L6_37 = L5_36 + L8_39 * ((L6_37 - L4_35):length() / A2_33)
-		L9_40 = (L6_37 - L7_38):length()
-		if L9_40 < L9_40 then
-			return L7_38
-		end
-	end
-	return L6_37
-end
-function HunterKillerAiNerveSystem._is_dead(A0_41)
-	return A0_41._unit:enemy_data().dead
-end
-function HunterKillerAiNerveSystem._update_dead(A0_42, A1_43, A2_44, A3_45)
-	if not A0_42._braindead then
-		A0_42:_kill_brain()
-	end
-	AiNerveSystem.update(A0_42, A1_43, A2_44, A3_45)
-	A1_43:input():clear()
-end
+
+

@@ -1,6 +1,11 @@
 require("network/control/UnitControl")
-RailDriveTestControl = RailDriveTestControl or class(UnitControl)
-function RailDriveTestControl.send_input(A0_0, A1_1)
+if not RailDriveTestControl then
+	RailDriveTestControl = class(UnitControl)
 end
-function RailDriveTestControl.receive_input(A0_2, A1_3)
+RailDriveTestControl.send_input = function(l_1_0, l_1_1)
 end
+
+RailDriveTestControl.receive_input = function(l_2_0, l_2_1)
+end
+
+

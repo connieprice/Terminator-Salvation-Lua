@@ -1,275 +1,269 @@
-local L0_0
-L0_0 = require
-L0_0("shared/camera/SharedCamera")
-L0_0 = mvector3
-L0_0 = L0_0.add
-SpringCamera = SpringCamera or class(SharedCamera)
-function SpringCamera.init(A0_1, A1_2)
-	SharedCamera.init(A0_1, A1_2)
-	A0_1._spring = Vector3(tweak_data.spring_camera.SPRING_CONSTANT.xy, tweak_data.spring_camera.SPRING_CONSTANT.xy, tweak_data.spring_camera.SPRING_CONSTANT.z)
-	A0_1._damping = Vector3(tweak_data.spring_camera.DAMPING_CONSTANT.xy, tweak_data.spring_camera.DAMPING_CONSTANT.xy, tweak_data.spring_camera.DAMPING_CONSTANT.z)
-	A0_1._max_displacement = Vector3(tweak_data.spring_camera.MAX_OFFSET.xy, tweak_data.spring_camera.MAX_OFFSET.xy, tweak_data.spring_camera.MAX_OFFSET.z)
-	A0_1._force_scale = Vector3(1, 1, 1)
-	A0_1._force = Vector3(0, 0, 0)
-	A0_1._force_applicant = nil
-	A0_1._integrator_func = nil
-	A0_1:reset()
+require("shared/camera/SharedCamera")
+local l_0_0 = mvector3.add
+local l_0_1 = mvector3.subtract
+local l_0_2 = mvector3.multiply
+local l_0_3 = mvector3.negate
+local l_0_4 = mvector3.set_zero
+local l_0_5 = mvector3.set
+local l_0_6 = mvector3.set_static
+local l_0_7 = mvector3.copy
+local l_0_8 = mvector3.rotate_with
+if not SpringCamera then
+	SpringCamera = class(SharedCamera)
 end
-function SpringCamera.on_activate(A0_3, A1_4)
-	if A1_4 then
-		A0_3:reset()
+SpringCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._spring = Vector3(tweak_data.spring_camera.SPRING_CONSTANT.xy, tweak_data.spring_camera.SPRING_CONSTANT.xy, tweak_data.spring_camera.SPRING_CONSTANT.z)
+	l_1_0._damping = Vector3(tweak_data.spring_camera.DAMPING_CONSTANT.xy, tweak_data.spring_camera.DAMPING_CONSTANT.xy, tweak_data.spring_camera.DAMPING_CONSTANT.z)
+	l_1_0._max_displacement = Vector3(tweak_data.spring_camera.MAX_OFFSET.xy, tweak_data.spring_camera.MAX_OFFSET.xy, tweak_data.spring_camera.MAX_OFFSET.z)
+	l_1_0._force_scale = Vector3(1, 1, 1)
+	l_1_0._force = Vector3(0, 0, 0)
+	l_1_0._force_applicant = nil
+	l_1_0._integrator_func = nil
+	l_1_0:reset()
+end
+
+SpringCamera.on_activate = function(l_2_0, l_2_1)
+	if l_2_1 then
+		l_2_0:reset()
 	end
 end
-function SpringCamera.parse_parameters(A0_5, A1_6)
-	SharedCamera.parse_parameters(A0_5, A1_6)
-	if A1_6.spring then
-		A0_5._spring = math.string_to_vector(A1_6.spring)
+
+SpringCamera.parse_parameters = function(l_3_0, l_3_1)
+	SharedCamera.parse_parameters(l_3_0, l_3_1)
+	if l_3_1.spring then
+		l_3_0._spring = math.string_to_vector(l_3_1.spring)
 	end
-	if A1_6.max_displacement then
-		A0_5._max_displacement = math.string_to_vector(A1_6.max_displacement)
+	if l_3_1.max_displacement then
+		l_3_0._max_displacement = math.string_to_vector(l_3_1.max_displacement)
 	end
-	if A1_6.damping then
-		A0_5._damping = math.string_to_vector(A1_6.damping)
+	if l_3_1.damping then
+		l_3_0._damping = math.string_to_vector(l_3_1.damping)
 	end
-	if A1_6.force_scale then
-		A0_5._force_scale = math.string_to_vector(A1_6.force_scale)
+	if l_3_1.force_scale then
+		l_3_0._force_scale = math.string_to_vector(l_3_1.force_scale)
 	end
-	if A1_6.force then
-		if A1_6.force == "acceleration" then
-			A0_5._force_applicant = SpringCameraAcceleration:new()
-		elseif A1_6.force == "velocity" then
-			A0_5._force_applicant = SpringCameraVelocity:new()
-		elseif A1_6.force == "position" then
-			A0_5._force_applicant = SpringCameraPosition:new()
+	if l_3_1.force then
+		if l_3_1.force == "acceleration" then
+			l_3_0._force_applicant = SpringCameraAcceleration:new()
+		elseif l_3_1.force == "velocity" then
+			l_3_0._force_applicant = SpringCameraVelocity:new()
+		elseif l_3_1.force == "position" then
+			l_3_0._force_applicant = SpringCameraPosition:new()
 		end
 	else
-		A0_5._force_applicant = SpringCameraPosition:new()
+		l_3_0._force_applicant = SpringCameraPosition:new()
 	end
-	if A1_6.integrator then
-		if A1_6.integrator == "euler" then
-			A0_5._integrator_func = SpringCamera.euler_integration
-		elseif A1_6.integrator == "rk2" then
-			A0_5._integrator_func = SpringCamera.rk2_integration
-		elseif A1_6.integrator == "rk4" then
-			A0_5._integrator_func = SpringCamera.rk4_integration
+	if l_3_1.integrator then
+		if l_3_1.integrator == "euler" then
+			l_3_0._integrator_func = SpringCamera.euler_integration
+		elseif l_3_1.integrator == "rk2" then
+			l_3_0._integrator_func = SpringCamera.rk2_integration
+		elseif l_3_1.integrator == "rk4" then
+			l_3_0._integrator_func = SpringCamera.rk4_integration
 		end
 	else
-		A0_5._integrator_func = SpringCamera.rk2_integration
+		l_3_0._integrator_func = SpringCamera.rk2_integration
 	end
 end
-function SpringCamera.acceleration(A0_7, A1_8, A2_9, A3_10)
-	local L4_11, L5_12
-	L4_11 = A0_7._spring
-	L5_12 = A0_7._damping
-	return Vector3(-(A1_8.x * L4_11.x) - L5_12.x * A2_9.x + A3_10.x, -(A1_8.y * L4_11.y) - L5_12.y * A2_9.y + A3_10.y, -(A1_8.z * L4_11.z) - L5_12.z * A2_9.z + A3_10.z)
+
+SpringCamera.acceleration = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	local l_4_4 = l_4_0._spring
+	local l_4_5 = l_4_0._damping
+	local l_4_6 = Vector3
+	local l_4_7 = -(l_4_1.x * l_4_4.x) - l_4_5.x * l_4_2.x + l_4_3.x
+	local l_4_8 = -(l_4_1.y * l_4_4.y) - l_4_5.y * l_4_2.y + l_4_3.y
+	local l_4_11 = -(l_4_1.z * l_4_4.z)
+	l_4_11 = l_4_11 - l_4_5.z * l_4_2.z
+	local l_4_10 = l_4_3.z
+	l_4_11 = l_4_11 + l_4_10
+	local l_4_9 = nil
+	return l_4_6(l_4_7, l_4_8, l_4_11)
 end
-function SpringCamera.euler_integration(A0_13, A1_14, A2_15)
-	local L3_16, L4_17
-	L3_16 = A0_13._displacement
-	L4_17 = A0_13._velocity
-	A0_13._displacement = L4_17 + A0_13:acceleration(L3_16, L4_17, A2_15) * A1_14
-	A0_13._velocity = position + L4_17 * A1_14 + 0.5 * A0_13:acceleration(L3_16, L4_17, A2_15) * A1_14 * A1_14
+
+SpringCamera.euler_integration = function(l_5_0, l_5_1, l_5_2)
+	local l_5_3 = l_5_0._displacement
+	local l_5_4 = l_5_0._velocity
+	local l_5_5 = l_5_0:acceleration(l_5_3, l_5_4, l_5_2)
+	l_5_0._displacement = l_5_4 + l_5_5 * l_5_1
+	l_5_0._velocity = position + l_5_4 * l_5_1 + 0.5 * l_5_5 * l_5_1 * l_5_1
 end
-function SpringCamera.rk2_integration(A0_18, A1_19, A2_20)
-	local L3_21, L4_22, L5_23, L6_24, L7_25, L8_26, L9_27
-	L3_21 = A0_18._displacement
-	L4_22 = A0_18._velocity
-	L5_23 = mvector3
-	L5_23 = L5_23.copy
-	L6_24 = L3_21
-	L5_23 = L5_23(L6_24)
-	L6_24 = mvector3
-	L6_24 = L6_24.copy
-	L7_25 = L4_22
-	L6_24 = L6_24(L7_25)
-	L7_25 = mvector3
-	L7_25 = L7_25.copy
-	L8_26 = L6_24
-	L7_25 = L7_25(L8_26)
-	L8_26 = _UPVALUE0_
-	L9_27 = L7_25
-	L8_26(L9_27, 0.5 * A1_19)
-	L8_26 = _UPVALUE1_
-	L9_27 = L7_25
-	L8_26(L9_27, L5_23)
-	L9_27 = A0_18
-	L8_26 = A0_18.acceleration
-	L8_26 = L8_26(L9_27, L5_23, L6_24, A2_20)
-	L9_27 = mvector3
-	L9_27 = L9_27.copy
-	L9_27 = L9_27(L8_26)
-	_UPVALUE0_(L9_27, 0.5 * A1_19)
-	_UPVALUE1_(L9_27, L6_24)
-	_UPVALUE2_(L3_21, L9_27)
-	_UPVALUE0_(L3_21, A1_19)
-	_UPVALUE1_(L3_21, L5_23)
-	_UPVALUE2_(L8_26, A0_18:acceleration(L7_25, L9_27, A2_20))
-	_UPVALUE2_(L4_22, L8_26)
-	_UPVALUE0_(L4_22, A1_19)
-	_UPVALUE1_(L4_22, L6_24)
+
+SpringCamera.rk2_integration = function(l_6_0, l_6_1, l_6_2)
+	-- upvalues: l_0_2 , l_0_0 , l_0_5
+	local l_6_3 = l_6_0._displacement
+	local l_6_4 = l_6_0._velocity
+	local l_6_5 = mvector3.copy(l_6_3)
+	local l_6_6 = mvector3.copy(l_6_4)
+	local l_6_7 = mvector3.copy(l_6_6)
+	l_0_2(l_6_7, 0.5 * l_6_1)
+	l_0_0(l_6_7, l_6_5)
+	local l_6_8 = l_6_0:acceleration(l_6_5, l_6_6, l_6_2)
+	local l_6_9 = mvector3.copy(l_6_8)
+	l_0_2(l_6_9, 0.5 * l_6_1)
+	l_0_0(l_6_9, l_6_6)
+	l_0_5(l_6_3, l_6_9)
+	l_0_2(l_6_3, l_6_1)
+	l_0_0(l_6_3, l_6_5)
+	l_0_5(l_6_8, l_6_0:acceleration(l_6_7, l_6_9, l_6_2))
+	l_0_5(l_6_4, l_6_8)
+	l_0_2(l_6_4, l_6_1)
+	l_0_0(l_6_4, l_6_6)
 end
-function SpringCamera.rk4_integration(A0_28, A1_29, A2_30)
-	local L3_31, L4_32, L5_33, L6_34, L7_35, L8_36, L9_37, L10_38, L11_39, L12_40, L13_41
-	L3_31 = A0_28._displacement
-	L4_32 = A0_28._velocity
-	L6_34 = A0_28
-	L5_33 = A0_28.acceleration
-	L7_35 = L3_31
-	L8_36 = L4_32
-	L9_37 = A2_30
-	L5_33 = L5_33(L6_34, L7_35, L8_36, L9_37)
-	L6_34 = 0.5 * L4_32
-	L6_34 = L6_34 * A1_29
-	L6_34 = L3_31 + L6_34
-	L7_35 = 0.5 * L5_33
-	L7_35 = L7_35 * A1_29
-	L7_35 = L4_32 + L7_35
-	L9_37 = A0_28
-	L8_36 = A0_28.acceleration
-	L10_38 = L6_34
-	L11_39 = L7_35
-	L12_40 = A2_30
-	L8_36 = L8_36(L9_37, L10_38, L11_39, L12_40)
-	L9_37 = 0.5 * L7_35
-	L9_37 = L9_37 * A1_29
-	L9_37 = L3_31 + L9_37
-	L10_38 = 0.5 * L8_36
-	L10_38 = L10_38 * A1_29
-	L10_38 = L4_32 + L10_38
-	L12_40 = A0_28
-	L11_39 = A0_28.acceleration
-	L13_41 = L9_37
-	L11_39 = L11_39(L12_40, L13_41, L10_38, A2_30)
-	L12_40 = L10_38 * A1_29
-	L12_40 = L3_31 + L12_40
-	L13_41 = L11_39 * A1_29
-	L13_41 = L4_32 + L13_41
-	A0_28._velocity, A0_28._displacement = L4_32 + A1_29 / 6 * (L5_33 + 2 * L8_36 + 2 * L11_39 + A0_28:acceleration(L12_40, L13_41, A2_30)), L3_31 + A1_29 / 6 * (L4_32 + 2 * L7_35 + 2 * L10_38 + L13_41)
+
+SpringCamera.rk4_integration = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_0._displacement
+	local l_7_4 = l_7_0._velocity
+	local l_7_5 = l_7_0:acceleration(l_7_3, l_7_4, l_7_2)
+	local l_7_6 = l_7_3 + 0.5 * l_7_4 * l_7_1
+	local l_7_7 = l_7_4 + 0.5 * l_7_5 * l_7_1
+	local l_7_8 = l_7_0:acceleration(l_7_6, l_7_7, l_7_2)
+	local l_7_9 = l_7_3 + 0.5 * l_7_7 * l_7_1
+	local l_7_10 = l_7_4 + 0.5 * l_7_8 * l_7_1
+	local l_7_11 = l_7_0:acceleration(l_7_9, l_7_10, l_7_2)
+	local l_7_12 = l_7_3 + l_7_10 * l_7_1
+	local l_7_13 = l_7_4 + l_7_11 * l_7_1
+	local l_7_14 = l_7_0:acceleration(l_7_12, l_7_13, l_7_2)
+	local l_7_15 = l_7_3 + l_7_1 / 6 * (l_7_4 + 2 * l_7_7 + 2 * l_7_10 + l_7_13)
+	l_7_0._velocity = l_7_4 + l_7_1 / 6 * (l_7_5 + 2 * l_7_8 + 2 * l_7_11 + l_7_14)
 end
-function SpringCamera.update(A0_42, A1_43, A2_44, A3_45, A4_46)
-	local L5_47, L6_48, L7_49, L8_50
-	L5_47 = A0_42._displacement
-	L6_48 = A0_42._max_displacement
-	L7_49 = A0_42._force
-	L8_50 = A0_42._force_scale
-	A0_42._force_applicant:force(A1_43, A2_44, L7_49, A3_45, A4_46)
-	_UPVALUE0_(L7_49, L7_49.x * L8_50.x, L7_49.y * L8_50.y, L7_49.z * L8_50.z)
-	A0_42:_integrator_func(A2_44, L7_49)
-	_UPVALUE0_(L5_47, math.clamp(L5_47.x, -L6_48.x, L6_48.x), math.clamp(L5_47.y, -L6_48.y, L6_48.y), math.clamp(L5_47.z, -L6_48.z, L6_48.z))
-	_UPVALUE1_(A0_42._local_position, L5_47)
-	SharedCamera.update(A0_42, A1_43, A2_44, A3_45, A4_46)
+
+SpringCamera.update = function(l_8_0, l_8_1, l_8_2, l_8_3, l_8_4)
+	-- upvalues: l_0_6 , l_0_5
+	local l_8_5 = l_8_0._displacement
+	local l_8_6 = l_8_0._max_displacement
+	local l_8_7 = l_8_0._force
+	local l_8_8 = l_8_0._force_scale
+	l_8_0._force_applicant:force(l_8_1, l_8_2, l_8_7, l_8_3, l_8_4)
+	l_0_6(l_8_7, l_8_7.x * l_8_8.x, l_8_7.y * l_8_8.y, l_8_7.z * l_8_8.z)
+	l_8_0:_integrator_func(l_8_2, l_8_7)
+	l_0_6(l_8_5, math.clamp(l_8_5.x, -l_8_6.x, l_8_6.x), math.clamp(l_8_5.y, -l_8_6.y, l_8_6.y), math.clamp(l_8_5.z, -l_8_6.z, l_8_6.z))
+	l_0_5(l_8_0._local_position, l_8_5)
+	SharedCamera.update(l_8_0, l_8_1, l_8_2, l_8_3, l_8_4)
 end
-function SpringCamera.reset(A0_51)
-	A0_51._velocity = Vector3(0, 0, 0)
-	A0_51._displacement = Vector3(0, 0, 0)
-	if A0_51._force_applicant then
-		A0_51._force_applicant:reset()
+
+SpringCamera.reset = function(l_9_0)
+	l_9_0._velocity = Vector3(0, 0, 0)
+	l_9_0._displacement = Vector3(0, 0, 0)
+	if l_9_0._force_applicant then
+		l_9_0._force_applicant:reset()
 	end
 end
-function SpringCamera.debug_render(A0_52, A1_53, A2_54)
-	SharedCamera.debug_render(A0_52, A1_53, A2_54)
-	Draw:brush(Color(0.3, 1, 0, 0)):sphere(A0_52:parent_camera():position(), 10)
-	Draw:brush(Color(0.3, 0, 1, 0)):sphere(A0_52:position(), 10)
-	Draw:pen(Color(0.3, 1, 1, 1)):line(A0_52:parent_camera():position(), A0_52:position())
-	Draw:pen(Color(0.3, 1, 0, 1)):line(A0_52:position(), A0_52:position() + A0_52._force)
+
+SpringCamera.debug_render = function(l_10_0, l_10_1, l_10_2)
+	SharedCamera.debug_render(l_10_0, l_10_1, l_10_2)
+	local l_10_3 = Draw:brush(Color(0.3, 1, 0, 0))
+	local l_10_4 = Draw:brush(Color(0.3, 0, 1, 0))
+	local l_10_5 = (Draw:pen(Color(0.3, 1, 1, 1)))
+	local l_10_6 = nil
+	l_10_3:sphere(l_10_0:parent_camera():position(), 10)
+	l_10_4:sphere(l_10_0:position(), 10)
+	l_10_5:line(l_10_0:parent_camera():position(), l_10_0:position())
+	local l_10_7 = Draw:pen(Color(0.3, 1, 0, 1))
+	l_10_7:line(l_10_0:position(), l_10_0:position() + l_10_0._force)
 end
-SpringCameraForce = SpringCameraForce or class()
-function SpringCameraForce.init(A0_55)
-	local L1_56
+
+if not SpringCameraForce then
+	SpringCameraForce = class()
 end
-function SpringCameraForce.force(A0_57, A1_58, A2_59, A3_60, A4_61, A5_62)
+SpringCameraForce.init = function(l_11_0)
 end
-function SpringCameraForce.reset(A0_63)
-	local L1_64
+
+SpringCameraForce.force = function(l_12_0, l_12_1, l_12_2, l_12_3, l_12_4, l_12_5)
 end
-SpringCameraPosition = SpringCameraPosition or class(SpringCameraForce)
-function SpringCameraPosition.init(A0_65)
-	A0_65:reset()
+
+SpringCameraForce.reset = function(l_13_0)
 end
-function SpringCameraPosition.force(A0_66, A1_67, A2_68, A3_69, A4_70, A5_71)
-	if not A0_66._reset then
-		_UPVALUE0_(A3_69, A4_70)
-		_UPVALUE1_(A3_69, A0_66._previous_parent_position)
-		_UPVALUE2_(A3_69, A5_71:inverse())
-		_UPVALUE3_(A3_69)
+
+if not SpringCameraPosition then
+	SpringCameraPosition = class(SpringCameraForce)
+end
+SpringCameraPosition.init = function(l_14_0)
+	l_14_0:reset()
+end
+
+SpringCameraPosition.force = function(l_15_0, l_15_1, l_15_2, l_15_3, l_15_4, l_15_5)
+	-- upvalues: l_0_5 , l_0_1 , l_0_8 , l_0_3 , l_0_4
+	if not l_15_0._reset then
+		l_0_5(l_15_3, l_15_4)
+		l_0_1(l_15_3, l_15_0._previous_parent_position)
+		l_0_8(l_15_3, l_15_5:inverse())
+		l_0_3(l_15_3)
 	else
-		_UPVALUE4_(A3_69)
-		A0_66._reset = false
+		l_0_4(l_15_3)
+		l_15_0._reset = false
 	end
-	_UPVALUE0_(A0_66._previous_parent_position, A4_70)
+	l_0_5(l_15_0._previous_parent_position, l_15_4)
 end
-function SpringCameraPosition.reset(A0_72)
-	A0_72._reset = true
-	A0_72._previous_parent_position = Vector3(0, 0, 0)
+
+SpringCameraPosition.reset = function(l_16_0)
+	l_16_0._reset = true
+	l_16_0._previous_parent_position = Vector3(0, 0, 0)
 end
-SpringCameraVelocity = SpringCameraVelocity or class(SpringCameraForce)
-function SpringCameraVelocity.init(A0_73)
-	A0_73:reset()
+
+if not SpringCameraVelocity then
+	SpringCameraVelocity = class(SpringCameraForce)
 end
-function SpringCameraVelocity.force(A0_74, A1_75, A2_76, A3_77, A4_78, A5_79)
-	local L6_80
-	L6_80 = A0_74._reset
-	if not L6_80 then
-		L6_80 = _UPVALUE0_
-		L6_80(A3_77, A4_78)
-		L6_80 = _UPVALUE1_
-		L6_80(A3_77, A0_74._previous_parent_position)
-		L6_80 = _UPVALUE2_
-		L6_80(A3_77, 1 / A2_76)
-		L6_80 = _UPVALUE3_
-		L6_80 = L6_80(A3_77)
-		_UPVALUE1_(A3_77, A0_74._velocity)
-		_UPVALUE0_(A0_74._velocity, L6_80)
-		_UPVALUE4_(A3_77, A5_79:inverse())
-		_UPVALUE5_(A3_77)
+SpringCameraVelocity.init = function(l_17_0)
+	l_17_0:reset()
+end
+
+SpringCameraVelocity.force = function(l_18_0, l_18_1, l_18_2, l_18_3, l_18_4, l_18_5)
+	-- upvalues: l_0_5 , l_0_1 , l_0_2 , l_0_7 , l_0_8 , l_0_3 , l_0_4
+	if not l_18_0._reset then
+		l_0_5(l_18_3, l_18_4)
+		l_0_1(l_18_3, l_18_0._previous_parent_position)
+		l_0_2(l_18_3, 1 / l_18_2)
+		local l_18_6 = l_0_7(l_18_3)
+		l_0_1(l_18_3, l_18_0._velocity)
+		l_0_5(l_18_0._velocity, l_18_6)
+		l_0_8(l_18_3, l_18_5:inverse())
+		l_0_3(l_18_3)
 	else
-		L6_80 = _UPVALUE6_
-		L6_80(A3_77)
-		L6_80 = _UPVALUE6_
-		L6_80(A0_74._velocity)
-		A0_74._reset = false
+		l_0_4(l_18_3)
+		l_0_4(l_18_0._velocity)
+		l_18_0._reset = false
 	end
-	L6_80 = _UPVALUE0_
-	L6_80(A0_74._previous_parent_position, A4_78)
+	l_0_5(l_18_0._previous_parent_position, l_18_4)
 end
-function SpringCameraVelocity.reset(A0_81)
-	A0_81._reset = true
-	A0_81._velocity = Vector3(0, 0, 0)
-	A0_81._previous_parent_position = Vector3(0, 0, 0)
+
+SpringCameraVelocity.reset = function(l_19_0)
+	l_19_0._reset = true
+	l_19_0._velocity = Vector3(0, 0, 0)
+	l_19_0._previous_parent_position = Vector3(0, 0, 0)
 end
-SpringCameraAcceleration = SpringCameraAcceleration or class(SpringCameraForce)
-function SpringCameraAcceleration.init(A0_82)
-	A0_82:reset()
+
+if not SpringCameraAcceleration then
+	SpringCameraAcceleration = class(SpringCameraForce)
 end
-function SpringCameraAcceleration.force(A0_83, A1_84, A2_85, A3_86, A4_87, A5_88)
-	local L6_89
-	L6_89 = A0_83._reset
-	if not L6_89 then
-		L6_89 = _UPVALUE0_
-		L6_89(A3_86, A4_87)
-		L6_89 = _UPVALUE1_
-		L6_89(A3_86, A0_83._previous_parent_position)
-		L6_89 = _UPVALUE2_
-		L6_89(A3_86, 1 / A2_85)
-		L6_89 = _UPVALUE3_
-		L6_89 = L6_89(A3_86)
-		_UPVALUE1_(A3_86, A0_83._velocity)
-		_UPVALUE2_(A3_86, 1 / A2_85)
-		_UPVALUE0_(A0_83._velocity, L6_89)
-		_UPVALUE4_(A3_86, A5_88:inverse())
-		_UPVALUE5_(A3_86)
+SpringCameraAcceleration.init = function(l_20_0)
+	l_20_0:reset()
+end
+
+SpringCameraAcceleration.force = function(l_21_0, l_21_1, l_21_2, l_21_3, l_21_4, l_21_5)
+	-- upvalues: l_0_5 , l_0_1 , l_0_2 , l_0_7 , l_0_8 , l_0_3 , l_0_4
+	if not l_21_0._reset then
+		l_0_5(l_21_3, l_21_4)
+		l_0_1(l_21_3, l_21_0._previous_parent_position)
+		l_0_2(l_21_3, 1 / l_21_2)
+		local l_21_6 = l_0_7(l_21_3)
+		l_0_1(l_21_3, l_21_0._velocity)
+		l_0_2(l_21_3, 1 / l_21_2)
+		l_0_5(l_21_0._velocity, l_21_6)
+		l_0_8(l_21_3, l_21_5:inverse())
+		l_0_3(l_21_3)
 	else
-		L6_89 = _UPVALUE6_
-		L6_89(A3_86)
-		L6_89 = _UPVALUE6_
-		L6_89(A0_83._velocity)
-		A0_83._reset = false
+		l_0_4(l_21_3)
+		l_0_4(l_21_0._velocity)
+		l_21_0._reset = false
 	end
-	L6_89 = _UPVALUE0_
-	L6_89(A0_83._previous_parent_position, A4_87)
+	l_0_5(l_21_0._previous_parent_position, l_21_4)
 end
-function SpringCameraAcceleration.reset(A0_90)
-	A0_90._reset = true
-	A0_90._velocity = Vector3(0, 0, 0)
-	A0_90._previous_parent_position = Vector3(0, 0, 0)
+
+SpringCameraAcceleration.reset = function(l_22_0)
+	l_22_0._reset = true
+	l_22_0._velocity = Vector3(0, 0, 0)
+	l_22_0._previous_parent_position = Vector3(0, 0, 0)
 end
+
+

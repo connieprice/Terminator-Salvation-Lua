@@ -1,24 +1,23 @@
-WorldInfo = WorldInfo or class()
-function WorldInfo.init(A0_0, A1_1, A2_2, A3_3)
-	assert(A3_3)
-	A0_0.id = A1_1
-	A0_0.name = A2_2
-	A0_0.chapter_id = A3_3
+if not WorldInfo then
+	WorldInfo = class()
 end
-function WorldInfo.get_localized_chapter_names(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9, L6_10, L7_11
-	L1_5 = A0_4.id
-	for L5_9 = L1_5, 1, -1 do
-		L6_10 = Localizer
-		L7_11 = L6_10
-		L6_10 = L6_10.lookup
-		L6_10 = L6_10(L7_11, "chapter_line_" .. tostring(L5_9))
-		L7_11 = Localizer
-		L7_11 = L7_11.lookup
-		L7_11 = L7_11(L7_11, "chapter_head_" .. tostring(L5_9))
-		if L7_11 and L7_11 ~= "" then
-			assert(L6_10)
-			return L7_11, L6_10
+WorldInfo.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	assert(l_1_3)
+	l_1_0.id = l_1_1
+	l_1_0.name = l_1_2
+	l_1_0.chapter_id = l_1_3
+end
+
+WorldInfo.get_localized_chapter_names = function(l_2_0)
+	local l_2_1 = l_2_0.id
+	for l_2_5 = l_2_1, 1, -1 do
+		local l_2_6 = Localizer:lookup("chapter_line_" .. tostring(l_2_5))
+		local l_2_7 = Localizer:lookup("chapter_head_" .. tostring(l_2_5))
+		if l_2_7 and l_2_7 ~= "" then
+			assert(l_2_6)
+			return l_2_7, l_2_6
 		end
 	end
 end
+
+

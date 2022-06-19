@@ -1,14 +1,14 @@
-local L0_0
-L0_0 = MenuStateSyncTypes
-L0_0 = L0_0 or {}
-MenuStateSyncTypes = L0_0
-L0_0 = MenuStateSyncTypes
-function L0_0.get_sync_type_class(A0_1)
-	if A0_1 == "to_ingame" then
+if not MenuStateSyncTypes then
+	MenuStateSyncTypes = {}
+end
+MenuStateSyncTypes.get_sync_type_class = function(l_1_0)
+	if l_1_0 == "to_ingame" then
 		return MenuStateStartSyncToIngame
-	elseif A0_1 == "to_frontend" then
+	elseif l_1_0 == "to_frontend" then
 		return MenuStateStartSyncToFrontend
 	else
 		assert(false, "Unknown sync type")
 	end
 end
+
+

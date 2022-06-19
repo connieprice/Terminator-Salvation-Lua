@@ -1,82 +1,62 @@
-CoverBox = CoverBox or class()
-function CoverBox.init(A0_0, A1_1, A2_2, A3_3)
-	local L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12
-	L4_4 = {}
-	A0_0._cover_planes = L4_4
-	L5_5 = A2_2
-	L4_4 = A2_2.x
-	L4_4 = L4_4(L5_5)
-	L6_6 = A2_2
-	L5_5 = A2_2.y
-	L5_5 = L5_5(L6_6)
-	L7_7 = A2_2
-	L6_6 = A2_2.z
-	L6_6 = L6_6(L7_7)
-	L7_7 = A3_3.x
-	L8_8 = A3_3.y
-	L9_9 = A3_3.z
-	L10_10 = math
-	L10_10 = L10_10.dot
-	L11_11 = L6_6
-	L12_12 = math
-	L12_12 = L12_12.UP
-	L10_10 = L10_10(L11_11, L12_12)
-	L11_11 = 0.95
-	L12_12 = math
-	L12_12 = L12_12.dot
-	L12_12 = L12_12(L4_4, math.UP)
-	if L11_11 <= L12_12 then
-		L12_12 = Application
-		L12_12 = L12_12.error
-		L12_12(L12_12, "Not implemented yet")
+if not CoverBox then
+	CoverBox = class()
+end
+CoverBox.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._cover_planes = {}
+	local l_1_4 = l_1_2:x()
+	local l_1_5 = l_1_2:y()
+	local l_1_6 = l_1_2:z()
+	local l_1_7 = l_1_3.x
+	local l_1_8 = l_1_3.y
+	local l_1_9 = l_1_3.z
+	local l_1_10 = math.dot(l_1_6, math.UP)
+	local l_1_11 = 0.95
+	if l_1_11 <= math.dot(l_1_4, math.UP) then
+		Application:error("Not implemented yet")
 	else
-		L12_12 = math
-		L12_12 = L12_12.dot
-		L12_12 = L12_12(L5_5, math.UP)
-		if L11_11 <= L12_12 then
-			L12_12 = Application
-			L12_12 = L12_12.error
-			L12_12(L12_12, "Not implemented yet")
-		else
-			L12_12 = math
-			L12_12 = L12_12.dot
-			L12_12 = L12_12(L6_6, math.UP)
-			if L11_11 <= L12_12 then
-				L12_12 = L8_8 * 2
-				if L12_12 >= tweak_data.cover.MIN_COVER_WIDTH then
-					L12_12 = CoverPlane
-					L12_12 = L12_12.new
-					L12_12 = L12_12(L12_12, A1_1 + L4_4 * L7_7, L4_4, L8_8 * 2, L9_9 * 2)
-				end
-				L12_12 = L7_7 * 2
-				if L12_12 >= tweak_data.cover.MIN_COVER_WIDTH then
-					L12_12 = CoverPlane
-					L12_12 = L12_12.new
-					L12_12 = L12_12(L12_12, A1_1 + L5_5 * L8_8, L5_5, L7_7 * 2, L9_9 * 2)
-					table.insert(A0_0._cover_planes, L12_12)
-				end
-			else
-				L12_12 = Application
-				L12_12 = L12_12.error
-				L12_12(L12_12, "Not implemented yet")
-			end
+		if l_1_11 <= math.dot(l_1_5, math.UP) then
+			Application:error("Not implemented yet")
 		end
+	else
+		if l_1_11 <= math.dot(l_1_6, math.UP) then
+			if tweak_data.cover.MIN_COVER_WIDTH <= l_1_8 * 2 then
+				local l_1_12, l_1_13, l_1_15 = CoverPlane:new(l_1_1 + l_1_4 * l_1_7, l_1_4, l_1_8 * 2, l_1_9 * 2)
+				l_1_13 = CoverPlane
+				l_1_13, l_1_15 = l_1_13:new, l_1_13
+				l_1_13 = l_1_13(l_1_15, l_1_1 - l_1_4 * l_1_7, -l_1_4, l_1_8 * 2, l_1_9 * 2)
+				local l_1_14 = nil
+			end
+			local l_1_16 = l_1_7 * 2
+		if tweak_data.cover.MIN_COVER_WIDTH <= l_1_16 then
+			end
+			l_1_16 = CoverPlane
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			table.insert(l_1_0._cover_planes, l_1_16)
+		end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	else
+		l_1_16:error("Not implemented yet")
 	end
 end
-function CoverBox.get_covers(A0_13)
-	local L1_14
-	L1_14 = A0_13._cover_planes
-	return L1_14
+
+CoverBox.get_covers = function(l_2_0)
+	return l_2_0._cover_planes
 end
-function CoverBox.register(A0_15, A1_16, A2_17)
-	local L3_18, L4_19, L5_20, L6_21, L7_22
-	for L6_21, L7_22 in L3_18(L4_19) do
-		A1_16:register_cover(L7_22, A2_17)
+
+CoverBox.register = function(l_3_0, l_3_1, l_3_2)
+	local l_3_6, l_3_7, l_3_8, l_3_9 = nil
+	for i_0,i_1 in pairs(l_3_0._cover_planes) do
+		l_3_1:register_cover(i_1, l_3_2)
 	end
 end
-function CoverBox.unregister(A0_23, A1_24)
-	local L2_25, L3_26, L4_27, L5_28, L6_29
-	for L5_28, L6_29 in L2_25(L3_26) do
-		A1_24:unregister_cover(L6_29)
+
+CoverBox.unregister = function(l_4_0, l_4_1)
+	local l_4_5, l_4_6, l_4_7, l_4_8 = nil
+	for i_0,i_1 in pairs(l_4_0._cover_planes) do
+		l_4_1:unregister_cover(i_1)
 	end
 end
+
+

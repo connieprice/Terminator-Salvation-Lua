@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMMurphyStart = AMMurphyStart or class(AMNpcStart)
-AMMurphyStart.unit_type = "murphy"
-function AMMurphyStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMMurphyStart.unit_type)
+if not AMMurphyStart then
+	AMMurphyStart = class(AMNpcStart)
 end
+AMMurphyStart.unit_type = "murphy"
+AMMurphyStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMMurphyStart.unit_type)
+end
+
+

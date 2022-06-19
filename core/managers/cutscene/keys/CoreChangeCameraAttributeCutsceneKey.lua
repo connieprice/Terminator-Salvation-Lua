@@ -1,35 +1,52 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreChangeCameraAttributeCutsceneKey = CoreChangeCameraAttributeCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreChangeCameraAttributeCutsceneKey then
+	CoreChangeCameraAttributeCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreChangeCameraAttributeCutsceneKey.ELEMENT_NAME = "camera_attribute"
 CoreChangeCameraAttributeCutsceneKey.NAME = "Camera Attribute"
 CoreChangeCameraAttributeCutsceneKey:register_serialized_attribute("near_range", nil, tonumber)
 CoreChangeCameraAttributeCutsceneKey:register_serialized_attribute("far_range", nil, tonumber)
 CoreChangeCameraAttributeCutsceneKey:attribute_affects("near_range", "far_range")
 CoreChangeCameraAttributeCutsceneKey:attribute_affects("far_range", "near_range")
-function CoreChangeCameraAttributeCutsceneKey.__tostring(A0_0)
-	local L1_1
-	L1_1 = "Change camera attributes."
-	return L1_1
+CoreChangeCameraAttributeCutsceneKey.__tostring = function(l_1_0)
+	return "Change camera attributes."
 end
-function CoreChangeCameraAttributeCutsceneKey.populate_from_editor(A0_2, A1_3)
-	A0_2.super.populate_from_editor(A0_2, A1_3)
-	A0_2:set_near_range(A1_3:camera_attributes().near_range)
-	A0_2:set_far_range(A1_3:camera_attributes().far_range)
+
+CoreChangeCameraAttributeCutsceneKey.populate_from_editor = function(l_2_0, l_2_1)
+	l_2_0.super.populate_from_editor(l_2_0, l_2_1)
+	local l_2_2 = l_2_1:camera_attributes()
+	l_2_0:set_near_range(l_2_2.near_range)
+	l_2_0:set_far_range(l_2_2.far_range)
 end
-function CoreChangeCameraAttributeCutsceneKey.is_valid(A0_4)
-	local L1_5
-	L1_5 = true
-	return L1_5
+
+CoreChangeCameraAttributeCutsceneKey.is_valid = function(l_3_0)
+	return true
 end
-function CoreChangeCameraAttributeCutsceneKey.evaluate(A0_6, A1_7, A2_8)
-	local L3_9, L4_10, L5_11, L6_12, L7_13
-	function L3_9(A0_14)
-		local L1_15
-		L1_15 = _UPVALUE0_
-		L1_15 = L1_15.attribute_value
-		L1_15 = L1_15(L1_15, A0_14)
-		if L1_15 and _UPVALUE0_["is_valid_" .. A0_14](_UPVALUE0_, L1_15) then
-			_UPVALUE1_:set_camera_attribute(A0_14, L1_15)
+
+CoreChangeCameraAttributeCutsceneKey.evaluate = function(l_4_0, l_4_1, l_4_2)
+	local l_4_7, l_4_8, l_4_9 = nil
+	do
+		for i_0,i_1 in pairs(l_4_0.__serialized_attributes) do
+			local l_4_4 = function(l_5_0)
+		-- upvalues: l_4_0 , l_4_1
+		local l_5_1 = l_4_0:attribute_value(l_5_0)
+		if l_5_1 and l_4_0["is_valid_" .. l_5_0](l_4_0, l_5_1) then
+			l_4_1:set_camera_attribute(l_5_0, l_5_1)
+		end
+  end
+			l_4_4(i_0)
 		end
 	end
-	for L7_13, 
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreChangeCameraAttributeCutsceneKey.is_valid_near_range = function(l_5_0, l_5_1)
+	return l_5_1 == nil or (l_5_1 > 0 and (not l_5_0:far_range() and l_5_1 < math.huge))
+end
+
+CoreChangeCameraAttributeCutsceneKey.is_valid_far_range = function(l_6_0, l_6_1)
+	return not l_6_0:near_range() and l_6_1 == nil or 0 < l_6_1
+end
+
+

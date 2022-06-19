@@ -1,6 +1,11 @@
 require("network/control/UnitControl")
-SkynetDefenceTurretControl = SkynetDefenceTurretControl or class(UnitControl)
-function SkynetDefenceTurretControl.send_input(A0_0, A1_1)
+if not SkynetDefenceTurretControl then
+	SkynetDefenceTurretControl = class(UnitControl)
 end
-function SkynetDefenceTurretControl.receive_input(A0_2, A1_3)
+SkynetDefenceTurretControl.send_input = function(l_1_0, l_1_1)
 end
+
+SkynetDefenceTurretControl.receive_input = function(l_2_0, l_2_1)
+end
+
+

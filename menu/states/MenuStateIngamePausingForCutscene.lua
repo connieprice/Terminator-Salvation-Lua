@@ -1,6 +1,8 @@
-MenuStateIngamePausingForCutscene = MenuStateIngamePausingForCutscene or class(MenuStateIngamePausing)
-function MenuStateIngamePausingForCutscene.transition(A0_0)
-	local L1_1
-	L1_1 = MenuStateIngamePaused
-	return L1_1
+if not MenuStateIngamePausingForCutscene then
+	MenuStateIngamePausingForCutscene = class(MenuStateIngamePausing)
 end
+MenuStateIngamePausingForCutscene.transition = function(l_1_0)
+	return MenuStateIngamePaused
+end
+
+

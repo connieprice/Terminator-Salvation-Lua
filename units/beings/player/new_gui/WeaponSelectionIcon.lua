@@ -1,237 +1,319 @@
 require("units/beings/player/new_gui/IconStates")
-WeaponSelectionIcon = WeaponSelectionIcon or class()
-function WeaponSelectionIcon.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._parent_panel = A1_1
-	A0_0._weapon_selection_index = A3_3
-	A0_0._icon_texture_name = A2_2 or "gui_inv_empty"
-	A0_0._weapon_selection_index = A3_3
-	A0_0._x = A0_0._parent_panel:center_x()
-	A0_0._y = A0_0._parent_panel:center_y()
-	A0_0._icon_panel = A0_0._parent_panel:panel({
-		name = "weapon_icon_panel",
-		width = 512,
-		height = 128
-	})
-	A0_0._background_texture = A0_0._icon_panel:bitmap({
-		name = "background",
-		texture = "gui_weaponselection_gradient"
-	})
-	A0_0._pixels_to_move = tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_PIXELS_TO_MOVE
-	if A3_3 == 1 then
-		A0_0._y = A0_0._y - tweak_data.player.new_hud.weapon_selection_panel.Y_OFFSET
-		A0_0._x = A0_0._x + tweak_data.player.new_hud.weapon_selection_panel.X_OFFSET
-		A0_0._icon_panel:set_leftbottom(A0_0._x, A0_0._y)
-		A0_0._end_position = A0_0._icon_panel:x() + A0_0._pixels_to_move
-		A0_0._background_texture:set_texture_rect(512, 0, -512, 128)
-	elseif A3_3 == 2 then
-		A0_0._y = A0_0._y + tweak_data.player.new_hud.weapon_selection_panel.Y_OFFSET
-		A0_0._x = A0_0._x + tweak_data.player.new_hud.weapon_selection_panel.X_OFFSET
-		A0_0._icon_panel:set_lefttop(A0_0._x, A0_0._y)
-		A0_0._end_position = A0_0._icon_panel:x() + A0_0._pixels_to_move
-		A0_0._background_texture:rotate(180)
-	elseif A3_3 == 3 then
-		A0_0._y = A0_0._y + tweak_data.player.new_hud.weapon_selection_panel.Y_OFFSET
-		A0_0._x = A0_0._x - tweak_data.player.new_hud.weapon_selection_panel.X_OFFSET
-		A0_0._icon_panel:set_righttop(A0_0._x, A0_0._y)
-		A0_0._end_position = A0_0._icon_panel:x() - A0_0._pixels_to_move
-		A0_0._background_texture:set_texture_rect(512, 0, -512, 128)
-		A0_0._background_texture:rotate(180)
-	elseif A3_3 == 4 then
-		A0_0._y = A0_0._y - tweak_data.player.new_hud.weapon_selection_panel.Y_OFFSET
-		A0_0._x = A0_0._x - tweak_data.player.new_hud.weapon_selection_panel.X_OFFSET
-		A0_0._icon_panel:set_rightbottom(A0_0._x, A0_0._y)
-		A0_0._end_position = A0_0._icon_panel:x() - A0_0._pixels_to_move
-	else
-		assert(false)
+if not WeaponSelectionIcon then
+	WeaponSelectionIcon = class()
+end
+WeaponSelectionIcon.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._weapon_selection_index = l_1_3
+	l_1_0._icon_texture_name = l_1_2 or "gui_inv_empty"
+	l_1_0._weapon_selection_index = l_1_3
+	l_1_0._x = l_1_0._parent_panel:center_x()
+	l_1_0._y = l_1_0._parent_panel:center_y()
+	local l_1_5 = l_1_0._parent_panel:panel
+	do
+		local l_1_6 = l_1_0._parent_panel
+		l_1_5 = l_1_5(l_1_6, {name = "weapon_icon_panel", width = 512, height = 128})
+		l_1_0._icon_panel = l_1_5
+		l_1_5 = l_1_0._icon_panel
+		l_1_5, l_1_6 = l_1_5:bitmap, l_1_5
+		l_1_5 = l_1_5(l_1_6, {name = "background", texture = "gui_weaponselection_gradient"})
+		l_1_0._background_texture = l_1_5
+		l_1_5 = tweak_data
+		l_1_5 = l_1_5.player
+		l_1_5 = l_1_5.new_hud
+		l_1_5 = l_1_5.weapon_selection_panel
+		l_1_5 = l_1_5.SELECTED_ICON_PIXELS_TO_MOVE
+		l_1_0._pixels_to_move = l_1_5
+		if l_1_3 == 1 then
+			l_1_5 = l_1_0._y
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.Y_OFFSET
+			l_1_5 = l_1_5 - l_1_6
+			l_1_0._y = l_1_5
+			l_1_5 = l_1_0._x
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.X_OFFSET
+			l_1_5 = l_1_5 + l_1_6
+			l_1_0._x = l_1_5
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:set_leftbottom, l_1_5
+			l_1_5(l_1_6, l_1_0._x, l_1_0._y)
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:x, l_1_5
+			l_1_5 = l_1_5(l_1_6)
+			l_1_6 = l_1_0._pixels_to_move
+			l_1_5 = l_1_5 + l_1_6
+			l_1_0._end_position = l_1_5
+			l_1_5 = l_1_0._background_texture
+			l_1_5, l_1_6 = l_1_5:set_texture_rect, l_1_5
+			l_1_5(l_1_6, 512, 0, -512, 128)
+		elseif l_1_3 == 2 then
+			l_1_5 = l_1_0._y
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.Y_OFFSET
+			l_1_5 = l_1_5 + l_1_6
+			l_1_0._y = l_1_5
+			l_1_5 = l_1_0._x
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.X_OFFSET
+			l_1_5 = l_1_5 + l_1_6
+			l_1_0._x = l_1_5
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:set_lefttop, l_1_5
+			l_1_5(l_1_6, l_1_0._x, l_1_0._y)
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:x, l_1_5
+			l_1_5 = l_1_5(l_1_6)
+			l_1_6 = l_1_0._pixels_to_move
+			l_1_5 = l_1_5 + l_1_6
+			l_1_0._end_position = l_1_5
+			l_1_5 = l_1_0._background_texture
+			l_1_5, l_1_6 = l_1_5:rotate, l_1_5
+			l_1_5(l_1_6, 180)
+		elseif l_1_3 == 3 then
+			l_1_5 = l_1_0._y
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.Y_OFFSET
+			l_1_5 = l_1_5 + l_1_6
+			l_1_0._y = l_1_5
+			l_1_5 = l_1_0._x
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.X_OFFSET
+			l_1_5 = l_1_5 - l_1_6
+			l_1_0._x = l_1_5
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:set_righttop, l_1_5
+			l_1_5(l_1_6, l_1_0._x, l_1_0._y)
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:x, l_1_5
+			l_1_5 = l_1_5(l_1_6)
+			l_1_6 = l_1_0._pixels_to_move
+			l_1_5 = l_1_5 - l_1_6
+			l_1_0._end_position = l_1_5
+			l_1_5 = l_1_0._background_texture
+			l_1_5, l_1_6 = l_1_5:set_texture_rect, l_1_5
+			l_1_5(l_1_6, 512, 0, -512, 128)
+			l_1_5 = l_1_0._background_texture
+			l_1_5, l_1_6 = l_1_5:rotate, l_1_5
+			l_1_5(l_1_6, 180)
+		elseif l_1_3 == 4 then
+			l_1_5 = l_1_0._y
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.Y_OFFSET
+			l_1_5 = l_1_5 - l_1_6
+			l_1_0._y = l_1_5
+			l_1_5 = l_1_0._x
+			l_1_6 = tweak_data
+			l_1_6 = l_1_6.player
+			l_1_6 = l_1_6.new_hud
+			l_1_6 = l_1_6.weapon_selection_panel
+			l_1_6 = l_1_6.X_OFFSET
+			l_1_5 = l_1_5 - l_1_6
+			l_1_0._x = l_1_5
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:set_rightbottom, l_1_5
+			l_1_5(l_1_6, l_1_0._x, l_1_0._y)
+			l_1_5 = l_1_0._icon_panel
+			l_1_5, l_1_6 = l_1_5:x, l_1_5
+			l_1_5 = l_1_5(l_1_6)
+			l_1_6 = l_1_0._pixels_to_move
+			l_1_5 = l_1_5 - l_1_6
+			l_1_0._end_position = l_1_5
+		else
+			l_1_5 = assert
+			l_1_6 = false
+			l_1_5(l_1_6)
+		end
+		l_1_5 = l_1_0._icon_panel
+		l_1_5, l_1_6 = l_1_5:bitmap, l_1_5
+		l_1_5 = l_1_5(l_1_6, {name = l_1_2, texture = l_1_2})
+		l_1_0._icon_texture = l_1_5
+		l_1_5 = l_1_0._icon_texture
+		l_1_5, l_1_6 = l_1_5:set_center_x, l_1_5
+		l_1_5(l_1_6, l_1_0._icon_panel:width() / 2)
+		l_1_5 = l_1_0._icon_texture
+		l_1_5, l_1_6 = l_1_5:set_center_y, l_1_5
+		l_1_5(l_1_6, l_1_0._icon_panel:height() / 2)
+		l_1_5 = l_1_0._icon_panel
+		l_1_5, l_1_6 = l_1_5:x, l_1_5
+		l_1_5 = l_1_5(l_1_6)
+		l_1_0._x = l_1_5
+		l_1_5 = l_1_0._icon_panel
+		l_1_5, l_1_6 = l_1_5:y, l_1_5
+		l_1_5 = l_1_5(l_1_6)
+		l_1_0._y = l_1_5
+		l_1_5, l_1_6 = l_1_0:set_alpha, l_1_0
+		l_1_5(l_1_6, 0)
+		l_1_5 = FiniteStateMachine
+		l_1_5, l_1_6 = l_1_5:new, l_1_5
+		l_1_5 = l_1_5(l_1_6, l_1_0, "_icon", IconIdleState)
+		l_1_0._state = l_1_5
+		l_1_5 = l_1_0._state
+		l_1_5, l_1_6 = l_1_5:set_debug, l_1_5
+		l_1_5(l_1_6, false)
 	end
-	A0_0._icon_texture = A0_0._icon_panel:bitmap({name = A2_2, texture = A2_2})
-	A0_0._icon_texture:set_center_x(A0_0._icon_panel:width() / 2)
-	A0_0._icon_texture:set_center_y(A0_0._icon_panel:height() / 2)
-	A0_0._x = A0_0._icon_panel:x()
-	A0_0._y = A0_0._icon_panel:y()
-	A0_0:set_alpha(0)
-	A0_0._state = FiniteStateMachine:new(A0_0, "_icon", IconIdleState)
-	A0_0._state:set_debug(false)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function WeaponSelectionIcon.set_weapon_icon(A0_4, A1_5)
-	if A1_5 ~= A0_4._icon_texture_name then
-		A0_4._icon_texture:set_image(A1_5)
-		A0_4._icon_texture_name = A1_5
+
+WeaponSelectionIcon.set_weapon_icon = function(l_2_0, l_2_1)
+	if l_2_1 ~= l_2_0._icon_texture_name then
+		l_2_0._icon_texture:set_image(l_2_1)
+		l_2_0._icon_texture_name = l_2_1
 	end
 end
-function WeaponSelectionIcon.reset_position(A0_6)
-	local L1_7, L2_8
-	L2_8 = A0_6
-	L1_7 = A0_6.set_position
-	L1_7(L2_8, A0_6:get_start_position())
+
+WeaponSelectionIcon.reset_position = function(l_3_0)
+	l_3_0:set_position(l_3_0:get_start_position())
 end
-function WeaponSelectionIcon.get_end_position(A0_9)
-	local L1_10
-	L1_10 = A0_9._end_position
-	return L1_10
+
+WeaponSelectionIcon.get_end_position = function(l_4_0)
+	return l_4_0._end_position
 end
-function WeaponSelectionIcon.get_current_position(A0_11)
-	return A0_11._icon_panel:x()
+
+WeaponSelectionIcon.get_current_position = function(l_5_0)
+	local l_5_1, l_5_2 = l_5_0._icon_panel:x, l_5_0._icon_panel
+	return l_5_1(l_5_2)
 end
-function WeaponSelectionIcon.get_start_position(A0_12)
-	local L1_13
-	L1_13 = A0_12._x
-	return L1_13
+
+WeaponSelectionIcon.get_start_position = function(l_6_0)
+	return l_6_0._x
 end
-function WeaponSelectionIcon.set_position(A0_14, A1_15)
-	A0_14._icon_panel:set_x(A1_15)
+
+WeaponSelectionIcon.set_position = function(l_7_0, l_7_1)
+	l_7_0._icon_panel:set_x(l_7_1)
 end
-function WeaponSelectionIcon.get_alpha(A0_16)
-	local L1_17
-	L1_17 = A0_16._alpha
-	return L1_17
+
+WeaponSelectionIcon.get_alpha = function(l_8_0)
+	return l_8_0._alpha
 end
-function WeaponSelectionIcon.set_alpha(A0_18, A1_19)
-	local L2_20, L3_21
-	A0_18._alpha = A1_19
-	L2_20 = A0_18._background_texture
-	L3_21 = L2_20
-	L2_20 = L2_20.set_color
-	L2_20(L3_21, A0_18._background_texture:color():with_alpha(A0_18._alpha))
-	L2_20 = A0_18._icon_texture
-	L3_21 = L2_20
-	L2_20 = L2_20.set_color
-	L2_20(L3_21, A0_18._icon_texture:color():with_alpha(A0_18._alpha))
+
+WeaponSelectionIcon.set_alpha = function(l_9_0, l_9_1)
+	l_9_0._alpha = l_9_1
+	l_9_0._background_texture:set_color(l_9_0._background_texture:color():with_alpha(l_9_0._alpha))
+	l_9_0._icon_texture:set_color(l_9_0._icon_texture:color():with_alpha(l_9_0._alpha))
 end
-function WeaponSelectionIcon.wants_to_move_out(A0_22)
-	local L1_23
-	L1_23 = A0_22._wants_to_move_out
-	return L1_23
+
+WeaponSelectionIcon.wants_to_move_out = function(l_10_0)
+	return l_10_0._wants_to_move_out
 end
-function WeaponSelectionIcon.wants_to_move_in(A0_24)
-	local L1_25
-	L1_25 = A0_24._wants_to_move_in
-	return L1_25
+
+WeaponSelectionIcon.wants_to_move_in = function(l_11_0)
+	return l_11_0._wants_to_move_in
 end
-function WeaponSelectionIcon.wants_to_idle(A0_26)
-	local L1_27
-	L1_27 = A0_26._wants_to_idle
-	return L1_27
+
+WeaponSelectionIcon.wants_to_idle = function(l_12_0)
+	return l_12_0._wants_to_idle
 end
-function WeaponSelectionIcon.wants_to_hide(A0_28)
-	local L1_29
-	L1_29 = A0_28._wants_to_hide
-	return L1_29
+
+WeaponSelectionIcon.wants_to_hide = function(l_13_0)
+	return l_13_0._wants_to_hide
 end
-function WeaponSelectionIcon.wants_to_blink(A0_30)
-	local L1_31
-	L1_31 = A0_30._wants_to_blink
-	return L1_31
+
+WeaponSelectionIcon.wants_to_blink = function(l_14_0)
+	return l_14_0._wants_to_blink
 end
-function WeaponSelectionIcon.default_select(A0_32)
-	local L1_33
-	A0_32._default_selected = true
+
+WeaponSelectionIcon.default_select = function(l_15_0)
+	l_15_0._default_selected = true
 end
-function WeaponSelectionIcon.clear_default_select(A0_34)
-	local L1_35
-	A0_34._default_selected = false
+
+WeaponSelectionIcon.clear_default_select = function(l_16_0)
+	l_16_0._default_selected = false
 end
-function WeaponSelectionIcon.is_default_selected(A0_36)
-	local L1_37
-	L1_37 = A0_36._default_selected
-	return L1_37
+
+WeaponSelectionIcon.is_default_selected = function(l_17_0)
+	return l_17_0._default_selected
 end
-function WeaponSelectionIcon.select(A0_38)
-	A0_38:_all_states_false()
-	A0_38._wants_to_move_out = true
+
+WeaponSelectionIcon.select = function(l_18_0)
+	l_18_0:_all_states_false()
+	l_18_0._wants_to_move_out = true
 end
-function WeaponSelectionIcon.unselect(A0_39)
-	A0_39:_all_states_false()
-	A0_39._wants_to_move_in = true
+
+WeaponSelectionIcon.unselect = function(l_19_0)
+	l_19_0:_all_states_false()
+	l_19_0._wants_to_move_in = true
 end
-function WeaponSelectionIcon.idle(A0_40)
-	A0_40:_all_states_false()
-	A0_40._wants_to_idle = true
+
+WeaponSelectionIcon.idle = function(l_20_0)
+	l_20_0:_all_states_false()
+	l_20_0._wants_to_idle = true
 end
-function WeaponSelectionIcon.hide(A0_41)
-	A0_41:_all_states_false()
-	A0_41._wants_to_hide = true
+
+WeaponSelectionIcon.hide = function(l_21_0)
+	l_21_0:_all_states_false()
+	l_21_0._wants_to_hide = true
 end
-function WeaponSelectionIcon.blink(A0_42)
-	A0_42:_all_states_false()
-	A0_42._wants_to_blink = true
+
+WeaponSelectionIcon.blink = function(l_22_0)
+	l_22_0:_all_states_false()
+	l_22_0._wants_to_blink = true
 end
-function WeaponSelectionIcon._all_states_false(A0_43)
-	local L1_44
-	A0_43._wants_to_blink = false
-	A0_43._wants_to_hide = false
-	A0_43._wants_to_move_in = false
-	A0_43._wants_to_move_out = false
-	A0_43._wants_to_idle = false
+
+WeaponSelectionIcon._all_states_false = function(l_23_0)
+	l_23_0._wants_to_blink = false
+	l_23_0._wants_to_hide = false
+	l_23_0._wants_to_move_in = false
+	l_23_0._wants_to_move_out = false
+	l_23_0._wants_to_idle = false
 end
-function WeaponSelectionIcon.get_selected_icon_fade_in_speed(A0_45)
-	local L1_46
-	L1_46 = tweak_data
-	L1_46 = L1_46.player
-	L1_46 = L1_46.new_hud
-	L1_46 = L1_46.weapon_selection_panel
-	L1_46 = L1_46.SELECTED_ICON_FADE_IN_SPEED
-	return L1_46
+
+WeaponSelectionIcon.get_selected_icon_fade_in_speed = function(l_24_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_FADE_IN_SPEED
 end
-function WeaponSelectionIcon.get_selected_icon_fade_out_speed(A0_47)
-	local L1_48
-	L1_48 = tweak_data
-	L1_48 = L1_48.player
-	L1_48 = L1_48.new_hud
-	L1_48 = L1_48.weapon_selection_panel
-	L1_48 = L1_48.SELECTED_ICON_FADE_OUT_SPEED
-	return L1_48
+
+WeaponSelectionIcon.get_selected_icon_fade_out_speed = function(l_25_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_FADE_OUT_SPEED
 end
-function WeaponSelectionIcon.get_selected_icon_move_in_speed(A0_49)
-	local L1_50
-	L1_50 = tweak_data
-	L1_50 = L1_50.player
-	L1_50 = L1_50.new_hud
-	L1_50 = L1_50.weapon_selection_panel
-	L1_50 = L1_50.SELECTED_ICON_MOVE_SPEED
-	return L1_50
+
+WeaponSelectionIcon.get_selected_icon_move_in_speed = function(l_26_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_MOVE_SPEED
 end
-function WeaponSelectionIcon.get_selected_icon_move_out_speed(A0_51)
-	local L1_52
-	L1_52 = tweak_data
-	L1_52 = L1_52.player
-	L1_52 = L1_52.new_hud
-	L1_52 = L1_52.weapon_selection_panel
-	L1_52 = L1_52.SELECTED_ICON_MOVE_SPEED
-	return L1_52
+
+WeaponSelectionIcon.get_selected_icon_move_out_speed = function(l_27_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_MOVE_SPEED
 end
-function WeaponSelectionIcon.get_move_in_alpha_target(A0_53)
-	local L1_54
-	L1_54 = tweak_data
-	L1_54 = L1_54.player
-	L1_54 = L1_54.new_hud
-	L1_54 = L1_54.weapon_selection_panel
-	L1_54 = L1_54.INACTIVE_ICON_ALPHA
-	return L1_54
+
+WeaponSelectionIcon.get_move_in_alpha_target = function(l_28_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.INACTIVE_ICON_ALPHA
 end
-function WeaponSelectionIcon.get_move_out_alpha_target(A0_55)
-	local L1_56
-	L1_56 = 1
-	return L1_56
+
+WeaponSelectionIcon.get_move_out_alpha_target = function(l_29_0)
+	return 1
 end
-function WeaponSelectionIcon.get_selected_icon_blink_speed(A0_57)
-	local L1_58
-	L1_58 = tweak_data
-	L1_58 = L1_58.player
-	L1_58 = L1_58.new_hud
-	L1_58 = L1_58.weapon_selection_panel
-	L1_58 = L1_58.SELECTED_ICON_BLINK_SPEED
-	return L1_58
+
+WeaponSelectionIcon.get_selected_icon_blink_speed = function(l_30_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_BLINK_SPEED
 end
-function WeaponSelectionIcon.get_selected_icon_blink_times(A0_59)
-	local L1_60
-	L1_60 = tweak_data
-	L1_60 = L1_60.player
-	L1_60 = L1_60.new_hud
-	L1_60 = L1_60.weapon_selection_panel
-	L1_60 = L1_60.SELECTED_ICON_BLINK_TIMES
-	return L1_60
+
+WeaponSelectionIcon.get_selected_icon_blink_times = function(l_31_0)
+	return tweak_data.player.new_hud.weapon_selection_panel.SELECTED_ICON_BLINK_TIMES
 end
-function WeaponSelectionIcon.update(A0_61, A1_62)
-	A0_61._state:update(A1_62)
+
+WeaponSelectionIcon.update = function(l_32_0, l_32_1)
+	l_32_0._state:update(l_32_1)
 end
+
+

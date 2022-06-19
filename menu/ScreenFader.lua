@@ -1,85 +1,126 @@
-ScreenFader = ScreenFader or class()
-function ScreenFader.init(A0_0, A1_1, A2_2)
-	A0_0._panel = A1_1
-	assert(A0_0._panel)
-	A0_0._fader = A0_0._panel:rect({
-		valign = "grow",
-		halign = "grow",
-		color = Color(0, 0, 0, 0)
-	})
-	A0_0._color = A0_0._fader:color()
-	A0_0._alpha = Interpolator:new(1, 1)
-	A0_0._hidden = false
-	if A2_2 then
-		A0_0._fader:set_render_template(A2_2)
+if not ScreenFader then
+	ScreenFader = class()
+end
+ScreenFader.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._panel = l_1_1
+	assert(l_1_0._panel)
+	local l_1_3, l_1_4 = l_1_0._panel:rect, l_1_0._panel
+	local l_1_5 = {}
+	l_1_5.valign = "grow"
+	l_1_5.halign = "grow"
+	l_1_5.color = Color(0, 0, 0, 0)
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_0._fader = l_1_3
+	l_1_3 = l_1_0._fader
+	l_1_3, l_1_4 = l_1_3:color, l_1_3
+	l_1_3 = l_1_3(l_1_4)
+	l_1_0._color = l_1_3
+	l_1_3 = Interpolator
+	l_1_3, l_1_4 = l_1_3:new, l_1_3
+	l_1_5 = 1
+	l_1_3 = l_1_3(l_1_4, l_1_5, 1)
+	l_1_0._alpha = l_1_3
+	l_1_0._hidden = false
+	if l_1_2 then
+		l_1_3 = l_1_0._fader
+		l_1_3, l_1_4 = l_1_3:set_render_template, l_1_3
+		l_1_5 = l_1_2
+		l_1_3(l_1_4, l_1_5)
 	end
 end
-function ScreenFader.save_state(A0_3, A1_4)
-	A1_4.alpha_target = A0_3._alpha:target()
-	A1_4.hidden = A0_3._hidden
+
+ScreenFader.save_state = function(l_2_0, l_2_1)
+	l_2_1.alpha_target = l_2_0._alpha:target()
+	l_2_1.hidden = l_2_0._hidden
 end
-function ScreenFader.restore_state(A0_5, A1_6)
-	A0_5._hidden = A1_6.hidden
-	A0_5._alpha:set_target(A1_6.alpha_target)
+
+ScreenFader.restore_state = function(l_3_0, l_3_1)
+	l_3_0._hidden = l_3_1.hidden
+	l_3_0._alpha:set_target(l_3_1.alpha_target)
 end
-function ScreenFader.destroy(A0_7)
-	A0_7._panel:remove(A0_7._fader)
+
+ScreenFader.destroy = function(l_4_0)
+	l_4_0._panel:remove(l_4_0._fader)
 end
-function ScreenFader.update(A0_8, A1_9)
-	local L2_10
-	L2_10 = A0_8._alpha
-	L2_10 = L2_10.update
-	L2_10(L2_10, A1_9)
-	L2_10 = A0_8._alpha
-	L2_10 = L2_10.value
-	L2_10 = L2_10(L2_10)
-	A0_8._fader:set_color(A0_8._color:with_alpha(L2_10))
-	if L2_10 == 0 and not A0_8._hidden then
-		A0_8._fader:hide()
-		A0_8._hidden = true
-	elseif L2_10 > 0 and A0_8._hidden then
-		A0_8._fader:show()
-		A0_8._hidden = false
+
+ScreenFader.update = function(l_5_0, l_5_1)
+	l_5_0._alpha:update(l_5_1)
+	local l_5_2 = l_5_0._alpha:value()
+	l_5_0._fader:set_color(l_5_0._color:with_alpha(l_5_2))
+	if l_5_2 == 0 and not l_5_0._hidden then
+		l_5_0._fader:hide()
+		l_5_0._hidden = true
+	elseif l_5_2 > 0 and l_5_0._hidden then
+		l_5_0._fader:show()
+		l_5_0._hidden = false
 	end
 end
-function ScreenFader.fade_up(A0_11)
-	A0_11:set_speed(5)
-	A0_11._alpha:set_target(0)
+
+ScreenFader.fade_up = function(l_6_0)
+	l_6_0:set_speed(5)
+	l_6_0._alpha:set_target(0)
 end
-function ScreenFader.fade_down(A0_12)
-	A0_12:set_speed(10)
-	A0_12._alpha:set_target(1)
+
+ScreenFader.fade_down = function(l_7_0)
+	l_7_0:set_speed(10)
+	l_7_0._alpha:set_target(1)
 end
-function ScreenFader.set_faded_down(A0_13)
-	A0_13._alpha:set_value(1)
+
+ScreenFader.set_faded_down = function(l_8_0)
+	l_8_0._alpha:set_value(1)
 end
-function ScreenFader.set_faded_up(A0_14)
-	A0_14._alpha:set_value(0)
+
+ScreenFader.set_faded_up = function(l_9_0)
+	l_9_0._alpha:set_value(0)
 end
-function ScreenFader.fade_down_target(A0_15)
-	return A0_15._alpha:target() == 1
+
+ScreenFader.fade_down_target = function(l_10_0)
+	return l_10_0._alpha:target() == 1
 end
-function ScreenFader.fade_up_target(A0_16)
-	return A0_16._alpha:target() == 0
+
+ScreenFader.fade_up_target = function(l_11_0)
+	return l_11_0._alpha:target() == 0
 end
-function ScreenFader.is_fading_down(A0_17)
-	return A0_17:fade_down_target() and not A0_17._alpha:has_reached_target()
+
+ScreenFader.is_fading_down = function(l_12_0)
+	if l_12_0:fade_down_target() then
+		return not l_12_0._alpha:has_reached_target()
+	end
 end
-function ScreenFader.is_fading_up(A0_18)
-	return A0_18:fade_up_target() and not A0_18._alpha:has_reached_target()
+
+ScreenFader.is_fading_up = function(l_13_0)
+	if l_13_0:fade_up_target() then
+		return not l_13_0._alpha:has_reached_target()
+	end
 end
-function ScreenFader.is_fading(A0_19)
-	return not A0_19._alpha:has_reached_target()
+
+ScreenFader.is_fading = function(l_14_0)
+	return not l_14_0._alpha:has_reached_target()
 end
-function ScreenFader.fade_down_done(A0_20)
-	return not A0_20:is_fading() and A0_20:fade_down_target()
+
+ScreenFader.fade_down_done = function(l_15_0)
+	if not l_15_0:is_fading() then
+		local l_15_1 = l_15_0:fade_down_target()
+	else
+		return false
+	end
 end
-function ScreenFader.fade_up_done(A0_21)
-	return not A0_21:is_fading() and A0_21:fade_up_target()
+
+ScreenFader.fade_up_done = function(l_16_0)
+	if not l_16_0:is_fading() then
+		local l_16_1 = l_16_0:fade_up_target()
+	else
+		return false
+	end
 end
-function ScreenFader.value(A0_22)
-	return A0_22._alpha:value()
+
+ScreenFader.value = function(l_17_0)
+	local l_17_1, l_17_2 = l_17_0._alpha:value, l_17_0._alpha
+	return l_17_1(l_17_2)
 end
-function ScreenFader.set_speed(A0_23, A1_24)
-	A0_23._alpha:set_speed(A1_24)
+
+ScreenFader.set_speed = function(l_18_0, l_18_1)
+	l_18_0._alpha:set_speed(l_18_1)
 end
+
+

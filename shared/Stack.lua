@@ -1,38 +1,43 @@
-Stack = Stack or class()
-function Stack.init(A0_0)
-	A0_0:clear()
+if not Stack then
+	Stack = class()
 end
-function Stack.push(A0_1, A1_2)
-	local L2_3
-	L2_3 = A0_1._last
-	L2_3 = L2_3 + 1
-	A0_1._last = L2_3
-	L2_3 = A0_1._table
-	L2_3[A0_1._last] = A1_2
+Stack.init = function(l_1_0)
+	l_1_0:clear()
 end
-function Stack.pop(A0_4)
-	if A0_4:is_empty() then
+
+Stack.push = function(l_2_0, l_2_1)
+	l_2_0._last = l_2_0._last + 1
+	l_2_0._table[l_2_0._last] = l_2_1
+end
+
+Stack.pop = function(l_3_0)
+	if l_3_0:is_empty() then
 		error("Stack is empty")
 	end
-	A0_4._table[A0_4._last] = nil
-	A0_4._last = A0_4._last - 1
-	return A0_4._table[A0_4._last]
+	local l_3_1 = l_3_0._table[l_3_0._last]
+	l_3_0._table[l_3_0._last] = nil
+	l_3_0._last = l_3_0._last - 1
+	return l_3_1
 end
-function Stack.top(A0_5)
-	if A0_5:is_empty() then
+
+Stack.top = function(l_4_0)
+	if l_4_0:is_empty() then
 		error("Stack is empty")
 	end
-	return A0_5._table[A0_5._last]
+	return l_4_0._table[l_4_0._last]
 end
-function Stack.is_empty(A0_6)
-	return A0_6._last == 0
+
+Stack.is_empty = function(l_5_0)
+	return l_5_0._last == 0
 end
-function Stack.size(A0_7)
-	local L1_8
-	L1_8 = A0_7._last
-	return L1_8
+
+Stack.size = function(l_6_0)
+	return l_6_0._last
 end
-function Stack.clear(A0_9)
-	A0_9._last = 0
-	A0_9._table = {}
+
+Stack.clear = function(l_7_0)
+	l_7_0._last = 0
+	l_7_0._table = {}
 end
+
+

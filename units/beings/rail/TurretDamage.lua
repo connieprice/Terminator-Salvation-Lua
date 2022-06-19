@@ -1,49 +1,64 @@
-TurretDamage = TurretDamage or class(UnitDamage)
-function TurretDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	A3_3 = A3_3 or {}
-	UnitDamage.init(A0_0, A1_1, TurretBodyDamage, A3_3, A4_4, A5_5, A6_6)
-	A0_0:set_update_callback("update_turret_damage", true)
-	A0_0._brush = Draw:brush(Color(1, 0, 0))
-	A0_0._brush:set_font("editor_font", 5)
-	A0_0._health_regen_per_second = 0
-	A0_0._health_regen_delay = 0
-	A0_0._time_since_damage = 0
+if not TurretDamage then
+	TurretDamage = class(UnitDamage)
 end
-function TurretDamage.save(A0_7, A1_8)
-	UnitDamage.save(A0_7, A1_8)
-end
-function TurretDamage.load(A0_9, A1_10)
-	UnitDamage.load(A0_9, A1_10)
-end
-function TurretDamage.destroy(A0_11)
-	local L1_12
-end
-function TurretDamage.dead(A0_13, A1_14)
-end
-function TurretDamage.add_damage(A0_15, A1_16, A2_17, A3_18, A4_19, A5_20, A6_21, A7_22, A8_23)
-	UnitDamage.add_damage(A0_15, A1_16, A2_17, A3_18, A4_19, A5_20, A6_21, A7_22, A8_23)
-	A0_15._unit:base():report_damage(A7_22, "turret")
-	A0_15._time_since_damage = 0
-	A0_15._last_hit_direction = A6_21
-end
-function TurretDamage.update_turret_damage(A0_24, A1_25, A2_26, A3_27, A4_28)
-	A0_24._time_since_damage = A0_24._time_since_damage + A3_27
-	if A1_25:damage_data():is_fully_damaged() then
-		return
+TurretDamage.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	if not l_1_3 then
+		l_1_3 = {}
 	end
-	if A0_24._time_since_damage > A0_24._health_regen_delay and A1_25:damage_data().damage > 0 then
-		A1_25:damage_data().damage = A1_25:damage_data().damage - A3_27 * A0_24._health_regen_per_second
-		if A1_25:damage_data().damage < 0 then
-			A1_25:damage_data().damage = 0
+	UnitDamage.init(l_1_0, l_1_1, TurretBodyDamage, l_1_3, l_1_4, l_1_5, l_1_6)
+	l_1_0:set_update_callback("update_turret_damage", true)
+	l_1_0._brush = Draw:brush(Color(1, 0, 0))
+	l_1_0._brush:set_font("editor_font", 5)
+	l_1_0._health_regen_per_second = 0
+	l_1_0._health_regen_delay = 0
+	l_1_0._time_since_damage = 0
+end
+
+TurretDamage.save = function(l_2_0, l_2_1)
+	UnitDamage.save(l_2_0, l_2_1)
+end
+
+TurretDamage.load = function(l_3_0, l_3_1)
+	UnitDamage.load(l_3_0, l_3_1)
+end
+
+TurretDamage.destroy = function(l_4_0)
+end
+
+TurretDamage.dead = function(l_5_0, l_5_1)
+end
+
+TurretDamage.add_damage = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4, l_6_5, l_6_6, l_6_7, l_6_8)
+	UnitDamage.add_damage(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4, l_6_5, l_6_6, l_6_7, l_6_8)
+	l_6_0._unit:base():report_damage(l_6_7, "turret")
+	l_6_0._time_since_damage = 0
+	l_6_0._last_hit_direction = l_6_6
+end
+
+TurretDamage.update_turret_damage = function(l_7_0, l_7_1, l_7_2, l_7_3, l_7_4)
+	l_7_0._time_since_damage = l_7_0._time_since_damage + l_7_3
+	if l_7_1:damage_data():is_fully_damaged() then
+		return 
+	end
+	if l_7_0._health_regen_delay < l_7_0._time_since_damage and l_7_1:damage_data().damage > 0 then
+		l_7_1:damage_data().damage = l_7_1:damage_data().damage - l_7_3 * l_7_0._health_regen_per_second
+	if l_7_1:damage_data().damage < 0 then
 		end
+		l_7_1:damage_data().damage = 0
 	end
 end
-function TurretDamage.set_health_regen(A0_29, A1_30, A2_31)
-	A0_29._health_regen_per_second = A1_30
-	A0_29._health_regen_delay = A2_31
+
+TurretDamage.set_health_regen = function(l_8_0, l_8_1, l_8_2)
+	l_8_0._health_regen_per_second = l_8_1
+	l_8_0._health_regen_delay = l_8_2
 end
-TurretBodyDamage = TurretBodyDamage or class(BodyDamage)
-function TurretBodyDamage.init(A0_32, A1_33, A2_34, A3_35, A4_36)
-	BodyDamage.init(A0_32, A1_33, A2_34, A3_35, A4_36, "human_flesh")
-	A0_32._unit = A1_33
+
+if not TurretBodyDamage then
+	TurretBodyDamage = class(BodyDamage)
 end
+TurretBodyDamage.init = function(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4)
+	BodyDamage.init(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4, "human_flesh")
+	l_9_0._unit = l_9_1
+end
+
+

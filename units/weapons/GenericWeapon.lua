@@ -1,203 +1,178 @@
 require("units/weapons/WeaponUtilities")
 require("shared/VectorUtilities")
-GenericWeapon = GenericWeapon or class(PlayerBaseWeapon)
-function GenericWeapon.init(A0_0, A1_1)
-	local L2_2, L3_3
-	A0_0._dispersion = 0
-	L2_2 = PlayerBaseWeapon
-	L2_2 = L2_2.init
-	L3_3 = A0_0
-	L2_2(L3_3, A1_1)
-	A0_0._unit = A1_1
-	A0_0._enabled = false
-	L2_2 = A0_0._unit
-	L3_3 = L2_2
-	L2_2 = L2_2.get_object
-	L2_2 = L2_2(L3_3, "fire")
-	A0_0._obj_fire = L2_2
-	L2_2 = A0_0._wdata
-	L2_2._fire_enabled = true
-	L2_2 = "fire"
-	A0_0._fire_sound_instance = nil
-	L3_3 = WeaponUtilities
-	L3_3 = L3_3.sound_objects
-	A0_0._fire_end_sound_object, L3_3 = A0_0._unit, L3_3(A0_0._unit, A0_0._sound_prefix, A0_0._sound_variant, A0_0._sound_bank, A0_0._is_once_sound, L2_2)
-	A0_0._fire_sound_object = L3_3
-	L3_3 = A0_0._projectile_spawner_class
-	if L3_3 then
-		L3_3 = A0_0._projectile_spawner_class
-		if L3_3 ~= "" then
-			L3_3 = World
-			L3_3 = L3_3.spawn_unit
-			L3_3 = L3_3(L3_3, A0_0._projectile_spawner_class, A0_0._unit:position(), A0_0._unit:rotation())
-			A0_0._projectile_spawner = L3_3
-			L3_3 = A0_0._unit
-			L3_3 = L3_3.link
-			L3_3(L3_3, "fire", A0_0._projectile_spawner, A0_0._projectile_spawner:orientation_object():name())
-			L3_3 = A0_0._spawner_offset
-			if L3_3 then
-				L3_3 = TableSerializer
-				L3_3 = L3_3._load_vector
-				L3_3 = L3_3(A0_0._spawner_offset)
-				A0_0._projectile_spawner:set_local_position(L3_3)
-			end
+if not GenericWeapon then
+	GenericWeapon = class(PlayerBaseWeapon)
+end
+GenericWeapon.init = function(l_1_0, l_1_1)
+	l_1_0._dispersion = 0
+	PlayerBaseWeapon.init(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._enabled = false
+	l_1_0._obj_fire = l_1_0._unit:get_object("fire")
+	l_1_0._wdata._fire_enabled = true
+	local l_1_2 = "fire"
+	l_1_0._fire_sound_instance = nil
+	local l_1_3 = WeaponUtilities.sound_objects(l_1_0._unit, l_1_0._sound_prefix, l_1_0._sound_variant, l_1_0._sound_bank, l_1_0._is_once_sound, l_1_2)
+	l_1_0._fire_end_sound_object = l_1_0._unit
+	l_1_0._fire_sound_object = l_1_3
+	l_1_3 = l_1_0._projectile_spawner_class
+	if l_1_3 then
+		l_1_3 = l_1_0._projectile_spawner_class
+	if l_1_3 ~= "" then
 		end
-	end
-	L3_3 = string
-	L3_3 = L3_3.upper
-	L3_3 = L3_3(A1_1:name())
-	L3_3 = L3_3 .. "_SHOOT"
-	A0_0._event_type_id = L3_3 .. "_ID"
-	if not managers.sensory_events:is_defined(L3_3) then
-		managers.sensory_events:define_event(L3_3, managers.sensory_events.source_types[A0_0._event_source_type_id or "HUMAN_WEAPON_ID"], A0_0._shoot_event_visible_range, A0_0._shoot_event_sound_level, A0_0._shoot_event_sound_level_reference_distance)
-	end
-	A0_0._fire_sensory_event_handle = nil
-	A0_0._play_fire_anim = false
-	A0_0._event_emitter = managers.action_event:create_emitter(A1_1)
-	A0_0._sound_object = A0_0._unit:get_object("sound")
-	A0_0._muzzleflash_rate = 3
-	A0_0._bullets_fired = 0
-	A0_0._sync_muzzle_flash_effect = false
-	A0_0._is_firing = false
-end
-function GenericWeapon.destroy(A0_4)
-	if A0_4._is_firing then
-		A0_4:fire_end()
-	end
-	managers.sensory_events:destroy_continuous_event_handle(A0_4._fire_sensory_event_handle)
-	A0_4._event_emitter:destroy()
-	A0_4._unit = nil
-	if alive(A0_4._projectile_spawner) then
-		A0_4._projectile_spawner:set_slot(0)
-	end
-	A0_4._projectile_spawner = nil
-	if A0_4._fire_sound_object and A0_4._fire_sound_object:is_playing() then
-		A0_4._fire_sound_object:stop()
-	end
-end
-function GenericWeapon.setup(A0_5, A1_6)
-	PlayerBaseWeapon.setup(A0_5, A1_6)
-end
-function GenericWeapon.enable(A0_7)
-	A0_7:set_enabled(true)
-end
-function GenericWeapon.disable(A0_8)
-	A0_8:set_enabled(false)
-end
-function GenericWeapon.recalculate_dispersion(A0_9)
-	local L2_10, L3_11
-	L2_10 = A0_9._wdata
-	L3_11 = A0_9._dispersion
-	L3_11 = L3_11 * A0_9._wdata._dispersion_modifier
-	L2_10._dispersion = L3_11
-end
-function GenericWeapon.on_zoom_aim(A0_12, A1_13)
-	if A1_13 then
-	else
-	end
-end
-function GenericWeapon.fire_start(A0_14, A1_15)
-	A0_14._fire_sensory_event_handle = managers.sensory_events:begin_continuous_event(managers.sensory_events.event_types[A0_14._event_type_id], A0_14._unit)
-	A0_14._fire_sound_instance = A0_14._fire_sound_object:play("offset", 0)
-	A0_14._event_emitter:unit_weapon_fire_start(A0_14._unit)
-	if A0_14._camera_shake then
-		A0_14._event_emitter:unit_weapon_shake_start(A0_14._user_unit, A0_14._camera_shake)
-	end
-	A0_14._bullets_fired = 0
-	A0_14._is_firing = true
-end
-function GenericWeapon.fire_end(A0_16, A1_17)
-	managers.sensory_events:end_continuous_event(A0_16._fire_sensory_event_handle)
-	if A0_16._is_once_sound == false and A0_16._fire_end_sound_object and A0_16._fire_sound_instance then
-		A0_16._fire_end_sound_object:play("crossfade_with", A0_16._fire_sound_instance, "crossfade_time", 0)
-	end
-	A0_16._event_emitter:unit_weapon_fire_stop(A0_16._unit)
-	if A0_16._camera_shake then
-		A0_16._event_emitter:unit_weapon_shake_stop(A0_16._user_unit)
-	end
-	A0_16._is_firing = false
-end
-function GenericWeapon.fire(A0_18, A1_19)
-	local L2_20, L3_21, L4_22, L5_23, L6_24, L7_25, L8_26, L9_27, L10_28, L11_29
-	L2_20 = A0_18._unit
-	L3_21 = A0_18._play_fire_anim
-	if L3_21 then
-		L4_22 = L2_20
-		L3_21 = L2_20.anim_set_time
-		L5_23 = "fire"
-		L6_24 = 0
-		L3_21(L4_22, L5_23, L6_24)
-		L4_22 = L2_20
-		L3_21 = L2_20.anim_play
-		L5_23 = "fire"
-		L3_21(L4_22, L5_23)
-	end
-	L3_21 = A0_18._fire_effect
-	if L3_21 then
-		L3_21 = A0_18._bullets_fired
-		L4_22 = A0_18._muzzleflash_rate
-		L3_21 = L3_21 % L4_22
-		if L3_21 == 0 then
-			L4_22 = World
-			L5_23 = L4_22
-			L4_22 = L4_22.effect_manager
-			L4_22 = L4_22(L5_23)
-			L5_23 = L4_22
-			L4_22 = L4_22.spawn
-			L6_24 = {}
-			L7_25 = A0_18._fire_effect
-			L6_24.effect = L7_25
-			L7_25 = Rotation
-			L8_26 = Vector3
-			L9_27 = 0
-			L10_28 = 0
-			L11_29 = 1
-			L8_26 = L8_26(L9_27, L10_28, L11_29)
-			L9_27 = 0
-			L7_25 = L7_25(L8_26, L9_27)
-			L6_24.rotation = L7_25
-			L7_25 = A0_18._sound_object
-			L6_24.parent = L7_25
-			L7_25 = A0_18._sync_muzzle_flash_effect
-			L6_24.force_synch = L7_25
-			L4_22(L5_23, L6_24)
+		l_1_3 = World
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_1_0._projectile_spawner = l_1_3
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_1_3(l_1_3, "fire", l_1_0._projectile_spawner, l_1_0._projectile_spawner:orientation_object():name())
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_1_3 then
 		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_1_0._projectile_spawner:set_local_position(l_1_3)
 	end
-	L3_21 = A0_18._projectile_spawner
-	L4_22 = A0_18._bullets_fired
-	L4_22 = L4_22 + 1
-	A0_18._bullets_fired = L4_22
-	L4_22 = A0_18._wdata
-	L5_23 = L3_21
-	L6_24 = L4_22.aim_target_position
-	L8_26 = L5_23
-	L7_25 = L5_23.rotation
-	L7_25 = L7_25(L8_26)
-	L9_27 = L5_23
-	L8_26 = L5_23.position
-	L8_26 = L8_26(L9_27)
-	L9_27 = L6_24 - L8_26
-	L10_28 = L9_27
-	L9_27 = L9_27.normalized
-	L9_27 = L9_27(L10_28)
-	L10_28 = VectorUtilities
-	L10_28 = L10_28.angle_constraint_direction
-	L11_29 = L9_27
-	L10_28 = L10_28(L11_29, L7_25:y(), A0_18._max_fire_object_and_aim_angle_diff)
-	L9_27 = L10_28
-	L11_29 = A0_18
-	L10_28 = A0_18.get_target_dir
-	L10_28 = L10_28(L11_29, L8_26, L9_27, L4_22)
-	L11_29 = Rotation
-	L11_29 = L11_29(L10_28, L7_25:z())
-	A0_18._event_emitter:unit_weapon_fire_change(L2_20, L8_26, L11_29, L3_21)
-	L3_21:base():spawn_projectile(A0_18._user_unit, L8_26, L11_29)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._event_type_id = l_1_3 .. "_ID"
+	if not l_1_0._event_source_type_id then
+		local l_1_4 = managers.sensory_events:is_defined(l_1_3) or "HUMAN_WEAPON_ID"
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	managers.sensory_events:define_event(l_1_3, managers.sensory_events.source_types[l_1_4], l_1_0._shoot_event_visible_range, l_1_0._shoot_event_sound_level, l_1_0._shoot_event_sound_level_reference_distance)
+	l_1_0._fire_sensory_event_handle = nil
+	l_1_0._play_fire_anim = false
+	l_1_0._event_emitter = managers.action_event:create_emitter(l_1_1)
+	l_1_0._sound_object = l_1_0._unit:get_object("sound")
+	l_1_0._muzzleflash_rate = 3
+	l_1_0._bullets_fired = 0
+	l_1_0._sync_muzzle_flash_effect = false
+	l_1_0._is_firing = false
 end
-function GenericWeapon.get_target_dir(A0_30, A1_31, A2_32, A3_33)
-	return WeaponUtilities.dispersion(A2_32, A3_33.miss_dispersion, A3_33._dispersion)
+
+GenericWeapon.destroy = function(l_2_0)
+	if l_2_0._is_firing then
+		l_2_0:fire_end()
+	end
+	managers.sensory_events:destroy_continuous_event_handle(l_2_0._fire_sensory_event_handle)
+	l_2_0._event_emitter:destroy()
+	l_2_0._unit = nil
+	if alive(l_2_0._projectile_spawner) then
+		l_2_0._projectile_spawner:set_slot(0)
+	end
+	l_2_0._projectile_spawner = nil
+	if l_2_0._fire_sound_object and l_2_0._fire_sound_object:is_playing() then
+		l_2_0._fire_sound_object:stop()
+	end
 end
-function GenericWeapon.drop(A0_34)
-	A0_34:disable()
-	A0_34._unit:unlink()
-	A0_34._unit:body("main_body"):set_enabled(true)
+
+GenericWeapon.setup = function(l_3_0, l_3_1)
+	PlayerBaseWeapon.setup(l_3_0, l_3_1)
 end
+
+GenericWeapon.enable = function(l_4_0)
+	l_4_0:set_enabled(true)
+end
+
+GenericWeapon.disable = function(l_5_0)
+	l_5_0:set_enabled(false)
+end
+
+GenericWeapon.recalculate_dispersion = function(l_6_0)
+	l_6_0._wdata._dispersion = l_6_0._dispersion * l_6_0._wdata._dispersion_modifier
+end
+
+GenericWeapon.on_zoom_aim = function(l_7_0, l_7_1)
+	if l_7_1 then
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 4 
+end
+
+GenericWeapon.fire_start = function(l_8_0, l_8_1)
+	l_8_0._fire_sensory_event_handle = managers.sensory_events:begin_continuous_event(managers.sensory_events.event_types[l_8_0._event_type_id], l_8_0._unit)
+	l_8_0._fire_sound_instance = l_8_0._fire_sound_object:play("offset", 0)
+	l_8_0._event_emitter:unit_weapon_fire_start(l_8_0._unit)
+	if l_8_0._camera_shake then
+		l_8_0._event_emitter:unit_weapon_shake_start(l_8_0._user_unit, l_8_0._camera_shake)
+	end
+	l_8_0._bullets_fired = 0
+	l_8_0._is_firing = true
+end
+
+GenericWeapon.fire_end = function(l_9_0, l_9_1)
+	managers.sensory_events:end_continuous_event(l_9_0._fire_sensory_event_handle)
+	if l_9_0._is_once_sound == false and l_9_0._fire_end_sound_object and l_9_0._fire_sound_instance then
+		l_9_0._fire_end_sound_object:play("crossfade_with", l_9_0._fire_sound_instance, "crossfade_time", 0)
+	end
+	l_9_0._event_emitter:unit_weapon_fire_stop(l_9_0._unit)
+	if l_9_0._camera_shake then
+		l_9_0._event_emitter:unit_weapon_shake_stop(l_9_0._user_unit)
+	end
+	l_9_0._is_firing = false
+end
+
+GenericWeapon.fire = function(l_10_0, l_10_1)
+	local l_10_2 = l_10_0._unit
+	if l_10_0._play_fire_anim then
+		l_10_2:anim_set_time("fire", 0)
+		l_10_2:anim_play("fire")
+	end
+	if l_10_0._fire_effect then
+		local l_10_3 = l_10_0._bullets_fired % l_10_0._muzzleflash_rate
+	if l_10_3 == 0 then
+		end
+		local l_10_4, l_10_5 = World:effect_manager():spawn, World:effect_manager()
+		local l_10_6 = {}
+		l_10_6.effect = l_10_0._fire_effect
+		l_10_6.rotation = Rotation(Vector3(0, 0, 1), 0)
+		l_10_6.parent = l_10_0._sound_object
+		l_10_6.force_synch = l_10_0._sync_muzzle_flash_effect
+		l_10_4(l_10_5, l_10_6)
+	end
+	local l_10_7 = l_10_0._projectile_spawner
+	l_10_0._bullets_fired = l_10_0._bullets_fired + 1
+	local l_10_8 = l_10_0._wdata
+	local l_10_9 = l_10_7
+	local l_10_10 = l_10_8.aim_target_position
+	local l_10_11 = l_10_9:rotation()
+	local l_10_12 = l_10_9:position()
+	local l_10_13 = l_10_10 - l_10_12:normalized()
+	l_10_13 = VectorUtilities.angle_constraint_direction(l_10_13, l_10_11:y(), l_10_0._max_fire_object_and_aim_angle_diff)
+	local l_10_14 = l_10_0:get_target_dir(l_10_12, l_10_13, l_10_8)
+	local l_10_15 = Rotation(l_10_14, l_10_11:z())
+	l_10_0._event_emitter:unit_weapon_fire_change(l_10_2, l_10_12, l_10_15, l_10_7)
+	l_10_7:base():spawn_projectile(l_10_0._user_unit, l_10_12, l_10_15)
+end
+
+GenericWeapon.get_target_dir = function(l_11_0, l_11_1, l_11_2, l_11_3)
+	local l_11_4 = WeaponUtilities.dispersion
+	local l_11_5 = l_11_2
+	local l_11_6 = l_11_3.miss_dispersion
+	local l_11_7 = l_11_3._dispersion
+	return l_11_4(l_11_5, l_11_6, l_11_7)
+end
+
+GenericWeapon.drop = function(l_12_0)
+	l_12_0:disable()
+	l_12_0._unit:unlink()
+	l_12_0._unit:body("main_body"):set_enabled(true)
+end
+
+

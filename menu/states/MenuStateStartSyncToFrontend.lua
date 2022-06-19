@@ -1,10 +1,15 @@
-MenuStateStartSyncToFrontend = MenuStateStartSyncToFrontend or class(FiniteStateMachineState)
-function MenuStateStartSyncToFrontend.init(A0_0)
-	A0_0._menu:gui_interface():set_state("start_sync_to_frontend")
+if not MenuStateStartSyncToFrontend then
+	MenuStateStartSyncToFrontend = class(FiniteStateMachineState)
 end
-function MenuStateStartSyncToFrontend.transition(A0_1)
-	if A0_1._menu:gui_interface():sync_started("frontend") then
+MenuStateStartSyncToFrontend.init = function(l_1_0)
+	l_1_0._menu:gui_interface():set_state("start_sync_to_frontend")
+end
+
+MenuStateStartSyncToFrontend.transition = function(l_2_0)
+	if l_2_0._menu:gui_interface():sync_started("frontend") then
 		return MenuStateSyncToFrontendStarted
 	end
 	return nil
 end
+
+

@@ -1,58 +1,78 @@
-PowerUpBar = PowerUpBar or class()
-function PowerUpBar.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	A0_0._panel = A1_1
-	A0_0._image = A0_0._panel:bitmap({name = A2_2, texture = A2_2})
-	A0_0._image:set_size(A5_5, A6_6)
-	A0_0._image:set_lefttop(A3_3, A4_4)
-	A0_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
-	A0_0._alpha_interpolator = Interpolator:new(0, tweak_data.machine.hud.POWER_UP_FADE_IN_SPEED)
+if not PowerUpBar then
+	PowerUpBar = class()
 end
-function PowerUpBar.destroy(A0_7)
-	A0_7._panel:remove(A0_7._image)
+PowerUpBar.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	l_1_0._panel = l_1_1
+	local l_1_7, l_1_8 = l_1_0._panel:bitmap, l_1_0._panel
+	local l_1_9 = {}
+	l_1_9.name = l_1_2
+	l_1_9.texture = l_1_2
+	l_1_7 = l_1_7(l_1_8, l_1_9)
+	l_1_0._image = l_1_7
+	l_1_7 = l_1_0._image
+	l_1_7, l_1_8 = l_1_7:set_size, l_1_7
+	l_1_9 = l_1_5
+	l_1_7(l_1_8, l_1_9, l_1_6)
+	l_1_7 = l_1_0._image
+	l_1_7, l_1_8 = l_1_7:set_lefttop, l_1_7
+	l_1_9 = l_1_3
+	l_1_7(l_1_8, l_1_9, l_1_4)
+	l_1_7 = tweak_data
+	l_1_7 = l_1_7.machine
+	l_1_7 = l_1_7.hud
+	l_1_7 = l_1_7.HIGHLIGHT_COLOR_TWEAK
+	l_1_0._color = l_1_7
+	l_1_7 = Interpolator
+	l_1_7, l_1_8 = l_1_7:new, l_1_7
+	l_1_9 = 0
+	l_1_7 = l_1_7(l_1_8, l_1_9, tweak_data.machine.hud.POWER_UP_FADE_IN_SPEED)
+	l_1_0._alpha_interpolator = l_1_7
 end
-function PowerUpBar.full_activate(A0_8)
-	A0_8._alpha_interpolator:set_target(tweak_data.machine.hud.HIGH_ALPHA)
-	A0_8._alpha_interpolator:set_speed(tweak_data.machine.hud.POWER_UP_FADE_IN_SPEED)
-	A0_8.need_update = true
+
+PowerUpBar.destroy = function(l_2_0)
+	l_2_0._panel:remove(l_2_0._image)
 end
-function PowerUpBar.activate(A0_9)
-	A0_9._alpha_interpolator:set_target(tweak_data.machine.hud.MAIN_ALPHA)
-	A0_9._alpha_interpolator:set_speed(tweak_data.machine.hud.POWER_UP_FADE_IN_SPEED)
-	A0_9.need_update = true
+
+PowerUpBar.full_activate = function(l_3_0)
+	l_3_0._alpha_interpolator:set_target(tweak_data.machine.hud.HIGH_ALPHA)
+	l_3_0._alpha_interpolator:set_speed(tweak_data.machine.hud.POWER_UP_FADE_IN_SPEED)
+	l_3_0.need_update = true
 end
-function PowerUpBar.inactivate(A0_10)
-	A0_10._alpha_interpolator:set_target(0.1)
-	A0_10._alpha_interpolator:set_speed(tweak_data.machine.hud.POWER_UP_FADE_OUT_SPEED)
-	A0_10.need_update = true
+
+PowerUpBar.activate = function(l_4_0)
+	l_4_0._alpha_interpolator:set_target(tweak_data.machine.hud.MAIN_ALPHA)
+	l_4_0._alpha_interpolator:set_speed(tweak_data.machine.hud.POWER_UP_FADE_IN_SPEED)
+	l_4_0.need_update = true
 end
-function PowerUpBar.set_alpha(A0_11, A1_12)
-	local L3_13
-	A0_11._alpha = A1_12
-	L3_13 = A0_11._image
-	L3_13 = L3_13.set_color
-	L3_13(L3_13, A0_11._color:with_alpha(A1_12))
+
+PowerUpBar.inactivate = function(l_5_0)
+	l_5_0._alpha_interpolator:set_target(0.1)
+	l_5_0._alpha_interpolator:set_speed(tweak_data.machine.hud.POWER_UP_FADE_OUT_SPEED)
+	l_5_0.need_update = true
 end
-function PowerUpBar.resize(A0_14, A1_15, A2_16)
-	A0_14._image:set_size(A1_15, A2_16)
+
+PowerUpBar.set_alpha = function(l_6_0, l_6_1)
+	l_6_0._alpha = l_6_1
+	l_6_0._image:set_color(l_6_0._color:with_alpha(l_6_1))
 end
-function PowerUpBar.update(A0_17, A1_18)
-	local L2_19
-	L2_19 = A0_17._alpha_interpolator
-	L2_19 = L2_19.has_reached_target
-	L2_19 = L2_19(L2_19)
-	if L2_19 then
-		A0_17.need_update = false
+
+PowerUpBar.resize = function(l_7_0, l_7_1, l_7_2)
+	l_7_0._image:set_size(l_7_1, l_7_2)
+end
+
+PowerUpBar.update = function(l_8_0, l_8_1)
+	if l_8_0._alpha_interpolator:has_reached_target() then
+		l_8_0.need_update = false
 	else
-		L2_19 = A0_17._alpha_interpolator
-		L2_19 = L2_19.update
-		L2_19(L2_19, A1_18)
-		L2_19 = A0_17._alpha_interpolator
-		L2_19 = L2_19.value
-		L2_19 = L2_19(L2_19)
-		A0_17:set_alpha(L2_19)
-		A0_17.need_update = true
+		l_8_0._alpha_interpolator:update(l_8_1)
+		local l_8_2 = l_8_0._alpha_interpolator:value()
+		l_8_0:set_alpha(l_8_2)
+		l_8_0.need_update = true
 	end
 end
-function PowerUpBar.show(A0_20)
-	A0_20:set_alpha(A0_20._alpha)
+
+PowerUpBar.show = function(l_9_0)
+	l_9_0:set_alpha(l_9_0._alpha)
 end
+
+

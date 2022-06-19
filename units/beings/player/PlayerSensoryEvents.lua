@@ -1,19 +1,27 @@
-PlayerSensoryEvents = PlayerSensoryEvents or class()
-function PlayerSensoryEvents.init(A0_0, A1_1)
-	A0_0._running_event_visible_range = nil
-	A0_0._running_event_sound_level = 25
-	A0_0._running_event_sound_level_reference_distance = 100
-	A0_0._running_event_handle = nil
+if not PlayerSensoryEvents then
+	PlayerSensoryEvents = class()
 end
-function PlayerSensoryEvents.destroy(A0_2)
-	A0_2:_force_end_event(A0_2._running_event_handle)
+PlayerSensoryEvents.init = function(l_1_0, l_1_1)
+	l_1_0._running_event_visible_range = nil
+	l_1_0._running_event_sound_level = 25
+	l_1_0._running_event_sound_level_reference_distance = 100
+	l_1_0._running_event_handle = nil
 end
-function PlayerSensoryEvents._force_end_event(A0_3, A1_4)
-	if A1_4 then
-		managers.sensory_events:end_continuous_event(A1_4)
+
+PlayerSensoryEvents.destroy = function(l_2_0)
+	l_2_0:_force_end_event(l_2_0._running_event_handle)
+end
+
+PlayerSensoryEvents._force_end_event = function(l_3_0, l_3_1)
+	if l_3_1 then
+		managers.sensory_events:end_continuous_event(l_3_1)
 	end
 end
-function PlayerSensoryEvents.begin_running_callback(A0_5, A1_6, A2_7, A3_8)
+
+PlayerSensoryEvents.begin_running_callback = function(l_4_0, l_4_1, l_4_2, l_4_3)
 end
-function PlayerSensoryEvents.end_running_callback(A0_9, A1_10, A2_11, A3_12)
+
+PlayerSensoryEvents.end_running_callback = function(l_5_0, l_5_1, l_5_2, l_5_3)
 end
+
+

@@ -1,92 +1,102 @@
-local L0_0
-L0_0 = require
-L0_0("shared/camera/SharedCamera")
-L0_0 = require
-L0_0("shared/Angle")
-L0_0 = require
-L0_0("shared/Interpolator")
-L0_0 = mvector3
-L0_0 = L0_0.add
-AimCamera = AimCamera or class(SharedCamera)
-function AimCamera.init(A0_1, A1_2)
-	SharedCamera.init(A0_1, A1_2)
-	A0_1._pitch_offset = false
+require("shared/camera/SharedCamera")
+require("shared/Angle")
+require("shared/Interpolator")
+local l_0_0 = mvector3.add
+local l_0_1 = mvector3.set
+local l_0_2 = mvector3.copy
+local l_0_3 = mvector3.negate
+local l_0_4 = mvector3.rotate_with
+local l_0_5 = mvector3.normalize
+local l_0_6 = mrotation.set_zero
+local l_0_7 = mrotation.multiply
+local l_0_8 = mrotation.invert
+if not AimCamera then
+	AimCamera = class(SharedCamera)
 end
-function AimCamera.parse_parameters(A0_3, A1_4)
-	SharedCamera.parse_parameters(A0_3, A1_4)
-	if A1_4.pitch_offset then
-		A0_3._pitch_offset = A1_4.pitch_offset == "true"
-	end
+AimCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._pitch_offset = false
 end
-function AimCamera.update(A0_5, A1_6, A2_7, A3_8, A4_9)
-	local L5_10, L6_11
-	L5_10 = A0_5._camera_data
-	L5_10 = L5_10.eye_target_position
-	if not L5_10 then
-		return
+
+AimCamera.parse_parameters = function(l_2_0, l_2_1)
+	SharedCamera.parse_parameters(l_2_0, l_2_1)
+	if l_2_1.pitch_offset ~= "true" then
+		l_2_0._pitch_offset = not l_2_1.pitch_offset
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L6_11 = A0_5._pitch_offset
-	if L6_11 then
-		L6_11 = _UPVALUE0_
-		L6_11(A0_5._local_position, A0_5:_update_pitch_offset(A3_8, A4_9))
-	end
-	L6_11 = _UPVALUE1_
-	L6_11 = L6_11(A0_5._local_position)
-	_UPVALUE2_(L6_11, A4_9)
-	_UPVALUE3_(L6_11, A3_8)
-	_UPVALUE4_(L6_11)
-	_UPVALUE3_(L6_11, L5_10)
-	_UPVALUE5_(L6_11)
-	_UPVALUE6_(A0_5._local_rotation)
-	_UPVALUE7_(A0_5._local_rotation, A4_9)
-	_UPVALUE8_(A0_5._local_rotation)
-	_UPVALUE7_(A0_5._local_rotation, Rotation(L6_11, math.UP))
-	SharedCamera.update(A0_5, A1_6, A2_7, A3_8, A4_9)
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 13 
 end
-function AimCamera._update_pitch_offset(A0_12, A1_13, A2_14)
-	local L3_15, L4_16, L5_17, L6_18, L7_19, L8_20, L9_21
-	L4_16 = A0_12
-	L3_15 = A0_12.local_position
-	L3_15 = L3_15(L4_16)
-	L4_16 = L3_15
-	L3_15 = L3_15.rotate_with
-	L5_17 = A2_14
-	L3_15 = L3_15(L4_16, L5_17)
-	L3_15 = A1_13 + L3_15
-	L4_16 = A0_12._camera_data
-	L4_16 = L4_16.eye_target_position
-	L4_16 = L4_16 - L3_15
-	L6_18 = L4_16
-	L5_17 = L4_16.length
-	L5_17 = L5_17(L6_18)
-	if L5_17 > 0 then
-		L6_18 = L4_16
-		L5_17 = L4_16.to_polar_with_reference
-		L8_20 = A2_14
-		L7_19 = A2_14.y
-		L7_19 = L7_19(L8_20)
-		L9_21 = A2_14
-		L8_20 = A2_14.z
-		L9_21 = L8_20(L9_21)
-		L5_17 = L5_17(L6_18, L7_19, L8_20, L9_21, L8_20(L9_21))
-		L6_18 = L5_17.pitch
-		L7_19 = L5_17.spin
-		if L6_18 < 0 and L6_18 > -90 then
-			L8_20 = math
-			L8_20 = L8_20.abs
-			L9_21 = L6_18
-			L8_20 = L8_20(L9_21)
-			L8_20 = L8_20 / 90
-			L9_21 = math
-			L9_21 = L9_21.sign
-			L9_21 = L9_21(L6_18)
-			L9_21 = -L9_21
-			L9_21 = L9_21 * (math.sin(270 + L8_20 * 180) * 0.5 + 0.5)
-			L9_21 = L9_21 * tweak_data.player.camera.AIMING_DOWN_FORWARD_OFFSET
-			return Vector3(0, L9_21, 0):rotate_with(Rotation(math.UP, L7_19))
+
+AimCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+	-- upvalues: l_0_1 , l_0_2 , l_0_4 , l_0_0 , l_0_3 , l_0_5 , l_0_6 , l_0_7 , l_0_8
+	local l_3_5 = l_3_0._camera_data.eye_target_position
+	if not l_3_5 then
+		return 
+	end
+	if l_3_0._pitch_offset then
+		l_0_1(l_3_0._local_position, l_3_0:_update_pitch_offset(l_3_3, l_3_4))
+	end
+	local l_3_6 = l_0_2(l_3_0._local_position)
+	l_0_4(l_3_6, l_3_4)
+	l_0_0(l_3_6, l_3_3)
+	l_0_3(l_3_6)
+	l_0_0(l_3_6, l_3_5)
+	l_0_5(l_3_6)
+	l_0_6(l_3_0._local_rotation)
+	l_0_7(l_3_0._local_rotation, l_3_4)
+	l_0_8(l_3_0._local_rotation)
+	l_0_7(l_3_0._local_rotation, Rotation(l_3_6, math.UP))
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+end
+
+AimCamera._update_pitch_offset = function(l_4_0, l_4_1, l_4_2)
+	local l_4_3 = l_4_1 + l_4_0:local_position():rotate_with(l_4_2)
+	local l_4_4 = l_4_0._camera_data.eye_target_position - l_4_3
+	if l_4_4:length() > 0 then
+		local l_4_5 = l_4_4:to_polar_with_reference(l_4_2:y(), l_4_2:z())
+		local l_4_6 = l_4_5.pitch
+		local l_4_7, l_4_18 = l_4_5.spin
+	if l_4_6 < 0 and l_4_6 > -90 then
 		end
+		l_4_18 = math
+		l_4_18 = l_4_18.abs
+		l_4_18 = l_4_18(l_4_6)
+		l_4_18 = l_4_18 / 90
+		local l_4_8, l_4_19 = nil
+		l_4_8 = math
+		l_4_8 = l_4_8.sign
+		l_4_19 = l_4_6
+		l_4_8 = l_4_8(l_4_19)
+		l_4_8 = -l_4_8
+		l_4_19 = math
+		l_4_19 = l_4_19.sin
+		l_4_19 = l_4_19(270 + l_4_18 * 180)
+		l_4_19 = l_4_19 * 0.5
+		l_4_19 = l_4_19 + 0.5
+		l_4_8 = l_4_8 * (l_4_19)
+		l_4_19 = tweak_data
+		l_4_19 = l_4_19.player
+		l_4_19 = l_4_19.camera
+		l_4_19 = l_4_19.AIMING_DOWN_FORWARD_OFFSET
+		l_4_8 = l_4_8 * l_4_19
+		local l_4_9, l_4_20 = nil
+		l_4_19 = Vector3
+		l_4_9 = 0
+		l_4_20 = l_4_8
+		l_4_19 = l_4_19(l_4_9, l_4_20, 0)
+		local l_4_10, l_4_21 = nil
+		l_4_9, l_4_20 = l_4_19:rotate_with, l_4_19
+		local l_4_11, l_4_12, l_4_22, l_4_23 = nil
+		l_4_10 = Rotation
+		l_4_21 = math
+		l_4_21 = l_4_21.UP
+		l_4_11 = l_4_7
+		l_4_21, l_4_10 = .end, l_4_10(l_4_21, l_4_11)
+		local l_4_13, l_4_14, l_4_15, l_4_24, l_4_25, l_4_26 = nil
+		return l_4_9(l_4_20, l_4_10, l_4_21, l_4_11, l_4_12, l_4_22, l_4_23, l_4_13, l_4_14, l_4_15, l_4_24, l_4_25, l_4_26)
 	end
-	L6_18 = A0_12
-	L5_17 = A0_12.local_position
-	return L5_17(L6_18)
+	local l_4_16, l_4_17 = l_4_0:local_position, l_4_0
+	return l_4_16(l_4_17)
 end
+
+

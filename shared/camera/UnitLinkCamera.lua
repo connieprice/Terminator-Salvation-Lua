@@ -1,100 +1,84 @@
 require("shared/camera/SharedCamera")
-UnitLinkCamera = UnitLinkCamera or class(SharedCamera)
-function UnitLinkCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0._link_x = nil
-	A0_0._link_y = nil
-	A0_0._link_z = nil
-	A0_0._link_rot = nil
+if not UnitLinkCamera then
+	UnitLinkCamera = class(SharedCamera)
 end
-function UnitLinkCamera.parse_parameters(A0_2, A1_3)
-	local L2_4
-	L2_4 = SharedCamera
-	L2_4 = L2_4.parse_parameters
-	L2_4(A0_2, A1_3)
-	L2_4 = A1_3.link
-	if L2_4 then
-		L2_4 = A0_2._root_unit
-		L2_4 = L2_4.get_object
-		L2_4 = L2_4(L2_4, A1_3.link)
-		if not L2_4 and A1_3.link == "orientation_object" then
-			L2_4 = A0_2._root_unit:orientation_object()
+UnitLinkCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._link_x = nil
+	l_1_0._link_y = nil
+	l_1_0._link_z = nil
+	l_1_0._link_rot = nil
+end
+
+UnitLinkCamera.parse_parameters = function(l_2_0, l_2_1)
+	SharedCamera.parse_parameters(l_2_0, l_2_1)
+	if l_2_1.link then
+		if not l_2_0._root_unit:get_object(l_2_1.link) and l_2_1.link == "orientation_object" then
+			local l_2_2, l_2_3, l_2_4 = l_2_0._root_unit:orientation_object()
 		end
-		A0_2._link_x = L2_4
-		A0_2._link_y = L2_4
-		A0_2._link_z = L2_4
-		A0_2._link_rot = L2_4
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_x = l_2_2
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_y = l_2_2
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_z = l_2_2
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_rot = l_2_2
 	end
-	L2_4 = A1_3.link_x
-	if L2_4 then
-		L2_4 = A0_2._root_unit
-		L2_4 = L2_4.get_object
-		L2_4 = L2_4(L2_4, A1_3.link_x)
-		if not L2_4 and A1_3.link == "orientation_object" then
-			L2_4 = A0_2._root_unit:orientation_object()
-		end
-		A0_2._link_x = L2_4
+	if l_2_1.link_x and not l_2_0._root_unit:get_object(l_2_1.link_x) and l_2_1.link == "orientation_object" then
+		l_2_0._link_x = l_2_0._root_unit:orientation_object()
 	end
-	L2_4 = A1_3.link_y
-	if L2_4 then
-		L2_4 = A0_2._root_unit
-		L2_4 = L2_4.get_object
-		L2_4 = L2_4(L2_4, A1_3.link_y)
-		if not L2_4 and A1_3.link == "orientation_object" then
-			L2_4 = A0_2._root_unit:orientation_object()
-		end
-		A0_2._link_y = L2_4
+	if l_2_1.link_y and not l_2_0._root_unit:get_object(l_2_1.link_y) and l_2_1.link == "orientation_object" then
+		l_2_0._link_y = l_2_0._root_unit:orientation_object()
 	end
-	L2_4 = A1_3.link_z
-	if L2_4 then
-		L2_4 = A0_2._root_unit
-		L2_4 = L2_4.get_object
-		L2_4 = L2_4(L2_4, A1_3.link_z)
-		if not L2_4 and A1_3.link == "orientation_object" then
-			L2_4 = A0_2._root_unit:orientation_object()
-		end
-		A0_2._link_z = L2_4
+	if l_2_1.link_z and not l_2_0._root_unit:get_object(l_2_1.link_z) and l_2_1.link == "orientation_object" then
+		l_2_0._link_z = l_2_0._root_unit:orientation_object()
 	end
-	L2_4 = A1_3.link_pos
-	if L2_4 then
-		L2_4 = A0_2._root_unit
-		L2_4 = L2_4.get_object
-		L2_4 = L2_4(L2_4, A1_3.link_pos)
-		if not L2_4 and A1_3.link == "orientation_object" then
-			L2_4 = A0_2._root_unit:orientation_object()
+	if l_2_1.link_pos then
+		if not l_2_0._root_unit:get_object(l_2_1.link_pos) and l_2_1.link == "orientation_object" then
+			local l_2_5, l_2_6 = l_2_0._root_unit:orientation_object()
 		end
-		A0_2._link_x = L2_4
-		A0_2._link_y = L2_4
-		A0_2._link_z = L2_4
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_x = l_2_5
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_y = l_2_5
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._link_z = l_2_5
 	end
-	L2_4 = A1_3.link_rot
-	if L2_4 then
-		L2_4 = A0_2._root_unit
-		L2_4 = L2_4.get_object
-		L2_4 = L2_4(L2_4, A1_3.link_rot)
-		if not L2_4 and A1_3.link == "orientation_object" then
-			L2_4 = A0_2._root_unit:orientation_object()
-		end
-		A0_2._link_rot = L2_4
+	if l_2_1.link_rot and not l_2_0._root_unit:get_object(l_2_1.link_rot) and l_2_1.link == "orientation_object" then
+		l_2_0._link_rot = l_2_0._root_unit:orientation_object()
 	end
 end
-function UnitLinkCamera.update(A0_5, A1_6, A2_7, A3_8, A4_9)
-	local L5_10
-	L5_10 = A0_5._local_position
-	mvector3.set_zero(L5_10)
-	if A0_5._link_x then
-		mvector3.set_x(L5_10, A0_5._link_x:position().x)
+
+UnitLinkCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+	local l_3_5 = l_3_0._local_position
+	mvector3.set_zero(l_3_5)
+	local l_3_6 = l_3_0._link_x
+	if l_3_6 then
+		mvector3.set_x(l_3_5, l_3_6:position().x)
 	end
-	if A0_5._link_y then
-		mvector3.set_y(L5_10, A0_5._link_y:position().y)
+	l_3_6 = l_3_0._link_y
+	if l_3_6 then
+		mvector3.set_y(l_3_5, l_3_6:position().y)
 	end
-	if A0_5._link_z then
-		mvector3.set_z(L5_10, A0_5._link_z:position().z)
+	l_3_6 = l_3_0._link_z
+	if l_3_6 then
+		mvector3.set_z(l_3_5, l_3_6:position().z)
 	end
-	if A0_5._link_rot then
-		A0_5._local_rotation = A0_5._link_rot:rotation()
+	l_3_6 = l_3_0._link_rot
+	if l_3_6 then
+		l_3_0._local_rotation = l_3_6:rotation()
 	else
-		mrotation.set_zero(A0_5._local_rotation)
+		mrotation.set_zero(l_3_0._local_rotation)
 	end
-	SharedCamera.update(A0_5, A1_6, A2_7, A3_8, A4_9)
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
 end
+
+

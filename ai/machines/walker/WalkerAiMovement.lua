@@ -1,253 +1,362 @@
-WalkerAiMovement = WalkerAiMovement or class(CommonAiMovement)
-function WalkerAiMovement.init_data(A0_0, A1_1)
-	CommonAiMovement.init_data(A0_0, A1_1)
-	A1_1.output.moving_to_execute_target = nil
+if not WalkerAiMovement then
+	WalkerAiMovement = class(CommonAiMovement)
 end
-function WalkerAiMovement.logic_walker_movement_idle_enter(A0_2, ...)
-	local L2_4, L3_5, L4_6
-	L2_4 = CommonAiMovement
-	L2_4 = L2_4.logic_common_movement_idle_enter
-	if L2_4 then
-		L2_4 = CommonAiMovement
-		L3_5 = L2_4
-		L2_4 = L2_4.logic_common_movement_idle_enter
-		L4_6 = ...
-		return L2_4(L3_5, L4_6)
+WalkerAiMovement.init_data = function(l_1_0, l_1_1)
+	CommonAiMovement.init_data(l_1_0, l_1_1)
+	l_1_1.output.moving_to_execute_target = nil
+end
+
+WalkerAiMovement.logic_walker_movement_idle_enter = function(l_2_0, ...)
+	if CommonAiMovement.logic_common_movement_idle_enter then
+		local l_2_2 = CommonAiMovement:logic_common_movement_idle_enter
+		local l_2_3 = CommonAiMovement
+		return l_2_2(l_2_3, ...)
 	end
 end
-function WalkerAiMovement.logic_walker_movement_idle_exit(A0_7, ...)
-	local L2_9, L3_10, L4_11
-	L2_9 = CommonAiMovement
-	L2_9 = L2_9.logic_common_movement_idle_enter
-	if L2_9 then
-		L2_9 = CommonAiMovement
-		L3_10 = L2_9
-		L2_9 = L2_9.logic_common_movement_idle_exit
-		L4_11 = ...
-		return L2_9(L3_10, L4_11)
+
+WalkerAiMovement.logic_walker_movement_idle_exit = function(l_3_0, ...)
+	if CommonAiMovement.logic_common_movement_idle_enter then
+		local l_3_2 = CommonAiMovement:logic_common_movement_idle_exit
+		local l_3_3 = CommonAiMovement
+		return l_3_2(l_3_3, ...)
 	end
 end
-function WalkerAiMovement.logic_walker_movement_idle(A0_12, A1_13, A2_14, A3_15, A4_16, A5_17, A6_18, A7_19)
-	local L8_20
-	L8_20 = A2_14.ai_data
-	L8_20 = L8_20(A2_14)
-	if A0_12:_can_execute(A2_14, L8_20, A1_13) then
+
+WalkerAiMovement.logic_walker_movement_idle = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6, l_4_7)
+	local l_4_8 = l_4_2:ai_data()
+	if l_4_0:_can_execute(l_4_2, l_4_8, l_4_1) then
 		return 5, true
 	end
-	return CommonAiMovement.logic_common_movement_idle(A0_12, A1_13, A2_14, A3_15, A4_16, A5_17, A6_18, A7_19)
+	local l_4_9 = CommonAiMovement.logic_common_movement_idle
+	local l_4_10 = l_4_0
+	local l_4_11 = l_4_1
+	local l_4_12 = l_4_2
+	local l_4_13 = l_4_3
+	local l_4_14 = l_4_4
+	local l_4_15 = l_4_5
+	local l_4_16 = l_4_6
+	local l_4_17 = l_4_7
+	return l_4_9(l_4_10, l_4_11, l_4_12, l_4_13, l_4_14, l_4_15, l_4_16, l_4_17)
 end
-function WalkerAiMovement.logic_walker_movement_in_cluster_enter(A0_21, ...)
-	local L2_23, L3_24, L4_25
-	L2_23 = CommonAiMovement
-	L2_23 = L2_23.logic_common_movement_in_cluster_enter
-	if L2_23 then
-		L2_23 = CommonAiMovement
-		L3_24 = L2_23
-		L2_23 = L2_23.logic_common_movement_in_cluster_enter
-		L4_25 = ...
-		return L2_23(L3_24, L4_25)
+
+WalkerAiMovement.logic_walker_movement_in_cluster_enter = function(l_5_0, ...)
+	if CommonAiMovement.logic_common_movement_in_cluster_enter then
+		local l_5_2 = CommonAiMovement:logic_common_movement_in_cluster_enter
+		local l_5_3 = CommonAiMovement
+		return l_5_2(l_5_3, ...)
 	end
 end
-function WalkerAiMovement.logic_walker_movement_in_cluster_exit(A0_26, ...)
-	local L2_28, L3_29, L4_30
-	L2_28 = CommonAiMovement
-	L2_28 = L2_28.logic_common_movement_in_cluster_enter
-	if L2_28 then
-		L2_28 = CommonAiMovement
-		L3_29 = L2_28
-		L2_28 = L2_28.logic_common_movement_in_cluster_exit
-		L4_30 = ...
-		return L2_28(L3_29, L4_30)
+
+WalkerAiMovement.logic_walker_movement_in_cluster_exit = function(l_6_0, ...)
+	if CommonAiMovement.logic_common_movement_in_cluster_enter then
+		local l_6_2 = CommonAiMovement:logic_common_movement_in_cluster_exit
+		local l_6_3 = CommonAiMovement
+		return l_6_2(l_6_3, ...)
 	end
 end
-function WalkerAiMovement.logic_walker_movement_in_cluster(A0_31, A1_32, A2_33, A3_34, A4_35, A5_36, A6_37, A7_38)
-	local L8_39
-	L8_39 = A2_33.ai_data
-	L8_39 = L8_39(A2_33)
-	if A0_31:_can_execute(A2_33, L8_39, A1_32) then
+
+WalkerAiMovement.logic_walker_movement_in_cluster = function(l_7_0, l_7_1, l_7_2, l_7_3, l_7_4, l_7_5, l_7_6, l_7_7)
+	local l_7_8 = l_7_2:ai_data()
+	if l_7_0:_can_execute(l_7_2, l_7_8, l_7_1) then
 		return 5, true
 	end
-	return CommonAiMovement.logic_common_movement_in_cluster(A0_31, A1_32, A2_33, A3_34, A4_35, A5_36, A6_37, A7_38)
+	local l_7_9 = CommonAiMovement.logic_common_movement_in_cluster
+	local l_7_10 = l_7_0
+	local l_7_11 = l_7_1
+	local l_7_12 = l_7_2
+	local l_7_13 = l_7_3
+	local l_7_14 = l_7_4
+	local l_7_15 = l_7_5
+	local l_7_16 = l_7_6
+	local l_7_17 = l_7_7
+	return l_7_9(l_7_10, l_7_11, l_7_12, l_7_13, l_7_14, l_7_15, l_7_16, l_7_17)
 end
-function WalkerAiMovement.logic_walker_movement_go_to_enter(A0_40, ...)
-	local L2_42, L3_43, L4_44
-	L2_42 = CommonAiMovement
-	L2_42 = L2_42.logic_common_movement_go_to_enter
-	if L2_42 then
-		L2_42 = CommonAiMovement
-		L3_43 = L2_42
-		L2_42 = L2_42.logic_common_movement_go_to_enter
-		L4_44 = ...
-		return L2_42(L3_43, L4_44)
+
+WalkerAiMovement.logic_walker_movement_go_to_enter = function(l_8_0, ...)
+	if CommonAiMovement.logic_common_movement_go_to_enter then
+		local l_8_2 = CommonAiMovement:logic_common_movement_go_to_enter
+		local l_8_3 = CommonAiMovement
+		return l_8_2(l_8_3, ...)
 	end
 end
-function WalkerAiMovement.logic_walker_movement_go_to_exit(A0_45, ...)
-	local L2_47, L3_48, L4_49
-	L2_47 = CommonAiMovement
-	L2_47 = L2_47.logic_common_movement_go_to_enter
-	if L2_47 then
-		L2_47 = CommonAiMovement
-		L3_48 = L2_47
-		L2_47 = L2_47.logic_common_movement_go_to_exit
-		L4_49 = ...
-		return L2_47(L3_48, L4_49)
+
+WalkerAiMovement.logic_walker_movement_go_to_exit = function(l_9_0, ...)
+	if CommonAiMovement.logic_common_movement_go_to_enter then
+		local l_9_2 = CommonAiMovement:logic_common_movement_go_to_exit
+		local l_9_3 = CommonAiMovement
+		return l_9_2(l_9_3, ...)
 	end
 end
-function WalkerAiMovement.logic_walker_movement_go_to(A0_50, A1_51, A2_52, A3_53, A4_54, A5_55, A6_56, A7_57)
-	local L8_58
-	L8_58 = A2_52.ai_data
-	L8_58 = L8_58(A2_52)
-	if A0_50:_can_execute(A2_52, L8_58, A1_51) then
+
+WalkerAiMovement.logic_walker_movement_go_to = function(l_10_0, l_10_1, l_10_2, l_10_3, l_10_4, l_10_5, l_10_6, l_10_7)
+	local l_10_8 = l_10_2:ai_data()
+	if l_10_0:_can_execute(l_10_2, l_10_8, l_10_1) then
 		return 5, true
 	end
-	return CommonAiMovement.logic_common_movement_go_to(A0_50, A1_51, A2_52, A3_53, A4_54, A5_55, A6_56, A7_57)
+	local l_10_9 = CommonAiMovement.logic_common_movement_go_to
+	local l_10_10 = l_10_0
+	local l_10_11 = l_10_1
+	local l_10_12 = l_10_2
+	local l_10_13 = l_10_3
+	local l_10_14 = l_10_4
+	local l_10_15 = l_10_5
+	local l_10_16 = l_10_6
+	local l_10_17 = l_10_7
+	return l_10_9(l_10_10, l_10_11, l_10_12, l_10_13, l_10_14, l_10_15, l_10_16, l_10_17)
 end
-function WalkerAiMovement._can_execute(A0_59, A1_60, A2_61, A3_62)
-	local L4_63
-	L4_63 = A2_61._behavior
-	L4_63 = L4_63.allowed_to_execute
-	if L4_63 then
-		L4_63 = A0_59._execution_status
-		L4_63 = L4_63(A0_59, A1_60, A2_61, nil)
-		if L4_63.possible then
-			if not A2_61._behavior._execution_possible_start_time then
-				A2_61._behavior._execution_possible_start_time = A3_62
+
+WalkerAiMovement._can_execute = function(l_11_0, l_11_1, l_11_2, l_11_3)
+	if l_11_2._behavior.allowed_to_execute then
+		local l_11_4 = l_11_0:_execution_status(l_11_1, l_11_2, nil)
+		if l_11_4.possible then
+			if not l_11_2._behavior._execution_possible_start_time then
+				l_11_2._behavior._execution_possible_start_time = l_11_3
 			end
-			if A3_62 - A2_61._behavior._execution_possible_start_time > WalkerTweakData.EXECUTION_MIN_TIME then
-				A2_61._behavior._execution_possible_start_time = nil
-				L4_63.path = NavigationGraphUtilities.ai_shortest_path(A1_60, L4_63.go_to_position)
-				if L4_63.path then
-					A0_59:_set_execution_info(A2_61, L4_63)
-					return true
-				end
-				L4_63.possible = false
+		if WalkerTweakData.EXECUTION_MIN_TIME < l_11_3 - l_11_2._behavior._execution_possible_start_time then
 			end
-		else
-			A2_61._behavior._execution_possible_start_time = nil
+			l_11_2._behavior._execution_possible_start_time = nil
+			l_11_4.path = NavigationGraphUtilities.ai_shortest_path(l_11_1, l_11_4.go_to_position)
+			if l_11_4.path then
+				l_11_0:_set_execution_info(l_11_2, l_11_4)
+				return true
+			end
+			l_11_4.possible = false
 		end
-	end
-	L4_63 = false
-	return L4_63
-end
-function WalkerAiMovement._execution_status(A0_64, A1_65, A2_66, A3_67)
-	local L4_68
-	L4_68 = {}
-	L4_68.possible = false
-	L4_68.update = false
-	A0_64:_calculate_execution_status(A1_65, A2_66, L4_68)
-	if not L4_68.possible then
-		return L4_68
-	end
-	if not A3_67 then
-		L4_68.update = true
-	elseif A2_66:new_path_requested() and not A2_66:current_path_completed() then
-		L4_68.update = true
-	elseif A3_67.threat:unit() ~= L4_68.threat:unit() then
-		L4_68.update = true
-	elseif mvector3.distance(L4_68.go_to_position, A3_67.go_to_position) > WalkerTweakData.EXECUTION_UPDATE_PATH_DISTANCE and not A2_66.input.is_executing then
-		L4_68.update = true
-	end
-	if L4_68.update and L4_68.possible then
-		A0_64:_calculate_execution_path(A1_65, L4_68)
-	end
-	return L4_68
-end
-function WalkerAiMovement._calculate_execution_status(A0_69, A1_70, A2_71, A3_72, A4_73)
-	local L5_74, L6_75, L7_76, L8_77, L9_78
-	L5_74 = A2_71.output
-	L5_74 = L5_74.currently_targeted_threat
-	if not L5_74 then
-		return A3_72
-	end
-	L7_76 = A0_69
-	L6_75 = A0_69._is_executable_threat
-	L8_77 = L5_74
-	L6_75 = L6_75(L7_76, L8_77)
-	if not L6_75 then
-		A3_72.possible = false
-		return A3_72
-	end
-	A3_72.threat = L5_74
-	L7_76 = A1_70
-	L6_75 = A1_70.position
-	L6_75 = L6_75(L7_76)
-	L8_77 = L5_74
-	L7_76 = L5_74.unit
-	L7_76 = L7_76(L8_77)
-	L8_77 = L7_76
-	L7_76 = L7_76.position
-	L7_76 = L7_76(L8_77)
-	L8_77 = mvector3
-	L8_77 = L8_77.distance
-	L9_78 = L7_76
-	L8_77 = L8_77(L9_78, L6_75)
-	L9_78 = WalkerTweakData
-	L9_78 = L9_78.EXECUTION_ATTACKER_TO_TARGET_DISTANCE
-	if L8_77 > L9_78 then
-		A3_72.possible = false
-		return A3_72
-	end
-	L9_78 = TableAlgorithms
-	L9_78 = L9_78.is_empty
-	L9_78 = L9_78(A2_71._behavior.area_cluster)
-	if not L9_78 then
-		L9_78 = A0_69._closest_cluster_position
-		L9_78 = L9_78(A0_69, L6_75, A2_71._behavior.area_cluster)
-		if mvector3.distance(L9_78, L7_76) > WalkerTweakData.EXECUTION_MAX_CLUSTER_DISTANCE then
-			A3_72.possible = false
-			return A3_72
-		end
-	end
-	L9_78 = A0_69._targeted_threat_has_close_friends
-	L9_78 = L9_78(A0_69, L5_74, A2_71._threat_tracking._threats)
-	if L9_78 then
-		A3_72.possible = false
-		return A3_72
-	end
-	L9_78 = A0_69._grab_over_cover_position_and_rotation
-	A3_72.grab_over_cover_rotation, L9_78 = A0_69, L9_78(A0_69, L5_74)
-	A3_72.grab_over_cover_position = L9_78
-	L9_78 = A3_72.grab_over_cover_position
-	if L9_78 then
-		L9_78 = A3_72.grab_over_cover_position
-		A3_72.go_to_position = L9_78
-		L9_78 = A3_72.grab_over_cover_rotation
-		A3_72.go_to_rotation = L9_78
 	else
-		L9_78 = A0_69._grab_behind_cover_position
-		L9_78 = L9_78(A0_69, L5_74)
-		A3_72.go_to_position = L9_78
+		l_11_2._behavior._execution_possible_start_time = nil
 	end
-	A3_72.possible = true
-	return A3_72
+	return false
 end
-function WalkerAiMovement._calculate_execution_path(A0_79, A1_80, A2_81)
-	local L3_82, L4_83, L5_84
-	L3_82 = NavigationGraphUtilities
-	L3_82 = L3_82.ai_shortest_path
-	L4_83 = A1_80
-	L5_84 = A2_81.go_to_position
-	L3_82 = L3_82(L4_83, L5_84, true)
-	if not L3_82 then
-		A2_81.possible = false
-		return A2_81
+
+WalkerAiMovement._execution_status = function(l_12_0, l_12_1, l_12_2, l_12_3)
+	local l_12_4 = {}
+	l_12_4.possible = false
+	l_12_4.update = false
+	l_12_0:_calculate_execution_status(l_12_1, l_12_2, l_12_4)
+	if not l_12_4.possible then
+		return l_12_4
 	end
-	L4_83 = #L3_82
-	L4_83 = L3_82[L4_83]
-	L5_84 = mvector3
-	L5_84 = L5_84.distance
-	L5_84 = L5_84(L4_83, A2_81.go_to_position)
-	if L5_84 > WalkerTweakData.EXECUTION_MAX_DESTINATION_OFFSET then
-		L5_84 = false
-		return L5_84
+	if not l_12_3 then
+		l_12_4.update = true
+	else
+		if l_12_2:new_path_requested() and not l_12_2:current_path_completed() then
+			l_12_4.update = true
+		end
+	else
+		if l_12_3.threat:unit() ~= l_12_4.threat:unit() then
+			l_12_4.update = true
+		end
+	else
+		local l_12_8 = nil
+	if WalkerTweakData.EXECUTION_UPDATE_PATH_DISTANCE < mvector3.distance(l_12_4.go_to_position, l_12_3.go_to_position) then
+		end
+	if not l_12_2.input.is_executing then
+		end
+		l_12_4.update = true
 	end
-	L5_84 = A1_80.position
-	L5_84 = L5_84(A1_80)
-	if MovementPathUtilities.path_length(L5_84, L3_82) > WalkerTweakData.EXECUTION_MAX_TRAVEL_LENGTH then
-		A2_81.possible = false
+	if l_12_4.update and l_12_4.possible then
+		l_12_0:_calculate_execution_path(l_12_1, l_12_4)
 	end
-	return A2_81
+	return l_12_4
 end
-function WalkerAiMovement._closest_cluster_position(A0_85, A1_86, A2_87)
-	local L3_88
-	for 
+
+WalkerAiMovement._calculate_execution_status = function(l_13_0, l_13_1, l_13_2, l_13_3, l_13_4)
+	local l_13_5 = l_13_2.output.currently_targeted_threat
+	if not l_13_5 then
+		return l_13_3
+	end
+	if not l_13_0:_is_executable_threat(l_13_5) then
+		l_13_3.possible = false
+		return l_13_3
+	end
+	l_13_3.threat = l_13_5
+	local l_13_6 = l_13_1:position()
+	local l_13_7 = l_13_5:unit():position()
+	local l_13_8 = mvector3.distance(l_13_7, l_13_6)
+	if WalkerTweakData.EXECUTION_ATTACKER_TO_TARGET_DISTANCE < l_13_8 then
+		l_13_3.possible = false
+		return l_13_3
+	end
+	if not TableAlgorithms.is_empty(l_13_2._behavior.area_cluster) then
+		local l_13_9 = l_13_0:_closest_cluster_position(l_13_6, l_13_2._behavior.area_cluster)
+	if WalkerTweakData.EXECUTION_MAX_CLUSTER_DISTANCE < mvector3.distance(l_13_9, l_13_7) then
+		end
+		l_13_3.possible = false
+		return l_13_3
+	end
+	if l_13_0:_targeted_threat_has_close_friends(l_13_5, l_13_2._threat_tracking._threats) then
+		l_13_3.possible = false
+		return l_13_3
+	end
+	local l_13_10 = l_13_0:_grab_over_cover_position_and_rotation(l_13_5)
+	l_13_3.grab_over_cover_rotation = l_13_0
+	l_13_3.grab_over_cover_position = l_13_10
+	l_13_10 = l_13_3.grab_over_cover_position
+	if l_13_10 then
+		l_13_10 = l_13_3.grab_over_cover_position
+		l_13_3.go_to_position = l_13_10
+		l_13_10 = l_13_3.grab_over_cover_rotation
+		l_13_3.go_to_rotation = l_13_10
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	else
+		l_13_3.go_to_position = l_13_10
+	end
+	l_13_3.possible = true
+	return l_13_3
+end
+
+WalkerAiMovement._calculate_execution_path = function(l_14_0, l_14_1, l_14_2)
+	local l_14_3 = NavigationGraphUtilities.ai_shortest_path(l_14_1, l_14_2.go_to_position, true)
+	if not l_14_3 then
+		l_14_2.possible = false
+		return l_14_2
+	end
+	local l_14_4 = l_14_3[#l_14_3]
+	if WalkerTweakData.EXECUTION_MAX_DESTINATION_OFFSET < mvector3.distance(l_14_4, l_14_2.go_to_position) then
+		return false
+	end
+	local l_14_5 = l_14_1:position()
+	if WalkerTweakData.EXECUTION_MAX_TRAVEL_LENGTH < MovementPathUtilities.path_length(l_14_5, l_14_3) then
+		l_14_2.possible = false
+	end
+	return l_14_2
+end
+
+WalkerAiMovement._closest_cluster_position = function(l_15_0, l_15_1, l_15_2)
+	local l_15_3, l_15_4, l_15_6, l_15_7, l_15_8, l_15_9, l_15_10, l_15_11 = nil, nil
+	for i_0,i_1 in pairs(l_15_2) do
+		if not l_15_4 or mvector3.distance(l_15_1, i_1.position) < l_15_3 then
+			l_15_4 = i_1.position
+			l_15_3 = mvector3.distance(l_15_1, i_1.position)
+		end
+	end
+	return l_15_4
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+WalkerAiMovement._targeted_threat_has_close_friends = function(l_16_0, l_16_1, l_16_2)
+	local l_16_9, l_16_10, l_16_11, l_16_12, l_16_13, l_16_14 = nil
+	local l_16_3 = l_16_1:unit()
+	local l_16_4 = l_16_3:position()
+	local l_16_5 = 0
+	for i_0,i_1 in pairs(l_16_2) do
+		if alive(i_1:unit()) and not i_1:unit() == l_16_3 and mvector3.distance(i_1:last_known_position(), l_16_4) < WalkerTweakData.EXECUTION_TARGET_TO_FRIENDS_DISTANCE then
+			l_16_5 = l_16_5 + 1
+		if l_16_5 == WalkerTweakData.EXECUTION_TARGET_TO_FRIENDS_NUMBER_OF_FRIENDS then
+			end
+			return true
+		end
+	end
+	return false
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+WalkerAiMovement._is_executable_threat = function(l_17_0, l_17_1)
+	local l_17_2 = l_17_1:unit()
+	if not alive(l_17_2) then
+		return false
+	end
+	local l_17_3 = l_17_2:player_data()
+	if not l_17_3 or not l_17_3.in_cover or l_17_3.cover_outer_position or l_17_3.revive_when_fully_damaged then
+		return false
+	end
+	local l_17_4 = l_17_2:damage()
+	if l_17_4 and not l_17_4:can_die() then
+		return false
+	end
+	local l_17_5 = l_17_2:damage()
+	if not l_17_5 or not l_17_5:can_die() then
+		return false
+	end
+	return true
+end
+
+WalkerAiMovement._grab_over_cover_position_and_rotation = function(l_18_0, l_18_1)
+	local l_18_2 = l_18_1:unit()
+	local l_18_3 = l_18_2:position()
+	local l_18_4 = l_18_2:player_data()
+	if not l_18_4.can_move_over_cover then
+		return nil, nil
+	end
+	local l_18_5 = l_18_4.cover_normal
+	local l_18_6 = managers.slot:get_mask("statics")
+	local l_18_7 = l_18_3 - l_18_5 * WalkerTweakData.EXECUTION_MAX_DEPTH
+	local l_18_8 = l_18_7 + math.UP * WalkerTweakData.EXECUTION_MAX_HEIGHT_DIFFERENCE
+	local l_18_9 = l_18_7 - math.UP * WalkerTweakData.EXECUTION_MAX_HEIGHT_DIFFERENCE
+	local l_18_10 = World:raycast("ray", l_18_7, l_18_9, "slot_mask", l_18_6)
+	if not l_18_10 then
+		return nil, nil
+	end
+	if WalkerTweakData.EXECUTION_MAX_HEIGHT_DIFFERENCE < math.abs(l_18_3.z - l_18_10.position.z) then
+		return nil, nil
+	end
+	return l_18_10.position, Rotation(l_18_5, math.UP)
+end
+
+WalkerAiMovement._grab_behind_cover_position = function(l_19_0, l_19_1)
+	local l_19_2 = l_19_1:unit()
+	return l_19_2:position() + l_19_2:player_data().cover_normal * WalkerTweakData.EXECUTION_BEHIND_COVER_DISTANCE
+end
+
+WalkerAiMovement.logic_walker_movement_execution_enter = function(l_20_0, l_20_1, l_20_2, l_20_3)
+	local l_20_4 = l_20_2:ai_data()
+	l_20_4._behavior._execution_start_time = l_20_1
+end
+
+WalkerAiMovement.logic_walker_movement_execution = function(l_21_0, l_21_1, l_21_2, l_21_3, l_21_4, l_21_5, l_21_6, l_21_7)
+	local l_21_8 = l_21_2:ai_data()
+	if not l_21_8.input.is_executing then
+		if not l_21_8._behavior.allowed_to_execute or l_21_8.input.abort_execution then
+			return 0, true
+		end
+		local l_21_9 = l_21_0:_execution_status(l_21_2, l_21_8, l_21_8._behavior._last_execution_status)
+		if not l_21_9.possible then
+			return 0, true
+		end
+		if l_21_9.update then
+			l_21_0:_set_execution_info(l_21_8, l_21_9)
+		end
+	if WalkerTweakData.EXECUTION_TIMEOUT < l_21_1 - l_21_8._behavior._execution_start_time then
+		end
+		return 0, true
+	end
+	l_21_8._behavior.move_in_cluster = nil
+	l_21_8._behavior.hide_from = nil
+	l_21_8._behavior.search_for = nil
+	return nil
+end
+
+WalkerAiMovement.logic_walker_movement_execution_exit = function(l_22_0, l_22_1, l_22_2, l_22_3)
+	ai_data._behavior._execution_start_time = nil
+end
+
+WalkerAiMovement._set_execution_info = function(l_23_0, l_23_1, l_23_2)
+	local l_23_3 = l_23_2.threat:unit()
+	l_23_1.output.moving_to_execute_target = l_23_3
+	l_23_1.output.moving_to_execute_position = l_23_2.go_to_position
+	l_23_1.output.moving_to_execute_rotation = l_23_2.go_to_rotation
+	l_23_1._behavior._last_execution_status = l_23_2
+	l_23_1:set_new_path(l_23_2.path)
+	local l_23_4 = {}
+	l_23_4.position = l_23_2.go_to_position
+	l_23_4.rotation = l_23_2.go_to_rotation
+	l_23_4.id = 1
+	local l_23_5, l_23_6 = l_23_1:set_waypoints, l_23_1
+	do
+		local l_23_7 = {}
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+		l_23_5(l_23_6, l_23_7)
+	end
+	 -- WARNING: undefined locals caused missing assignments!
+end
+
+WalkerAiMovement.logic_walker_movement_execution_exit = function(l_24_0, l_24_1, l_24_2, l_24_3)
+	local l_24_4 = l_24_2:ai_data()
+	l_24_4.output.moving_to_execute_target = nil
+end
+
+

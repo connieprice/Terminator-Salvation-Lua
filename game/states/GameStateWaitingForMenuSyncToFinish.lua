@@ -1,24 +1,31 @@
-GameStateWaitingForMenuSyncToFinish = GameStateWaitingForMenuSyncToFinish or class(FiniteStateMachineState)
-function GameStateWaitingForMenuSyncToFinish.init(A0_0)
-	if A0_0:_wants_to_go_to_frontend() then
-		A0_0.game:_request_menu_frontend()
+if not GameStateWaitingForMenuSyncToFinish then
+	GameStateWaitingForMenuSyncToFinish = class(FiniteStateMachineState)
+end
+GameStateWaitingForMenuSyncToFinish.init = function(l_1_0)
+	if l_1_0:_wants_to_go_to_frontend() then
+		l_1_0.game:_request_menu_frontend()
 	else
-		A0_0.game:_request_menu_ingame()
+		l_1_0.game:_request_menu_ingame()
 	end
 end
-function GameStateWaitingForMenuSyncToFinish.exit(A0_1)
-	if A0_1:_wants_to_go_to_frontend() then
-		A0_1.game:_clear_request_menu_frontend()
+
+GameStateWaitingForMenuSyncToFinish.exit = function(l_2_0)
+	if l_2_0:_wants_to_go_to_frontend() then
+		l_2_0.game:_clear_request_menu_frontend()
 	else
-		A0_1.game:_clear_request_menu_ingame()
+		l_2_0.game:_clear_request_menu_ingame()
 	end
 end
-function GameStateWaitingForMenuSyncToFinish._wants_to_go_to_frontend(A0_2)
-	return managers.game_transition:wants_to_go_to_frontend() or managers.game_transition:wants_to_go_to_pre_frontend()
+
+GameStateWaitingForMenuSyncToFinish._wants_to_go_to_frontend = function(l_3_0)
+	if not managers.game_transition:wants_to_go_to_frontend() then
+		return managers.game_transition:wants_to_go_to_pre_frontend()
+	end
 end
-function GameStateWaitingForMenuSyncToFinish.transition(A0_3)
+
+GameStateWaitingForMenuSyncToFinish.transition = function(l_4_0)
 	if not managers.menu:is_ingame_ready() and not managers.menu:is_frontend_ready() then
-		return
+		return 
 	end
 	if managers.game_transition:wants_to_go_to_frontend() or managers.game_transition:wants_to_go_to_pre_frontend() then
 		if Application:editor() then
@@ -26,9 +33,13 @@ function GameStateWaitingForMenuSyncToFinish.transition(A0_3)
 		else
 			return GameStatePreFrontend
 		end
-	elseif Application:editor() then
-		return GameStateInEditorSimulation
+	else
+		if Application:editor() then
+			return GameStateInEditorSimulation
+		end
 	else
 		return GameStateInGame
 	end
 end
+
+

@@ -1,279 +1,472 @@
 require("units/beings/player_tank/gui/MachineHudPanel")
 require("units/beings/player_tank/gui/MachineText")
 require("units/beings/player_tank/gui/RadarBlip")
-RadarPanel = RadarPanel or class(MachineHudPanel)
-function RadarPanel.init(A0_0, A1_1, A2_2)
-	MachineHudPanel.init(A0_0, A1_1)
-	A0_0._parent_panel = A1_1
-	A0_0._unit = A2_2
-	A0_0._player_data = A0_0._unit:player_data()
-	A0_0._x = 90
-	A0_0._y = 25
-	A0_0._width = tweak_data.machine.hud.RADAR_PANEL_WIDTH
-	A0_0._height = tweak_data.machine.hud.RADAR_PANEL_HEIGHT
-	A0_0._center_x = tweak_data.machine.hud.RADAR_PANEL_WIDTH / 2
-	A0_0._center_y = tweak_data.machine.hud.RADAR_PANEL_HEIGHT / 2
-	A0_0._radar_sweep_center_x = tweak_data.machine.hud.RADAR_PANEL_HEIGHT * 2 / 3
-	A0_0._size_modifier = 1
-	A0_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
-	A0_0._radius = 128
-	A0_0._radar_distance = 5000
-	A0_0._view_distance = 10000
-	A0_0._radar_speed = 2.5
-	A0_0._testpoints = 10
-	A0_0._testpoints_radius = 15
-	A0_0._radar_panel = A0_0._parent_panel:panel({
-		name = "radar_panel",
-		width = A0_0._width,
-		height = A0_0._height,
-		layer = 100
-	})
-	A0_0._radar_panel:set_lefttop(A0_0._x, A0_0._y)
-	A0_0._radar_texture = A0_0._radar_panel:bitmap({
-		name = "gui_machine_radar",
-		texture = "gui_machine_radar"
-	})
-	A0_0._radar_texture:set_center_x(A0_0._center_x)
-	A0_0._radar_texture:set_bottom(A0_0._radar_sweep_center_x)
-	A0_0._radar_texture:set_color(A0_0._color:with_alpha(0))
-	A0_0._radar_background_texture = A0_0._radar_panel:bitmap({
-		name = "gui_machine_radar_background",
-		texture = "gui_machine_radar_background"
-	})
-	A0_0._radar_background_texture:set_center_x(A0_0._center_x)
-	A0_0._radar_background_texture:set_top(0)
-	A0_0._radar_background_texture:set_color(A0_0._color:with_alpha(tweak_data.machine.hud.MAIN_ALPHA))
-	A0_0._current_angle = 90
-	A0_0:set_angle(A0_0._current_angle)
-	A0_0._radar_blips = {}
-	A0_0._radar_units = {}
-	A0_0._unit_list = {}
-	A0_0:set_size_y(0)
-	A0_0._next_update_time = 0
-	A0_0._next_alpha_update_time = 0
-	A0_0._next_unit_list_update = 0
-	A0_0._dt_since_last_update = 0
-	A0_0._dt_since_last_alpha_update = 0
-	A0_0._need_boot_update = true
+if not RadarPanel then
+	RadarPanel = class(MachineHudPanel)
 end
-function RadarPanel.panel(A0_3)
-	local L1_4
-	L1_4 = A0_3._radar_panel
-	return L1_4
+RadarPanel.init = function(l_1_0, l_1_1, l_1_2)
+	MachineHudPanel.init(l_1_0, l_1_1)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._unit = l_1_2
+	l_1_0._player_data = l_1_0._unit:player_data()
+	l_1_0._x = 90
+	l_1_0._y = 25
+	l_1_0._width = tweak_data.machine.hud.RADAR_PANEL_WIDTH
+	l_1_0._height = tweak_data.machine.hud.RADAR_PANEL_HEIGHT
+	l_1_0._center_x = tweak_data.machine.hud.RADAR_PANEL_WIDTH / 2
+	l_1_0._center_y = tweak_data.machine.hud.RADAR_PANEL_HEIGHT / 2
+	l_1_0._radar_sweep_center_x = tweak_data.machine.hud.RADAR_PANEL_HEIGHT * 2 / 3
+	l_1_0._size_modifier = 1
+	l_1_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
+	l_1_0._radius = 128
+	l_1_0._radar_distance = 5000
+	l_1_0._view_distance = 10000
+	l_1_0._radar_speed = 2.5
+	l_1_0._testpoints = 10
+	l_1_0._testpoints_radius = 15
+	local l_1_3, l_1_4 = l_1_0._parent_panel:panel, l_1_0._parent_panel
+	local l_1_5 = {}
+	l_1_5.name = "radar_panel"
+	l_1_5.width = l_1_0._width
+	l_1_5.height = l_1_0._height
+	l_1_5.layer = 100
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_0._radar_panel = l_1_3
+	l_1_3 = l_1_0._radar_panel
+	l_1_3, l_1_4 = l_1_3:set_lefttop, l_1_3
+	l_1_5 = l_1_0._x
+	l_1_3(l_1_4, l_1_5, l_1_0._y)
+	l_1_3 = l_1_0._radar_panel
+	l_1_3, l_1_4 = l_1_3:bitmap, l_1_3
+	l_1_3, l_1_5 = l_1_3(l_1_4, l_1_5), {name = "gui_machine_radar", texture = "gui_machine_radar"}
+	l_1_0._radar_texture = l_1_3
+	l_1_3 = l_1_0._radar_texture
+	l_1_3, l_1_4 = l_1_3:set_center_x, l_1_3
+	l_1_5 = l_1_0._center_x
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = l_1_0._radar_texture
+	l_1_3, l_1_4 = l_1_3:set_bottom, l_1_3
+	l_1_5 = l_1_0._radar_sweep_center_x
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = l_1_0._radar_texture
+	l_1_3, l_1_4 = l_1_3:set_color, l_1_3
+	l_1_5 = l_1_0._color
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = l_1_0._radar_panel
+	l_1_3, l_1_4 = l_1_3:bitmap, l_1_3
+	l_1_3, l_1_5 = l_1_3(l_1_4, l_1_5), {name = "gui_machine_radar_background", texture = "gui_machine_radar_background"}
+	l_1_0._radar_background_texture = l_1_3
+	l_1_3 = l_1_0._radar_background_texture
+	l_1_3, l_1_4 = l_1_3:set_center_x, l_1_3
+	l_1_5 = l_1_0._center_x
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = l_1_0._radar_background_texture
+	l_1_3, l_1_4 = l_1_3:set_top, l_1_3
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = l_1_0._radar_background_texture
+	l_1_3, l_1_4 = l_1_3:set_color, l_1_3
+	l_1_5 = l_1_0._color
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5)
+	l_1_0._current_angle = 90
+	l_1_3, l_1_4 = l_1_0:set_angle, l_1_0
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5)
+	l_1_0._radar_blips, l_1_3 = l_1_3, {}
+	l_1_0._radar_units, l_1_3 = l_1_3, {}
+	l_1_0._unit_list, l_1_3 = l_1_3, {}
+	l_1_3, l_1_4 = l_1_0:set_size_y, l_1_0
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5)
+	l_1_0._next_update_time = 0
+	l_1_0._next_alpha_update_time = 0
+	l_1_0._next_unit_list_update = 0
+	l_1_0._dt_since_last_update = 0
+	l_1_0._dt_since_last_alpha_update = 0
+	l_1_0._need_boot_update = true
 end
-function RadarPanel._set_up_frame(A0_5)
-	local L1_6
-	L1_6 = {}
-	table.insert(L1_6, Vector3(0, 0, 0))
-	table.insert(L1_6, Vector3(0, A0_5._radar_panel:height(), 0))
-	table.insert(L1_6, Vector3(A0_5._radar_panel:width(), A0_5._radar_panel:height(), 0))
-	table.insert(L1_6, Vector3(A0_5._radar_panel:width(), 0, 0))
-	A0_5._frame = A0_5._radar_panel:polyline({name = "frame", line_width = 2})
-	A0_5._frame:set_color(Color(1, 1, 1))
-	A0_5._frame:set_points(L1_6)
-	A0_5._frame:set_closed(true)
+
+RadarPanel.panel = function(l_2_0)
+	return l_2_0._radar_panel
 end
-function RadarPanel.update(A0_7, A1_8, A2_9)
-	if A0_7._need_boot_update then
-		MachineHudPanel.update(A0_7, A2_9)
+
+RadarPanel._set_up_frame = function(l_3_0)
+	local l_3_1 = {}
+	table.insert(l_3_1, Vector3(0, 0, 0))
+	table.insert(l_3_1, Vector3(0, l_3_0._radar_panel:height(), 0))
+	table.insert(l_3_1, Vector3(l_3_0._radar_panel:width(), l_3_0._radar_panel:height(), 0))
+	table.insert(l_3_1, Vector3(l_3_0._radar_panel:width(), 0, 0))
+	local l_3_2, l_3_3 = l_3_0._radar_panel:polyline, l_3_0._radar_panel
+	local l_3_4 = {}
+	l_3_4.name = "frame"
+	l_3_4.line_width = 2
+	l_3_2 = l_3_2(l_3_3, l_3_4)
+	l_3_0._frame = l_3_2
+	l_3_2 = l_3_0._frame
+	l_3_2, l_3_3 = l_3_2:set_color, l_3_2
+	l_3_4 = Color
+	l_3_2(l_3_3, l_3_4)
+	l_3_2 = l_3_0._frame
+	l_3_2, l_3_3 = l_3_2:set_points, l_3_2
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4)
+	l_3_2 = l_3_0._frame
+	l_3_2, l_3_3 = l_3_2:set_closed, l_3_2
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4)
+end
+
+RadarPanel.update = function(l_4_0, l_4_1, l_4_2)
+	if l_4_0._need_boot_update then
+		MachineHudPanel.update(l_4_0, l_4_2)
 	end
-	A0_7._need_boot_update = A0_7._wants_to_shut_down or A0_7._wants_to_start_up
-	if not A0_7.startup_done or A0_7._shuting_down or A0_7._disabled then
-		return
+	if not l_4_0._wants_to_shut_down then
+		l_4_0._need_boot_update = l_4_0._wants_to_start_up
 	end
-	A0_7._dt_since_last_alpha_update = A0_7._dt_since_last_alpha_update + A2_9
-	A0_7._current_angle = A0_7._current_angle + 360 / A0_7._radar_speed * A2_9
-	if 360 < A0_7._current_angle then
-		A0_7._current_angle = A0_7._current_angle - 360
-		A0_7:_play_unit_sound("tank_radar_rotate")
+	if not l_4_0.startup_done or l_4_0._shuting_down or l_4_0._disabled then
+		return 
 	end
-	A0_7:set_angle(A0_7._current_angle)
-	if A1_8 > A0_7._next_alpha_update_time then
-		A0_7:_update_radar_blips(A0_7._dt_since_last_alpha_update)
-		A0_7._next_alpha_update_time = A1_8 + tweak_data.machine.hud.ALPHA_UPDATE_FREQUENCY
-		A0_7._dt_since_last_alpha_update = 0
+	l_4_0._dt_since_last_alpha_update = l_4_0._dt_since_last_alpha_update + l_4_2
+	local l_4_3 = 360 / l_4_0._radar_speed * l_4_2
+	l_4_0._current_angle = l_4_0._current_angle + l_4_3
+	if l_4_0._current_angle > 360 then
+		l_4_0._current_angle = l_4_0._current_angle - 360
+		l_4_0:_play_unit_sound("tank_radar_rotate")
 	end
-	if A1_8 > A0_7._next_unit_list_update then
-		A0_7:_update_units_list()
-		A0_7:_update_radar_units()
-		A0_7._next_unit_list_update = A1_8 + 1
+	l_4_0:set_angle(l_4_0._current_angle)
+	if l_4_0._next_alpha_update_time < l_4_1 then
+		l_4_0:_update_radar_blips(l_4_0._dt_since_last_alpha_update)
+		l_4_0._next_alpha_update_time = l_4_1 + tweak_data.machine.hud.ALPHA_UPDATE_FREQUENCY
+		l_4_0._dt_since_last_alpha_update = 0
+	end
+	if l_4_0._next_unit_list_update < l_4_1 then
+		l_4_0:_update_units_list()
+		l_4_0:_update_radar_units()
+		l_4_0._next_unit_list_update = l_4_1 + 1
 	end
 end
-function RadarPanel.set_angle(A0_10, A1_11)
-	local L2_12, L3_13, L4_14
-	L2_12 = A1_11
-	L3_13 = A0_10._center_x
-	L4_14 = A0_10._radius
-	L4_14 = L4_14 * math.cos(L2_12 - 90)
-	L3_13 = L3_13 + L4_14
-	L4_14 = A0_10._radar_sweep_center_x
-	L4_14 = L4_14 - A0_10._radius
-	L4_14 = L4_14 + A0_10._radius * math.sin(L2_12 - 90)
-	A0_10._radar_texture:set_rotation(L2_12)
-	A0_10._radar_texture:set_center_x(L3_13)
-	A0_10._radar_texture:set_top(L4_14)
+
+RadarPanel.set_angle = function(l_5_0, l_5_1)
+	local l_5_2 = l_5_1
+	local l_5_3 = l_5_0._center_x + l_5_0._radius * math.cos(l_5_2 - 90)
+	local l_5_4 = l_5_0._radar_sweep_center_x - l_5_0._radius + l_5_0._radius * math.sin(l_5_2 - 90)
+	l_5_0._radar_texture:set_rotation(l_5_2)
+	l_5_0._radar_texture:set_center_x(l_5_3)
+	l_5_0._radar_texture:set_top(l_5_4)
 end
-function RadarPanel._update_units_list(A0_15)
-	local L1_16, L2_17, L3_18, L4_19, L5_20, L6_21, L7_22
-	L1_16 = {}
-	A0_15._unit_list = L1_16
-	L1_16 = World
-	L2_17 = L1_16
-	L1_16 = L1_16.find_units_quick
-	L6_21 = managers
-	L6_21 = L6_21.slot
-	L7_22 = L6_21
-	L6_21 = L6_21.get_mask
-	L7_22 = L6_21(L7_22, "enemies")
-	L1_16 = L1_16(L2_17, L3_18, L4_19, L5_20, L6_21, L7_22, L6_21(L7_22, "enemies"))
-	L2_17 = World
-	L2_17 = L2_17.find_units_quick
-	L6_21 = L5_20
-	L6_21 = A0_15._radar_distance
-	L7_22 = managers
-	L7_22 = L7_22.slot
-	L7_22 = L7_22.get_mask
-	L7_22 = L7_22(L7_22, "vehicles")
-	L2_17 = L2_17(L3_18, L4_19, L5_20, L6_21, L7_22, L7_22(L7_22, "vehicles"))
-	for L6_21, L7_22 in L3_18(L4_19) do
-		table.insert(A0_15._unit_list, L7_22)
-	end
-	for L6_21, L7_22 in L3_18(L4_19) do
-		if L7_22:name() ~= "rail_vehicle_tank" then
-			table.insert(A0_15._unit_list, L7_22)
+
+RadarPanel._update_units_list = function(l_6_0)
+	l_6_0._unit_list = {}
+	local l_6_1 = World:find_units_quick("sphere", l_6_0._unit:position(), l_6_0._radar_distance, managers.slot:get_mask("enemies"))
+	local l_6_6 = World:find_units_quick
+	local l_6_7 = World
+	l_6_6 = l_6_6(l_6_7, "sphere", l_6_0._unit:position(), l_6_0._radar_distance, managers.slot:get_mask("vehicles"))
+	local l_6_2 = nil
+	l_6_7 = pairs
+	l_6_2 = l_6_1
+	l_6_7 = l_6_7(l_6_2)
+	for i_0,i_1 in l_6_7 do
+		do
+			table.insert(l_6_0._unit_list, l_6_5)
 		end
-	end
-end
-function RadarPanel._update_radar_units(A0_23)
-	local L1_24, L2_25, L3_26, L4_27, L5_28, L6_29, L7_30, L8_31, L9_32, L10_33, L11_34, L12_35
-	for L4_27, L5_28 in L1_24(L2_25) do
-		L6_29 = alive
-		L7_30 = L5_28
-		L6_29 = L6_29(L7_30)
-		if L6_29 then
-			L7_30 = L5_28
-			L6_29 = L5_28.position
-			L6_29 = L6_29(L7_30)
-			L7_30 = A0_23._unit
-			L8_31 = L7_30
-			L7_30 = L7_30.position
-			L7_30 = L7_30(L8_31)
-			L6_29 = L6_29 - L7_30
-			L7_30 = A0_23._unit
-			L8_31 = L7_30
-			L7_30 = L7_30.rotation
-			L7_30 = L7_30(L8_31)
-			L8_31 = L7_30
-			L7_30 = L7_30.roll
-			L7_30 = L7_30(L8_31)
-			L8_31 = Rotation
-			L9_32 = L6_29
-			L10_33 = Vector3
-			L11_34 = 0
-			L12_35 = 0
-			L12_35 = L10_33(L11_34, L12_35, 1)
-			L8_31 = L8_31(L9_32, L10_33, L11_34, L12_35, L10_33(L11_34, L12_35, 1))
-			L9_32 = L8_31
-			L8_31 = L8_31.roll
-			L8_31 = L8_31(L9_32)
-			L9_32 = L7_30 - L8_31
-			L11_34 = L6_29
-			L10_33 = L6_29.length
-			L10_33 = L10_33(L11_34)
-			L11_34 = A0_23._radar_distance
-			L10_33 = L10_33 / L11_34
-			L10_33 = L10_33 * 100
-			L11_34 = A0_23._size_modifier
-			L10_33 = L10_33 * L11_34
-			L11_34 = A0_23._center_x
-			L12_35 = math
-			L12_35 = L12_35.cos
-			L12_35 = L12_35(L9_32 - 90)
-			L12_35 = L10_33 * L12_35
-			L11_34 = L11_34 + L12_35
-			L12_35 = A0_23._radar_sweep_center_x
-			L12_35 = L12_35 + L10_33 * math.sin(L9_32 - 90)
-			if not A0_23._radar_blips[L5_28] then
-				A0_23._radar_blips[L5_28] = RadarBlip:new(A0_23._radar_panel, L11_34, L12_35, true, A0_23._size_modifier)
-			else
-				A0_23._radar_blips[L5_28]:update_position(L11_34, L12_35)
+		for i_0,i_1 in pairs(l_6_6) do
+			if i_1:name() ~= "rail_vehicle_tank" then
+				table.insert(l_6_0._unit_list, i_1)
 			end
+			 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 		end
 	end
-	for L4_27, L5_28 in L1_24(L2_25) do
-		L6_29 = alive
-		L7_30 = L4_27
-		L6_29 = L6_29(L7_30)
-		if L6_29 then
-			L6_29 = A0_23._unit
-			L7_30 = L6_29
-			L6_29 = L6_29.position
-			L6_29 = L6_29(L7_30)
-			L8_31 = L4_27
-			L7_30 = L4_27.position
-			L7_30 = L7_30(L8_31)
-			L6_29 = L6_29 - L7_30
-			L8_31 = L6_29
-			L7_30 = L6_29.length
-			L7_30 = L7_30(L8_31)
-			L8_31 = A0_23._radar_distance
-			if L7_30 > L8_31 then
-				L8_31 = A0_23._radar_blips
-				L8_31 = L8_31[L4_27]
-				L9_32 = L8_31
-				L8_31 = L8_31.kill
-				L8_31(L9_32)
-				L8_31 = A0_23._radar_blips
-				L8_31[L4_27] = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel._update_radar_units = function(l_7_0)
+	local l_7_4, l_7_5, l_7_6, l_7_7, l_7_8, l_7_9, l_7_17, l_7_18, l_7_19, l_7_20 = nil
+	for i_0,i_1 in pairs(l_7_0._unit_list) do
+		if alive(i_1) then
+			local l_7_12 = nil
+			local l_7_13 = nil
+			local l_7_14 = nil
+			local l_7_15 = nil
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			local l_7_16 = nil
+			if not l_7_0._radar_blips[l_7_11] then
+				l_7_0._radar_blips[l_7_11] = RadarBlip:new(l_7_0._radar_panel, l_7_0._center_x + l_7_12:length() / l_7_0._radar_distance * 100 * l_7_0._size_modifier * math.cos(l_7_0._unit:rotation():roll() - Rotation(i_1:position() - l_7_0._unit:position(), Vector3(0, 0, 1)):roll() - 90), l_7_0._radar_sweep_center_x + l_7_12:length() / l_7_0._radar_distance * 100 * l_7_0._size_modifier * math.sin(l_7_15 - 90), true, l_7_0._size_modifier)
 			end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		else
+			l_7_0._radar_blips[l_7_11]:update_position(l_7_0._center_x + l_7_12:length() / l_7_0._radar_distance * 100 * l_7_0._size_modifier * math.cos(l_7_0._unit:rotation():roll() - Rotation(i_1:position() - l_7_0._unit:position(), Vector3(0, 0, 1)):roll() - 90), l_7_0._radar_sweep_center_x + l_7_12:length() / l_7_0._radar_distance * 100 * l_7_0._size_modifier * math.sin(l_7_15 - 90))
+		end
+	end
+	for i_0,i_1 in pairs(l_7_0._radar_blips) do
+		do
+			if alive(i_0) and l_7_0._radar_distance < l_7_0._unit:position() - i_0:position():length() then
+				l_7_0._radar_blips[l_7_21]:kill()
+				l_7_0._radar_blips[l_7_21] = nil
+			end
+			 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+		end
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel._update_radar_blips = function(l_8_0, l_8_1)
+	local l_8_5, l_8_6, l_8_7, l_8_8, l_8_9, l_8_10, l_8_11, l_8_12, l_8_13, l_8_14, l_8_15, l_8_16 = nil
+	for i_0,i_1 in pairs(l_8_0._radar_blips) do
+		i_1:update(l_8_1)
+		if not alive(i_0) then
+			l_8_0._radar_blips[i_0]:kill()
+		end
+		if i_1:is_done() then
+			l_8_0._radar_blips[i_0] = nil
+		end
+	end
+	local l_8_17 = (Vector3(l_8_0._center_x, l_8_0._radar_sweep_center_x, 0) + Vector3(0, -100, 0) * l_8_0._size_modifier:rotate_with(Rotation(Vector3(0, 0, 1), l_8_0._current_angle)).x - l_8_0._center_x) / l_8_0._testpoints
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	local l_8_18 = (Vector3(l_8_0._center_x, l_8_0._radar_sweep_center_x, 0) + Vector3(0, -100, 0) * l_8_0._size_modifier:rotate_with(Rotation(Vector3(0, 0, 1), l_8_0._current_angle)).y - l_8_0._radar_sweep_center_x) / l_8_0._testpoints
+	local l_8_19 = {}
+	for l_8_23 = 1, l_8_0._testpoints do
+		local l_8_27, l_8_29, l_8_31, l_8_33, l_8_35 = nil
+		l_8_27 = table
+		l_8_27 = l_8_27.insert
+		local l_8_28, l_8_30, l_8_32, l_8_34, l_8_36 = nil
+		l_8_29 = l_8_19
+		l_8_31 = Vector3
+		l_8_33 = l_8_0._center_x
+		l_8_35 = l_8_17 * l_8_23
+		l_8_33 = l_8_33 + l_8_35
+		l_8_35 = l_8_0._radar_sweep_center_x
+		l_8_28 = l_8_18 * l_8_23
+		l_8_35 = l_8_35 + l_8_28
+		l_8_28 = 0
+		l_8_33, l_8_31 = .end, l_8_31(l_8_33, l_8_35, l_8_28)
+		l_8_27(l_8_29, l_8_31, l_8_33, l_8_35, l_8_28, l_8_30, l_8_32, l_8_34, l_8_36)
+	end
+	for i_0,i_1 in pairs(l_8_0._radar_blips) do
+		if not i_1:visible() and i_1:hit_by_radar_line(l_8_19, l_8_0._testpoints_radius) then
+			i_1:show()
+			l_8_0:_play_unit_sound("tank_radar_beep")
+		end
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel.get_target_size = function(l_9_0)
+	return l_9_0._width, l_9_0._height
+end
+
+RadarPanel.set_startup_done = function(l_10_0)
+	if not l_10_0._startup_done and not l_10_0._disabled then
+		l_10_0._radar_texture:set_color(l_10_0._color:with_alpha(1 * tweak_data.machine.hud.MAIN_ALPHA))
+		l_10_0:set_size_y(l_10_0._height)
+	end
+	MachineHudPanel.set_startup_done(l_10_0)
+end
+
+RadarPanel.set_size_y = function(l_11_0, l_11_1)
+	l_11_0._radar_texture:set_height(l_11_1)
+	l_11_0._radar_texture:set_center_y(l_11_0._center_y)
+	l_11_0._radar_background_texture:set_height(l_11_1)
+	l_11_0._radar_background_texture:set_center_y(l_11_0._center_y)
+end
+
+RadarPanel.shutdown = function(l_12_0, l_12_1, l_12_2)
+	local l_12_6, l_12_7, l_12_8, l_12_9 = nil
+	for i_0,i_1 in pairs(l_12_0._radar_blips) do
+		i_1:kill()
+	end
+	l_12_0._shuting_down = true
+	MachineHudPanel.shutdown(l_12_0, l_12_1, l_12_2)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel._show_debug_view_cone = function(l_13_0)
+	local l_13_1 = 10
+	l_13_0._view_cone = {}
+	l_13_0._view_cone[1] = {}
+	l_13_0._view_cone[2] = {}
+	for l_13_5 = 1, 100 do
+		local l_13_6 = l_13_0._view_cone[1]
+		local l_13_7 = {}
+		l_13_7.x = l_13_5
+		l_13_7.y = l_13_1 + l_13_5 * 1.8
+		l_13_7.w = 1
+		l_13_7.h = 1
+		l_13_6[l_13_5] = l_13_7
+		l_13_6 = l_13_0._view_cone
+		l_13_6 = l_13_6[2]
+		l_13_6[l_13_5], l_13_7 = l_13_7, {x = 210 - l_13_5, y = l_13_1 + l_13_5 * 1.8, w = 1, h = 1}
+	end
+	if not l_13_0._debug_view_cone then
+		l_13_0._debug_view_cone = {}
+	end
+	for l_13_11 = 1, #l_13_0._view_cone do
+		for l_13_15 = 1, #l_13_0._view_cone[l_13_11] do
+			local l_13_16 = {}
+			local l_13_17 = Vector3(l_13_0._view_cone[l_13_11][l_13_15].x, l_13_0._view_cone[l_13_11][l_13_15].y, 0)
+			local l_13_18 = l_13_0._view_cone[l_13_11][l_13_15].w
+			local l_13_19 = l_13_0._view_cone[l_13_11][l_13_15].h
+			table.insert(l_13_16, l_13_17)
+			table.insert(l_13_16, l_13_17 + Vector3(l_13_18, 0, 0))
+			table.insert(l_13_16, l_13_17 + Vector3(l_13_18, l_13_19, 0))
+			table.insert(l_13_16, l_13_17 + Vector3(0, l_13_19, 0))
+			table.insert(l_13_16, l_13_17)
+			if l_13_0._debug_view_cone[l_13_15 * l_13_11] then
+				l_13_0._debug_view_cone[l_13_15 * l_13_11]:hide()
+				l_13_0._debug_view_cone[l_13_15 * l_13_11] = nil
+			end
+			local l_13_20 = l_13_0._debug_view_cone
+			local l_13_21 = l_13_15 * l_13_11
+			l_13_20[l_13_21] = l_13_0._radar_panel:polyline()
+			l_13_20 = l_13_0._debug_view_cone
+			l_13_21 = l_13_15 * l_13_11
+			l_13_20 = l_13_20[l_13_21]
+			l_13_20, l_13_21 = l_13_20:set_color, l_13_20
+			l_13_20(l_13_21, Color(1, 1, 1))
+			l_13_20 = l_13_0._debug_view_cone
+			l_13_21 = l_13_15 * l_13_11
+			l_13_20 = l_13_20[l_13_21]
+			l_13_20, l_13_21 = l_13_20:set_points, l_13_20
+			l_13_20(l_13_21, l_13_16)
 		end
 	end
 end
-function RadarPanel._update_radar_blips(A0_36, A1_37)
-	local L2_38, L3_39, L4_40, L5_41, L6_42, L7_43
-	for L5_41, L6_42 in L2_38(L3_39) do
-		L7_43 = L6_42.update
-		L7_43(L6_42, A1_37)
-		L7_43 = alive
-		L7_43 = L7_43(L5_41)
-		if not L7_43 then
-			L7_43 = A0_36._radar_blips
-			L7_43 = L7_43[L5_41]
-			L7_43 = L7_43.kill
-			L7_43(L7_43)
-		end
-		L7_43 = L6_42.is_done
-		L7_43 = L7_43(L6_42)
-		if L7_43 then
-			L7_43 = A0_36._radar_blips
-			L7_43[L5_41] = nil
-		end
+
+RadarPanel._show_debug_dots = function(l_14_0, l_14_1)
+	if not l_14_0._debug_dots then
+		l_14_0._debug_dots = {}
 	end
-	L5_41 = 0
-	L5_41 = 0
-	L6_42 = 0
-	L7_43 = 1
-	L5_41 = A0_36._current_angle
-	L5_41 = 0
-	L6_42 = -100
-	L7_43 = 0
-	L5_41 = A0_36._size_modifier
-	L6_42 = L4_40
-	L5_41 = L4_40.rotate_with
-	L7_43 = L3_39
-	L5_41 = L5_41(L6_42, L7_43)
-	L5_41 = L4_40.x
-	L6_42 = A0_36._center_x
-	L5_41 = L5_41 - L6_42
-	L6_42 = A0_36._testpoints
-	L5_41 = L5_41 / L6_42
-	L6_42 = L4_40.y
-	L7_43 = A0_36._radar_sweep_center_x
-	L6_42 = L6_42 - L7_43
-	L7_43 = A0_36._testpoints
-	L6_42 = L6_42 / L7_43
-	L7_43 = {}
-	for _FORV_11_ = 1, A0_36._testpoints do
-		table.insert(L7_43, Vector3(A0_36._center_x + L5_41 * _FORV_11_, A0_36._radar_sweep_center_x + L6_42 * _FORV_11_, 0))
+	for l_14_5 = 1, l_14_0._testpoints do
+		local l_14_6 = {}
+		local l_14_7 = l_14_0._testpoints_radius / 2
+		table.insert(l_14_6, l_14_1[l_14_5] + Vector3(-l_14_7, -l_14_7, 0))
+		table.insert(l_14_6, l_14_1[l_14_5] + Vector3(l_14_7, -l_14_7, 0))
+		table.insert(l_14_6, l_14_1[l_14_5] + Vector3(l_14_7, l_14_7, 0))
+		table.insert(l_14_6, l_14_1[l_14_5] + Vector3(-l_14_7, l_14_7, 0))
+		table.insert(l_14_6, l_14_1[l_14_5] + Vector3(-l_14_7, -l_14_7, 0))
+		if l_14_0._debug_dots[l_14_5] then
+			l_14_0._debug_dots[l_14_5]:hide()
+			l_14_0._debug_dots[l_14_5] = nil
+		end
+		l_14_0._debug_dots[l_14_5] = l_14_0._radar_panel:polyline()
+		l_14_0._debug_dots[l_14_5]:set_color(Color(1, 1, 1))
+		l_14_0._debug_dots[l_14_5]:set_points(l_14_6)
 	end
-	for 
+end
+
+RadarPanel.disable = function(l_15_0)
+	l_15_0._radar_texture:set_color(l_15_0._color:with_alpha(0))
+	local l_15_4, l_15_5 = l_15_0._radar_background_texture:set_color, l_15_0._radar_background_texture
+	l_15_4(l_15_5, l_15_0._color:with_alpha(0))
+	l_15_4 = pairs
+	l_15_5 = l_15_0._radar_blips
+	l_15_4 = l_15_4(l_15_5)
+	for i_0,i_1 in l_15_4 do
+		l_15_3:kill()
+	end
+	l_15_0._disabled = true
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel.enable = function(l_16_0, l_16_1)
+	local l_16_6, l_16_7 = nil
+	l_16_0._size_modifier = l_16_1 or 1
+	l_16_0._width = tweak_data.machine.hud.RADAR_PANEL_WIDTH * l_16_0._size_modifier
+	l_16_0._height = tweak_data.machine.hud.RADAR_PANEL_HEIGHT * l_16_0._size_modifier
+	l_16_0._center_x = tweak_data.machine.hud.RADAR_PANEL_WIDTH / 2 * l_16_0._size_modifier
+	l_16_0._center_y = tweak_data.machine.hud.RADAR_PANEL_HEIGHT / 2 * l_16_0._size_modifier
+	l_16_0._radar_sweep_center_x = tweak_data.machine.hud.RADAR_PANEL_HEIGHT * 2 / 3 * l_16_0._size_modifier
+	l_16_0._testpoints_radius = 15 * l_16_0._size_modifier
+	l_16_0._radar_texture:set_size(256 * l_16_0._size_modifier, 256 * l_16_0._size_modifier)
+	l_16_0._radar_texture:set_center_x(l_16_0._center_x)
+	l_16_0._radar_texture:set_bottom(l_16_0._radar_sweep_center_x)
+	local l_16_5 = l_16_0._radar_background_texture:set_size
+	l_16_5(l_16_0._radar_background_texture, 256 * l_16_0._size_modifier, 256 * l_16_0._size_modifier)
+	l_16_5 = l_16_0._radar_background_texture
+	l_16_5(l_16_5, l_16_0._center_x)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_16_5(l_16_5, 0)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_16_0._radius = l_16_5
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	for i_0,i_1 in l_16_5 do
+		i_1:kill()
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if not l_16_5 then
+		l_16_0:set_size_y(0)
+	end
+	l_16_0._disabled = false
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel.show = function(l_17_0)
+	if l_17_0._disabled then
+		return 
+	end
+	MachineHudPanel.show(l_17_0)
+	l_17_0._radar_texture:set_color(l_17_0._color:with_alpha(tweak_data.machine.hud.MAIN_ALPHA))
+	local l_17_4, l_17_5 = l_17_0._radar_background_texture:set_color, l_17_0._radar_background_texture
+	l_17_4(l_17_5, l_17_0._color:with_alpha(tweak_data.machine.hud.MAIN_ALPHA))
+	l_17_4 = pairs
+	l_17_5 = l_17_0._radar_blips
+	l_17_4 = l_17_4(l_17_5)
+	for i_0,i_1 in l_17_4 do
+		l_17_3:unhide()
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel.hide = function(l_18_0)
+	MachineHudPanel.hide(l_18_0)
+	l_18_0._radar_texture:set_color(l_18_0._color:with_alpha(0))
+	local l_18_4, l_18_5 = l_18_0._radar_background_texture:set_color, l_18_0._radar_background_texture
+	l_18_4(l_18_5, l_18_0._color:with_alpha(0))
+	l_18_4 = pairs
+	l_18_5 = l_18_0._radar_blips
+	l_18_4 = l_18_4(l_18_5)
+	for i_0,i_1 in l_18_4 do
+		l_18_3:hide()
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RadarPanel._play_unit_sound = function(l_19_0, l_19_1)
+	if l_19_0._player_data.on_rail_vehicle then
+		l_19_0._player_data.on_rail_vehicle:play(l_19_1)
+	end
+end
+
+

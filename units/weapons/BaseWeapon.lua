@@ -1,78 +1,83 @@
-BaseWeapon = BaseWeapon or class()
-function BaseWeapon.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._enabled = false
-	A0_0._equiped = false
-	A0_0._wdata = A0_0._unit:weapon_data()
-	A0_0._wdata._max_dispersion = A0_0._max_dispersion
-	A0_0._wdata._min_dispersion = A0_0._min_dispersion
-	A0_0._max_fire_object_and_aim_angle_diff = tweak_data.weapon.DEFAULT_MAX_WEAPON_DIRECTION_AND_AIM_DIRECTION_ANGLE_DIFF
-	A0_0._shoot_event_visible_range = tweak_data.sensory_events.weapons.DEFAULT_SHOOT_VISIBLE_RANGE
-	A0_0._shoot_event_sound_level = tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL
-	A0_0._shoot_event_sound_level_reference_distance = tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL_REFERENCE_DISTANCE
-	A0_0._sound_variant = ""
-	if A0_0._num_sound_variants and A0_0._num_sound_variants > 0 then
-		A0_0._sound_variant = "_" .. math.random(A0_0._num_sound_variants)
+if not BaseWeapon then
+	BaseWeapon = class()
+end
+BaseWeapon.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._enabled = false
+	l_1_0._equiped = false
+	l_1_0._wdata = l_1_0._unit:weapon_data()
+	l_1_0._wdata._max_dispersion = l_1_0._max_dispersion
+	l_1_0._wdata._min_dispersion = l_1_0._min_dispersion
+	l_1_0._max_fire_object_and_aim_angle_diff = tweak_data.weapon.DEFAULT_MAX_WEAPON_DIRECTION_AND_AIM_DIRECTION_ANGLE_DIFF
+	l_1_0._shoot_event_visible_range = tweak_data.sensory_events.weapons.DEFAULT_SHOOT_VISIBLE_RANGE
+	l_1_0._shoot_event_sound_level = tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL
+	l_1_0._shoot_event_sound_level_reference_distance = tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL_REFERENCE_DISTANCE
+	l_1_0._sound_variant = ""
+	if l_1_0._num_sound_variants and l_1_0._num_sound_variants > 0 then
+		l_1_0._sound_variant = "_" .. math.random(l_1_0._num_sound_variants)
 	end
-	A0_0:set_extensions_enabled(A0_0._enabled)
-	A0_0:recalculate_dispersion()
-	A0_0._extension_enabled = true
+	l_1_0:set_extensions_enabled(l_1_0._enabled)
+	l_1_0:recalculate_dispersion()
+	l_1_0._extension_enabled = true
 end
-function BaseWeapon.set_enabled(A0_2, A1_3)
-	A0_2._enabled = A1_3
-	A0_2:set_extensions_enabled(A0_2._enabled)
+
+BaseWeapon.set_enabled = function(l_2_0, l_2_1)
+	l_2_0._enabled = l_2_1
+	l_2_0:set_extensions_enabled(l_2_0._enabled)
 end
-function BaseWeapon.set_extensions_enabled(A0_4, A1_5)
-	if A0_4._unit:logic() then
-		A0_4._unit:logic():on_extension_update_enabled(A1_5)
+
+BaseWeapon.set_extensions_enabled = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0._unit:logic()
+	if l_3_2 then
+		l_3_2:on_extension_update_enabled(l_3_1)
 	end
-	if A0_4._unit:base() then
-		A0_4._unit:base():on_extension_update_enabled(A1_5)
+	local l_3_3 = l_3_0._unit:base()
+	if l_3_3 then
+		l_3_3:on_extension_update_enabled(l_3_1)
 	end
 end
-function BaseWeapon.on_extension_update_enabled(A0_6, A1_7)
-	A0_6._update_enabled = A1_7
-	A0_6._unit:set_extension_update_enabled("base", A1_7)
-	A0_6._extension_enabled = A1_7
+
+BaseWeapon.on_extension_update_enabled = function(l_4_0, l_4_1)
+	l_4_0._update_enabled = l_4_1
+	l_4_0._unit:set_extension_update_enabled("base", l_4_1)
+	l_4_0._extension_enabled = l_4_1
 end
-function BaseWeapon.set_dispersion_modifier(A0_8, A1_9)
-	A0_8._wdata._dispersion_modifier = A1_9
-	A0_8:recalculate_dispersion()
+
+BaseWeapon.set_dispersion_modifier = function(l_5_0, l_5_1)
+	l_5_0._wdata._dispersion_modifier = l_5_1
+	l_5_0:recalculate_dispersion()
 end
-function BaseWeapon.recalculate_dispersion(A0_10)
-	local L2_11, L3_12, L4_13
-	L2_11 = A0_10._wdata
-	L3_12 = A0_10._max_dispersion
-	L4_13 = A0_10._min_dispersion
-	L4_13 = L4_13 - A0_10._max_dispersion
-	L4_13 = L4_13 * A0_10._wdata._dispersion_modifier
-	L3_12 = L3_12 + L4_13
-	L2_11._dispersion = L3_12
+
+BaseWeapon.recalculate_dispersion = function(l_6_0)
+	l_6_0._wdata._dispersion = l_6_0._max_dispersion + (l_6_0._min_dispersion - l_6_0._max_dispersion) * l_6_0._wdata._dispersion_modifier
 end
-function BaseWeapon.set_equiped(A0_14, A1_15)
-	A0_14._equiped = A1_15
-	A0_14:set_extensions_enabled(A0_14._equiped)
+
+BaseWeapon.set_equiped = function(l_7_0, l_7_1)
+	l_7_0._equiped = l_7_1
+	l_7_0:set_extensions_enabled(l_7_0._equiped)
 end
-function BaseWeapon.equiped(A0_16)
-	local L1_17
-	L1_17 = A0_16._equiped
-	return L1_17
+
+BaseWeapon.equiped = function(l_8_0)
+	return l_8_0._equiped
 end
-function BaseWeapon.set_visible(A0_18, A1_19)
-	A0_18._unit:set_visible(A1_19)
+
+BaseWeapon.set_visible = function(l_9_0, l_9_1)
+	l_9_0._unit:set_visible(l_9_1)
 end
-function BaseWeapon.play_indoor_check_sound(A0_20, A1_21)
+
+BaseWeapon.play_indoor_check_sound = function(l_10_0, l_10_1)
 end
-function BaseWeapon.setup(A0_22, A1_23)
-	A0_22._user_unit = A1_23
+
+BaseWeapon.setup = function(l_11_0, l_11_1)
+	l_11_0._user_unit = l_11_1
 end
-function BaseWeapon.user_unit(A0_24)
-	local L1_25
-	L1_25 = A0_24._user_unit
-	return L1_25
+
+BaseWeapon.user_unit = function(l_12_0)
+	return l_12_0._user_unit
 end
-function BaseWeapon.reload_unit(A0_26)
-	local L1_27
-	L1_27 = A0_26._reload
-	return L1_27
+
+BaseWeapon.reload_unit = function(l_13_0)
+	return l_13_0._reload
 end
+
+

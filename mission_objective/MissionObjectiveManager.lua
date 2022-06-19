@@ -1,53 +1,47 @@
 require("mission_objective/MissionObjective")
-MissionObjectiveManager = MissionObjectiveManager or class()
-function MissionObjectiveManager.init(A0_0)
-	A0_0._objectives = {}
-	A0_0:load_objectives(File:new_parse_xml("data/settings/mission_objectives.xml"):children())
+if not MissionObjectiveManager then
+	MissionObjectiveManager = class()
 end
-function MissionObjectiveManager.load_objectives(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L5_6, L6_7, L7_8, L8_9, L9_10, L10_11
-	for L5_6 in A1_2, nil, nil do
-		L7_8 = L5_6
-		L6_7 = L5_6.parameter
-		L8_9 = "id"
-		L6_7 = L6_7(L7_8, L8_9)
-		L7_8 = "all"
-		L8_9 = assert
-		L9_10 = L6_7
-		L10_11 = "Missing mission objective id"
-		L8_9(L9_10, L10_11)
-		L8_9 = MissionObjective
-		L9_10 = L8_9
-		L8_9 = L8_9.new
-		L10_11 = L6_7
-		L8_9 = L8_9(L9_10, L10_11, L7_8)
-		L10_11 = L5_6
-		L9_10 = L5_6.parameter
-		L9_10 = L9_10(L10_11, "text_id")
-		L10_11 = L5_6.parameter
-		L10_11 = L10_11(L5_6, "time")
-		assert(L9_10, "Missing text_id for mission objective " .. L6_7)
-		L8_9:set_text_id(L9_10)
-		if L10_11 then
-			L8_9:set_time(tonumber(L10_11))
+MissionObjectiveManager.init = function(l_1_0)
+	l_1_0._objectives = {}
+	local l_1_1 = File:new_parse_xml("data/settings/mission_objectives.xml")
+	l_1_0:load_objectives(l_1_1:children())
+end
+
+MissionObjectiveManager.load_objectives = function(l_2_0, l_2_1)
+	local l_2_5, l_2_6 = nil
+	local l_2_2 = l_2_1
+	for i_0 in l_2_2 do
+		local l_2_8 = i_0:parameter("id")
+		assert(l_2_8, "Missing mission objective id")
+		local l_2_9 = nil
+		local l_2_10 = MissionObjective:new(l_2_8, "all")
+		local l_2_11 = l_2_7:parameter("text_id")
+		assert(l_2_11, "Missing text_id for mission objective " .. l_2_8)
+		l_2_10:set_text_id(l_2_11)
+		if l_2_7:parameter("time") then
+			l_2_10:set_time(tonumber(l_2_7:parameter("time")))
 		end
-		A0_1._objectives[L6_7] = L8_9
+		l_2_0._objectives[l_2_8] = l_2_10
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function MissionObjectiveManager.destroy(A0_12)
-	local L1_13
+
+MissionObjectiveManager.destroy = function(l_3_0)
 end
-function MissionObjectiveManager.objectives(A0_14)
-	local L1_15
-	L1_15 = A0_14._objectives
-	return L1_15
+
+MissionObjectiveManager.objectives = function(l_4_0)
+	return l_4_0._objectives
 end
-function MissionObjectiveManager.objective(A0_16, A1_17)
-	local L2_18
-	L2_18 = assert
-	L2_18(A1_17 ~= "", "No mission objective! Enter a Mission Objective ID.")
-	L2_18 = A0_16._objectives
-	L2_18 = L2_18[A1_17]
-	assert(L2_18, "can not find objective " .. A1_17)
-	return L2_18
+
+MissionObjectiveManager.objective = function(l_5_0, l_5_1)
+	local l_5_2 = assert
+	l_5_2(l_5_1 ~= "", "No mission objective! Enter a Mission Objective ID.")
+	l_5_2 = l_5_0._objectives
+	l_5_2 = l_5_2[l_5_1]
+	assert(l_5_2, "can not find objective " .. l_5_1)
+	return l_5_2
 end
+
+

@@ -1,151 +1,147 @@
 require("managers/WorldCamera")
-WorldCameraManager = WorldCameraManager or class(CoreWorldCameraManager)
-function WorldCameraManager.init(A0_0)
-	local L1_1
-	L1_1 = CoreWorldCameraManager
-	L1_1 = L1_1.init
-	L1_1(A0_0)
-	L1_1 = World
-	L1_1 = L1_1.preload_unit
-	L1_1(L1_1, "world_camera_mover")
-	A0_0._use_gui = false
-	A0_0._default_shake_animation_state = "idle"
-	A0_0._default_shake_animation_delay = 0
-	A0_0._default_shake_animation_loop = false
-	A0_0._current_animation = nil
-	L1_1 = A0_0._camera_unit
-	if not L1_1 then
-		L1_1 = "player_cam"
-		World:preload_unit(L1_1)
-		A0_0._camera_unit = World:spawn_unit(L1_1, Vector3(), Rotation())
-		A0_0._camera_unit:play_redirect("idle")
-		A0_0._camera_unit:set_driving("script")
-		A0_0._camera_unit:set_visible(false)
+if not WorldCameraManager then
+	WorldCameraManager = class(CoreWorldCameraManager)
+end
+WorldCameraManager.init = function(l_1_0)
+	CoreWorldCameraManager.init(l_1_0)
+	World:preload_unit("world_camera_mover")
+	l_1_0._use_gui = false
+	l_1_0._default_shake_animation_state = "idle"
+	l_1_0._default_shake_animation_delay = 0
+	l_1_0._default_shake_animation_loop = false
+	l_1_0._current_animation = nil
+	if not l_1_0._camera_unit then
+		local l_1_1 = "player_cam"
+		World:preload_unit(l_1_1)
+		l_1_0._camera_unit = World:spawn_unit(l_1_1, Vector3(), Rotation())
+		l_1_0._camera_unit:play_redirect("idle")
+		l_1_0._camera_unit:set_driving("script")
+		l_1_0._camera_unit:set_visible(false)
 	end
 end
-function WorldCameraManager.destroy(A0_2)
-	if A0_2._camera_unit then
-		A0_2._camera_unit:set_slot(0)
-		A0_2._camera_unit = nil
+
+WorldCameraManager.destroy = function(l_2_0)
+	if l_2_0._camera_unit then
+		l_2_0._camera_unit:set_slot(0)
+		l_2_0._camera_unit = nil
 	end
-	CoreWorldCameraManager.destroy(A0_2)
+	CoreWorldCameraManager.destroy(l_2_0)
 end
-function WorldCameraManager.get_camera_unit(A0_3)
-	local L1_4
-	L1_4 = A0_3._camera_unit
-	return L1_4
+
+WorldCameraManager.get_camera_unit = function(l_3_0)
+	return l_3_0._camera_unit
 end
-function WorldCameraManager._create_listener(A0_5)
-	local L1_6
+
+WorldCameraManager._create_listener = function(l_4_0)
 end
-function WorldCameraManager._destroy_listener(A0_7)
-	local L1_8
+
+WorldCameraManager._destroy_listener = function(l_5_0)
 end
-function WorldCameraManager._set_listener_enabled(A0_9, A1_10)
-	if A1_10 then
-		A0_9:enable_listener()
+
+WorldCameraManager._set_listener_enabled = function(l_6_0, l_6_1)
+	if l_6_1 then
+		l_6_0:enable_listener()
 		if managers.user_viewport then
 			managers.user_viewport:pause_all_sounds()
 		end
 	else
-		A0_9:disable_listener()
-		if managers.user_viewport then
-			managers.user_viewport:resume_all_sounds()
+		l_6_0:disable_listener()
+	if managers.user_viewport then
 		end
+		managers.user_viewport:resume_all_sounds()
 	end
 end
-function WorldCameraManager.enable_listener(A0_11)
-	if not A0_11._sound_listener_id then
-		A0_11._sound_listener_id = Sound:add_listener(A0_11._camera)
-		Sound:set_listener_parameter(A0_11._sound_listener_id, "environment", "outdoor")
+
+WorldCameraManager.enable_listener = function(l_7_0)
+	if not l_7_0._sound_listener_id then
+		l_7_0._sound_listener_id = Sound:add_listener(l_7_0._camera)
+		Sound:set_listener_parameter(l_7_0._sound_listener_id, "environment", "outdoor")
 	end
 end
-function WorldCameraManager.disable_listener(A0_12)
-	if A0_12._sound_listener_id then
-		Sound:remove_listener(A0_12._sound_listener_id)
-		A0_12._sound_listener_id = nil
+
+WorldCameraManager.disable_listener = function(l_8_0)
+	if l_8_0._sound_listener_id then
+		Sound:remove_listener(l_8_0._sound_listener_id)
+		l_8_0._sound_listener_id = nil
 	end
 end
-function WorldCameraManager.update_dof_values(A0_13, A1_14, A2_15, A3_16, A4_17)
-	local L5_18, L6_19, L7_20, L8_21
-	L5_18 = CoreWorldCameraManager
-	L5_18 = L5_18.update_dof_values
-	L6_19 = A0_13
-	L7_20 = A1_14
-	L8_21 = A2_15
-	L5_18(L6_19, L7_20, L8_21, A3_16, A4_17)
-	L5_18 = math
-	L5_18 = L5_18.clamp
-	L6_19 = A0_13._current_near_dof
-	L7_20 = A0_13._current_dof_padding
-	L6_19 = L6_19 - L7_20
-	L7_20 = 1
-	L8_21 = 1000000
-	L5_18 = L5_18(L6_19, L7_20, L8_21)
-	L6_19 = A0_13._current_near_dof
-	L7_20 = A0_13._current_far_dof
-	L8_21 = A0_13._current_far_dof
-	L8_21 = L8_21 + A0_13._current_dof_padding
-	A0_13._viewport:set_dof(A0_13._current_dof_clamp, L5_18, L6_19, L7_20, L8_21)
+
+WorldCameraManager.update_dof_values = function(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4)
+	CoreWorldCameraManager.update_dof_values(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4)
+	local l_9_5 = math.clamp(l_9_0._current_near_dof - l_9_0._current_dof_padding, 1, 1000000)
+	local l_9_6 = l_9_0._current_near_dof
+	local l_9_7 = l_9_0._current_far_dof
+	local l_9_8 = l_9_0._current_far_dof + l_9_0._current_dof_padding
+	l_9_0._viewport:set_dof(l_9_0._current_dof_clamp, l_9_5, l_9_6, l_9_7, l_9_8)
 end
-function WorldCameraManager.stop_simulation(A0_22)
-	CoreWorldCameraManager.stop_simulation(A0_22)
-	if not A0_22._current_world_camera then
-		return
+
+WorldCameraManager.stop_simulation = function(l_10_0)
+	CoreWorldCameraManager.stop_simulation(l_10_0)
+	if not l_10_0._current_world_camera then
+		return 
 	end
-	A0_22._current_world_camera:stop()
-	if A0_22._current_sequence then
-		A0_22._current_world_camera = nil
-		A0_22:_sequence_done()
+	local l_10_1 = l_10_0._current_world_camera
+	l_10_1:stop()
+	if l_10_0._current_sequence then
+		l_10_0._current_world_camera = nil
+		l_10_0:_sequence_done()
 	end
 end
-function WorldCameraManager.start_dof(A0_23)
-	if not A0_23._using_dof then
-		A0_23._using_dof = true
+
+WorldCameraManager.start_dof = function(l_11_0)
+	if not l_11_0._using_dof then
+		l_11_0._using_dof = true
 	end
 end
-function WorldCameraManager.stop_dof(A0_24)
-	A0_24._viewport:set_dof(0, 0, 0, 0, 0)
-	A0_24._using_dof = false
+
+WorldCameraManager.stop_dof = function(l_12_0)
+	l_12_0._viewport:set_dof(0, 0, 0, 0, 0)
+	l_12_0._using_dof = false
 end
-function WorldCameraManager._set_gui_visible(A0_25, A1_26)
-	A0_25._workspace:hide()
+
+WorldCameraManager._set_gui_visible = function(l_13_0, l_13_1)
+	l_13_0._workspace:hide()
 end
-function WorldCameraManager.default_shake_animation_state(A0_27)
-	local L1_28
-	L1_28 = A0_27._default_shake_animation_state
-	return L1_28
+
+WorldCameraManager.default_shake_animation_state = function(l_14_0)
+	return l_14_0._default_shake_animation_state
 end
-function WorldCameraManager.default_shake_animation_delay(A0_29)
-	local L1_30
-	L1_30 = A0_29._default_shake_animation_delay
-	return L1_30
+
+WorldCameraManager.default_shake_animation_delay = function(l_15_0)
+	return l_15_0._default_shake_animation_delay
 end
-function WorldCameraManager.default_shake_animation_loop(A0_31)
-	local L1_32
-	L1_32 = A0_31._default_shake_animation_loop
-	return L1_32
+
+WorldCameraManager.default_shake_animation_loop = function(l_16_0)
+	return l_16_0._default_shake_animation_loop
 end
-function WorldCameraManager.play_world_camera(A0_33, A1_34, A2_35, A3_36)
-	local L4_37
-	A0_33._backwards = A2_35
-	L4_37 = {
-		A0_33:_camera_sequence_table(A1_34)
-	}
-	if A3_36 then
-		if A2_35 then
-			L4_37[1].stop = A3_36
-		else
-			L4_37[1].start = A3_36
+
+WorldCameraManager.play_world_camera = function(l_17_0, l_17_1, l_17_2, l_17_3)
+	l_17_0._backwards = l_17_2
+	do
+		local l_17_4 = {}
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_17_3 then
+			if l_17_2 then
+				do return end
+			end
 		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_17_0:play_world_camera_sequence()
 	end
-	A0_33:play_world_camera_sequence(nil, L4_37)
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function WorldCameraManager.backwards(A0_38)
-	local L1_39
-	L1_39 = A0_38._backwards
-	return L1_39
+
+WorldCameraManager.backwards = function(l_18_0)
+	return l_18_0._backwards
 end
-function WorldCameraManager.new_play_world_camera(A0_40, A1_41)
-	CoreWorldCameraManager.new_play_world_camera(A0_40, A1_41)
+
+WorldCameraManager.new_play_world_camera = function(l_19_0, l_19_1)
+	local l_19_2 = l_19_0._world_cameras[l_19_1.name]
+	CoreWorldCameraManager.new_play_world_camera(l_19_0, l_19_1)
 end
+
+

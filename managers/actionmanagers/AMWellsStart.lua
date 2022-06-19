@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMWellsStart = AMWellsStart or class(AMNpcStart)
-AMWellsStart.unit_type = "wells"
-function AMWellsStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMWellsStart.unit_type)
+if not AMWellsStart then
+	AMWellsStart = class(AMNpcStart)
 end
+AMWellsStart.unit_type = "wells"
+AMWellsStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMWellsStart.unit_type)
+end
+
+

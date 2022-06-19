@@ -1,134 +1,126 @@
 require("units/beings/AiNerveSystem")
-SkynetDefenceTurretAiNerveSystem = SkynetDefenceTurretAiNerveSystem or class(AiNerveSystem)
-function SkynetDefenceTurretAiNerveSystem.init(A0_0, A1_1)
-	AiNerveSystem.init(A0_0, A1_1)
-	A0_0._ai_data = A0_0._unit:ai_data()
-	A0_0._input = A1_1:input()
-	A0_0._aim_object_missile = A1_1:get_object(SkynetDefenceTurretBase._AIM_OBJECT_NAME_MISSILE)
-	A0_0._aim_object_gatling = A1_1:get_object(SkynetDefenceTurretBase._AIM_OBJECT_NAME_GATLING)
-	A0_0._low_frequency = managers.update_scheduler:add_function(A0_0.low_frequency_update, "skynet_defence_turret_nervesystem")
+if not SkynetDefenceTurretAiNerveSystem then
+	SkynetDefenceTurretAiNerveSystem = class(AiNerveSystem)
 end
-function SkynetDefenceTurretAiNerveSystem.init_default_ai_data(A0_2)
-	local L1_3, L2_4
-	L1_3 = A0_2._ai_data
-	L1_3 = L1_3.input
-	L2_4 = A0_2._ai_data
-	L2_4 = L2_4.default_attack_range
-	L1_3.attack_range = L2_4
-	L1_3 = A0_2._ai_data
-	L1_3 = L1_3.input
-	L2_4 = A0_2._ai_data
-	L2_4 = L2_4.default_attack_delay
-	L1_3.attack_delay = L2_4
-	L1_3 = A0_2._ai_data
-	L1_3 = L1_3.input
-	L2_4 = A0_2._ai_data
-	L2_4 = L2_4.default_forced_target_units
-	L1_3.forced_target_units = L2_4
+SkynetDefenceTurretAiNerveSystem.init = function(l_1_0, l_1_1)
+	AiNerveSystem.init(l_1_0, l_1_1)
+	l_1_0._ai_data = l_1_0._unit:ai_data()
+	l_1_0._input = l_1_1:input()
+	l_1_0._aim_object_missile = l_1_1:get_object(SkynetDefenceTurretBase._AIM_OBJECT_NAME_MISSILE)
+	l_1_0._aim_object_gatling = l_1_1:get_object(SkynetDefenceTurretBase._AIM_OBJECT_NAME_GATLING)
+	l_1_0._low_frequency = managers.update_scheduler:add_function(l_1_0.low_frequency_update, "skynet_defence_turret_nervesystem")
 end
-function SkynetDefenceTurretAiNerveSystem.update(A0_5, A1_6, A2_7, A3_8)
-	if A1_6:damage_data().fully_damaged then
-		A0_5:_update_dead(A1_6, A2_7, A3_8)
-		return
+
+SkynetDefenceTurretAiNerveSystem.init_default_ai_data = function(l_2_0)
+	l_2_0._ai_data.input.attack_range = l_2_0._ai_data.default_attack_range
+	l_2_0._ai_data.input.attack_delay = l_2_0._ai_data.default_attack_delay
+	l_2_0._ai_data.input.forced_target_units = l_2_0._ai_data.default_forced_target_units
+end
+
+SkynetDefenceTurretAiNerveSystem.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	if l_3_1:damage_data().fully_damaged then
+		l_3_0:_update_dead(l_3_1, l_3_2, l_3_3)
+		return 
 	end
-	if not AiNerveSystem.update(A0_5, A1_6, A2_7, A3_8) then
-		A0_5._input:clear()
-		return
+	if not AiNerveSystem.update(l_3_0, l_3_1, l_3_2, l_3_3) then
+		l_3_0._input:clear()
+		return 
 	end
-	A0_5._low_frequency:update(A0_5, A1_6, A2_7, A3_8)
+	l_3_0._low_frequency:update(l_3_0, l_3_1, l_3_2, l_3_3)
 end
-function SkynetDefenceTurretAiNerveSystem.low_frequency_update(A0_9, A1_10, A2_11, A3_12)
-	local L4_13, L5_14, L6_15, L7_16
-	L4_13 = AiNerveSystem
-	L4_13 = L4_13.low_frequency_update
-	L5_14 = A0_9
-	L6_15 = A1_10
-	L7_16 = A2_11
-	L4_13(L5_14, L6_15, L7_16, A3_12)
-	L4_13 = A0_9._input
-	L5_14 = L4_13
-	L4_13 = L4_13.clear
-	L4_13(L5_14)
-	L4_13 = A0_9._ai_data
-	L4_13 = L4_13.output
-	L4_13 = L4_13.allowed_to_fire
-	L5_14 = A0_9._ai_data
-	L5_14 = L5_14.output
-	L5_14 = L5_14.firing_target
-	L6_15 = A0_9._ai_data
-	L6_15 = L6_15.output
-	L6_15 = L6_15.firing_target_position
-	L7_16 = nil
-	if L6_15 and alive(L5_14) then
-		A0_9._input:set_aim_target_position(L6_15)
-		if not A0_9._missile_speed then
-			A0_9._missile_speed = A1_10:base()._weapon_missile:base()._speed
+
+SkynetDefenceTurretAiNerveSystem.low_frequency_update = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	AiNerveSystem.low_frequency_update(l_4_0, l_4_1, l_4_2, l_4_3)
+	l_4_0._input:clear()
+	local l_4_4 = l_4_0._ai_data.output.allowed_to_fire
+	local l_4_5 = l_4_0._ai_data.output.firing_target
+	local l_4_6 = l_4_0._ai_data.output.firing_target_position
+	local l_4_7 = nil
+	if l_4_6 and alive(l_4_5) then
+		l_4_0._input:set_aim_target_position(l_4_6)
+		if not l_4_0._missile_speed then
+			l_4_0._missile_speed = l_4_1:base()._weapon_missile:base()._speed
 		end
-		L7_16 = A0_9:_aim_moving_target2(L5_14, L6_15, A0_9._missile_speed, A0_9._aim_object_missile)
-		A0_9._input:set_aim_target_position_missile(L7_16)
+		l_4_7 = l_4_0:_aim_moving_target2(l_4_0, l_4_5, l_4_6, l_4_0._missile_speed, l_4_0._aim_object_missile)
+		l_4_0._input:set_aim_target_position_missile(l_4_7)
 	end
-	if L4_13 and alive(L5_14) then
-		if not IntelUtilities.ai_friendly_fire(A1_10, L7_16) and A0_9:_target_angle(A0_9._aim_object_missile, L7_16) < A0_9._max_fire_angle_missile then
-			A0_9._input:set_fire_missile()
+	if l_4_4 and alive(l_4_5) then
+		if not IntelUtilities.ai_friendly_fire(l_4_1, l_4_7) and l_4_0:_target_angle(l_4_0._aim_object_missile, l_4_7) < l_4_0._max_fire_angle_missile then
+			l_4_0._input:set_fire_missile()
 		end
-		if not IntelUtilities.ai_friendly_fire(A1_10, L6_15) and A0_9:_target_angle(A0_9._aim_object_gatling, L6_15) < A0_9._max_fire_angle_gatling then
-			A0_9._input:set_fire_gatling()
+	if not IntelUtilities.ai_friendly_fire(l_4_1, l_4_6) then
 		end
-	end
-	A0_9._input:set_miss_dispersion(A0_9:_update_weapons_dispersions(A1_10, {L5_14}, A3_12)[1])
-end
-function SkynetDefenceTurretAiNerveSystem._target_angle(A0_17, A1_18, A2_19)
-	local L3_20, L4_21
-	L4_21 = A1_18
-	L3_20 = A1_18.position
-	L3_20 = L3_20(L4_21)
-	L3_20 = A2_19 - L3_20
-	L4_21 = L3_20
-	L3_20 = L3_20.length
-	L3_20 = L3_20(L4_21)
-	L4_21 = A1_18.position
-	L4_21 = L4_21(A1_18)
-	L4_21 = L4_21 + A1_18:rotation():y() * L3_20
-	return (A2_19:angle(L4_21))
-end
-function SkynetDefenceTurretAiNerveSystem._aim_moving_target2(A0_22, A1_23, A2_24, A3_25, A4_26)
-	local L5_27, L6_28, L7_29, L8_30, L9_31, L10_32
-	L6_28 = A4_26
-	L5_27 = A4_26.position
-	L5_27 = L5_27(L6_28)
-	L6_28 = A2_24
-	L7_29 = L6_28
-	L8_30 = L7_29
-	L10_32 = A1_23
-	L9_31 = A1_23.velocity
-	L9_31 = L9_31(L10_32)
-	L10_32 = 10000
-	while L10_32 >= 100 and 0 < 5 do
-		L8_30 = L7_29
-		L7_29 = L6_28 + L9_31 * ((L7_29 - L5_27):length() / A3_25)
-		L10_32 = (L7_29 - L8_30):length()
-		if L10_32 < L10_32 then
-			return L8_30
+	if l_4_0:_target_angle(l_4_0._aim_object_gatling, l_4_6) < l_4_0._max_fire_angle_gatling then
 		end
+		l_4_0._input:set_fire_gatling()
 	end
-	return L7_29
+	local l_4_8, l_4_9 = l_4_0:_update_weapons_dispersions, l_4_0
+	local l_4_10 = l_4_1
+	local l_4_11 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_4_8 = l_4_8(l_4_9, l_4_10, l_4_11, l_4_5)
+	l_4_9 = l_4_0._input
+	l_4_9, l_4_10 = l_4_9:set_miss_dispersion, l_4_9
+	l_4_11 = l_4_8[1]
+	l_4_9(l_4_10, l_4_11)
 end
-function SkynetDefenceTurretAiNerveSystem._register(A0_33)
-	local L1_34
-	A0_33._registered = true
+
+SkynetDefenceTurretAiNerveSystem._target_angle = function(l_5_0, l_5_1, l_5_2)
+	local l_5_3 = l_5_2 - l_5_1:position():length()
+	local l_5_4 = l_5_1:position() + l_5_1:rotation():y() * l_5_3
+	return l_5_2:angle(l_5_4)
 end
-function SkynetDefenceTurretAiNerveSystem._unregister(A0_35)
-	local L1_36
-	A0_35._registered = false
-end
-function SkynetDefenceTurretAiNerveSystem._is_dead(A0_37)
-	return A0_37._unit:enemy_data().dead
-end
-function SkynetDefenceTurretAiNerveSystem._update_dead(A0_38, A1_39, A2_40, A3_41)
-	if not A0_38._braindead then
-		A0_38:_kill_brain()
+
+SkynetDefenceTurretAiNerveSystem._aim_moving_target2 = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4)
+	local l_6_5 = l_6_4:position()
+	local l_6_6 = l_6_2
+	local l_6_7 = l_6_6
+	local l_6_8 = l_6_7
+	local l_6_9 = l_6_1:velocity()
+	local l_6_10 = 10000
+	local l_6_11 = l_6_10
+	do
+		local l_6_12 = 0
+		while l_6_10 >= 100 and 0 < 5 do
+			l_6_11 = l_6_10
+			l_6_8 = l_6_7
+			l_6_12 = l_6_7 - l_6_5:length() / l_6_3
+			l_6_7 = l_6_6 + l_6_9 * (l_6_12)
+			l_6_10 = l_6_7 - l_6_8:length()
+			if l_6_11 < l_6_10 then
+				return l_6_8
+			end
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		end
+		return l_6_7
 	end
-	AiNerveSystem.update(A0_38, A1_39, A2_40, A3_41)
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function SkynetDefenceTurretAiNerveSystem._debug(A0_42, A1_43, A2_44, A3_45)
+
+SkynetDefenceTurretAiNerveSystem._register = function(l_7_0)
+	l_7_0._registered = true
 end
+
+SkynetDefenceTurretAiNerveSystem._unregister = function(l_8_0)
+	l_8_0._registered = false
+end
+
+SkynetDefenceTurretAiNerveSystem._is_dead = function(l_9_0)
+	return l_9_0._unit:enemy_data().dead
+end
+
+SkynetDefenceTurretAiNerveSystem._update_dead = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	if not l_10_0._braindead then
+		l_10_0:_kill_brain()
+	end
+	AiNerveSystem.update(l_10_0, l_10_1, l_10_2, l_10_3)
+end
+
+SkynetDefenceTurretAiNerveSystem._debug = function(l_11_0, l_11_1, l_11_2, l_11_3)
+end
+
+

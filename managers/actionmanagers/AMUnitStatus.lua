@@ -1,11 +1,17 @@
-AMUnitStatus = AMUnitStatus or class(CoreActionElement)
-function AMUnitStatus.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMUnitStatus then
+	AMUnitStatus = class(CoreActionElement)
 end
-function AMUnitStatus.activate_now(A0_3)
-	managers.unit_scripting:get_unit_by_name_callback(A0_3.target_unit.script_name, callback(A0_3, A0_3, "unit_spawned"))
-	A0_3:deactivate_now()
+AMUnitStatus.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
-function AMUnitStatus.unit_spawned(A0_4, A1_5)
-	A1_5:base():activate_status_callbacks(A0_4._name)
+
+AMUnitStatus.activate_now = function(l_2_0)
+	managers.unit_scripting:get_unit_by_name_callback(l_2_0.target_unit.script_name, callback(l_2_0, l_2_0, "unit_spawned"))
+	l_2_0:deactivate_now()
 end
+
+AMUnitStatus.unit_spawned = function(l_3_0, l_3_1)
+	l_3_1:base():activate_status_callbacks(l_3_0._name)
+end
+
+

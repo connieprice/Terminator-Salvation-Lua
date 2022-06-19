@@ -1,55 +1,69 @@
-Interactable = Interactable or class()
-function Interactable.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._interact_effect = nil
-	A0_0._is_interact_enabled = true
-	A0_0._owner_rpc = Network:self()
-	A0_0._all_rpc = Network:clients()
-	A0_0._unit:set_extension_update_enabled("interact", false)
+if not Interactable then
+	Interactable = class()
 end
-function Interactable.is_owner(A0_2)
-	return managers.ownership:is_owner(A0_2._unit)
+Interactable.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._interact_effect = nil
+	l_1_0._is_interact_enabled = true
+	l_1_0._owner_rpc = Network:self()
+	l_1_0._all_rpc = Network:clients()
+	l_1_0._unit:set_extension_update_enabled("interact", false)
 end
-function Interactable.disable_interact(A0_3)
-	local L1_4
-	A0_3._is_interact_enabled = false
+
+Interactable.is_owner = function(l_2_0)
+	local l_2_1, l_2_2 = managers.ownership:is_owner, managers.ownership
+	local l_2_3 = l_2_0._unit
+	return l_2_1(l_2_2, l_2_3)
 end
-function Interactable.enable_interact(A0_5)
-	local L1_6
-	A0_5._is_interact_enabled = true
+
+Interactable.disable_interact = function(l_3_0)
+	l_3_0._is_interact_enabled = false
 end
-function Interactable.is_interact_enabled(A0_7)
-	if not A0_7._is_interact_enabled then
-		print(A0_7._unit)
+
+Interactable.enable_interact = function(l_4_0)
+	l_4_0._is_interact_enabled = true
+end
+
+Interactable.is_interact_enabled = function(l_5_0)
+	if not l_5_0._is_interact_enabled then
+		print(l_5_0._unit)
 	end
-	return A0_7._is_interact_enabled
+	return l_5_0._is_interact_enabled
 end
-function Interactable.request_interact(A0_8, A1_9)
-	local L3_10
-	L3_10 = A0_8._owner_rpc
-	L3_10 = L3_10.arbitrate_interact
-	L3_10(L3_10, managers.unit_control_id:get_unit_id(A0_8._unit), managers.unit_control_id:get_unit_id(A1_9))
+
+Interactable.request_interact = function(l_6_0, l_6_1)
+	l_6_0._owner_rpc:arbitrate_interact(managers.unit_control_id:get_unit_id(l_6_0._unit), managers.unit_control_id:get_unit_id(l_6_1))
 end
-function Interactable.handle_rpc_arbitrate_interact(A0_11, A1_12)
-	assert(A0_11:is_owner())
-	if A0_11._is_interact_enabled then
-		A0_11:do_arbitrate_interact(A1_12)
-		A0_11._all_rpc:interact(managers.unit_control_id:get_unit_id(A0_11._unit), managers.unit_control_id:get_unit_id(A1_12))
+
+Interactable.handle_rpc_arbitrate_interact = function(l_7_0, l_7_1)
+	assert(l_7_0:is_owner())
+	if l_7_0._is_interact_enabled then
+		l_7_0:do_arbitrate_interact(l_7_1)
+		l_7_0._all_rpc:interact(managers.unit_control_id:get_unit_id(l_7_0._unit), managers.unit_control_id:get_unit_id(l_7_1))
 	end
 end
-function Interactable.handle_rpc_interact(A0_13, A1_14)
-	A0_13:do_interact(A1_14)
-	if A0_13._interact_effect then
-		managers.sequence:run_sequence_simple(A0_13._interact_effect, A0_13._unit)
+
+Interactable.handle_rpc_interact = function(l_8_0, l_8_1)
+	l_8_0:do_interact(l_8_1)
+	if l_8_0._interact_effect then
+		managers.sequence:run_sequence_simple(l_8_0._interact_effect, l_8_0._unit)
 	end
 end
-function Interactable.can_interact_with_player(A0_15, A1_16)
-	return A0_15:is_interact_enabled() and A1_16:interact_query() and A1_16:interact_query():can_interact_with(A0_15:interactable_type())
+
+Interactable.can_interact_with_player = function(l_9_0, l_9_1)
+	if l_9_0:is_interact_enabled() and l_9_1:interact_query() then
+		return l_9_1:interact_query():can_interact_with(l_9_0:interactable_type())
+	end
 end
-function Interactable.do_arbitrate_interact(A0_17, A1_18)
+
+Interactable.do_arbitrate_interact = function(l_10_0, l_10_1)
 end
-function Interactable.interact(A0_19, A1_20)
+
+Interactable.interact = function(l_11_0, l_11_1)
 end
-function Interactable.interactable_type(A0_21)
+
+Interactable.interactable_type = function(l_12_0)
 	assert(false)
 end
+
+

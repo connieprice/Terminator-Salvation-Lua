@@ -1,193 +1,168 @@
 require("music/SoundInstance")
-UnitDrama = UnitDrama or class()
-function UnitDrama.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._emitter = managers.action_event:create_emitter(A1_1)
-	A0_0:set_mood("calm")
-	A0_0._look_at_unit = nil
-	A0_0._default_battle_mood = true
+if not UnitDrama then
+	UnitDrama = class()
 end
-function UnitDrama.destroy(A0_2)
-	if A0_2._say_sound_instance then
-		A0_2:_stop_talking()
+UnitDrama.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._emitter = managers.action_event:create_emitter(l_1_1)
+	l_1_0:set_mood("calm")
+	l_1_0._look_at_unit = nil
+	l_1_0._default_battle_mood = true
+end
+
+UnitDrama.destroy = function(l_2_0)
+	if l_2_0._say_sound_instance then
+		l_2_0:_stop_talking()
 	end
 end
-function UnitDrama._soundbank_name_from_scenario_id_or_sound_actor_name(A0_3, A1_4, A2_5)
-	if A1_4 then
-		return "vc_lv" .. A1_4 .. "_sound"
+
+UnitDrama._soundbank_name_from_scenario_id_or_sound_actor_name = function(l_3_0, l_3_1, l_3_2)
+	if l_3_1 then
+		return "vc_lv" .. l_3_1 .. "_sound"
 	else
-		return "vc_cd_" .. A2_5 .. "_sound"
+		return "vc_cd_" .. l_3_2 .. "_sound"
 	end
 end
-function UnitDrama._add_lipsync(A0_6)
-	local L1_7
-	L1_7 = A0_6._face_actor_redirect
-	L1_7 = L1_7(A0_6, "generic_lipsync")
-	A0_6._say_animation = A0_6._machine:play_redirect(L1_7)
+
+UnitDrama._add_lipsync = function(l_4_0)
+	local l_4_1 = l_4_0:_face_actor_redirect("generic_lipsync")
+	l_4_0._say_animation = l_4_0._machine:play_redirect(l_4_1)
 end
-function UnitDrama.death(A0_8, A1_9)
-	local L2_10, L3_11, L4_12, L5_13, L6_14
-	L2_10 = managers
-	L2_10 = L2_10.dynamic_dialog
-	L3_11 = L2_10
-	L2_10 = L2_10.find_a_conversation_for_player
-	L4_12 = A1_9
-	L5_13 = "scream"
-	L3_11 = L2_10(L3_11, L4_12, L5_13)
-	if not L2_10 then
-		return
+
+UnitDrama.death = function(l_5_0, l_5_1)
+	local l_5_2, l_5_3 = managers.dynamic_dialog:find_a_conversation_for_player(l_5_1, "scream")
+	if not l_5_2 then
+		return 
 	end
-	L5_13 = A1_9
-	L4_12 = A1_9.drama
-	L4_12 = L4_12(L5_13)
-	L4_12 = L4_12.actor_name
-	L5_13 = managers
-	L5_13 = L5_13.drama_scene
-	L6_14 = L5_13
-	L5_13 = L5_13.actor_to_script_unit_name
-	L5_13 = L5_13(L6_14, L4_12)
-	if not L5_13 then
-		L6_14 = cat_print
-		L6_14("debug", "The character '" .. A0_8._voice_line.actor_name .. "' is required but not spawned on the level")
-		return
+	local l_5_4 = l_5_1:drama().actor_name
+	local l_5_5 = managers.drama_scene:actor_to_script_unit_name(l_5_4)
+	if not l_5_5 then
+		cat_print("debug", "The character '" .. l_5_0._voice_line.actor_name .. "' is required but not spawned on the level")
+		return 
 	end
-	L6_14 = managers
-	L6_14 = L6_14.unit_scripting
-	L6_14 = L6_14.get_unit_by_name
-	L6_14 = L6_14(L6_14, L5_13)
-	A0_8._speaker = L6_14
-	L6_14 = alive
-	L6_14 = L6_14(A0_8._speaker)
-	if not L6_14 then
-		A0_8._speaker = nil
-		return
+	l_5_0._speaker = managers.unit_scripting:get_unit_by_name(l_5_5)
+	if not alive(l_5_0._speaker) then
+		l_5_0._speaker = nil
+		return 
 	end
-	L6_14 = assert
-	L6_14(A0_8._speaker, "The character '" .. L5_13 .. "' is required but not spawned on the level")
-	L6_14 = A0_8._speaker
-	L6_14 = L6_14.drama
-	L6_14 = L6_14(L6_14)
-	L6_14 = L6_14.sound_actor_name
-	A0_8._speaker:drama():say(L2_10, nil, L6_14)
-	managers.scene_trigger:voice_line_started(L2_10)
-	A0_8._conversation_id = L2_10
+	assert(l_5_0._speaker, "The character '" .. l_5_5 .. "' is required but not spawned on the level")
+	local l_5_6 = l_5_0._speaker:drama().sound_actor_name
+	l_5_0._speaker:drama():say(l_5_2, nil, l_5_6)
+	managers.scene_trigger:voice_line_started(l_5_2)
+	l_5_0._conversation_id = l_5_2
 end
-function UnitDrama.say(A0_15, A1_16, A2_17, A3_18)
-	A0_15:say_radio(A1_16, A2_17, A3_18)
-	A0_15:_add_lipsync()
+
+UnitDrama.say = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	l_6_0:say_radio(l_6_1, l_6_2, l_6_3)
+	l_6_0:_add_lipsync()
 end
-function UnitDrama.say_radio(A0_19, A1_20, A2_21, A3_22)
-	local L4_23, L5_24, L6_25, L7_26
-	L5_24 = A0_19
-	L4_23 = A0_19._soundbank_name_from_scenario_id_or_sound_actor_name
-	L6_25 = A2_21
-	L7_26 = A3_22
-	L4_23 = L4_23(L5_24, L6_25, L7_26)
-	L5_24 = "vc_"
-	L6_25 = A1_20
-	L5_24 = L5_24 .. L6_25
-	L6_25 = Sound
-	L7_26 = L6_25
-	L6_25 = L6_25.make_bank
-	L6_25 = L6_25(L7_26, L4_23, L5_24)
-	A0_19._say_sound = L6_25
-	L6_25 = assert
-	L7_26 = A0_19._say_sound
-	L6_25(L7_26, "couldn't find soundbank_name:sound=" .. L4_23 .. ":" .. L5_24)
-	L6_25 = A0_19._unit
-	L7_26 = L6_25
-	L6_25 = L6_25.get_object
-	L6_25 = L6_25(L7_26, A0_19._sound_output_object_name)
-	L7_26 = A0_19._say_sound
-	L7_26 = L7_26.set_output
-	L7_26(L7_26, L6_25)
-	L7_26 = A0_19._say_sound
-	L7_26 = L7_26.play
-	L7_26 = L7_26(L7_26)
-	A0_19._say_sound_instance = SoundInstance:new(L7_26)
-	A0_19._machine = A0_19._unit:anim_state_machine()
-	A0_19._emitter:say_start(A0_19._unit, A1_20)
+
+UnitDrama.say_radio = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	local l_7_4 = l_7_0:_soundbank_name_from_scenario_id_or_sound_actor_name(l_7_2, l_7_3)
+	local l_7_5 = "vc_" .. l_7_1
+	l_7_0._say_sound = Sound:make_bank(l_7_4, l_7_5)
+	assert(l_7_0._say_sound, "couldn't find soundbank_name:sound=" .. l_7_4 .. ":" .. l_7_5)
+	local l_7_6 = l_7_0._unit:get_object(l_7_0._sound_output_object_name)
+	l_7_0._say_sound:set_output(l_7_6)
+	local l_7_7 = l_7_0._say_sound:play()
+	l_7_0._say_sound_instance = SoundInstance:new(l_7_7)
+	l_7_0._machine = l_7_0._unit:anim_state_machine()
+	l_7_0._emitter:say_start(l_7_0._unit, l_7_1)
 end
-function UnitDrama._face_actor_redirect(A0_27, A1_28)
-	if A0_27.face_actor_name then
-		A1_28 = A1_28 .. "_" .. A0_27.face_actor_name
+
+UnitDrama._face_actor_redirect = function(l_8_0, l_8_1)
+	if l_8_0.face_actor_name then
+		l_8_1 = l_8_1 .. "_" .. l_8_0.face_actor_name
 	end
-	return A1_28
+	return l_8_1
 end
-function UnitDrama._stop_talking(A0_29)
-	A0_29._emitter:say_stop(A0_29._unit)
-	if A0_29._say_sound_instance:is_playing() then
-		A0_29._say_sound_instance:stop()
+
+UnitDrama._stop_talking = function(l_9_0)
+	l_9_0._emitter:say_stop(l_9_0._unit)
+	if l_9_0._say_sound_instance:is_playing() then
+		l_9_0._say_sound_instance:stop()
 	end
-	A0_29._unit:play_redirect("mouth_idle")
-	A0_29._say_sound_instance:destroy()
-	A0_29._say_sound_instance = nil
-	A0_29._machine = nil
-	A0_29._say_sound = nil
+	l_9_0._unit:play_redirect("mouth_idle")
+	l_9_0._say_sound_instance:destroy()
+	l_9_0._say_sound_instance = nil
+	l_9_0._machine = nil
+	l_9_0._say_sound = nil
 end
-function UnitDrama.is_speaking(A0_30)
-	if A0_30._say_sound_instance then
-		return A0_30._say_sound_instance:is_playing()
+
+UnitDrama.is_speaking = function(l_10_0)
+	if l_10_0._say_sound_instance then
+		local l_10_1, l_10_2 = l_10_0._say_sound_instance:is_playing, l_10_0._say_sound_instance
+		return l_10_1(l_10_2)
 	else
 		return false
 	end
 end
-function UnitDrama.set_default_battle_mood(A0_31, A1_32)
-	A0_31._default_battle_mood = A1_32
+
+UnitDrama.set_default_battle_mood = function(l_11_0, l_11_1)
+	l_11_0._default_battle_mood = l_11_1
 end
-function UnitDrama.set_mood(A0_33, A1_34)
-	local L2_35
-	A0_33._mood_name = A1_34
-	L2_35 = A0_33._face_actor_redirect
-	L2_35 = L2_35(A0_33, "face_mood_" .. A0_33._mood_name)
-	A0_33._unit:play_redirect(L2_35)
+
+UnitDrama.set_mood = function(l_12_0, l_12_1)
+	l_12_0._mood_name = l_12_1
+	local l_12_2 = l_12_0:_face_actor_redirect("face_mood_" .. l_12_0._mood_name)
+	l_12_0._unit:play_redirect(l_12_2)
 end
-function UnitDrama.update(A0_36, A1_37, A2_38, A3_39)
-	A0_36:update_drama(A3_39)
+
+UnitDrama.update = function(l_13_0, l_13_1, l_13_2, l_13_3)
+	l_13_0:update_drama(l_13_3)
 end
-function UnitDrama.update_drama(A0_40, A1_41)
-	if A0_40._speaker and not A0_40._speaker:drama():is_speaking() then
-		managers.scene_trigger:voice_line_ended(A0_40._conversation_id)
-		A0_40._speaker = nil
+
+UnitDrama.update_drama = function(l_14_0, l_14_1)
+	if l_14_0._speaker and not l_14_0._speaker:drama():is_speaking() then
+		managers.scene_trigger:voice_line_ended(l_14_0._conversation_id)
+		l_14_0._speaker = nil
 	end
-	A0_40:update_look_at_timer(A1_41)
-	if A0_40._default_battle_mood and alive(A0_40._unit) then
-		if A0_40._mood_name ~= "stressed" and A0_40._unit:damage_data():is_fully_damaged() == false and managers.dynamic_dialog:is_in_combat() then
-			A0_40:set_mood("stressed")
-		elseif A0_40._mood_name ~= "dead" and A0_40._unit:damage_data():is_fully_damaged() then
-			A0_40:set_mood("dead")
-		elseif A0_40._mood_name ~= "calm" and not managers.dynamic_dialog:is_in_combat() then
-			A0_40:set_mood("calm")
+	l_14_0:update_look_at_timer(l_14_1)
+	if l_14_0._default_battle_mood and alive(l_14_0._unit) then
+		local l_14_2 = l_14_0._unit:damage_data():is_fully_damaged()
+		if l_14_0._mood_name ~= "stressed" and l_14_2 == false and managers.dynamic_dialog:is_in_combat() then
+			l_14_0:set_mood("stressed")
 		end
+	elseif l_14_0._mood_name ~= "dead" and l_14_2 then
+		l_14_0:set_mood("dead")
+	elseif l_14_0._mood_name ~= "calm" and not managers.dynamic_dialog:is_in_combat() then
+		l_14_0:set_mood("calm")
 	end
-	if not A0_40._machine then
-		return
+	if not l_14_0._machine then
+		return 
 	end
-	if A0_40._say_sound_instance:is_playing() == false then
-		A0_40:_stop_talking()
-		return
+	if l_14_0._say_sound_instance:is_playing() == false then
+		l_14_0:_stop_talking()
+		return 
 	end
 end
-function UnitDrama.set_next_look_at_position(A0_42, A1_43, A2_44, A3_45)
-	A0_42._unit:player_data().look_at_position = A1_43
-	A0_42._unit:player_data().look_at_relative_fov = A3_45
-	A0_42._look_at_timer = A2_44
+
+UnitDrama.set_next_look_at_position = function(l_15_0, l_15_1, l_15_2, l_15_3)
+	local l_15_4 = l_15_0._unit:player_data()
+	l_15_4.look_at_position = l_15_1
+	l_15_4.look_at_relative_fov = l_15_3
+	l_15_0._look_at_timer = l_15_2
 end
-function UnitDrama.set_next_look_at_unit(A0_46, A1_47, A2_48, A3_49)
-	A0_46._look_at_unit = A1_47
-	A0_46:set_next_look_at_position(A1_47:position(), A2_48, A3_49)
+
+UnitDrama.set_next_look_at_unit = function(l_16_0, l_16_1, l_16_2, l_16_3)
+	l_16_0._look_at_unit = l_16_1
+	l_16_0:set_next_look_at_position(l_16_1:position(), l_16_2, l_16_3)
 end
-function UnitDrama.update_look_at_timer(A0_50, A1_51)
-	if A0_50._look_at_timer then
-		A0_50._look_at_timer = A0_50._look_at_timer - A1_51
-		if A0_50._look_at_timer <= 0 then
-			A0_50._look_at_timer = nil
-			A0_50._unit:player_data().look_at_position = nil
-			A0_50._unit:player_data().look_at_relative_fov = nil
-			A0_50._look_at_unit = nil
+
+UnitDrama.update_look_at_timer = function(l_17_0, l_17_1)
+	if l_17_0._look_at_timer then
+		l_17_0._look_at_timer = l_17_0._look_at_timer - l_17_1
+	if l_17_0._look_at_timer <= 0 then
 		end
+		l_17_0._look_at_timer = nil
+		local l_17_2 = l_17_0._unit:player_data()
+		l_17_2.look_at_position = nil
+		l_17_2.look_at_relative_fov = nil
+		l_17_0._look_at_unit = nil
 	end
-	if A0_50._look_at_unit ~= nil and alive(A0_50._look_at_unit) then
-		A0_50._unit:player_data().look_at_position = A0_50._look_at_unit:position()
+	if l_17_0._look_at_unit ~= nil and alive(l_17_0._look_at_unit) then
+		l_17_0._unit:player_data().look_at_position = l_17_0._look_at_unit:position()
 	end
 end
+
+

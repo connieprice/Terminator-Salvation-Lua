@@ -1,120 +1,168 @@
 require("units/beings/player_tank/gui/MachineText")
 require("units/beings/player_tank/gui/ReticuleArrowStates")
-ReticuleArrow = ReticuleArrow or class()
-function ReticuleArrow.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7, A8_8)
-	A0_0.parent_panel = A1_1
-	A0_0._size_modifier = A8_8 or 1
-	A0_0._x = A3_3
-	A0_0._y = A4_4
-	A0_0._align_x = A5_5
-	A0_0._align_y = A6_6
-	A0_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
-	A0_0._arrow_texture = A0_0.parent_panel:bitmap({name = A2_2, texture = A2_2})
-	A0_0._arrow_texture:set_size(64 * A0_0._size_modifier, 64 * A0_0._size_modifier)
-	if A7_7 then
-		A0_0._arrow_texture:rotate(A7_7)
+if not ReticuleArrow then
+	ReticuleArrow = class()
+end
+ReticuleArrow.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7, l_1_8)
+	l_1_0.parent_panel = l_1_1
+	l_1_0._size_modifier = l_1_8 or 1
+	l_1_0._x = l_1_3
+	l_1_0._y = l_1_4
+	l_1_0._align_x = l_1_5
+	l_1_0._align_y = l_1_6
+	l_1_0._color = tweak_data.machine.hud.HIGHLIGHT_COLOR_TWEAK
+	local l_1_10 = l_1_0.parent_panel:bitmap
+	do
+		local l_1_11 = l_1_0.parent_panel
+		l_1_10 = l_1_10(l_1_11, {name = l_1_2, texture = l_1_2})
+		l_1_0._arrow_texture = l_1_10
+		l_1_10 = l_1_0._arrow_texture
+		l_1_10, l_1_11 = l_1_10:set_size, l_1_10
+		l_1_10(l_1_11, 64 * l_1_0._size_modifier, 64 * l_1_0._size_modifier)
+		if l_1_7 then
+			l_1_10 = l_1_0._arrow_texture
+			l_1_10, l_1_11 = l_1_10:rotate, l_1_10
+			l_1_10(l_1_11, l_1_7)
+		end
+		l_1_10 = l_1_0._align_x
+		l_1_10, l_1_11 = l_1_10:find, l_1_10
+		l_1_10 = l_1_10(l_1_11, "right")
+		if l_1_10 then
+			l_1_10 = l_1_0._arrow_texture
+			l_1_10, l_1_11 = l_1_10:set_right, l_1_10
+			l_1_10(l_1_11, l_1_0._x)
+		else
+			l_1_10 = l_1_0._align_x
+			l_1_10, l_1_11 = l_1_10:find, l_1_10
+			l_1_10 = l_1_10(l_1_11, "left")
+			if l_1_10 then
+				l_1_10 = l_1_0._arrow_texture
+				l_1_10, l_1_11 = l_1_10:set_left, l_1_10
+				l_1_10(l_1_11, l_1_0._x)
+			end
+		else
+			l_1_10 = l_1_0._arrow_texture
+			l_1_10, l_1_11 = l_1_10:set_center_x, l_1_10
+			l_1_10(l_1_11, l_1_0._x)
+		end
+		l_1_10 = l_1_0._align_y
+		l_1_10, l_1_11 = l_1_10:find, l_1_10
+		l_1_10 = l_1_10(l_1_11, "top")
+		if l_1_10 then
+			l_1_10 = l_1_0._arrow_texture
+			l_1_10, l_1_11 = l_1_10:set_top, l_1_10
+			l_1_10(l_1_11, l_1_0._y)
+		else
+			l_1_10 = l_1_0._align_y
+			l_1_10, l_1_11 = l_1_10:find, l_1_10
+			l_1_10 = l_1_10(l_1_11, "bottom")
+			if l_1_10 then
+				l_1_10 = l_1_0._arrow_texture
+				l_1_10, l_1_11 = l_1_10:set_bottom, l_1_10
+				l_1_10(l_1_11, l_1_0._y)
+			end
+		else
+			l_1_10 = l_1_0._arrow_texture
+			l_1_10, l_1_11 = l_1_10:set_center_y, l_1_10
+			l_1_10(l_1_11, l_1_0._y)
+		end
+		l_1_10 = FiniteStateMachine
+		l_1_10, l_1_11 = l_1_10:new, l_1_10
+		l_1_10 = l_1_10(l_1_11, l_1_0, "_reticule_arrow", ReticuleArrowIdleState)
+		l_1_0._state = l_1_10
+		l_1_10 = l_1_0._state
+		l_1_10, l_1_11 = l_1_10:set_debug, l_1_10
+		l_1_10(l_1_11, false)
+		l_1_10 = l_1_0._arrow_texture
+		l_1_10, l_1_11 = l_1_10:x, l_1_10
+		l_1_10 = l_1_10(l_1_11)
+		l_1_0._x = l_1_10
+		l_1_10 = l_1_0._arrow_texture
+		l_1_10, l_1_11 = l_1_10:y, l_1_10
+		l_1_10 = l_1_10(l_1_11)
+		l_1_0._y = l_1_10
+		l_1_10 = l_1_0._x
+		l_1_0._current_x = l_1_10
+		l_1_10 = l_1_0._y
+		l_1_0._current_y = l_1_10
+		l_1_10, l_1_11 = l_1_0:set_alpha, l_1_0
+		l_1_10(l_1_11, 0)
 	end
-	if A0_0._align_x:find("right") then
-		A0_0._arrow_texture:set_right(A0_0._x)
-	elseif A0_0._align_x:find("left") then
-		A0_0._arrow_texture:set_left(A0_0._x)
-	else
-		A0_0._arrow_texture:set_center_x(A0_0._x)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+ReticuleArrow.set_move_in_end_position = function(l_2_0, l_2_1, l_2_2)
+	l_2_0._move_in_end_position = {}
+	l_2_0._move_in_end_position.x = l_2_0._arrow_texture:x() + l_2_1
+	l_2_0._move_in_end_position.y = l_2_0._arrow_texture:y() + l_2_2
+end
+
+ReticuleArrow.get_move_in_end_position = function(l_3_0)
+	if not l_3_0._move_in_end_position then
+		return nil, nil
 	end
-	if A0_0._align_y:find("top") then
-		A0_0._arrow_texture:set_top(A0_0._y)
-	elseif A0_0._align_y:find("bottom") then
-		A0_0._arrow_texture:set_bottom(A0_0._y)
-	else
-		A0_0._arrow_texture:set_center_y(A0_0._y)
-	end
-	A0_0._state = FiniteStateMachine:new(A0_0, "_reticule_arrow", ReticuleArrowIdleState)
-	A0_0._state:set_debug(false)
-	A0_0._x = A0_0._arrow_texture:x()
-	A0_0._y = A0_0._arrow_texture:y()
-	A0_0._current_x = A0_0._x
-	A0_0._current_y = A0_0._y
-	A0_0:set_alpha(0)
+	return l_3_0._move_in_end_position.x, l_3_0._move_in_end_position.y
 end
-function ReticuleArrow.set_move_in_end_position(A0_9, A1_10, A2_11)
-	local L3_12
-	L3_12 = {}
-	A0_9._move_in_end_position = L3_12
-	L3_12 = A0_9._move_in_end_position
-	L3_12.x = A0_9._arrow_texture:x() + A1_10
-	L3_12 = A0_9._move_in_end_position
-	L3_12.y = A0_9._arrow_texture:y() + A2_11
+
+ReticuleArrow.get_current_position = function(l_4_0)
+	return l_4_0._arrow_texture:x(), l_4_0._arrow_texture:y()
 end
-function ReticuleArrow.get_move_in_end_position(A0_13)
-	local L1_14
-	L1_14 = A0_13._move_in_end_position
-	if not L1_14 then
-		L1_14 = nil
-		return L1_14, nil
-	end
-	L1_14 = A0_13._move_in_end_position
-	L1_14 = L1_14.x
-	return L1_14, A0_13._move_in_end_position.y
+
+ReticuleArrow.get_original_position = function(l_5_0)
+	return l_5_0._x, l_5_0._y
 end
-function ReticuleArrow.get_current_position(A0_15)
-	return A0_15._arrow_texture:x(), A0_15._arrow_texture:y()
+
+ReticuleArrow.get_alpha = function(l_6_0)
+	return l_6_0._alpha
 end
-function ReticuleArrow.get_original_position(A0_16)
-	local L1_17, L2_18
-	L1_17 = A0_16._x
-	L2_18 = A0_16._y
-	return L1_17, L2_18
+
+ReticuleArrow.set_alpha = function(l_7_0, l_7_1)
+	l_7_0._alpha = l_7_1
+	l_7_0._arrow_texture:set_color(l_7_0._color:with_alpha(l_7_1 * tweak_data.machine.hud.MAIN_ALPHA))
 end
-function ReticuleArrow.get_alpha(A0_19)
-	local L1_20
-	L1_20 = A0_19._alpha
-	return L1_20
+
+ReticuleArrow.set_position = function(l_8_0, l_8_1, l_8_2)
+	l_8_0._arrow_texture:set_x(l_8_1)
+	l_8_0._arrow_texture:set_y(l_8_2)
+	l_8_0._current_x = l_8_1
+	l_8_0._current_y = l_8_2
 end
-function ReticuleArrow.set_alpha(A0_21, A1_22)
-	local L3_23
-	A0_21._alpha = A1_22
-	L3_23 = A0_21._arrow_texture
-	L3_23 = L3_23.set_color
-	L3_23(L3_23, A0_21._color:with_alpha(A1_22 * tweak_data.machine.hud.MAIN_ALPHA))
+
+ReticuleArrow.wants_to_move_in = function(l_9_0)
+	return l_9_0._wants_to_move_in
 end
-function ReticuleArrow.set_position(A0_24, A1_25, A2_26)
-	A0_24._arrow_texture:set_x(A1_25)
-	A0_24._arrow_texture:set_y(A2_26)
-	A0_24._current_x = A1_25
-	A0_24._current_y = A2_26
+
+ReticuleArrow.wants_to_move_out = function(l_10_0)
+	return l_10_0._wants_to_move_out
 end
-function ReticuleArrow.wants_to_move_in(A0_27)
-	local L1_28
-	L1_28 = A0_27._wants_to_move_in
-	return L1_28
+
+ReticuleArrow.move_in = function(l_11_0)
+	l_11_0._wants_to_move_in = true
+	l_11_0._wants_to_move_out = false
 end
-function ReticuleArrow.wants_to_move_out(A0_29)
-	local L1_30
-	L1_30 = A0_29._wants_to_move_out
-	return L1_30
+
+ReticuleArrow.move_out = function(l_12_0)
+	l_12_0._wants_to_move_in = false
+	l_12_0._wants_to_move_out = true
 end
-function ReticuleArrow.move_in(A0_31)
-	local L1_32
-	A0_31._wants_to_move_in = true
-	A0_31._wants_to_move_out = false
+
+ReticuleArrow.update = function(l_13_0, l_13_1, l_13_2)
+	l_13_0._state:update(l_13_2)
 end
-function ReticuleArrow.move_out(A0_33)
-	local L1_34
-	A0_33._wants_to_move_in = false
-	A0_33._wants_to_move_out = true
-end
-function ReticuleArrow.update(A0_35, A1_36, A2_37)
-	A0_35._state:update(A2_37)
-end
-function ReticuleArrow.at_end_position(A0_38)
-	if math.abs(A0_38._current_x - A0_38._move_in_end_position.x) < 0.01 and 0.01 > math.abs(A0_38._current_y - A0_38._move_in_end_position.y) then
+
+ReticuleArrow.at_end_position = function(l_14_0)
+	if math.abs(l_14_0._current_x - l_14_0._move_in_end_position.x) < 0.01 and math.abs(l_14_0._current_y - l_14_0._move_in_end_position.y) < 0.01 then
 		return true
 	end
 	return false
 end
-function ReticuleArrow.at_start_position(A0_39)
-	if math.abs(A0_39._current_x - A0_39._x) < 0.01 and 0.01 > math.abs(A0_39._current_y - A0_39._y) then
+
+ReticuleArrow.at_start_position = function(l_15_0)
+	if math.abs(l_15_0._current_x - l_15_0._x) < 0.01 and math.abs(l_15_0._current_y - l_15_0._y) < 0.01 then
 		return true
 	end
 	return false
 end
+
+

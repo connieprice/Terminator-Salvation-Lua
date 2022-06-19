@@ -1,78 +1,93 @@
 require("network/replay/WriteReplay")
 require("network/replay/ReadReplay")
-ReplayManager = ReplayManager or class()
-function ReplayManager.init(A0_0)
-	local L1_1
+if not ReplayManager then
+	ReplayManager = class()
 end
-function ReplayManager.record(A0_2)
-	A0_2._write_replay = WriteReplay:new()
+ReplayManager.init = function(l_1_0)
 end
-function ReplayManager.play(A0_3)
-	A0_3._read_replay = ReadReplay:new()
+
+ReplayManager.record = function(l_2_0)
+	l_2_0._write_replay = WriteReplay:new()
 end
-function ReplayManager.stop(A0_4)
-	if A0_4._write_replay then
-		A0_4._write_replay:destroy()
-		A0_4._write_replay = nil
+
+ReplayManager.play = function(l_3_0)
+	l_3_0._read_replay = ReadReplay:new()
+end
+
+ReplayManager.stop = function(l_4_0)
+	if l_4_0._write_replay then
+		l_4_0._write_replay:destroy()
+		l_4_0._write_replay = nil
 	end
-	if A0_4._read_replay then
-		A0_4._read_replay:destroy()
-		A0_4._read_replay = nil
-	end
-end
-function ReplayManager.update(A0_5, A1_6)
-	if A0_5._write_replay then
-		A0_5._write_replay:update(A1_6)
-	end
-	if A0_5._read_replay then
-		A0_5._read_replay:update(A1_6)
+	if l_4_0._read_replay then
+		l_4_0._read_replay:destroy()
+		l_4_0._read_replay = nil
 	end
 end
-function ReplayManager.unit_input(A0_7, A1_8, A2_9)
-	if not A0_7._write_replay then
-		return
+
+ReplayManager.update = function(l_5_0, l_5_1)
+	if l_5_0._write_replay then
+		l_5_0._write_replay:update(l_5_1)
 	end
-	A0_7._write_replay:write_input(A1_8, A2_9)
-end
-function ReplayManager.user_joined_game(A0_10, A1_11, A2_12)
-	if not A0_10._write_replay then
-		return
+	if l_5_0._read_replay then
+		l_5_0._read_replay:update(l_5_1)
 	end
-	A0_10._write_replay:write_user_joined_game(A1_11, A2_12)
 end
-function ReplayManager.user_left_game(A0_13, A1_14)
-	if not A0_13._write_replay then
-		return
+
+ReplayManager.unit_input = function(l_6_0, l_6_1, l_6_2)
+	if not l_6_0._write_replay then
+		return 
 	end
-	A0_13._write_replay:write_user_left_game(A1_14)
+	l_6_0._write_replay:write_input(l_6_1, l_6_2)
 end
-function ReplayManager.arbitrate_interact(A0_15, A1_16, A2_17)
-	if not A0_15._write_replay then
-		return
+
+ReplayManager.user_joined_game = function(l_7_0, l_7_1, l_7_2)
+	if not l_7_0._write_replay then
+		return 
 	end
-	A0_15._write_replay:write_arbitrate_interact(A1_16, A2_17)
+	l_7_0._write_replay:write_user_joined_game(l_7_1, l_7_2)
 end
-function ReplayManager.interact(A0_18, A1_19, A2_20)
-	if not A0_18._write_replay then
-		return
+
+ReplayManager.user_left_game = function(l_8_0, l_8_1)
+	if not l_8_0._write_replay then
+		return 
 	end
-	A0_18._write_replay:write_interact(A1_19, A2_20)
+	l_8_0._write_replay:write_user_left_game(l_8_1)
 end
-function ReplayManager.arbitrate_interact(A0_21, A1_22, A2_23)
-	if not A0_21._write_replay then
-		return
+
+ReplayManager.arbitrate_interact = function(l_9_0, l_9_1, l_9_2)
+	if not l_9_0._write_replay then
+		return 
 	end
-	A0_21._write_replay:write_arbitrate_interact(A1_22, A2_23)
+	l_9_0._write_replay:write_arbitrate_interact(l_9_1, l_9_2)
 end
-function ReplayManager.arbitrate_pick_up(A0_24, A1_25, A2_26)
-	if not A0_24._write_replay then
-		return
+
+ReplayManager.interact = function(l_10_0, l_10_1, l_10_2)
+	if not l_10_0._write_replay then
+		return 
 	end
-	A0_24._write_replay:write_arbitrate_pick_up(A1_25, A2_26)
+	l_10_0._write_replay:write_interact(l_10_1, l_10_2)
 end
-function ReplayManager.pick_up(A0_27, A1_28, A2_29)
-	if not A0_27._write_replay then
-		return
+
+ReplayManager.arbitrate_interact = function(l_11_0, l_11_1, l_11_2)
+	if not l_11_0._write_replay then
+		return 
 	end
-	A0_27._write_replay:write_pick_up(A1_28, A2_29)
+	l_11_0._write_replay:write_arbitrate_interact(l_11_1, l_11_2)
 end
+
+ReplayManager.arbitrate_pick_up = function(l_12_0, l_12_1, l_12_2)
+	if not l_12_0._write_replay then
+		return 
+	end
+	l_12_0._write_replay:write_arbitrate_pick_up(l_12_1, l_12_2)
+end
+
+ReplayManager.pick_up = function(l_13_0, l_13_1, l_13_2)
+	if not l_13_0._write_replay then
+		return 
+	end
+	l_13_0._write_replay:write_pick_up(l_13_1, l_13_2)
+end
+
+

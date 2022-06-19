@@ -1,44 +1,46 @@
-ActionEventInfo = ActionEventInfo or class()
-function ActionEventInfo.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5)
-	A0_0._start_args = A4_4
-	A0_0._name = A2_2
-	A0_0._emitter = A1_1
-	A0_0._unit = A3_3
-	A0_0._listeners = A5_5
-	A0_0._pending_stop = false
+if not ActionEventInfo then
+	ActionEventInfo = class()
 end
-function ActionEventInfo.set_change(A0_6, A1_7)
-	A0_6._change_args = A1_7
+ActionEventInfo.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5)
+	l_1_0._start_args = l_1_4
+	l_1_0._name = l_1_2
+	l_1_0._emitter = l_1_1
+	l_1_0._unit = l_1_3
+	l_1_0._listeners = l_1_5
+	l_1_0._pending_stop = false
 end
-function ActionEventInfo.name(A0_8)
-	local L1_9
-	L1_9 = A0_8._name
-	return L1_9
+
+ActionEventInfo.set_change = function(l_2_0, l_2_1)
+	l_2_0._change_args = l_2_1
 end
-function ActionEventInfo.emitter(A0_10)
-	local L1_11
-	L1_11 = A0_10._emitter
-	return L1_11
+
+ActionEventInfo.name = function(l_3_0)
+	return l_3_0._name
 end
-function ActionEventInfo.unit(A0_12)
-	local L1_13
-	L1_13 = A0_12._unit
-	return L1_13
+
+ActionEventInfo.emitter = function(l_4_0)
+	return l_4_0._emitter
 end
-function ActionEventInfo.listeners(A0_14)
-	local L1_15
-	L1_15 = A0_14._listeners
-	return L1_15
+
+ActionEventInfo.unit = function(l_5_0)
+	return l_5_0._unit
 end
-function ActionEventInfo.remove_listener(A0_16, A1_17)
-	A0_16._listeners[A1_17] = nil
+
+ActionEventInfo.listeners = function(l_6_0)
+	return l_6_0._listeners
 end
-function ActionEventInfo.set_pending_stop(A0_18)
-	assert(not A0_18._pending_stop)
-	A0_18._pending_stop = true
+
+ActionEventInfo.remove_listener = function(l_7_0, l_7_1)
+	l_7_0._listeners[l_7_1] = nil
 end
-function ActionEventInfo.pending_stop(A0_19)
-	local L1_20
-	L1_20 = A0_19._pending_stop
-	return L1_20
+
+ActionEventInfo.set_pending_stop = function(l_8_0)
+	assert(not l_8_0._pending_stop)
+	l_8_0._pending_stop = true
 end
+
+ActionEventInfo.pending_stop = function(l_9_0)
+	return l_9_0._pending_stop
+end
+
+

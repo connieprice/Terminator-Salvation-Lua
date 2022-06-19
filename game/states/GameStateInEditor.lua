@@ -1,13 +1,20 @@
-GameStateInEditor = GameStateInEditor or class(FiniteStateMachineState)
-function GameStateInEditor.init(A0_0)
-	A0_0.game._is_in_editor = true
+if not GameStateInEditor then
+	GameStateInEditor = class(FiniteStateMachineState)
+end
+GameStateInEditor.init = function(l_1_0)
+	l_1_0.game._is_in_editor = true
 	managers.game_transition:clear_wants_to_go_to_frontend()
-	A0_0.game:_request_show_menu_frontend()
+	l_1_0.game:_request_show_menu_frontend()
 end
-function GameStateInEditor.transition(A0_1)
-	return check_for_host_or_join_session()
+
+GameStateInEditor.transition = function(l_2_0)
+	local l_2_1 = check_for_host_or_join_session
+	return l_2_1()
 end
-function GameStateInEditor.exit(A0_2)
-	A0_2.game._is_in_editor = false
-	A0_2.game:_clear_request_show_menu_frontend()
+
+GameStateInEditor.exit = function(l_3_0)
+	l_3_0.game._is_in_editor = false
+	l_3_0.game:_clear_request_show_menu_frontend()
 end
+
+

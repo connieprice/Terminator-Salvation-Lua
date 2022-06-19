@@ -1,21 +1,27 @@
-SoundInstance = SoundInstance or class()
-function SoundInstance.init(A0_0, A1_1)
-	A0_0._sound_instance = A1_1
-	A0_0._wall_clock = TimerManager:game()
-	A0_0._start_time = A0_0._wall_clock:time()
+if not SoundInstance then
+	SoundInstance = class()
 end
-function SoundInstance.destroy(A0_2)
-	local L1_3
-	A0_2._sound_instance = nil
+SoundInstance.init = function(l_1_0, l_1_1)
+	l_1_0._sound_instance = l_1_1
+	l_1_0._wall_clock = TimerManager:game()
+	l_1_0._start_time = l_1_0._wall_clock:time()
 end
-function SoundInstance.stop(A0_4)
-	if alive(A0_4._sound_instance) and A0_4._sound_instance:is_playing() then
-		A0_4._sound_instance:stop()
+
+SoundInstance.destroy = function(l_2_0)
+	l_2_0._sound_instance = nil
+end
+
+SoundInstance.stop = function(l_3_0)
+	if alive(l_3_0._sound_instance) and l_3_0._sound_instance:is_playing() then
+		l_3_0._sound_instance:stop()
 	end
 end
-function SoundInstance.is_playing(A0_5)
-	if not alive(A0_5._sound_instance) or not A0_5._sound_instance:is_playing() then
+
+SoundInstance.is_playing = function(l_4_0)
+	if not alive(l_4_0._sound_instance) or not l_4_0._sound_instance:is_playing() then
 		return false
 	end
-	return A0_5._sound_instance:length_in_seconds() + 1 > A0_5._wall_clock:time() - A0_5._start_time
+	return l_4_0._wall_clock:time() - l_4_0._start_time < l_4_0._sound_instance:length_in_seconds() + 1
 end
+
+

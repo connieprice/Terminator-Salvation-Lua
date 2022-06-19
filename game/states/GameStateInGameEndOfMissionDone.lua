@@ -1,4 +1,7 @@
-GameStateInGameEndOfMissionDone = GameStateInGameEndOfMissionDone or class(FiniteStateMachineState)
-function GameStateInGameEndOfMissionDone.transition(A0_0)
-	local L1_1
+if not GameStateInGameEndOfMissionDone then
+	GameStateInGameEndOfMissionDone = class(FiniteStateMachineState)
 end
+GameStateInGameEndOfMissionDone.transition = function(l_1_0)
+end
+
+

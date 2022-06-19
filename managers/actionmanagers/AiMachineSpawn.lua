@@ -1,8 +1,13 @@
 require("managers/actionmanagers/AiUnitSpawn")
-AiMachineSpawn = AiMachineSpawn or class(AiUnitSpawn)
-function AiMachineSpawn._apply_behavior_options(A0_0, A1_1)
-	A1_1:ai_data().startup_mode = A0_0.startup_mode
+if not AiMachineSpawn then
+	AiMachineSpawn = class(AiUnitSpawn)
 end
-function AiMachineSpawn._setup_ai(A0_2, A1_3)
-	AiUnitSpawn._setup_ai(A0_2, A1_3)
+AiMachineSpawn._apply_behavior_options = function(l_1_0, l_1_1)
+	l_1_1:ai_data().startup_mode = l_1_0.startup_mode
 end
+
+AiMachineSpawn._setup_ai = function(l_2_0, l_2_1)
+	AiUnitSpawn._setup_ai(l_2_0, l_2_1)
+end
+
+

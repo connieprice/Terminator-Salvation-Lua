@@ -1,20 +1,28 @@
 require("units/beings/player/states/PlayerOnGround")
 require("units/beings/player/states/PlayerMovementState")
-PlayerPickingUp = PlayerPickingUp or class(PlayerMovementState)
-function PlayerPickingUp.init(A0_0, A1_1)
-	A0_0._unit_to_pick_up = A1_1:pick_up_target():unit_to_pick_up()
-	assert(A0_0._unit_to_pick_up)
-	PlayerMovementState.init(A0_0, A1_1, "PlayerPickingUp")
+if not PlayerPickingUp then
+	PlayerPickingUp = class(PlayerMovementState)
 end
-function PlayerPickingUp.update(A0_2, A1_3, A2_4)
-	if A0_2._base:check_fully_damaged() then
-		return (A0_2._base:check_fully_damaged())
+PlayerPickingUp.init = function(l_1_0, l_1_1)
+	l_1_0._unit_to_pick_up = l_1_1:pick_up_target():unit_to_pick_up()
+	assert(l_1_0._unit_to_pick_up)
+	PlayerMovementState.init(l_1_0, l_1_1, "PlayerPickingUp")
+end
+
+PlayerPickingUp.update = function(l_2_0, l_2_1, l_2_2)
+	local l_2_3 = l_2_0._base:check_fully_damaged()
+	if l_2_3 then
+		return l_2_3
 	end
-	if not A0_2._player_data.picking_up then
-		A0_2:_pickup_done()
-		return PlayerOnGround:new(A0_2._unit)
+	if not l_2_0._player_data.picking_up then
+		l_2_0:_pickup_done()
+		local l_2_4, l_2_5 = PlayerOnGround:new, PlayerOnGround
+		local l_2_6 = l_2_0._unit
+		return l_2_4(l_2_5, l_2_6)
 	end
 end
-function PlayerPickingUp._pickup_done(A0_5)
-	local L1_6
+
+PlayerPickingUp._pickup_done = function(l_3_0)
 end
+
+

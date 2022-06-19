@@ -1,56 +1,43 @@
 require("shared/camera/SharedCamera")
-KeepActivationRotationCamera = KeepActivationRotationCamera or class(SharedCamera)
-function KeepActivationRotationCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0._activation_rotation = Rotation()
+if not KeepActivationRotationCamera then
+	KeepActivationRotationCamera = class(SharedCamera)
 end
-function KeepActivationRotationCamera.on_activate(A0_2, A1_3)
-	local L2_4, L3_5, L4_6, L5_7
-	L2_4 = SharedCamera
-	L2_4 = L2_4.on_activate
-	L3_5 = A0_2
-	L4_6 = A1_3
-	L2_4(L3_5, L4_6)
-	if A1_3 then
-		L2_4 = A0_2._root_unit
-		L3_5 = L2_4
-		L2_4 = L2_4.camera
-		L2_4 = L2_4(L3_5)
-		L2_4 = L2_4._camera_data
-		L2_4 = L2_4.rotation
-		L3_5 = A0_2._keep_yaw
-		if L3_5 then
-			L4_6 = L2_4
-			L3_5 = L2_4.roll
-			L3_5 = L3_5(L4_6)
-		else
-			L3_5 = L3_5 or 0
+KeepActivationRotationCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._activation_rotation = Rotation()
+end
+
+KeepActivationRotationCamera.on_activate = function(l_2_0, l_2_1)
+	SharedCamera.on_activate(l_2_0, l_2_1)
+	if l_2_1 then
+		local l_2_2 = l_2_0._root_unit:camera()._camera_data.rotation
+		do
+			local l_2_3, l_2_5, l_2_8, l_2_9 = l_2_0._keep_yaw and l_2_2:roll() or 0
+		do
+			end
+			local l_2_4, l_2_6, l_2_10 = , l_2_0._keep_pitch and l_2_2:yaw() or 0
+		do
+			end
+			local l_2_7, l_2_11 = nil
 		end
-		L4_6 = A0_2._keep_pitch
-		if L4_6 then
-			L5_7 = L2_4
-			L4_6 = L2_4.yaw
-			L4_6 = L4_6(L5_7)
-		else
-			L4_6 = L4_6 or 0
-		end
-		L5_7 = A0_2._keep_roll
-		if L5_7 then
-			L5_7 = L2_4.pitch
-			L5_7 = L5_7(L2_4)
-		else
-			L5_7 = L5_7 or 0
-		end
-		A0_2._activation_rotation = Rotation(L4_6, L5_7, L3_5)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_2_0._activation_rotation = Rotation(l_2_11, l_2_0._keep_roll and l_2_2:pitch() or 0, l_2_7)
 	end
 end
-function KeepActivationRotationCamera.parse_parameters(A0_8, A1_9)
-	SharedCamera.parse_parameters(A0_8, A1_9)
-	A0_8._keep_yaw = A1_9.keep_yaw
-	A0_8._keep_pitch = A1_9.keep_pitch
-	A0_8._keep_roll = A1_9.keep_roll
+
+KeepActivationRotationCamera.parse_parameters = function(l_3_0, l_3_1)
+	SharedCamera.parse_parameters(l_3_0, l_3_1)
+	l_3_0._keep_yaw = l_3_1.keep_yaw
+	l_3_0._keep_pitch = l_3_1.keep_pitch
+	l_3_0._keep_roll = l_3_1.keep_roll
 end
-function KeepActivationRotationCamera.update(A0_10, A1_11, A2_12, A3_13, A4_14)
-	A0_10:set_local_rotation_from_world_rotation(A0_10._activation_rotation)
-	SharedCamera.update(A0_10, A1_11, A2_12, A3_13, A4_14)
+
+KeepActivationRotationCamera.update = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4)
+	l_4_0:set_local_rotation_from_world_rotation(l_4_0._activation_rotation)
+	SharedCamera.update(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4)
 end
+
+

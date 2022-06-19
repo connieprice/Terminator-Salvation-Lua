@@ -1,8 +1,13 @@
-AMAiOrder = AMAiOrder or class(CoreActionElement)
-function AMAiOrder.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMAiOrder then
+	AMAiOrder = class(CoreActionElement)
 end
-function AMAiOrder.activate_now(A0_3)
-	managers.director.order:give_order(A0_3.units, A0_3.waypoint_paths, A0_3.movement_options, A0_3.order, A0_3.area_cluster)
-	A0_3:deactivate_now()
+AMAiOrder.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
+
+AMAiOrder.activate_now = function(l_2_0)
+	managers.director.order:give_order(l_2_0.units, l_2_0.waypoint_paths, l_2_0.movement_options, l_2_0.order, l_2_0.area_cluster)
+	l_2_0:deactivate_now()
+end
+
+

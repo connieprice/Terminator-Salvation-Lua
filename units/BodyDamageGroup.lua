@@ -1,60 +1,66 @@
-BodyDamageGroup = BodyDamageGroup or class()
-function BodyDamageGroup.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7, A8_8, A9_9)
-	A0_0.name = A5_5
-	A0_0._unit = A1_1
-	A0_0._unit_extension = A2_2
-	A0_0._destroyed_sequence_name = A3_3
-	A0_0._damaged_sequence_name = A4_4
-	A0_0._damage = 0
-	A0_0._endurance = A6_6
-	A0_0._destroyed = false
-	A0_0._group_destroyed_callback = A7_7
-	A0_0._damage_steps = A8_8
-	A0_0._can_recive_dmg = true
-	A0_0:get_next_damage_step()
-	A0_0._damage_threshold = A9_9 or 0
+if not BodyDamageGroup then
+	BodyDamageGroup = class()
 end
-function BodyDamageGroup.add_damage(A0_10, A1_11)
-	if A0_10._can_recive_dmg == false or A0_10._unit:damage_data().invulnerable then
-		return
+BodyDamageGroup.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7, l_1_8, l_1_9)
+	l_1_0.name = l_1_5
+	l_1_0._unit = l_1_1
+	l_1_0._unit_extension = l_1_2
+	l_1_0._destroyed_sequence_name = l_1_3
+	l_1_0._damaged_sequence_name = l_1_4
+	l_1_0._damage = 0
+	l_1_0._endurance = l_1_6
+	l_1_0._destroyed = false
+	l_1_0._group_destroyed_callback = l_1_7
+	l_1_0._damage_steps = l_1_8
+	l_1_0._can_recive_dmg = true
+	l_1_0:get_next_damage_step()
+	do
+		l_1_0._damage_threshold = l_1_9 or 0
 	end
-	A0_10._damage = A0_10._damage + A1_11
-	if not A0_10._destroyed then
-		if A0_10._damage > A0_10._endurance then
-			A0_10._destroyed = true
-			if A0_10._destroyed_sequence_name and A0_10._destroyed_sequence_name ~= "" then
-				Application:debug("Running kill sequence: ", A0_10._destroyed_sequence_name)
-				managers.sequence:run_sequence_simple(A0_10._destroyed_sequence_name, A0_10._unit)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+BodyDamageGroup.add_damage = function(l_2_0, l_2_1)
+	if l_2_0._can_recive_dmg == false or l_2_0._unit:damage_data().invulnerable then
+		return 
+	end
+	if not l_2_0._destroyed then
+		if l_2_0._endurance < l_2_0._damage then
+			if l_2_0._destroyed_sequence_name and l_2_0._destroyed_sequence_name ~= "" then
+				Application:debug("Running kill sequence: ", l_2_0._destroyed_sequence_name)
+				managers.sequence:run_sequence_simple(l_2_0._destroyed_sequence_name, l_2_0._unit)
 			end
-			if A0_10._group_destroyed_callback then
-				A0_10._group_destroyed_callback(A0_10)
+		if l_2_0._group_destroyed_callback then
 			end
-		elseif A0_10._damage < A0_10._endurance * A0_10._damage_threshold and A0_10._damage > A0_10._endurance * A0_10._damage_threshold and A0_10._damaged_sequence_name ~= nil and A0_10._damaged_sequence_name ~= "" then
-			Application:debug("Running dmg sequence: ", A0_10._damaged_sequence_name)
-			managers.sequence:run_sequence_simple(A0_10._damaged_sequence_name, A0_10._unit)
-		elseif A0_10._next_damage_step ~= nil and A0_10._damage >= A0_10._next_damage_step.damage then
-			managers.sequence:run_sequence_simple(A0_10._next_damage_step.sequence_name, A0_10._unit)
-			A0_10:get_next_damage_step()
+			l_2_0._group_destroyed_callback(l_2_0)
 		end
+	elseif l_2_0._damage < l_2_0._endurance * l_2_0._damage_threshold and l_2_0._endurance * l_2_0._damage_threshold < l_2_0._damage and l_2_0._damaged_sequence_name ~= nil and l_2_0._damaged_sequence_name ~= "" then
+		Application:debug("Running dmg sequence: ", l_2_0._damaged_sequence_name)
+		managers.sequence:run_sequence_simple(l_2_0._damaged_sequence_name, l_2_0._unit)
+	elseif l_2_0._next_damage_step ~= nil and l_2_0._next_damage_step.damage <= l_2_0._damage then
+		managers.sequence:run_sequence_simple(l_2_0._next_damage_step.sequence_name, l_2_0._unit)
+		l_2_0:get_next_damage_step()
 	end
 end
-function BodyDamageGroup.get_next_damage_step(A0_12)
-	if A0_12._damage_steps ~= nil then
-		A0_12._next_damage_step = table.remove(A0_12._damage_steps, 1)
-		if A0_12._next_damage_step then
-			A0_12._next_damage_step.damage = A0_12._next_damage_step.damage * A0_12._endurance
+
+BodyDamageGroup.get_next_damage_step = function(l_3_0)
+	if l_3_0._damage_steps ~= nil then
+		l_3_0._next_damage_step = table.remove(l_3_0._damage_steps, 1)
+	if l_3_0._next_damage_step then
 		end
+		l_3_0._next_damage_step.damage = l_3_0._next_damage_step.damage * l_3_0._endurance
 	end
 end
-function BodyDamageGroup.activate(A0_13, A1_14)
-	A0_13._can_recive_dmg = A1_14
+
+BodyDamageGroup.activate = function(l_4_0, l_4_1)
+	l_4_0._can_recive_dmg = l_4_1
 end
-function BodyDamageGroup.is_active(A0_15)
-	local L1_16
-	L1_16 = A0_15._can_recive_dmg
-	if L1_16 then
-		L1_16 = A0_15._destroyed
-		L1_16 = not L1_16
+
+BodyDamageGroup.is_active = function(l_5_0)
+	if l_5_0._can_recive_dmg then
+		return not l_5_0._destroyed
 	end
-	return L1_16
 end
+
+

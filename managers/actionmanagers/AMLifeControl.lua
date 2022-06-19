@@ -1,64 +1,62 @@
-AMLifeControl = AMLifeControl or class(CoreActionElement)
-function AMLifeControl.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMLifeControl then
+	AMLifeControl = class(CoreActionElement)
 end
-function AMLifeControl.activate_now(A0_3)
-	if A0_3._mode == "invulnerable" then
-		A0_3:_invulnerable()
-	elseif A0_3._mode == "normal" then
-		A0_3:_normal()
-	elseif A0_3._mode == "unprotected" then
-		A0_3:_unprotected()
+AMLifeControl.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+end
+
+AMLifeControl.activate_now = function(l_2_0)
+	if l_2_0._mode == "invulnerable" then
+		l_2_0:_invulnerable()
+	elseif l_2_0._mode == "normal" then
+		l_2_0:_normal()
+	elseif l_2_0._mode == "unprotected" then
+		l_2_0:_unprotected()
 	end
-	A0_3:deactivate_now()
+	l_2_0:deactivate_now()
 end
-function AMLifeControl._invulnerable(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9, L6_10
-	L1_5(L2_6, L3_7)
-	for L4_8, L5_9 in L1_5(L2_6) do
-		L6_10 = managers
-		L6_10 = L6_10.unit_scripting
-		L6_10 = L6_10.get_unit_by_name
-		L6_10 = L6_10(L6_10, L5_9.script_name)
-		if alive(L6_10) then
-			L6_10:damage():set_can_die(false)
-			A0_4:_enable_stun(L6_10, false)
+
+AMLifeControl._invulnerable = function(l_3_0)
+	local l_3_4, l_3_5, l_3_6, l_3_7 = nil
+	cat_print("debug", "Invulnerable!!")
+	for i_0,i_1 in pairs(l_3_0.units) do
+		if alive(managers.unit_scripting:get_unit_by_name(i_1.script_name)) then
+			managers.unit_scripting:get_unit_by_name(i_1.script_name):damage():set_can_die(false)
+			l_3_0:_enable_stun(managers.unit_scripting:get_unit_by_name(i_1.script_name), false)
 		end
 	end
 end
-function AMLifeControl._normal(A0_11)
-	local L1_12, L2_13, L3_14, L4_15, L5_16, L6_17
-	L1_12(L2_13, L3_14)
-	for L4_15, L5_16 in L1_12(L2_13) do
-		L6_17 = managers
-		L6_17 = L6_17.unit_scripting
-		L6_17 = L6_17.get_unit_by_name
-		L6_17 = L6_17(L6_17, L5_16.script_name)
-		if alive(L6_17) then
-			L6_17:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
-			L6_17:damage():set_can_die(true)
-			A0_11:_enable_stun(L6_17, true)
+
+AMLifeControl._normal = function(l_4_0)
+	local l_4_4, l_4_5, l_4_6, l_4_7 = nil
+	cat_print("debug", "Normal!!")
+	for i_0,i_1 in pairs(l_4_0.units) do
+		if alive(managers.unit_scripting:get_unit_by_name(i_1.script_name)) then
+			managers.unit_scripting:get_unit_by_name(i_1.script_name):damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
+			managers.unit_scripting:get_unit_by_name(i_1.script_name):damage():set_can_die(true)
+			l_4_0:_enable_stun(managers.unit_scripting:get_unit_by_name(i_1.script_name), true)
 		end
 	end
 end
-function AMLifeControl._unprotected(A0_18)
-	local L1_19, L2_20, L3_21, L4_22, L5_23, L6_24
-	L1_19(L2_20, L3_21)
-	for L4_22, L5_23 in L1_19(L2_20) do
-		L6_24 = managers
-		L6_24 = L6_24.unit_scripting
-		L6_24 = L6_24.get_unit_by_name
-		L6_24 = L6_24(L6_24, L5_23.script_name)
-		if alive(L6_24) then
-			L6_24:damage_data():scale_health(5)
-			L6_24:damage():set_can_die(true)
-			L6_24:damage():set_immune_to_damage(false)
-			A0_18:_enable_stun(L6_24, true)
+
+AMLifeControl._unprotected = function(l_5_0)
+	local l_5_4, l_5_5, l_5_6, l_5_7 = nil
+	cat_print("debug", "Unprotected!!")
+	for i_0,i_1 in pairs(l_5_0.units) do
+		if alive(managers.unit_scripting:get_unit_by_name(i_1.script_name)) then
+			managers.unit_scripting:get_unit_by_name(i_1.script_name):damage_data():scale_health(5)
+			managers.unit_scripting:get_unit_by_name(i_1.script_name):damage():set_can_die(true)
+			managers.unit_scripting:get_unit_by_name(i_1.script_name):damage():set_immune_to_damage(false)
+			l_5_0:_enable_stun(managers.unit_scripting:get_unit_by_name(i_1.script_name), true)
 		end
 	end
 end
-function AMLifeControl._enable_stun(A0_25, A1_26)
-	if A1_26:enemy_data() then
-		A1_26:enemy_data().can_be_stunned = false
+
+AMLifeControl._enable_stun = function(l_6_0, l_6_1)
+	local l_6_2 = l_6_1:enemy_data()
+	if l_6_2 then
+		l_6_2.can_be_stunned = false
 	end
 end
+
+

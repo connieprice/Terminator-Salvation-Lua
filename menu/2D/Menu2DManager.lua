@@ -21,421 +21,481 @@ require("menu/2D/Menu2DDistortion")
 require("menu/2D/Menu2DTitleLogo")
 require("menu/2D/Menu2DPageFlipper")
 require("menu/2D/Menu2DMouse")
-Menu2DManager = Menu2DManager or class()
+if not Menu2DManager then
+	Menu2DManager = class()
+end
 Menu2DManager._custom_controller_path = "settings/custom_controls.xml"
 Menu2DManager._default_controller_path = "settings/default_controls.xml"
-function Menu2DManager.init(A0_0)
-	local L1_1, L2_2, L3_3, L4_4
-	L1_1 = {}
-	L1_1.requested_state = "inactive"
-	L1_1.requested_dialog = nil
-	A0_0._state_transition_data = L1_1
-	L1_1 = {}
-	A0_0._sync_state = L1_1
-	L1_1 = {}
-	A0_0._settings = L1_1
-	L1_1 = {}
-	L2_2 = Menu2DSound
-	L3_3 = L2_2
-	L2_2 = L2_2.new
-	L2_2 = L2_2(L3_3)
-	L1_1.sound = L2_2
-	L2_2 = Menu2DEffects
-	L3_3 = L2_2
-	L2_2 = L2_2.new
-	L2_2 = L2_2(L3_3)
-	L1_1.effects = L2_2
-	A0_0._components = L1_1
-	A0_0._time_since_move = 0
-	L1_1 = Menu2DEvents
-	L2_2 = L1_1
-	L1_1 = L1_1.new
-	L1_1 = L1_1(L2_2)
-	A0_0._event_manager = L1_1
-	L2_2 = A0_0
-	L1_1 = A0_0._is_debug_mode
-	L1_1 = L1_1(L2_2)
-	if L1_1 then
-		L1_1 = Menu2DDebug
-		L2_2 = L1_1
-		L1_1 = L1_1.new
-		L1_1 = L1_1(L2_2)
-		A0_0._debug_manager = L1_1
+Menu2DManager.init = function(l_1_0)
+	local l_1_1 = {}
+	l_1_1.requested_state = "inactive"
+	l_1_1.requested_dialog = nil
+	l_1_0._state_transition_data = l_1_1
+	l_1_0._sync_state, l_1_1 = l_1_1, {}
+	l_1_0._settings, l_1_1 = l_1_1, {}
+	l_1_0._components, l_1_1 = l_1_1, {sound = Menu2DSound:new(), effects = Menu2DEffects:new()}
+	l_1_0._time_since_move = 0
+	l_1_1 = Menu2DEvents
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._event_manager = l_1_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_1_1 then
+		l_1_0._debug_manager = l_1_1
 	end
-	L2_2 = A0_0
-	L1_1 = A0_0._setup_resources
-	L1_1(L2_2)
-	L1_1 = A0_0._components
-	L2_2 = Menu2DPageFlipper
-	L3_3 = L2_2
-	L2_2 = L2_2.new
-	L4_4 = A0_0._components
-	L2_2 = L2_2(L3_3, L4_4, A0_0._settings)
-	L1_1.page_flipper = L2_2
-	L1_1 = Menu2DPageSelector
-	L2_2 = L1_1
-	L1_1 = L1_1.new
-	L3_3 = A0_0._components
-	L1_1 = L1_1(L2_2, L3_3)
-	A0_0._page_selector = L1_1
-	L1_1 = A0_0._components
-	L1_1 = L1_1.page_flipper
-	L2_2 = L1_1
-	L1_1 = L1_1.page_change_callbacks
-	L1_1 = L1_1(L2_2)
-	L1_1 = L1_1.add
-	L2_2 = A0_0
-	function L3_3(...)
-		local L1_6, L2_7, L3_8
-		L1_6 = _UPVALUE0_
-		L1_6 = L1_6._components
-		L1_6 = L1_6.sound
-		L2_7 = L1_6
-		L1_6 = L1_6.on_page_change
-		L3_8 = ...
-		L1_6(L2_7, L3_8)
-	end
-	L1_1(L2_2, L3_3)
-	L1_1 = {}
-	A0_0._state_flags = L1_1
-	L1_1 = managers
-	L1_1 = L1_1.viewport
-	L2_2 = L1_1
-	L1_1 = L1_1.add_resolution_changed_func
-	L3_3 = callback
-	L4_4 = A0_0
-	L4_4 = L3_3(L4_4, A0_0, "callback_resolution_changed")
-	L1_1(L2_2, L3_3, L4_4, L3_3(L4_4, A0_0, "callback_resolution_changed"))
-	L1_1 = {}
-	L2_2 = A0_0._components
-	L1_1.components = L2_2
-	L2_2 = A0_0._state_transition_data
-	L1_1.state_transition_data = L2_2
-	L2_2 = A0_0._state_flags
-	L1_1.state_flags = L2_2
-	L2_2 = A0_0._settings
-	L1_1.settings = L2_2
-	L2_2 = A0_0._sync_state
-	L1_1.sync_state = L2_2
-	L2_2 = {}
-	L2_2.menu = L1_1
-	L3_3 = Menu2DStatesMainTransitions
-	L2_2.state_transitions = L3_3
-	L3_3 = A0_0._state_transition_data
-	L3_3 = L3_3.requested_state
-	L4_4 = Menu2DStateTransitionLookup
-	L4_4 = L4_4.new
-	L4_4 = L4_4(L4_4, Menu2DStatesMainTransitions)
-	L4_4 = L4_4.state
-	L4_4 = L4_4(L4_4, L3_3)
-	A0_0._menu_state_machine = FiniteStateMachine:new(L2_2, "_state_data", L4_4)
-	A0_0._menu_state_machine:set_debug(true)
-	A0_0:_parse_level_id_xml()
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_1(l_1_0)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_1.page_flipper = Menu2DPageFlipper:new(l_1_0._components, l_1_0._settings)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._page_selector = l_1_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_1(l_1_0, function(...)
+		-- upvalues: l_1_0
+		l_1_0._components.sound:on_page_change(...)
+  end)
+	l_1_0._state_flags, l_1_1 = l_1_1, {}
+	l_1_1 = managers
+	l_1_1 = l_1_1.viewport
+	l_1_1(l_1_1, callback(l_1_0, l_1_0, "callback_resolution_changed"))
+	local l_1_2 = {}
+	l_1_2.menu, l_1_1 = l_1_1, {components = l_1_0._components, state_transition_data = l_1_0._state_transition_data, state_flags = l_1_0._state_flags, settings = l_1_0._settings, sync_state = l_1_0._sync_state}
+	l_1_2.state_transitions = Menu2DStatesMainTransitions
+	local l_1_3 = l_1_0._state_transition_data.requested_state
+	local l_1_4 = Menu2DStateTransitionLookup:new(Menu2DStatesMainTransitions):state(l_1_3)
+	l_1_0._menu_state_machine = FiniteStateMachine:new(l_1_2, "_state_data", l_1_4)
+	l_1_0._menu_state_machine:set_debug(true)
+	l_1_0:_parse_level_id_xml()
 end
-function Menu2DManager._shutdown_resources(A0_9)
-	A0_9._components.mouse:destroy()
-	A0_9._components.mouse = nil
-	A0_9._components.root_panel:clear()
-	A0_9._components.gui:destroy_workspace(A0_9._components.workspace)
-	Application:destroy_viewport(A0_9._vp)
+
+Menu2DManager._shutdown_resources = function(l_2_0)
+	l_2_0._components.mouse:destroy()
+	l_2_0._components.mouse = nil
+	l_2_0._components.root_panel:clear()
+	l_2_0._components.gui:destroy_workspace(l_2_0._components.workspace)
+	Application:destroy_viewport(l_2_0._vp)
 end
-function Menu2DManager._setup_resources(A0_10)
-	A0_10:_create_menu_viewport()
-	A0_10:calc_safe_rect()
-	A0_10:preload()
-	A0_10._components.distortion = Menu2DDistortion:new()
-	A0_10._components.distortion:set_parent(A0_10._components.root_panel)
-	A0_10._components.logo = Menu2DTitleLogo:new(A0_10._components.root_panel, "title")
-	A0_10._components.mouse = Menu2DMouse:new(A0_10._components.root_panel)
+
+Menu2DManager._setup_resources = function(l_3_0)
+	l_3_0:_create_menu_viewport()
+	l_3_0:calc_safe_rect()
+	l_3_0:preload()
+	l_3_0._components.distortion = Menu2DDistortion:new()
+	l_3_0._components.distortion:set_parent(l_3_0._components.root_panel)
+	l_3_0._components.logo = Menu2DTitleLogo:new(l_3_0._components.root_panel, "title")
+	l_3_0._components.mouse = Menu2DMouse:new(l_3_0._components.root_panel)
 end
-function Menu2DManager.gui_interface(A0_11)
-	return Menu2DManagerGuiInterface:new(A0_11)
+
+Menu2DManager.gui_interface = function(l_4_0)
+	local l_4_1, l_4_2 = Menu2DManagerGuiInterface:new, Menu2DManagerGuiInterface
+	local l_4_3 = l_4_0
+	return l_4_1(l_4_2, l_4_3)
 end
-function Menu2DManager.sound(A0_12)
-	return A0_12._components.sound
+
+Menu2DManager.sound = function(l_5_0)
+	return l_5_0._components.sound
 end
-function Menu2DManager.page_change_completed(A0_13)
-	return A0_13._components.page_flipper:page_change_completed()
+
+Menu2DManager.page_change_completed = function(l_6_0)
+	local l_6_1, l_6_2 = l_6_0._components.page_flipper:page_change_completed, l_6_0._components.page_flipper
+	return l_6_1(l_6_2)
 end
-function Menu2DManager.debug_loading_test(A0_14)
-	if A0_14._loading_screen_test then
-		A0_14._loading_screen_test:stop()
+
+Menu2DManager.debug_loading_test = function(l_7_0)
+	if l_7_0._loading_screen_test then
+		l_7_0._loading_screen_test:stop()
 	else
-		A0_14._loading_screen_test = LoadingScreenTest:new(A0_14._components.workspace)
+		l_7_0._loading_screen_test = LoadingScreenTest:new(l_7_0._components.workspace)
 	end
 end
-function Menu2DManager.post_init(A0_15)
-	A0_15._components.page_flipper:post_init()
+
+Menu2DManager.post_init = function(l_8_0)
+	l_8_0._components.page_flipper:post_init()
 end
-function Menu2DManager._create_menu_viewport(A0_16)
-	local L1_17
-	L1_17 = RenderSettings
-	L1_17 = L1_17.resolution
-	A0_16._vp = Application:create_scene_viewport(0, 0, 1, 1)
-	A0_16._width = 1280
-	A0_16._height = 720 * (1.7777778 / core_setup.aspect_ratio)
-	A0_16._components.gui = MenuOverlay:gui()
-	A0_16._components.workspace = A0_16._components.gui:create_scaled_screen_workspace(A0_16._width, A0_16._height, 0, 0, L1_17.x, L1_17.y)
-	A0_16._components.workspace:set_timer(TimerManager:main())
-	A0_16._components.root_panel = A0_16._components.workspace:panel()
+
+Menu2DManager._create_menu_viewport = function(l_9_0)
+	local l_9_1 = RenderSettings.resolution
+	l_9_0._vp = Application:create_scene_viewport(0, 0, 1, 1)
+	l_9_0._width = 1280
+	l_9_0._height = 720 * (1.7777778 / core_setup.aspect_ratio)
+	l_9_0._components.gui = MenuOverlay:gui()
+	l_9_0._components.workspace = l_9_0._components.gui:create_scaled_screen_workspace(l_9_0._width, l_9_0._height, 0, 0, l_9_1.x, l_9_1.y)
+	l_9_0._components.workspace:set_timer(TimerManager:main())
+	l_9_0._components.root_panel = l_9_0._components.workspace:panel()
 end
-function Menu2DManager.preload(A0_18)
-	if A0_18._preloaded then
-		return
+
+Menu2DManager.preload = function(l_10_0)
+	if l_10_0._preloaded then
+		return 
 	end
 	World:preload_unit("empty")
-	A0_18._components.gui:preload_font("faith_font_22")
-	A0_18._components.gui:preload_font("credits")
-	A0_18._components.gui:preload_font("credits_merged")
-	A0_18._components.sound:preload()
-	A0_18._components.gui:preload_texture("gui_menu_salvation_logo_glow")
-	A0_18._components.gui:preload_texture("gui_menu_salvation_logo_big")
-	A0_18._components.gui:preload_texture("gui_menu_tickbox_on")
-	A0_18._components.gui:preload_texture("gui_menu_tickbox_off")
-	A0_18._components.gui:preload_texture("gui_menu_volumebar_line")
-	A0_18._components.gui:preload_texture("gui_menu_volumebar_gradient")
-	A0_18._components.gui:preload_texture("gui_hud_selection_dot")
-	A0_18._components.gui:preload_texture("gui_menu_bg_gradient")
-	A0_18._components.gui:preload_texture("gui_menu_360_controller")
-	A0_18._components.gui:preload_texture("security_camera_edgebleed")
-	A0_18._components.gui:preload_texture("security_camera_noise_1")
-	A0_18._components.gui:preload_texture("security_camera_noise_2")
-	A0_18._components.gui:preload_texture("security_camera_noise_3")
-	A0_18._components.gui:preload_texture("security_camera_noise_4")
-	A0_18._components.gui:preload_texture("gui_legalinfo_screen_global")
-	A0_18._components.gui:preload_texture("gui_legalinfo_screen")
-	A0_18._preloaded = true
+	l_10_0._components.gui:preload_font("faith_font_22")
+	l_10_0._components.gui:preload_font("credits")
+	l_10_0._components.gui:preload_font("credits_merged")
+	l_10_0._components.sound:preload()
+	l_10_0._components.gui:preload_texture("gui_menu_salvation_logo_glow")
+	l_10_0._components.gui:preload_texture("gui_menu_salvation_logo_big")
+	l_10_0._components.gui:preload_texture("gui_menu_tickbox_on")
+	l_10_0._components.gui:preload_texture("gui_menu_tickbox_off")
+	l_10_0._components.gui:preload_texture("gui_menu_volumebar_line")
+	l_10_0._components.gui:preload_texture("gui_menu_volumebar_gradient")
+	l_10_0._components.gui:preload_texture("gui_hud_selection_dot")
+	l_10_0._components.gui:preload_texture("gui_menu_bg_gradient")
+	l_10_0._components.gui:preload_texture("gui_menu_360_controller")
+	l_10_0._components.gui:preload_texture("security_camera_edgebleed")
+	l_10_0._components.gui:preload_texture("security_camera_noise_1")
+	l_10_0._components.gui:preload_texture("security_camera_noise_2")
+	l_10_0._components.gui:preload_texture("security_camera_noise_3")
+	l_10_0._components.gui:preload_texture("security_camera_noise_4")
+	l_10_0._components.gui:preload_texture("gui_legalinfo_screen_global")
+	l_10_0._components.gui:preload_texture("gui_legalinfo_screen")
+	l_10_0._preloaded = true
 end
-function Menu2DManager.destroy(A0_19)
-	A0_19._components.page_flipper:page_change_callbacks().remove(A0_19)
-	A0_19._components.page_flipper:destroy()
-	A0_19:_shutdown_resources()
+
+Menu2DManager.destroy = function(l_11_0)
+	l_11_0._components.page_flipper:page_change_callbacks().remove(l_11_0)
+	l_11_0._components.page_flipper:destroy()
+	l_11_0:_shutdown_resources()
 end
-function Menu2DManager.set_state(A0_20, A1_21)
-	A0_20._state_transition_data.requested_state = A1_21
+
+Menu2DManager.set_state = function(l_12_0, l_12_1)
+	l_12_0._state_transition_data.requested_state = l_12_1
 end
-function Menu2DManager.set_dialog(A0_22, A1_23)
-	A0_22._state_transition_data.requested_dialog_state = A1_23
+
+Menu2DManager.set_dialog = function(l_13_0, l_13_1)
+	l_13_0._state_transition_data.requested_dialog_state = l_13_1
 end
-function Menu2DManager.remove_dialog(A0_24)
-	A0_24._state_transition_data.requested_dialog_state = nil
+
+Menu2DManager.remove_dialog = function(l_14_0)
+	l_14_0._state_transition_data.requested_dialog_state = nil
 end
-function Menu2DManager.state_flag(A0_25, A1_26)
-	return A0_25._state_flags[A1_26]
+
+Menu2DManager.state_flag = function(l_15_0, l_15_1)
+	return l_15_0._state_flags[l_15_1]
 end
-function Menu2DManager.is_active(A0_27)
-	return A0_27._components.page_flipper:has_active_page()
+
+Menu2DManager.is_active = function(l_16_0)
+	local l_16_1, l_16_2 = l_16_0._components.page_flipper:has_active_page, l_16_0._components.page_flipper
+	return l_16_1(l_16_2)
 end
-function Menu2DManager.calc_safe_rect(A0_28)
-	A0_28._settings.safe_rect = MenuUtility.safe_rect()
+
+Menu2DManager.calc_safe_rect = function(l_17_0)
+	l_17_0._settings.safe_rect = MenuUtility.safe_rect()
 end
-function Menu2DManager.resume_game(A0_29)
+
+Menu2DManager.resume_game = function(l_18_0)
 	managers.game_transition:request_unpause()
 end
-function Menu2DManager.change_page(A0_30, A1_31)
-	A0_30._components.island:change_page(A1_31)
+
+Menu2DManager.change_page = function(l_19_0, l_19_1)
+	l_19_0._components.island:change_page(l_19_1)
 end
-function Menu2DManager.back(A0_32)
-	A0_32._components.island:go_back()
+
+Menu2DManager.back = function(l_20_0)
+	l_20_0._components.island:go_back()
 end
-function Menu2DManager.logo(A0_33)
-	return A0_33._components.logo
+
+Menu2DManager.logo = function(l_21_0)
+	return l_21_0._components.logo
 end
-function Menu2DManager.can_go_back(A0_34)
-	return A0_34._page_selector:can_go_back()
+
+Menu2DManager.can_go_back = function(l_22_0)
+	local l_22_1, l_22_2 = l_22_0._page_selector:can_go_back, l_22_0._page_selector
+	return l_22_1(l_22_2)
 end
-function Menu2DManager.confirm_mode(A0_35)
-	return A0_35._page_selector:confirm_mode()
+
+Menu2DManager.confirm_mode = function(l_23_0)
+	local l_23_1, l_23_2 = l_23_0._page_selector:confirm_mode, l_23_0._page_selector
+	return l_23_1(l_23_2)
 end
-function Menu2DManager.update(A0_36, A1_37)
-	local L2_38, L3_39
-	L2_38 = A0_36._menu_state_machine
-	L3_39 = L2_38
-	L2_38 = L2_38.update
-	L2_38(L3_39, A1_37)
-	L2_38 = A0_36._components
-	L2_38 = L2_38.sound
-	L3_39 = L2_38
-	L2_38 = L2_38.update
-	L2_38(L3_39, A1_37)
-	L2_38 = A0_36._page_selector
-	L3_39 = L2_38
-	L2_38 = L2_38.set_dialog
-	L2_38(L3_39, A0_36._state_transition_data.requested_dialog_state)
-	L2_38 = A0_36._page_selector
-	L3_39 = L2_38
-	L2_38 = L2_38.update
-	L2_38(L3_39, A1_37)
-	L2_38 = A0_36._components
-	L2_38 = L2_38.page_flipper
-	L3_39 = L2_38
-	L2_38 = L2_38.update
-	L2_38(L3_39, A1_37)
-	L2_38 = A0_36._components
-	L2_38 = L2_38.mouse
-	L3_39 = L2_38
-	L2_38 = L2_38.update
-	L2_38 = L2_38(L3_39, A1_37, A0_36:is_active())
-	L3_39 = TimerManager
-	L3_39 = L3_39.main
-	L3_39 = L3_39(L3_39)
-	L3_39 = L3_39.time
-	L3_39 = L3_39(L3_39)
-	if A0_36:is_active() then
-		A0_36._components.logo:update(L3_39, A1_37)
-		A0_36._components.distortion:update(L3_39, A1_37)
-		A0_36:update_menu_input(A1_37, L2_38)
-		if A0_36._loading_screen_test then
-			A0_36._loading_screen_test:update(A1_37)
-			if A0_36._loading_screen_test:fade_down_done() then
-				A0_36._loading_screen_test = nil
-			end
+
+Menu2DManager.update = function(l_24_0, l_24_1)
+	l_24_0._menu_state_machine:update(l_24_1)
+	l_24_0._components.sound:update(l_24_1)
+	l_24_0._page_selector:set_dialog(l_24_0._state_transition_data.requested_dialog_state)
+	l_24_0._page_selector:update(l_24_1)
+	l_24_0._components.page_flipper:update(l_24_1)
+	local l_24_2 = l_24_0._components.mouse:update(l_24_1, l_24_0:is_active())
+	local l_24_3 = TimerManager:main():time()
+	if l_24_0:is_active() then
+		l_24_0._components.logo:update(l_24_3, l_24_1)
+		l_24_0._components.distortion:update(l_24_3, l_24_1)
+		l_24_0:update_menu_input(l_24_1, l_24_2)
+	if l_24_0._loading_screen_test then
 		end
+		l_24_0._loading_screen_test:update(l_24_1)
+	if l_24_0._loading_screen_test:fade_down_done() then
+		end
+		l_24_0._loading_screen_test = nil
 	end
 end
-function Menu2DManager.render(A0_40)
-	if not A0_40._loading_screen_test then
-		Application:render("MenuOverlay", A0_40._vp)
+
+Menu2DManager.render = function(l_25_0)
+	if not l_25_0._loading_screen_test then
+		Application:render("MenuOverlay", l_25_0._vp)
 	end
 end
-function Menu2DManager.update_menu_input(A0_41, A1_42, A2_43)
-	local L3_44
-	L3_44 = {}
-	if not A0_41._block_input then
-		L3_44.move_axis = managers.menu_input:move_axis()
-		L3_44.select = managers.menu_input:pressed("menu_select") or managers.menu_input:pressed("menu_numpad_select")
-		L3_44.back = managers.menu_input:pressed("menu_back") or A2_43.back
-		L3_44.start = managers.menu_input:pressed("pause")
-		L3_44.mouse = A2_43
+
+Menu2DManager.update_menu_input = function(l_26_0, l_26_1, l_26_2)
+	local l_26_3 = {}
+	if not l_26_0._block_input then
+		l_26_3.move_axis = managers.menu_input:move_axis()
+		if not managers.menu_input:pressed("menu_select") then
+			l_26_3.select = managers.menu_input:pressed("menu_numpad_select")
+		end
+		if not managers.menu_input:pressed("menu_back") then
+			l_26_3.back = l_26_2.back
+		end
+		l_26_3.start = managers.menu_input:pressed("pause")
+		l_26_3.mouse = l_26_2
 	else
-		L3_44.move_axis = Vector3(0, 0, 0)
+		l_26_3.move_axis = Vector3(0, 0, 0)
 	end
-	A0_41._components.page_flipper:input(L3_44, A1_42)
+	local l_26_4 = l_26_0._components.page_flipper
+	l_26_4:input(l_26_3, l_26_1)
 end
-function Menu2DManager.raise_event(A0_45, ...)
-	local L3_47, L4_48
-	L3_47 = A0_45._event_manager
-	L4_48 = L3_47
-	L3_47 = L3_47.raise
-	L3_47(L4_48, ...)
+
+Menu2DManager.raise_event = function(l_27_0, ...)
+	l_27_0._event_manager:raise(...)
 end
-function Menu2DManager.check_condition(A0_49, A1_50)
-	if A1_50 then
-		return A0_49._event_manager[A1_50]()
+
+Menu2DManager.check_condition = function(l_28_0, l_28_1)
+	if l_28_1 then
+		local l_28_2 = l_28_0._event_manager[l_28_1]
+		return l_28_2()
 	end
 end
-function Menu2DManager.set_event_on_hold(A0_51, A1_52, A2_53)
-	local L3_54
-	L3_54 = {}
-	L3_54.event = A1_52
-	L3_54.params = A2_53
-	A0_51._event_on_hold = L3_54
+
+Menu2DManager.set_event_on_hold = function(l_29_0, l_29_1, l_29_2)
+	local l_29_3 = {}
+	l_29_3.event = l_29_1
+	l_29_3.params = l_29_2
+	l_29_0._event_on_hold = l_29_3
 end
-function Menu2DManager.execute_event_on_hold(A0_55)
-	if A0_55._event_on_hold then
-		A0_55:raise_event(A0_55._event_on_hold.event, A0_55._event_on_hold.params)
-		A0_55._event_on_hold = nil
+
+Menu2DManager.execute_event_on_hold = function(l_30_0)
+	if l_30_0._event_on_hold then
+		l_30_0:raise_event(l_30_0._event_on_hold.event, l_30_0._event_on_hold.params)
+		l_30_0._event_on_hold = nil
 	else
 		Application:error("try to execute event on hold that has not been set")
 	end
 end
-function Menu2DManager.use_connection(A0_56, A1_57, ...)
-	if A0_56._event_manager[A1_57] then
-		return A0_56._event_manager[A1_57](A0_56._event_manager, ...)
+
+Menu2DManager.use_connection = function(l_31_0, l_31_1, ...)
+	if l_31_0._event_manager[l_31_1] then
+		local l_31_3 = l_31_0._event_manager[l_31_1]
+		local l_31_4, l_31_5, l_31_6 = l_31_0._event_manager, ..., .end
+		return l_31_3(l_31_4, l_31_5, l_31_6)
 	else
-		Application:debug("no function in Menu2DEvent called " .. tostring(A1_57))
+		Application:debug("no function in Menu2DEvent called " .. tostring(l_31_1))
 	end
 end
-function Menu2DManager.menu_island_instance_data(A0_59)
-	return A0_59._components.island:island_data()
+
+Menu2DManager.menu_island_instance_data = function(l_32_0)
+	local l_32_1, l_32_2 = l_32_0._components.island:island_data, l_32_0._components.island
+	return l_32_1(l_32_2)
 end
-function Menu2DManager.logo_twitch(A0_60, A1_61)
-	A0_60._components.logo:twitch(A1_61)
+
+Menu2DManager.logo_twitch = function(l_33_0, l_33_1)
+	l_33_0._components.logo:twitch(l_33_1)
 end
-function Menu2DManager.distortion_burst(A0_62, A1_63, A2_64)
-	A0_62._components.distortion:create_burst(TimerManager:main():time(), A1_63, A2_64)
+
+Menu2DManager.distortion_burst = function(l_34_0, l_34_1, l_34_2)
+	l_34_0._components.distortion:create_burst(TimerManager:main():time(), l_34_1, l_34_2)
 end
-function Menu2DManager.animation_dead(A0_65, A1_66)
-	return coroutine.status(A1_66) ~= "running" and coroutine.status(A1_66) ~= "suspended"
+
+Menu2DManager.animation_dead = function(l_35_0, l_35_1)
+	return coroutine.status(l_35_1) ~= "running" and coroutine.status(l_35_1) ~= "suspended"
 end
-function Menu2DManager.is_credits_done(A0_67)
-	return A0_67._components.island:island_data().credits_done == true
+
+Menu2DManager.is_credits_done = function(l_36_0)
+	local l_36_1 = l_36_0._components.island:island_data()
+	return l_36_1.credits_done == true
 end
-function Menu2DManager.remove_resolution_changed_callback(A0_68, A1_69, A2_70)
-	A0_68._changed_resolution_callbacks[A1_69] = nil
+
+Menu2DManager.remove_resolution_changed_callback = function(l_37_0, l_37_1, l_37_2)
+	l_37_0._changed_resolution_callbacks[l_37_1] = nil
 end
-function Menu2DManager.set_resolution(A0_71, A1_72, A2_73, A3_74)
-	rendering_change_resolution({
-		x = A1_72,
-		y = A2_73,
-		z = A3_74
-	})
+
+Menu2DManager.set_resolution = function(l_38_0, l_38_1, l_38_2, l_38_3)
+	local l_38_4 = rendering_change_resolution
+	local l_38_5 = {}
+	l_38_5.x = l_38_1
+	l_38_5.y = l_38_2
+	l_38_5.z = l_38_3
+	l_38_4(l_38_5)
 end
-function Menu2DManager.set_aspect(A0_75, A1_76)
-	rendering_change_aspect_ratio(A1_76)
+
+Menu2DManager.set_aspect = function(l_39_0, l_39_1)
+	rendering_change_aspect_ratio(l_39_1)
 end
-function Menu2DManager.set_gradient_page_name(A0_77, A1_78)
-	A0_77._gradient_page_name = A1_78
+
+Menu2DManager.set_gradient_page_name = function(l_40_0, l_40_1)
+	l_40_0._gradient_page_name = l_40_1
 end
-function Menu2DManager.gradient_page_name(A0_79)
-	local L1_80
-	L1_80 = A0_79._gradient_page_name
-	return L1_80
+
+Menu2DManager.gradient_page_name = function(l_41_0)
+	return l_41_0._gradient_page_name
 end
-function Menu2DManager.current_page_name(A0_81)
-	if A0_81._current_page then
-		return A0_81._current_page:name()
+
+Menu2DManager.current_page_name = function(l_42_0)
+	if l_42_0._current_page then
+		local l_42_1, l_42_2 = l_42_0._current_page:name, l_42_0._current_page
+		return l_42_1(l_42_2)
 	else
 		return ""
 	end
 end
-function Menu2DManager.save_profile(A0_82)
-	if managers.menu_input:bound_user() then
-		managers.menu_input:bound_user():save_profile()
+
+Menu2DManager.save_profile = function(l_43_0)
+	local l_43_1 = managers.menu_input:bound_user()
+	if l_43_1 then
+		l_43_1:save_profile()
 	end
 end
-function Menu2DManager.set_default_controller(A0_83)
-	managers.save:profile().control_settings.configuration_path = A0_83._default_controller_path
-	managers.save:profile().control_settings.configuration_path = nil
-	A0_83._save_controller = false
+
+Menu2DManager.set_default_controller = function(l_44_0)
+	local l_44_1 = managers.save:profile()
+	l_44_1.control_settings.configuration_path = l_44_0._default_controller_path
+	l_44_1.control_settings.configuration_path = nil
+	l_44_0._save_controller = false
 end
-function Menu2DManager.save_controller(A0_84)
-	local L1_85, L2_86
-	L1_85 = managers
-	L1_85 = L1_85.save
-	L2_86 = L1_85
-	L1_85 = L1_85.profile
-	L1_85 = L1_85(L2_86)
-	L2_86 = managers
-	L2_86 = L2_86.menu_input
-	L2_86 = L2_86.bound_user
-	L2_86 = L2_86(L2_86)
-	L2_86 = L2_86.user_index
-	L2_86 = L2_86(L2_86)
-	L1_85.control_settings.configuration_path = A0_84._custom_controller_path
-	managers.controller:save_settings(A0_84._custom_controller_path, L2_86)
+
+Menu2DManager.save_controller = function(l_45_0)
+	local l_45_1 = managers.save:profile()
+	local l_45_2 = managers.menu_input:bound_user():user_index()
+	l_45_1.control_settings.configuration_path = l_45_0._custom_controller_path
+	managers.controller:save_settings(l_45_0._custom_controller_path, l_45_2)
 end
-function Menu2DManager.set_controller_changed(A0_87)
-	local L1_88
-	L1_88 = A0_87._save_controller
-	return L1_88
+
+Menu2DManager.set_controller_changed = function(l_46_0)
+	return l_46_0._save_controller
 end
-function Menu2DManager.get_default_controller_path(A0_89)
-	local L1_90
-	L1_90 = A0_89._default_controller_path
-	return L1_90
+
+Menu2DManager.get_default_controller_path = function(l_47_0)
+	return l_47_0._default_controller_path
 end
-function Menu2DManager.block_input(A0_91)
-	local L1_92
-	L1_92 = A0_91._block_input
-	return L1_92
+
+Menu2DManager.block_input = function(l_48_0)
+	return l_48_0._block_input
 end
-function Menu2DManager.set_block_input(A0_93, A1_94)
-	A0_93._block_input = A1_94
+
+Menu2DManager.set_block_input = function(l_49_0, l_49_1)
+	l_49_0._block_input = l_49_1
 end
-function Menu2DManager._parse_level_id_xml(A0_95)
-	local L1_96
-	L1_96 = "data/lib/menu/levelnames.xml"
-	A0_95._start_level_ids = {}
-	assert(File:exists(L1_96), "File " .. L1_96 .. " is missing!")
-	for 
+
+Menu2DManager._parse_level_id_xml = function(l_50_0)
+	local l_50_1 = "data/lib/menu/levelnames.xml"
+	l_50_0._start_level_ids = {}
+	local l_50_6 = assert
+	l_50_6(File:exists(l_50_1), "File " .. l_50_1 .. " is missing!")
+	l_50_6 = File
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_50_2 = nil
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	for i_0 in l_50_2 do
+		local l_50_7 = tonumber(l_50_5:parameter("start_id"))
+		l_50_0._start_level_ids[l_50_7] = l_50_7
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Menu2DManager.callback_create_replay_scenario_page = function(l_51_0, l_51_1)
+	local l_51_7, l_51_8, l_51_9, l_51_10, l_51_11, l_51_12, l_51_13 = nil
+	local l_51_2 = managers.save:profile()
+	if l_51_2 then
+		l_51_1:clear()
+		local l_51_3 = 0
+		for i_0,i_1 in ipairs(l_51_2.levels) do
+			if i_1.maximum_checkpoint_id > 0 and l_51_0._start_level_ids[i_0] ~= nil and managers.world_info:info_from_id(i_0) then
+				Menu2DChoice:new():set_param("goto_page", "difficulty_level")
+				Menu2DChoice:new():set_param("event", "replay_set_start_level")
+				Menu2DChoice:new():set_param("level_name", Localizer:lookup("chapter_line_" .. tostring(i_0)))
+				Menu2DChoice:new():set_param("level_id", l_51_14)
+				Menu2DChoice:new():set_param("checkpoint_id", 1)
+				local l_51_16, l_51_17 = nil
+				local l_51_18 = Menu2DChoice:new():set_widget
+				l_51_18(Menu2DChoice:new(), {type = "level", x = 0, y = 0, level = l_51_16, texture = "gui_resumegame_level_" .. tostring(l_51_14)})
+				l_51_18(l_51_1, l_51_17)
+			end
+		end
+	end
+end
+
+Menu2DManager.callback_resolution_changed = function(l_52_0)
+	l_52_0._components.page_flipper:changing_resolution()
+	l_52_0:_shutdown_resources()
+	l_52_0:_setup_resources()
+	l_52_0._components.page_flipper:resolution_changed()
+end
+
+Menu2DManager.callback_back_options_page = function(l_53_0)
+	l_53_0:save_profile()
+	l_53_0:back()
+end
+
+Menu2DManager.dismiss_save_icon_notification = function(l_54_0)
+	l_54_0:menu_island_instance_data().save_icon_notification_done = true
+end
+
+Menu2DManager.start_new_game = function(l_55_0)
+	managers.save:set_new_game()
+	local l_55_1 = managers.menu2d:menu_island_instance_data()
+	local l_55_2 = managers.save:profile().progress_level_id
+	l_55_1.start_level_id = l_55_2
+	l_55_1.start_level_name = 1
+	l_55_1.start_level_checkpoint = 1
+	l_55_1.save_progress = true
+	l_55_0:remove_dialog()
+	l_55_0:change_page("difficulty_level")
+end
+
+Menu2DManager.replay_scenario = function(l_56_0)
+	l_56_0:remove_dialog()
+	l_56_0:change_page("replay_scenario")
+end
+
+Menu2DManager.debug = function(l_57_0)
+	return l_57_0._debug_manager
+end
+
+Menu2DManager._is_debug_mode = function(l_58_0)
+	if Application:is_production() or Application:is_dev_build() then
+		return true
+	end
+	if File:exists("data/videos/enable_debug.hack") then
+		return true
+	end
+	return false
+end
+
+

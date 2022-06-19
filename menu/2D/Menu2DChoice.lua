@@ -1,245 +1,195 @@
 require("menu/2D/widgets/Menu2DWidgets")
-Menu2DChoice = Menu2DChoice or class()
-function Menu2DChoice.init(A0_0, A1_1)
-	Menu2DChoice._widget_types = {
-		volume = Menu2DWidgetVolume,
-		checkbutton = Menu2DWidgetCheckButton,
-		bitmap = Menu2DWidgetBitmap,
-		level = Menu2DWidgetLevel,
-		spin = Menu2DWidgetSpinControl
-	}
-	A0_0._params = {}
-	if A1_1 then
-		A0_0:parse(A1_1)
+if not Menu2DChoice then
+	Menu2DChoice = class()
+end
+Menu2DChoice.init = function(l_1_0, l_1_1)
+	local l_1_2 = Menu2DChoice
+	local l_1_3 = {}
+	l_1_3.volume = Menu2DWidgetVolume
+	l_1_3.checkbutton = Menu2DWidgetCheckButton
+	l_1_3.bitmap = Menu2DWidgetBitmap
+	l_1_3.level = Menu2DWidgetLevel
+	l_1_3.spin = Menu2DWidgetSpinControl
+	l_1_2._widget_types = l_1_3
+	l_1_0._params, l_1_2 = l_1_2, {}
+	if l_1_1 then
+		l_1_2, l_1_3 = l_1_0:parse, l_1_0
+		l_1_2(l_1_3, l_1_1)
 	end
 end
-function Menu2DChoice.post_init(A0_2)
-	if A0_2._widget then
-		A0_2._widget:post_init()
+
+Menu2DChoice.post_init = function(l_2_0)
+	if l_2_0._widget then
+		l_2_0._widget:post_init()
 	end
 end
-function Menu2DChoice.parse(A0_3, A1_4)
-	local L2_5, L3_6, L4_7, L5_8, L6_9, L7_10
-	L2_5 = A1_4.parameter_map
-	L2_5 = L2_5(L3_6)
-	for L6_9, L7_10 in L3_6(L4_7) do
-		A0_3:set_param(L6_9, L7_10)
+
+Menu2DChoice.parse = function(l_3_0, l_3_1)
+	local l_3_6, l_3_7, l_3_8, l_3_9, l_3_10 = nil
+	local l_3_2 = l_3_1:parameter_map()
+	for i_0,i_1 in pairs(l_3_2) do
+		l_3_0:set_param(i_0, i_1)
 	end
-	if L3_6 > 0 then
-		if L4_7 then
-			L7_10 = A1_4
-			L6_9 = A1_4.child
-			L6_9 = L6_9(L7_10, 0)
-			L7_10 = L6_9
-			L6_9 = L6_9.parameter_map
-			L7_10 = L6_9(L7_10)
-			A0_3._widget = L4_7
+	if l_3_1:num_children() > 0 then
+		if l_3_0._widget_types[l_3_1:child(0):parameter("type")] then
+			l_3_0._widget = l_3_0._widget_types[l_3_1:child(0):parameter("type")]:new(l_3_1:child(0):parameter_map())
+		end
+	else
+		Application:error("widget type not defined '" .. tostring(l_3_1:child(0):parameter("type")) .. "'")
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+Menu2DChoice.set_active = function(l_4_0, l_4_1)
+	if l_4_0._widget then
+		l_4_0._widget:set_active(l_4_1)
+	end
+end
+
+Menu2DChoice.set_inactive = function(l_5_0, l_5_1)
+	if l_5_0._widget then
+		l_5_0._widget:set_inactive(l_5_1)
+	end
+end
+
+Menu2DChoice.activate = function(l_6_0)
+	l_6_0:_activate()
+end
+
+Menu2DChoice._activate = function(l_7_0)
+	if l_7_0._widget then
+		l_7_0._widget:activate()
+	end
+	local l_7_1 = false
+	if l_7_0._params.code then
+		local l_7_2, l_7_3 = loadstring("return " .. l_7_0._params.code)
+		local l_7_4 = l_7_2()
+	if type(l_7_4) == "function" then
+		end
+		l_7_4(l_7_0._params)
+		l_7_1 = true
+	end
+	if l_7_0._params.event then
+		managers.menu2d:raise_event(l_7_0._params.event, l_7_0._params)
+		l_7_1 = true
+	end
+	if l_7_0._params.execute_event_on_hold then
+		managers.menu2d:execute_event_on_hold()
+		l_7_1 = true
+	end
+	if l_7_0._params.set_event_on_hold then
+		managers.menu2d:set_event_on_hold(l_7_0._params.set_event_on_hold, l_7_0._params)
+		l_7_1 = true
+	end
+	if l_7_0:goto() then
+		managers.menu2d:change_page(l_7_0:goto(), l_7_0._params.text)
+		l_7_1 = true
+	end
+	if l_7_1 then
+		managers.menu2d:sound():play("menu_select")
+	end
+end
+
+Menu2DChoice.open_code = function(l_8_0)
+	if l_8_0._params.open_code then
+		local l_8_1, l_8_2 = loadstring("return " .. l_8_0._open_code)
+		local l_8_3 = l_8_1()
+	if type(l_8_3) == "function" then
+		end
+		l_8_3(l_8_0)
+	end
+end
+
+Menu2DChoice.input = function(l_9_0, ...)
+	if l_9_0._widget and l_9_0._widget.input then
+		l_9_0._widget:input(...)
+	end
+end
+
+Menu2DChoice.set_param = function(l_10_0, l_10_1, l_10_2)
+	l_10_0._params[l_10_1] = l_10_2
+end
+
+Menu2DChoice.set_widget = function(l_11_0, l_11_1)
+	if l_11_1.type and l_11_0._widget_types[l_11_1.type] then
+		l_11_0._widget = l_11_0._widget_types[l_11_1.type]:new(l_11_1)
+	end
+end
+
+Menu2DChoice.destroy = function(l_12_0)
+end
+
+Menu2DChoice.allowed = function(l_13_0)
+	if not not managers.menu2d:state_flag("frontend") or not toboolean(l_13_0._params.not_ingame) then
+		local l_13_1 = true
+	else
+		local l_13_2 = false
+	end
+	local l_13_3 = nil
+	do
+		return (l_13_0._params.only_primary_user and managers.menu_input:bound_user() ~= managers.save:primary_user() and not l_13_3) or not l_13_0:conditional() or false
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Menu2DChoice.text = function(l_14_0)
+	do
+		local l_14_1 = l_14_0._params.text
+		if not l_14_0._params.ignore_localization then
+			local l_14_2, l_14_3 = managers.localization:text, managers.localization
+			do
+				return l_14_2(l_14_3, l_14_1 or "")
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
 		else
-			L6_9 = "widget type not defined '"
-			L7_10 = tostring
-			L7_10 = L7_10(L3_6)
-			L6_9 = L6_9 .. L7_10 .. "'"
-			L4_7(L5_8, L6_9)
+			return l_14_1
 		end
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function Menu2DChoice.set_active(A0_11, A1_12)
-	if A0_11._widget then
-		A0_11._widget:set_active(A1_12)
-	end
+
+Menu2DChoice.non_localized_text = function(l_15_0)
+	return l_15_0._params.text
 end
-function Menu2DChoice.set_inactive(A0_13, A1_14)
-	if A0_13._widget then
-		A0_13._widget:set_inactive(A1_14)
-	end
-end
-function Menu2DChoice.activate(A0_15)
-	A0_15:_activate()
-end
-function Menu2DChoice._activate(A0_16)
-	local L1_17, L2_18, L3_19, L4_20
-	L1_17 = A0_16._widget
-	if L1_17 then
-		L1_17 = A0_16._widget
-		L2_18 = L1_17
-		L1_17 = L1_17.activate
-		L1_17(L2_18)
-	end
-	L1_17 = false
-	L2_18 = A0_16._params
-	L2_18 = L2_18.code
-	if L2_18 then
-		L2_18 = loadstring
-		L3_19 = "return "
-		L4_20 = A0_16._params
-		L4_20 = L4_20.code
-		L3_19 = L3_19 .. L4_20
-		L3_19 = L2_18(L3_19)
-		L4_20 = L2_18
-		L4_20 = L4_20()
-		if type(L4_20) == "function" then
-			L4_20(A0_16._params)
-			L1_17 = true
-		end
-	end
-	L2_18 = A0_16._params
-	L2_18 = L2_18.event
-	if L2_18 then
-		L2_18 = managers
-		L2_18 = L2_18.menu2d
-		L3_19 = L2_18
-		L2_18 = L2_18.raise_event
-		L4_20 = A0_16._params
-		L4_20 = L4_20.event
-		L2_18(L3_19, L4_20, A0_16._params)
-		L1_17 = true
-	end
-	L2_18 = A0_16._params
-	L2_18 = L2_18.execute_event_on_hold
-	if L2_18 then
-		L2_18 = managers
-		L2_18 = L2_18.menu2d
-		L3_19 = L2_18
-		L2_18 = L2_18.execute_event_on_hold
-		L2_18(L3_19)
-		L1_17 = true
-	end
-	L2_18 = A0_16._params
-	L2_18 = L2_18.set_event_on_hold
-	if L2_18 then
-		L2_18 = managers
-		L2_18 = L2_18.menu2d
-		L3_19 = L2_18
-		L2_18 = L2_18.set_event_on_hold
-		L4_20 = A0_16._params
-		L4_20 = L4_20.set_event_on_hold
-		L2_18(L3_19, L4_20, A0_16._params)
-		L1_17 = true
-	end
-	L3_19 = A0_16
-	L2_18 = A0_16.goto
-	L2_18 = L2_18(L3_19)
-	if L2_18 then
-		L2_18 = managers
-		L2_18 = L2_18.menu2d
-		L3_19 = L2_18
-		L2_18 = L2_18.change_page
-		L4_20 = A0_16.goto
-		L4_20 = L4_20(A0_16)
-		L2_18(L3_19, L4_20, A0_16._params.text)
-		L1_17 = true
-	end
-	if L1_17 then
-		L2_18 = managers
-		L2_18 = L2_18.menu2d
-		L3_19 = L2_18
-		L2_18 = L2_18.sound
-		L2_18 = L2_18(L3_19)
-		L3_19 = L2_18
-		L2_18 = L2_18.play
-		L4_20 = "menu_select"
-		L2_18(L3_19, L4_20)
-	end
-end
-function Menu2DChoice.open_code(A0_21)
-	local L1_22, L2_23, L3_24
-	L1_22 = A0_21._params
-	L1_22 = L1_22.open_code
-	if L1_22 then
-		L1_22 = loadstring
-		L2_23 = "return "
-		L3_24 = A0_21._open_code
-		L2_23 = L2_23 .. L3_24
-		L2_23 = L1_22(L2_23)
-		L3_24 = L1_22
-		L3_24 = L3_24()
-		if type(L3_24) == "function" then
-			L3_24(A0_21)
-		end
-	end
-end
-function Menu2DChoice.input(A0_25, ...)
-	local L2_27, L3_28, L4_29
-	L2_27 = A0_25._widget
-	if L2_27 then
-		L2_27 = A0_25._widget
-		L2_27 = L2_27.input
-		if L2_27 then
-			L2_27 = A0_25._widget
-			L3_28 = L2_27
-			L2_27 = L2_27.input
-			L4_29 = ...
-			L2_27(L3_28, L4_29)
-		end
-	end
-end
-function Menu2DChoice.set_param(A0_30, A1_31, A2_32)
-	A0_30._params[A1_31] = A2_32
-end
-function Menu2DChoice.set_widget(A0_33, A1_34)
-	if A1_34.type and A0_33._widget_types[A1_34.type] then
-		A0_33._widget = A0_33._widget_types[A1_34.type]:new(A1_34)
-	end
-end
-function Menu2DChoice.destroy(A0_35)
-	local L1_36
-end
-function Menu2DChoice.allowed(A0_37)
-	local L1_38, L2_39
-	L1_38 = managers
-	L1_38 = L1_38.menu2d
-	L2_39 = L1_38
-	L1_38 = L1_38.state_flag
-	L1_38 = L1_38(L2_39, "frontend")
-	L1_38 = not L1_38
-	if L1_38 then
-		L2_39 = toboolean
-		L2_39 = L2_39(A0_37._params.not_ingame)
-	L1_38 = not L2_39 and true
-	L2_39 = true
-	if A0_37._params.only_primary_user and managers.menu_input:bound_user() ~= managers.save:primary_user() then
-		L2_39 = false
-	end
-	return L1_38 and A0_37:conditional() and L2_39
-end
-function Menu2DChoice.text(A0_40)
-	local L1_41
-	L1_41 = A0_40._params
-	L1_41 = L1_41.text
-	if not A0_40._params.ignore_localization then
-		return managers.localization:text(L1_41 or "")
+
+Menu2DChoice.goto = function(l_16_0)
+	if l_16_0._params.conditional_goto then
+		local l_16_1, l_16_2 = managers.menu2d:check_condition, managers.menu2d
+		local l_16_3 = l_16_0._params.conditional_goto
+		return l_16_1(l_16_2, l_16_3)
 	else
-		return L1_41
+		return l_16_0._params.goto_page
 	end
 end
-function Menu2DChoice.non_localized_text(A0_42)
-	return A0_42._params.text
+
+Menu2DChoice.platform = function(l_17_0)
+	return l_17_0._params.platform
 end
-function Menu2DChoice.goto(A0_43)
-	if A0_43._params.conditional_goto then
-		return managers.menu2d:check_condition(A0_43._params.conditional_goto)
-	else
-		return A0_43._params.goto_page
-	end
+
+Menu2DChoice.name = function(l_18_0)
+	return l_18_0._params.name
 end
-function Menu2DChoice.platform(A0_44)
-	return A0_44._params.platform
+
+Menu2DChoice.widget = function(l_19_0)
+	return l_19_0._widget
 end
-function Menu2DChoice.name(A0_45)
-	return A0_45._params.name
+
+Menu2DChoice.empty = function(l_20_0)
+	local l_20_1 = toboolean
+	local l_20_2 = l_20_0._params.empty
+	return l_20_1(l_20_2)
 end
-function Menu2DChoice.widget(A0_46)
-	local L1_47
-	L1_47 = A0_46._widget
-	return L1_47
-end
-function Menu2DChoice.empty(A0_48)
-	return toboolean(A0_48._params.empty)
-end
-function Menu2DChoice.conditional(A0_49)
-	if A0_49._params.conditional then
-		return (managers.menu2d:use_connection(A0_49._params.conditional))
+
+Menu2DChoice.conditional = function(l_21_0)
+	if l_21_0._params.conditional then
+		return managers.menu2d:use_connection(l_21_0._params.conditional)
 	else
 		return true
 	end
 end
+
+

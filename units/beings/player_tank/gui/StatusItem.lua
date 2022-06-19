@@ -1,117 +1,124 @@
 require("units/beings/player_tank/gui/MachineText")
-StatusItem = StatusItem or class()
-function StatusItem.init(A0_0, A1_1, A2_2, A3_3, A4_4)
-	A0_0._item_text = A1_1
-	A0_0._status = A2_2
-	A0_0._current_status = A2_2
-	A0_0._row = A3_3
-	A0_0._page = A4_4
-	A0_0._interpolator = Interpolator:new(A0_0._status, tweak_data.machine.hud.STATUS_DECREASE_SPEED)
+if not StatusItem then
+	StatusItem = class()
 end
-function StatusItem.set_fluctuation(A0_5, A1_6, A2_7, A3_8)
-	local L4_9
-	L4_9 = {}
-	L4_9.min = A1_6
-	L4_9.max = A2_7
-	L4_9.normal = A3_8
-	A0_5._fluctuation = L4_9
+StatusItem.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4)
+	l_1_0._item_text = l_1_1
+	l_1_0._status = l_1_2
+	l_1_0._current_status = l_1_2
+	l_1_0._row = l_1_3
+	l_1_0._page = l_1_4
+	l_1_0._interpolator = Interpolator:new(l_1_0._status, tweak_data.machine.hud.STATUS_DECREASE_SPEED)
 end
-function StatusItem.remove_fluctuation(A0_10)
-	local L1_11
-	A0_10._fluctuation = nil
+
+StatusItem.set_fluctuation = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	local l_2_4 = {}
+	l_2_4.min = l_2_1
+	l_2_4.max = l_2_2
+	l_2_4.normal = l_2_3
+	l_2_0._fluctuation = l_2_4
 end
-function StatusItem.use_status_enums(A0_12, A1_13)
-	A0_12._status_enums = A1_13
-	A0_12._interpolator = nil
+
+StatusItem.remove_fluctuation = function(l_3_0)
+	l_3_0._fluctuation = nil
 end
-function StatusItem.get_item_string(A0_14)
-	return A0_14:_pad(A0_14._item_text, 30) .. "\n"
+
+StatusItem.use_status_enums = function(l_4_0, l_4_1)
+	l_4_0._status_enums = l_4_1
+	l_4_0._interpolator = nil
 end
-function StatusItem.get_status_string(A0_15, A1_16)
-	local L2_17, L3_18
-	if A0_15._status_enums then
-		L3_18 = A0_15._status_enums[A0_15._status]
+
+StatusItem.get_item_string = function(l_5_0)
+	return l_5_0:_pad(l_5_0._item_text, 30) .. "\n"
+end
+
+StatusItem.get_status_string = function(l_6_0, l_6_1)
+	local l_6_2, l_6_3 = nil, nil
+	if l_6_0._status_enums then
+		l_6_3 = l_6_0._status_enums[l_6_0._status]
+	elseif l_6_0._current_status < 100 then
+		l_6_2 = string.format("%." .. 1 .. "f", l_6_0._current_status)
 	else
-		if A0_15._current_status < 100 then
-			L2_17 = string.format("%." .. 1 .. "f", A0_15._current_status)
+		l_6_2 = l_6_0._current_status
+	end
+	l_6_3 = tostring(l_6_2) .. " %"
+	if l_6_1 then
+		l_6_3 = l_6_0:_front_pad(l_6_3, 15) .. "\n"
+	else
+		l_6_3 = l_6_0:_front_pad(l_6_3, 30) .. "\n"
+	end
+	return l_6_3
+end
+
+StatusItem.get_row = function(l_7_0)
+	return l_7_0._row
+end
+
+StatusItem.get_page = function(l_8_0)
+	return l_8_0._page
+end
+
+StatusItem.set_status_target = function(l_9_0, l_9_1)
+	l_9_0._status = l_9_1
+	if l_9_0._interpolator then
+		l_9_0._interpolator:set_target(l_9_1)
+	end
+end
+
+StatusItem.add_damage = function(l_10_0, l_10_1)
+	l_10_0._status = l_10_0._status - l_10_1
+	l_10_0._status = math.max(l_10_0._status, 0)
+	if l_10_0._interpolator then
+		l_10_0._interpolator:set_target(l_10_0._status)
+	end
+end
+
+StatusItem.set_damage = function(l_11_0, l_11_1)
+	l_11_0._status = 100 - l_11_1 * 100
+	l_11_0._status = math.max(l_11_0._status, 0)
+	l_11_0._damage = l_11_1
+	if l_11_0._interpolator then
+		l_11_0._interpolator:set_target(l_11_0._status)
+	end
+end
+
+StatusItem.update = function(l_12_0, l_12_1)
+	if l_12_0._fluctuation then
+		l_12_0:_update_fluctuation()
+	end
+	if l_12_0._interpolator then
+		l_12_0._interpolator:update(l_12_1)
+		if not l_12_0._interpolator:has_reached_target() then
+			l_12_0._current_status = l_12_0._interpolator:value()
 		else
-			L2_17 = A0_15._current_status
-		end
-		L3_18 = tostring(L2_17) .. " %"
-	end
-	if A1_16 then
-		L3_18 = A0_15:_front_pad(L3_18, 15) .. "\n"
-	else
-		L3_18 = A0_15:_front_pad(L3_18, 30) .. "\n"
-	end
-	return L3_18
-end
-function StatusItem.get_row(A0_19)
-	local L1_20
-	L1_20 = A0_19._row
-	return L1_20
-end
-function StatusItem.get_page(A0_21)
-	local L1_22
-	L1_22 = A0_21._page
-	return L1_22
-end
-function StatusItem.set_status_target(A0_23, A1_24)
-	A0_23._status = A1_24
-	if A0_23._interpolator then
-		A0_23._interpolator:set_target(A1_24)
-	end
-end
-function StatusItem.add_damage(A0_25, A1_26)
-	A0_25._status = A0_25._status - A1_26
-	A0_25._status = math.max(A0_25._status, 0)
-	if A0_25._interpolator then
-		A0_25._interpolator:set_target(A0_25._status)
-	end
-end
-function StatusItem.set_damage(A0_27, A1_28)
-	A0_27._status = 100 - A1_28 * 100
-	A0_27._status = math.max(A0_27._status, 0)
-	A0_27._damage = A1_28
-	if A0_27._interpolator then
-		A0_27._interpolator:set_target(A0_27._status)
-	end
-end
-function StatusItem.update(A0_29, A1_30)
-	if A0_29._fluctuation then
-		A0_29:_update_fluctuation()
-	end
-	if A0_29._interpolator then
-		A0_29._interpolator:update(A1_30)
-		if not A0_29._interpolator:has_reached_target() then
-			A0_29._current_status = A0_29._interpolator:value()
-		else
-			A0_29._current_status = A0_29._status
+			l_12_0._current_status = l_12_0._status
 		end
 	else
-		A0_29._current_status = A0_29._status
+		l_12_0._current_status = l_12_0._status
 	end
 end
-function StatusItem._update_fluctuation(A0_31)
-	A0_31._status = A0_31._status + math.rand(-A0_31._fluctuation.normal, A0_31._fluctuation.normal)
-	A0_31._status = math.min(A0_31._status, A0_31._fluctuation.max)
-	A0_31._status = math.max(A0_31._status, A0_31._fluctuation.min)
-	A0_31._interpolator:set_target(A0_31._status)
+
+StatusItem._update_fluctuation = function(l_13_0)
+	local l_13_1 = math.rand(-l_13_0._fluctuation.normal, l_13_0._fluctuation.normal)
+	l_13_0._status = l_13_0._status + l_13_1
+	l_13_0._status = math.min(l_13_0._status, l_13_0._fluctuation.max)
+	l_13_0._status = math.max(l_13_0._status, l_13_0._fluctuation.min)
+	l_13_0._interpolator:set_target(l_13_0._status)
 end
-function StatusItem._pad(A0_32, A1_33, A2_34)
-	local L3_35
-	L3_35 = string
-	L3_35 = L3_35.rep
-	L3_35 = L3_35(" ", A2_34)
-	return utf8.sub(A1_33 .. L3_35, 1, A2_34)
+
+StatusItem._pad = function(l_14_0, l_14_1, l_14_2)
+	local l_14_3 = string.rep(" ", l_14_2)
+	local l_14_4 = utf8.sub
+	local l_14_5 = l_14_1 .. l_14_3
+	local l_14_6 = 1
+	local l_14_7 = l_14_2
+	return l_14_4(l_14_5, l_14_6, l_14_7)
 end
-function StatusItem._front_pad(A0_36, A1_37, A2_38)
-	local L3_39, L4_40
-	L3_39 = string
-	L3_39 = L3_39.rep
-	L4_40 = " "
-	L3_39 = L3_39(L4_40, A2_38)
-	L4_40 = A1_37.len
-	L4_40 = L4_40(A1_37)
-	return (utf8.sub(L3_39 .. A1_37, L4_40, A2_38 + L4_40))
+
+StatusItem._front_pad = function(l_15_0, l_15_1, l_15_2)
+	local l_15_3 = string.rep(" ", l_15_2)
+	local l_15_4 = l_15_1:len()
+	return utf8.sub(l_15_3 .. l_15_1, l_15_4, l_15_2 + l_15_4)
 end
+
+

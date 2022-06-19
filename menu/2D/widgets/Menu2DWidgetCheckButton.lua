@@ -1,101 +1,169 @@
 require("menu/2D/widgets/Menu2DWidgetBase.lua")
-Menu2DWidgetCheckButton = Menu2DWidgetCheckButton or class(Menu2DWidgetBase)
+if not Menu2DWidgetCheckButton then
+	Menu2DWidgetCheckButton = class(Menu2DWidgetBase)
+end
 Menu2DWidgetCheckButton._enabled = {}
 Menu2DWidgetCheckButton._enabled.texture = "gui_menu_tickbox_on"
-Menu2DWidgetCheckButton._enabled.texcoord = {x = 0, y = 0}
-Menu2DWidgetCheckButton._disabled = {}
-Menu2DWidgetCheckButton._disabled.texture = "gui_menu_tickbox_off"
-Menu2DWidgetCheckButton._disabled.texcoord = {x = 0, y = 0}
-function Menu2DWidgetCheckButton.init(A0_0, A1_1)
-	Menu2DWidgetBase.init(A0_0, A1_1)
+local l_0_0 = Menu2DWidgetCheckButton._enabled
+local l_0_1 = {}
+l_0_1.x = 0
+l_0_1.y = 0
+l_0_0.texcoord = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_0._disabled, l_0_1 = l_0_1, {}
+l_0_0 = Menu2DWidgetCheckButton
+l_0_0 = l_0_0._disabled
+l_0_0.texture = "gui_menu_tickbox_off"
+l_0_0 = Menu2DWidgetCheckButton
+l_0_0 = l_0_0._disabled
+l_0_0.texcoord, l_0_1 = l_0_1, {x = 0, y = 0}
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_1_0, l_1_1)
+	Menu2DWidgetBase.init(l_1_0, l_1_1)
 end
-function Menu2DWidgetCheckButton.parse(A0_2, A1_3)
-	A0_2._params.enabled = toboolean(A1_3.enabled)
+
+l_0_0.init = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_2_0, l_2_1)
+	l_2_0._params.enabled = toboolean(l_2_1.enabled)
 end
-function Menu2DWidgetCheckButton.create_gui(A0_4)
-	Menu2DWidgetBase.create_gui(A0_4)
-	A0_4._bmp_enabled = A0_4._params.panel:bitmap({
-		texture = A0_4._enabled.texture,
-		blend_mode = "add",
-		layer = tweak_data.menu2d.layer_normal
-	})
-	A0_4._bmp_enabled:set_center_y(A0_4._params.panel:center_y())
-	A0_4._bmp_enabled:set_texture_rect(0, 0, A0_4._bmp_enabled:texture_width(), A0_4._bmp_enabled:texture_height())
-	A0_4._bmp_disabled = A0_4._params.panel:bitmap({
-		texture = A0_4._disabled.texture,
-		blend_mode = "add",
-		layer = tweak_data.menu2d.layer_normal
-	})
-	A0_4._bmp_disabled:set_center_y(A0_4._params.panel:center_y())
-	A0_4:_set_state(A0_4:initial_value())
+
+l_0_0.parse = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_3_0)
+	Menu2DWidgetBase.create_gui(l_3_0)
+	local l_3_1 = Application:screen_resolution().y / 720
+	local l_3_2, l_3_3 = l_3_0._params.panel:bitmap, l_3_0._params.panel
+	local l_3_4 = {}
+	l_3_4.texture = l_3_0._enabled.texture
+	l_3_4.blend_mode = "add"
+	l_3_4.layer = tweak_data.menu2d.layer_normal
+	l_3_2 = l_3_2(l_3_3, l_3_4)
+	l_3_0._bmp_enabled = l_3_2
+	l_3_2 = l_3_0._bmp_enabled
+	l_3_2, l_3_3 = l_3_2:set_center_y, l_3_2
+	l_3_4 = l_3_0._params
+	l_3_4 = l_3_4.panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4)
+	l_3_2 = l_3_0._bmp_enabled
+	l_3_2, l_3_3 = l_3_2:set_texture_rect, l_3_2
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4, 0, l_3_0._bmp_enabled:texture_width(), l_3_0._bmp_enabled:texture_height())
+	l_3_2 = l_3_0._params
+	l_3_2 = l_3_2.panel
+	l_3_2, l_3_3 = l_3_2:bitmap, l_3_2
+	l_3_2, l_3_4 = l_3_2(l_3_3, l_3_4), {texture = l_3_0._disabled.texture, blend_mode = "add", layer = tweak_data.menu2d.layer_normal}
+	l_3_0._bmp_disabled = l_3_2
+	l_3_2 = l_3_0._bmp_disabled
+	l_3_2, l_3_3 = l_3_2:set_center_y, l_3_2
+	l_3_4 = l_3_0._params
+	l_3_4 = l_3_4.panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4)
+	l_3_2, l_3_3 = l_3_0:_set_state, l_3_0
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4)
 end
-function Menu2DWidgetCheckButton.activate(A0_5)
-	A0_5._enable = not A0_5._enable
-	A0_5:set_enable(A0_5._enable)
+
+l_0_0.create_gui = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_4_0)
+	l_4_0._enable = not l_4_0._enable
+	l_4_0:set_enable(l_4_0._enable)
 end
-function Menu2DWidgetCheckButton._set_state(A0_6, A1_7)
-	if A1_7 then
-		A0_6._bmp_enabled:show()
-		A0_6._bmp_disabled:hide()
-		A0_6._visible_bmp = A0_6._bmp_enabled
-		A0_6._enable = true
+
+l_0_0.activate = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_5_0, l_5_1)
+	if l_5_1 then
+		l_5_0._bmp_enabled:show()
+		l_5_0._bmp_disabled:hide()
+		l_5_0._visible_bmp = l_5_0._bmp_enabled
+		l_5_0._enable = true
 	else
-		A0_6._bmp_enabled:hide()
-		A0_6._bmp_disabled:show()
-		A0_6._visible_bmp = A0_6._bmp_disabled
-		A0_6._enable = false
+		l_5_0._bmp_enabled:hide()
+		l_5_0._bmp_disabled:show()
+		l_5_0._visible_bmp = l_5_0._bmp_disabled
+		l_5_0._enable = false
 	end
-	managers.menu2d:use_connection(A0_6._params.connection_set, A0_6._enable, A0_6._params)
+	managers.menu2d:use_connection(l_5_0._params.connection_set, l_5_0._enable, l_5_0._params)
 end
-function Menu2DWidgetCheckButton.set_enable(A0_8, A1_9)
-	A0_8:_set_state(A1_9)
+
+l_0_0._set_state = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_6_0, l_6_1)
+	l_6_0:_set_state(l_6_1)
 	managers.menu2d:sound():play("menu_small_select")
 end
-function Menu2DWidgetCheckButton.destroy(A0_10)
-	local L1_11
+
+l_0_0.set_enable = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_7_0)
 end
-function Menu2DWidgetCheckButton.initial_value(A0_12)
-	if A0_12._params.connection_get then
-		A0_12._enable = managers.menu2d:use_connection(A0_12._params.connection_get, A0_12._params)
+
+l_0_0.destroy = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_8_0)
+	if l_8_0._params.connection_get then
+		l_8_0._enable = managers.menu2d:use_connection(l_8_0._params.connection_get, l_8_0._params)
 	else
-		A0_12._enable = A0_12._params._enabled or true
+		l_8_0._enable = l_8_0._params._enabled or true
 	end
-	return A0_12._enable
+	return l_8_0._enable
 end
-function Menu2DWidgetCheckButton.set_active(A0_13)
-	A0_13._visible_bmp:set_color(tweak_data.menu2d.normal_menu.choice_text_color_active)
-	A0_13._visible_bmp:animate(Menu2DAnimations.flash, tweak_data.menu2d.animation.choice_text_flash_speed, tweak_data.menu2d.animation.choice_text_flash_times, tweak_data.menu2d.animation.choice_text_flash_min_alpha, tweak_data.menu2d.animation.choice_text_flash_max_alpha)
+
+l_0_0.initial_value = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_9_0)
+	l_9_0._visible_bmp:set_color(tweak_data.menu2d.normal_menu.choice_text_color_active)
+	l_9_0._visible_bmp:animate(Menu2DAnimations.flash, tweak_data.menu2d.animation.choice_text_flash_speed, tweak_data.menu2d.animation.choice_text_flash_times, tweak_data.menu2d.animation.choice_text_flash_min_alpha, tweak_data.menu2d.animation.choice_text_flash_max_alpha)
 end
-function Menu2DWidgetCheckButton.set_inactive(A0_14)
-	A0_14._visible_bmp:set_color(tweak_data.menu2d.normal_menu.choice_text_color)
+
+l_0_0.set_active = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_10_0)
+	l_10_0._visible_bmp:set_color(tweak_data.menu2d.normal_menu.choice_text_color)
 end
-function Menu2DWidgetCheckButton.animate(A0_15, A1_16, A2_17)
-	local L3_18, L4_19
-	if A1_16 == "fade_in" then
-		L3_18 = A0_15._visible_bmp
-		L4_19 = L3_18
-		L3_18 = L3_18.set_color
-		L3_18(L4_19, A0_15._visible_bmp:color():with_alpha(0))
+
+l_0_0.set_inactive = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_11_0, l_11_1, l_11_2)
+	if l_11_1 == "fade_in" then
+		l_11_0._visible_bmp:set_color(l_11_0._visible_bmp:color():with_alpha(0))
 	end
-	L3_18 = A0_15._visible_bmp
-	L4_19 = L3_18
-	L3_18 = L3_18.animate
-	L3_18(L4_19, Menu2DAnimations[A1_16], unpack(A2_17))
+	l_11_0._visible_bmp:animate(Menu2DAnimations[l_11_1], unpack(l_11_2))
 end
-function Menu2DWidgetCheckButton._visible_gui_object(A0_20)
-	if A0_20._enable then
-		return A0_20._bmp_enabled
+
+l_0_0.animate = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_12_0)
+	if l_12_0._enable then
+		return l_12_0._bmp_enabled
 	else
-		return A0_20._bmp_disabled
+		return l_12_0._bmp_disabled
 	end
 end
-function Menu2DWidgetCheckButton.mouse_input(A0_21, A1_22)
-	if A1_22.select and Menu2DUtilities.is_position_over_gui_object(A1_22.cursor_position, A0_21:_visible_gui_object()) then
-		A0_21:set_enable(not A0_21._enable)
+
+l_0_0._visible_gui_object = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_13_0, l_13_1)
+	if l_13_1.select and Menu2DUtilities.is_position_over_gui_object(l_13_1.cursor_position, l_13_0:_visible_gui_object()) then
+		l_13_0:set_enable(not l_13_0._enable)
 	end
 end
-function Menu2DWidgetCheckButton.confirm_mode(A0_23)
-	local L1_24
-	L1_24 = "toggle"
-	return L1_24
+
+l_0_0.mouse_input = l_0_1
+l_0_0 = Menu2DWidgetCheckButton
+l_0_1 = function(l_14_0)
+	return "toggle"
 end
+
+l_0_0.confirm_mode = l_0_1
+

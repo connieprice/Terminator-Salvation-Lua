@@ -1,58 +1,72 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreChangeEnvCutsceneKey = CoreChangeEnvCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreChangeEnvCutsceneKey then
+	CoreChangeEnvCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreChangeEnvCutsceneKey.ELEMENT_NAME = "change_env"
 CoreChangeEnvCutsceneKey.NAME = "Environment Change"
 CoreChangeEnvCutsceneKey:register_serialized_attribute("name", "")
 CoreChangeEnvCutsceneKey:register_serialized_attribute("transition_time", 0, tonumber)
-function CoreChangeEnvCutsceneKey.__tostring(A0_0)
-	return "Change environment to \"" .. A0_0:name() .. "\"."
+CoreChangeEnvCutsceneKey.__tostring = function(l_1_0)
+	return "Change environment to \"" .. l_1_0:name() .. "\"."
 end
-function CoreChangeEnvCutsceneKey.prime(A0_1, A1_2)
-	managers.environment:preload_environment(A0_1:name(), false)
+
+CoreChangeEnvCutsceneKey.prime = function(l_2_0, l_2_1)
+	managers.environment:preload_environment(l_2_0:name(), false)
 end
-function CoreChangeEnvCutsceneKey.unload(A0_3, A1_4)
-	if A0_3.__previous_environment_name then
-		managers.viewport:first_active_viewport():set_environment(A0_3.__previous_environment_name)
+
+CoreChangeEnvCutsceneKey.unload = function(l_3_0, l_3_1)
+	if l_3_0.__previous_environment_name then
+		managers.viewport:first_active_viewport():set_environment(l_3_0.__previous_environment_name)
 	end
 end
-function CoreChangeEnvCutsceneKey.evaluate(A0_5, A1_6, A2_7)
-	local L3_8
-	L3_8 = A0_5.__previous_environment_name
-	if not L3_8 then
-		L3_8 = managers
-		L3_8 = L3_8.environment
-		L3_8 = L3_8.get_current_environment_name
-		L3_8 = L3_8(L3_8)
+
+CoreChangeEnvCutsceneKey.evaluate = function(l_4_0, l_4_1, l_4_2)
+	if not l_4_0.__previous_environment_name then
+		l_4_0.__previous_environment_name = managers.environment:get_current_environment_name()
 	end
-	A0_5.__previous_environment_name = L3_8
-	L3_8 = A0_5.transition_time
-	L3_8 = L3_8(A0_5)
-	if L3_8 and L3_8 > 0 then
-		managers.environment:change_environment(A0_5:name(), L3_8)
+	local l_4_3 = l_4_0:transition_time()
+	if l_4_3 and l_4_3 > 0 then
+		managers.environment:change_environment(l_4_0:name(), l_4_3)
 	else
-		managers.viewport:first_active_viewport():set_environment(A0_5:name())
+		managers.viewport:first_active_viewport():set_environment(l_4_0:name())
 	end
 end
-function CoreChangeEnvCutsceneKey.can_evaluate_with_player(A0_9, A1_10)
-	local L2_11
-	L2_11 = true
-	return L2_11
+
+CoreChangeEnvCutsceneKey.can_evaluate_with_player = function(l_5_0, l_5_1)
+	return true
 end
-function CoreChangeEnvCutsceneKey.is_valid_name(A0_12, A1_13)
-	return Database:has("environment", A1_13)
+
+CoreChangeEnvCutsceneKey.is_valid_name = function(l_6_0, l_6_1)
+	local l_6_2, l_6_3 = Database:has, Database
+	local l_6_4 = "environment"
+	local l_6_5 = l_6_1
+	return l_6_2(l_6_3, l_6_4, l_6_5)
 end
-function CoreChangeEnvCutsceneKey.is_valid_transition_time(A0_14, A1_15)
-	local L2_16
-	L2_16 = A1_15 and A1_15 >= 0
-	return L2_16
+
+CoreChangeEnvCutsceneKey.is_valid_transition_time = function(l_7_0, l_7_1)
+	do
+		return not l_7_1 or l_7_1 >= 0
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
 CoreChangeEnvCutsceneKey.control_for_name = CoreCutsceneKeyBase.standard_combo_box_control
-function CoreChangeEnvCutsceneKey.refresh_control_for_name(A0_17, A1_18)
-	local L2_19
-	L2_19 = A1_18.freeze
-	L2_19(A1_18)
-	L2_19 = A1_18.clear
-	L2_19(A1_18)
-	L2_19 = A0_17.name
-	L2_19 = L2_19(A0_17)
-	for 
+CoreChangeEnvCutsceneKey.refresh_control_for_name = function(l_8_0, l_8_1)
+	l_8_1:freeze()
+	l_8_1:clear()
+	local l_8_2 = l_8_0:name()
+	local l_8_6, l_8_7 = ipairs, Database:all(false, "environment")
+	l_8_6 = l_8_6(l_8_7)
+	for i_0,i_1 in l_8_6 do
+		l_8_1:append(l_8_5:name())
+		if l_8_5:name() == l_8_2 then
+			l_8_1:set_value(l_8_2)
+		end
+	end
+	l_8_1:thaw()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

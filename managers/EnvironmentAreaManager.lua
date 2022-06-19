@@ -1,16 +1,20 @@
-EnvironmentAreaManager = EnvironmentAreaManager or class(CoreEnvironmentAreaManager)
-function EnvironmentAreaManager.add_area(A0_0, A1_1)
-	local L2_2
-	L2_2 = FaithEnvironmentArea
-	L2_2 = L2_2.new
-	L2_2 = L2_2(L2_2, A1_1)
-	table.insert(A0_0._areas, L2_2)
-	return L2_2
+if not EnvironmentAreaManager then
+	EnvironmentAreaManager = class(CoreEnvironmentAreaManager)
 end
-FaithEnvironmentArea = FaithEnvironmentArea or class(EnvironmentArea)
-function FaithEnvironmentArea.init(A0_3, A1_4)
-	EnvironmentArea.init(A0_3, A1_4)
-	if managers.environment:exists_on_disk(A0_3._properties.environment .. "_coop") then
-		managers.environment:preload_environment(A0_3._properties.environment .. "_coop")
+EnvironmentAreaManager.add_area = function(l_1_0, l_1_1)
+	local l_1_2 = FaithEnvironmentArea:new(l_1_1)
+	table.insert(l_1_0._areas, l_1_2)
+	return l_1_2
+end
+
+if not FaithEnvironmentArea then
+	FaithEnvironmentArea = class(EnvironmentArea)
+end
+FaithEnvironmentArea.init = function(l_2_0, l_2_1)
+	EnvironmentArea.init(l_2_0, l_2_1)
+	if managers.environment:exists_on_disk(l_2_0._properties.environment .. "_coop") then
+		managers.environment:preload_environment(l_2_0._properties.environment .. "_coop")
 	end
 end
+
+

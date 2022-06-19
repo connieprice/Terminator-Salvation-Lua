@@ -1,101 +1,125 @@
 core:module("CoreSubtitleSequence")
 core:require_module("CoreClass")
-SubtitleSequence = SubtitleSequence or CoreClass.class()
-Subtitle = Subtitle or CoreClass.class()
-StringIDSubtitle = StringIDSubtitle or CoreClass.class(Subtitle)
-function SubtitleSequence.init(A0_0, A1_1)
-	if A1_1 then
-		A0_0:_load_from_xml(A1_1)
+if not SubtitleSequence then
+	SubtitleSequence = CoreClass.class()
+end
+if not Subtitle then
+	Subtitle = CoreClass.class()
+end
+if not StringIDSubtitle then
+	StringIDSubtitle = CoreClass.class(Subtitle)
+end
+SubtitleSequence.init = function(l_1_0, l_1_1)
+	if l_1_1 then
+		l_1_0:_load_from_xml(l_1_1)
 	end
 end
-function SubtitleSequence.name(A0_2)
-	return A0_2:parameters().name or ""
+
+SubtitleSequence.name = function(l_2_0)
+	return l_2_0:parameters().name or ""
 end
-function SubtitleSequence.duration(A0_3)
-	return A0_3.__subtitles and A0_3.__subtitles[#A0_3.__subtitles]:end_time()
-end
-function SubtitleSequence.parameters(A0_4)
-	return A0_4.__parameters or {}
-end
-function SubtitleSequence.subtitles(A0_5)
-	return A0_5.__subtitles or {}
-end
-function SubtitleSequence.add_subtitle(A0_6, A1_7)
-	A0_6.__subtitles = A0_6.__subtitles or {}
-	table.insert_sorted(A0_6.__subtitles, A1_7, function(A0_8, A1_9)
-		return A0_8:start_time() < A1_9:start_time()
-	end)
-end
-function SubtitleSequence._load_from_xml(A0_10, A1_11)
-	local L2_12, L3_13, L4_14, L5_15, L6_16, L7_17, L8_18
-	L2_12(L3_13, L4_14)
-	L3_13 = A1_11 and L3_13 == "sequence"
-	L2_12(L3_13, L4_14)
-	L5_15 = "name"
-	L2_12(L3_13, L4_14)
-	A0_10.__parameters = L2_12
-	A0_10.__subtitles = L2_12
-	for L5_15 in L2_12(L3_13) do
-		L7_17 = A0_10
-		L6_16 = A0_10._xml_assert
-		L8_18 = L5_15.parameter
-		L8_18 = L8_18(L5_15, "text_id")
-		L6_16 = L6_16(L7_17, L8_18, L5_15, string.format("Sequence \"%s\" has entries without text_ids.", A0_10:name()))
-		L7_17 = managers
-		L7_17 = L7_17.localization
-		L8_18 = L7_17
-		L7_17 = L7_17.exists
-		L7_17 = L7_17(L8_18, L6_16)
-		if not L7_17 then
-			L8_18 = A0_10
-			L7_17 = A0_10._report_bad_string_id
-			L7_17(L8_18, L6_16)
-		end
-		L8_18 = A0_10
-		L7_17 = A0_10._xml_assert
-		L7_17 = L7_17(L8_18, tonumber(L5_15:parameter("time")), L5_15, string.format("Sequence \"%s\" has entries without valid times.", A0_10:name()))
-		L8_18 = StringIDSubtitle
-		L8_18 = L8_18.new
-		L8_18 = L8_18(L8_18, L6_16, L7_17, tonumber(L5_15:parameter("duration") or 2))
-		A0_10:add_subtitle(CoreClass.freeze(L8_18))
+
+SubtitleSequence.duration = function(l_3_0)
+	if l_3_0.__subtitles then
+		return l_3_0.__subtitles[#l_3_0.__subtitles]:end_time()
 	end
-	L2_12(L3_13)
 end
-function SubtitleSequence._report_bad_string_id(A0_19, A1_20)
-	Localizer:lookup(A1_20)
+
+SubtitleSequence.parameters = function(l_4_0)
+	if not l_4_0.__parameters then
+		return {}
+	end
 end
-function SubtitleSequence._xml_assert(A0_21, A1_22, A2_23, A3_24)
-	local L4_25
-	L4_25 = A1_22 or L4_25(string.format("Error parsing \"%s\" - %s", string.gsub(A2_23:file(), "^.*[/\\]", ""), A3_24))
-	return L4_25
+
+SubtitleSequence.subtitles = function(l_5_0)
+	if not l_5_0.__subtitles then
+		return {}
+	end
 end
-function Subtitle.init(A0_26, A1_27, A2_28, A3_29)
-	A0_26.__string_data = A1_27 ~= nil and assert(tostring(A1_27), "Invalid string argument.") or ""
-	A0_26.__start_time = assert(tonumber(A2_28), "Invalid start time argument.")
-	A0_26.__duration = A3_29 ~= nil and assert(tonumber(A3_29), "Invalid duration argument.") or nil
+
+SubtitleSequence.add_subtitle = function(l_6_0, l_6_1)
+	if not l_6_0.__subtitles then
+		l_6_0.__subtitles = {}
+	end
+	table.insert_sorted(l_6_0.__subtitles, l_6_1, function(l_7_0, l_7_1)
+		return l_7_0:start_time() < l_7_1:start_time()
+  end)
 end
-function Subtitle.string(A0_30)
-	local L1_31
-	L1_31 = A0_30.__string_data
-	return L1_31
-end
-function Subtitle.start_time(A0_32)
-	local L1_33
-	L1_33 = A0_32.__start_time
-	return L1_33
-end
-function Subtitle.end_time(A0_34)
-	return A0_34:start_time() + (A0_34:duration() or math.huge)
-end
-function Subtitle.duration(A0_35)
-	local L1_36
-	L1_36 = A0_35.__duration
-	return L1_36
-end
-function Subtitle.is_active_at_time(A0_37, A1_38)
-	return A1_38 > A0_37:start_time() and A1_38 < A0_37:end_time()
-end
-function StringIDSubtitle.string(A0_39)
+
+SubtitleSequence._load_from_xml = function(l_7_0, l_7_1)
 	assert(managers.localization, "Localization Manager not ready.")
-	return managers.localization:text(A0_39.__string_data)
+	local l_7_2 = assert
+	l_7_2(not l_7_1 or l_7_1:name() == "sequence", "Attempting to construct from non-sequence XML node.")
+	l_7_2 = assert
+	local l_7_5 = l_7_1:parameter
+	l_7_5 = l_7_5(l_7_1, "name")
+	l_7_2(l_7_5, "Sequence must have a name.")
+	l_7_2, l_7_5 = l_7_1:parameter_map, l_7_1
+	l_7_2 = l_7_2(l_7_5)
+	l_7_0.__parameters = l_7_2
+	l_7_0.__subtitles, l_7_2 = l_7_2, {}
+	l_7_2, l_7_5 = l_7_1:children, l_7_1
+	l_7_2 = l_7_2(l_7_5)
+	for i_0 in l_7_2 do
+		if not managers.localization:exists(l_7_0:_xml_assert(i_0:parameter("text_id"), i_0, string.format("Sequence \"%s\" has entries without text_ids.", l_7_0:name()))) then
+			l_7_0:_report_bad_string_id(l_7_0:_xml_assert(i_0:parameter("text_id"), i_0, string.format("Sequence \"%s\" has entries without text_ids.", l_7_0:name())))
+		end
+		local l_7_7 = nil
+		local l_7_8 = nil
+		l_7_0:add_subtitle(CoreClass.freeze(StringIDSubtitle:new(l_7_7, l_7_0:_xml_assert(tonumber(l_7_6:parameter("time")), l_7_6, string.format("Sequence \"%s\" has entries without valid times.", l_7_0:name())), tonumber(l_7_6:parameter("duration") or 2))))
+	end
+	CoreClass.freeze(l_7_0.__subtitles)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+SubtitleSequence._report_bad_string_id = function(l_8_0, l_8_1)
+	Localizer:lookup(l_8_1)
+end
+
+SubtitleSequence._xml_assert = function(l_9_0, l_9_1, l_9_2, l_9_3)
+	do
+		if not l_9_1 then
+			return error(string.format("Error parsing \"%s\" - %s", string.gsub(l_9_2:file(), "^.*[/\\]", ""), l_9_3))
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+Subtitle.init = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	l_10_0.__string_data = l_10_1 ~= nil and assert(tostring(l_10_1), "Invalid string argument.") or ""
+	l_10_0.__start_time = assert(tonumber(l_10_2), "Invalid start time argument.")
+	l_10_0.__duration = l_10_3 ~= nil and assert(tonumber(l_10_3), "Invalid duration argument.") or nil
+end
+
+Subtitle.string = function(l_11_0)
+	return l_11_0.__string_data
+end
+
+Subtitle.start_time = function(l_12_0)
+	return l_12_0.__start_time
+end
+
+Subtitle.end_time = function(l_13_0)
+	if not l_13_0:duration() then
+		return l_13_0:start_time() + math.huge
+	end
+end
+
+Subtitle.duration = function(l_14_0)
+	return l_14_0.__duration
+end
+
+Subtitle.is_active_at_time = function(l_15_0, l_15_1)
+	return l_15_0:start_time() < l_15_1 and l_15_1 < l_15_0:end_time()
+end
+
+StringIDSubtitle.string = function(l_16_0)
+	assert(managers.localization, "Localization Manager not ready.")
+	local l_16_1, l_16_2 = managers.localization:text, managers.localization
+	local l_16_3 = l_16_0.__string_data
+	return l_16_1(l_16_2, l_16_3)
+end
+
+

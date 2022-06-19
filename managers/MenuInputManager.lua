@@ -1,59 +1,39 @@
-local L0_0
-L0_0 = MenuInputManager
-if not L0_0 then
-	L0_0 = class
-	L0_0 = L0_0()
+if not MenuInputManager then
+	MenuInputManager = class()
 end
-MenuInputManager = L0_0
-L0_0 = MenuInputManager
-function L0_0.init(A0_1, A1_2)
-	if not A1_2.user_index then
-		return
+MenuInputManager.init = function(l_1_0, l_1_1)
+	if not l_1_1.user_index then
+		return 
 	end
-	A0_1._bound_user = managers.local_user:user_from_user_index(A1_2.user_index)
-	assert(A0_1._bound_user)
+	l_1_0._bound_user = managers.local_user:user_from_user_index(l_1_1.user_index)
+	assert(l_1_0._bound_user)
 end
-L0_0 = MenuInputManager
-function L0_0.default_data(A0_3)
-	local L1_4
-	A0_3.user_index = nil
+
+MenuInputManager.default_data = function(l_2_0)
+	l_2_0.user_index = nil
 end
-L0_0 = MenuInputManager
-function L0_0.save(A0_5, A1_6)
-	assert(A0_5._bound_user)
-	A1_6.user_index = A0_5._bound_user:user_index()
-	assert(A1_6.user_index)
+
+MenuInputManager.save = function(l_3_0, l_3_1)
+	assert(l_3_0._bound_user)
+	l_3_1.user_index = l_3_0._bound_user:user_index()
+	assert(l_3_1.user_index)
 end
-L0_0 = MenuInputManager
-function L0_0.any_user_pressed(A0_7, A1_8, A2_9)
-	local L3_10, L4_11, L5_12, L6_13, L7_14
-	for L6_13, L7_14 in L3_10(L4_11) do
-		if L7_14:controller_wrapper():get_input_pressed(A2_9) then
-			return L7_14
+
+MenuInputManager.any_user_pressed = function(l_4_0, l_4_1, l_4_2)
+	local l_4_6, l_4_7, l_4_8, l_4_9 = nil
+	for i_0,i_1 in pairs(l_4_1) do
+		if i_1:controller_wrapper():get_input_pressed(l_4_2) then
+			return i_1
 		end
-		if A0_7:_backup_controller(L7_14) and A0_7:_backup_controller(L7_14):get_input_pressed(A2_9) then
-			return L7_14
+		if l_4_0:_backup_controller(i_1) and l_4_0:_backup_controller(i_1):get_input_pressed(l_4_2) then
+			return l_4_11
 		end
 	end
 end
-L0_0 = "pc"
-function MenuInputManager.users_pressing_join(A0_15)
-	local L1_16, L2_17, L3_18, L4_19, L5_20, L6_21
-	L1_16 = {}
-	for L5_20, L6_21 in L2_17(L3_18) do
-		if L6_21:controller_wrapper():get_any_button_pressed_including_unconnected() then
-			table.insert(L1_16, L6_21)
-		end
-	end
-	L2_17(L3_18, L4_19)
-	return L1_16
+
+local l_0_0 = "pc"
 end
-function MenuInputManager._backup_controller(A0_22, A1_23)
-	local L2_24
-	if L2_24 == managers.save:primary_user() then
-		return L2_24
-	end
-	if not L2_24 then
-		return L2_24
-	end
-	for 
+ -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+ -- WARNING: undefined locals caused missing assignments!
+

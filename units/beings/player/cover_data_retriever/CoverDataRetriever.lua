@@ -1,378 +1,416 @@
-local L0_0
-L0_0 = require
-L0_0("units/beings/player/cover_data_retriever/GetAdjacentCoversOperation")
-L0_0 = require
-L0_0("units/beings/player/cover_data_retriever/GetQuickMoveInfosOperation")
-L0_0 = require
-L0_0("scheduler/RaycastOperation")
-L0_0 = "get_adjacent_covers"
-CoverDataRetriever = CoverDataRetriever or class()
-function CoverDataRetriever.init(A0_1, A1_2)
-	A0_1._scheduler = A1_2
-	A0_1.left_cover = {}
-	A0_1.left_cover.is_valid = false
-	A0_1.right_cover = {}
-	A0_1.right_cover.is_valid = false
-	A0_1.quick_move_infos = {}
-	A0_1.quick_move_infos.is_valid = false
-	A0_1.quick_move_infos.id = 1
-	A0_1.left_quick_move_infos = {}
-	A0_1.left_quick_move_infos.is_valid = false
-	A0_1.right_quick_move_infos = {}
-	A0_1.right_quick_move_infos.is_valid = false
-	A0_1.can_peek_at_left_edge = {}
-	A0_1.can_peek_at_left_edge.is_valid = false
-	A0_1.can_peek_at_right_edge = {}
-	A0_1.can_peek_at_right_edge.is_valid = false
-	A0_1.change_to_left_cover_distance = {}
-	A0_1.change_to_left_cover_distance.is_valid = false
-	A0_1.change_to_right_cover_distance = {}
-	A0_1.change_to_right_cover_distance.is_valid = false
-	A0_1.cover_line = {}
-	A0_1.cover_line.is_valid = false
-	A0_1.can_move_over_cover = {}
-	A0_1.can_move_over_cover.is_valid = true
-	A0_1._operations = {}
-	A0_1._can_peek_at_edge_slot_mask = managers.slot:get_mask("statics")
+require("units/beings/player/cover_data_retriever/GetAdjacentCoversOperation")
+require("units/beings/player/cover_data_retriever/GetQuickMoveInfosOperation")
+require("scheduler/RaycastOperation")
+local l_0_0 = "get_adjacent_covers"
+local l_0_1 = "get_quick_move_infos"
+local l_0_2 = "can_peek_at_left_edge"
+local l_0_3 = "can_peek_at_right_edge"
+if not CoverDataRetriever then
+	CoverDataRetriever = class()
 end
-function CoverDataRetriever.set_priorities(A0_3, A1_4, A2_5, A3_6, A4_7)
-	assert(A1_4 and A1_4 > 0)
-	assert(A2_5 and A2_5 > 0)
-	assert(A3_6 and A3_6 > 0)
-	assert(A4_7 and A4_7 > 0)
-	A0_3._adjacent_covers_priority = A1_4
-	A0_3._quick_move_infos_priority = A2_5
-	A0_3._adjacent_quick_move_infos_priority = A3_6
-	A0_3._can_peek_at_edge_priority = A4_7
+CoverDataRetriever.init = function(l_1_0, l_1_1)
+	l_1_0._scheduler = l_1_1
+	l_1_0.left_cover = {}
+	l_1_0.left_cover.is_valid = false
+	l_1_0.right_cover = {}
+	l_1_0.right_cover.is_valid = false
+	l_1_0.quick_move_infos = {}
+	l_1_0.quick_move_infos.is_valid = false
+	l_1_0.quick_move_infos.id = 1
+	l_1_0.left_quick_move_infos = {}
+	l_1_0.left_quick_move_infos.is_valid = false
+	l_1_0.right_quick_move_infos = {}
+	l_1_0.right_quick_move_infos.is_valid = false
+	l_1_0.can_peek_at_left_edge = {}
+	l_1_0.can_peek_at_left_edge.is_valid = false
+	l_1_0.can_peek_at_right_edge = {}
+	l_1_0.can_peek_at_right_edge.is_valid = false
+	l_1_0.change_to_left_cover_distance = {}
+	l_1_0.change_to_left_cover_distance.is_valid = false
+	l_1_0.change_to_right_cover_distance = {}
+	l_1_0.change_to_right_cover_distance.is_valid = false
+	l_1_0.cover_line = {}
+	l_1_0.cover_line.is_valid = false
+	l_1_0.can_move_over_cover = {}
+	l_1_0.can_move_over_cover.is_valid = true
+	l_1_0._operations = {}
+	l_1_0._can_peek_at_edge_slot_mask = managers.slot:get_mask("statics")
 end
-function CoverDataRetriever.destroy(A0_8)
-	A0_8:_cancel_operations()
+
+CoverDataRetriever.set_priorities = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4)
+	local l_2_5 = assert
+	do
+		l_2_5(not l_2_1 or l_2_1 > 0)
+		l_2_5 = assert
+		l_2_5(not l_2_2 or l_2_2 > 0)
+		l_2_5 = assert
+		l_2_5(not l_2_3 or l_2_3 > 0)
+		l_2_5 = assert
+		l_2_5(not l_2_4 or l_2_4 > 0)
+		l_2_0._adjacent_covers_priority = l_2_1
+		l_2_0._quick_move_infos_priority = l_2_2
+		l_2_0._adjacent_quick_move_infos_priority = l_2_3
+		l_2_0._can_peek_at_edge_priority = l_2_4
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoverDataRetriever.enter_cover(A0_9, A1_10)
-	local L2_11
-	L2_11 = A0_9._cancel_operations
-	L2_11(A0_9)
-	L2_11 = assert
-	L2_11(A1_10)
-	L2_11 = A0_9._cover
-	A0_9._cover = A1_10
-	A0_9._cover_right = A1_10:right()
-	A0_9._high_cover = managers.cover_util:high_cover(A1_10)
-	A0_9._left_edge_position, A0_9._right_edge_position = managers.cover_util:edge_positions(A1_10)
-	A0_9:_get_adjacent_covers(A1_10)
-	A0_9:_get_quick_move_infos(A1_10)
-	A0_9.cover_line.value = A1_10:cover_line(tweak_data.player.cover.DISTANCE_TO, 0)
-	A0_9.cover_line.is_valid = true
-	A0_9.left_edge_position, A0_9.right_edge_position = A1_10:cover_line(tweak_data.player.cover.DISTANCE_TO, 0):edge_positions()
-	A0_9:_get_can_move_over_cover()
-	if A1_10 == A0_9.left_cover.value then
-		A0_9:_set_right_cover(L2_11)
-		if A0_9.change_to_left_cover_distance.is_valid then
-			A0_9.change_to_right_cover_distance.value = A0_9.change_to_left_cover_distance.value
-			A0_9.change_to_right_cover_distance.is_valid = true
+
+CoverDataRetriever.destroy = function(l_3_0)
+	l_3_0:_cancel_operations()
+end
+
+CoverDataRetriever.enter_cover = function(l_4_0, l_4_1)
+	l_4_0:_cancel_operations()
+	assert(l_4_1)
+	local l_4_2 = l_4_0._cover
+	local l_4_3 = nil
+	if l_4_0.left_cover.is_valid then
+		l_4_3 = l_4_0.left_cover.value
+	end
+	local l_4_4 = nil
+	if l_4_0.right_cover.is_valid then
+		l_4_4 = l_4_0.right_cover.value
+	end
+	l_4_0._cover = l_4_1
+	l_4_0._cover_right = l_4_1:right()
+	l_4_0._high_cover = managers.cover_util:high_cover(l_4_1)
+	local l_4_5 = managers.cover_util:edge_positions(l_4_1)
+	l_4_0._right_edge_position = managers.cover_util
+	l_4_0._left_edge_position = l_4_5
+	l_4_5(l_4_0, l_4_1)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_4_5(l_4_0, l_4_1)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_4_0.cover_line.value = l_4_5
+	l_4_0.cover_line.is_valid = true
+	local l_4_6 = l_4_5:edge_positions()
+	l_4_0.right_edge_position = l_4_5
+	l_4_0.left_edge_position = l_4_6
+	l_4_6(l_4_0)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_4_1 == l_4_3 then
+		l_4_6(l_4_0, l_4_2)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_4_6 then
+			l_4_6.value = l_4_0.change_to_left_cover_distance.value
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_4_6.is_valid = true
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
 		else
-			A0_9.change_to_right_cover_distance.is_valid = false
+			l_4_6.is_valid = false
 		end
-		A0_9.change_to_left_cover_distance.is_valid = false
-		if A0_9.quick_move_infos.is_valid then
-			A0_9:_set_right_quick_move_infos(A0_9.quick_move_infos.value)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_4_6.is_valid = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_4_6.is_valid then
+			l_4_0:_set_right_quick_move_infos(l_4_6.value)
 		else
-			A0_9.right_quick_move_infos.is_valid = false
+			l_4_0.right_quick_move_infos.is_valid = false
 		end
-		if A0_9.left_quick_move_infos.is_valid then
-			A0_9:_set_quick_move_infos(A0_9.left_quick_move_infos.value)
+		do
+			local l_4_7 = l_4_0.left_quick_move_infos
+			if l_4_7.is_valid then
+				l_4_0:_set_quick_move_infos(l_4_7.value)
+			else
+				l_4_0.quick_move_infos.is_valid = false
+			end
+			l_4_0.left_quick_move_infos.is_valid = false
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	elseif l_4_1 == l_4_4 then
+		l_4_6(l_4_0, l_4_2)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_4_6 then
+			l_4_6.value = l_4_0.change_to_right_cover_distance.value
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_4_6.is_valid = true
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
 		else
-			A0_9.quick_move_infos.is_valid = false
+			l_4_6.is_valid = false
 		end
-		A0_9.left_quick_move_infos.is_valid = false
-	elseif A1_10 == A0_9.right_cover.value then
-		A0_9:_set_left_cover(L2_11)
-		if A0_9.change_to_right_cover_distance.is_valid then
-			A0_9.change_to_left_cover_distance.value = A0_9.change_to_right_cover_distance.value
-			A0_9.change_to_left_cover_distance.is_valid = true
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_4_6.is_valid = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_4_6.is_valid then
+			l_4_0:_set_left_quick_move_infos(l_4_6.value)
 		else
-			A0_9.change_to_left_cover_distance.is_valid = false
+			l_4_0.left_quick_move_infos.is_valid = false
 		end
-		A0_9.change_to_right_cover_distance.is_valid = false
-		if A0_9.quick_move_infos.is_valid then
-			A0_9:_set_left_quick_move_infos(A0_9.quick_move_infos.value)
-		else
-			A0_9.left_quick_move_infos.is_valid = false
-		end
-		if A0_9.right_quick_move_infos.is_valid then
-			A0_9:_set_quick_move_infos(A0_9.right_quick_move_infos.value)
-		else
-			A0_9.quick_move_infos.is_valid = false
-		end
-		A0_9.right_quick_move_infos.is_valid = false
+		do
+			local l_4_8 = l_4_0.right_quick_move_infos
+			if l_4_8.is_valid then
+				l_4_0:_set_quick_move_infos(l_4_8.value)
+			else
+				l_4_0.quick_move_infos.is_valid = false
+			end
+			l_4_0.right_quick_move_infos.is_valid = false
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
 	else
-		A0_9.change_to_left_cover_distance.is_valid = false
-		A0_9.change_to_right_cover_distance.is_valid = false
-		A0_9.quick_move_infos.is_valid = false
-		A0_9.left_quick_move_infos.is_valid = false
-		A0_9.right_quick_move_infos.is_valid = false
+		l_4_6.is_valid = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_4_6.is_valid = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_4_6.is_valid = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_4_6.is_valid = false
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_4_6.is_valid = false
 	end
 end
-function CoverDataRetriever.leave_cover(A0_12)
-	A0_12._cover = nil
-	A0_12._cover_right = nil
-	A0_12:_cancel_operations()
-	A0_12.left_cover.is_valid = false
-	A0_12.right_cover.is_valid = false
-	A0_12.quick_move_infos.is_valid = false
+
+CoverDataRetriever.leave_cover = function(l_5_0)
+	l_5_0._cover = nil
+	l_5_0._cover_right = nil
+	l_5_0:_cancel_operations()
+	l_5_0.left_cover.is_valid = false
+	l_5_0.right_cover.is_valid = false
+	l_5_0.quick_move_infos.is_valid = false
 end
-function CoverDataRetriever._get_quick_move_infos(A0_13, A1_14)
-	local L2_15, L3_16
-	L3_16 = A0_13
-	L2_15 = A0_13._cancel_and_remove_operation
-	L2_15(L3_16, _UPVALUE0_)
-	L2_15 = GetQuickMoveInfosOperation
-	L3_16 = L2_15
-	L2_15 = L2_15.new
-	L2_15 = L2_15(L3_16, A1_14)
-	function L3_16(A0_17)
-		_UPVALUE0_:_set_quick_move_infos(A0_17.quick_move_infos)
+
+CoverDataRetriever._get_quick_move_infos = function(l_6_0, l_6_1)
+	-- upvalues: l_0_1
+	l_6_0:_cancel_and_remove_operation(l_0_1)
+	local l_6_2 = GetQuickMoveInfosOperation:new(l_6_1)
+	do
+		l_6_0:_insert_operation(l_6_2, "GetQuickMoveInfos", l_6_0._quick_move_infos_priority, function(l_7_0)
+		-- upvalues: l_6_0
+		l_6_0:_set_quick_move_infos(l_7_0.quick_move_infos)
+  end)
+		l_6_0._operations[l_0_1] = l_6_2
 	end
-	A0_13:_insert_operation(L2_15, "GetQuickMoveInfos", A0_13._quick_move_infos_priority, L3_16)
-	A0_13._operations[_UPVALUE0_] = L2_15
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoverDataRetriever._get_adjacent_covers(A0_18, A1_19)
-	local L2_20, L3_21
-	L3_21 = A0_18
-	L2_20 = A0_18._cancel_and_remove_operation
-	L2_20(L3_21, _UPVALUE0_)
-	L2_20 = A0_18.left_cover
-	L2_20.is_valid = false
-	L2_20 = A0_18.right_cover
-	L2_20.is_valid = false
-	L2_20 = GetAdjacentCoversOperation
-	L3_21 = L2_20
-	L2_20 = L2_20.new
-	L2_20 = L2_20(L3_21, A1_19)
-	function L3_21(A0_22)
-		_UPVALUE0_:_set_adjacent_covers(A0_22.left_cover, A0_22.right_cover)
+
+CoverDataRetriever._get_adjacent_covers = function(l_7_0, l_7_1)
+	-- upvalues: l_0_0
+	l_7_0:_cancel_and_remove_operation(l_0_0)
+	l_7_0.left_cover.is_valid = false
+	l_7_0.right_cover.is_valid = false
+	local l_7_2 = GetAdjacentCoversOperation:new(l_7_1)
+	do
+		l_7_0:_insert_operation(l_7_2, "GetAdjacentCovers", l_7_0._adjacent_covers_priority, function(l_8_0)
+		-- upvalues: l_7_0
+		l_7_0:_set_adjacent_covers(l_8_0.left_cover, l_8_0.right_cover)
+  end)
+		l_7_0._operations[l_0_0] = l_7_2
 	end
-	A0_18:_insert_operation(L2_20, "GetAdjacentCovers", A0_18._adjacent_covers_priority, L3_21)
-	A0_18._operations[_UPVALUE0_] = L2_20
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoverDataRetriever._cancel_and_remove_operation(A0_23, A1_24)
-	local L2_25
-	L2_25 = A0_23._operations
-	L2_25 = L2_25[A1_24]
-	if L2_25 then
-		L2_25:cancel()
-		A0_23:_remove_operation(L2_25)
-		A0_23._operations[A1_24] = nil
+
+CoverDataRetriever._cancel_and_remove_operation = function(l_8_0, l_8_1)
+	local l_8_2 = l_8_0._operations[l_8_1]
+	if l_8_2 then
+		l_8_2:cancel()
+		l_8_0:_remove_operation(l_8_2)
+		l_8_0._operations[l_8_1] = nil
 	end
 end
-function CoverDataRetriever._cancel_operations(A0_26)
-	local L1_27, L2_28, L3_29, L4_30, L5_31, L6_32
-	L1_27 = A0_26._scheduler
-	for L5_31, L6_32 in L2_28(L3_29) do
-		L6_32:cancel()
-		A0_26:_remove_operation(L6_32)
+
+CoverDataRetriever._cancel_operations = function(l_9_0)
+	local l_9_5, l_9_6, l_9_7, l_9_8, l_9_9, l_9_10, l_9_11, l_9_12 = nil
+	local l_9_1 = l_9_0._scheduler
+	for i_0,i_1 in pairs(l_9_0._operations) do
+		i_1:cancel()
+		l_9_0:_remove_operation(i_1)
 	end
-	A0_26._operations = L2_28
+	l_9_0._operations = {}
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoverDataRetriever._set_quick_move_infos(A0_33, A1_34)
-	local L2_35, L3_36
-	L2_35 = A0_33.quick_move_infos
-	L2_35.value = A1_34
-	L2_35 = A0_33.quick_move_infos
-	L2_35.is_valid = true
-	L2_35 = A0_33.quick_move_infos
-	L3_36 = A0_33.quick_move_infos
-	L3_36 = L3_36.id
-	L3_36 = L3_36 + 1
-	L2_35.id = L3_36
+
+CoverDataRetriever._set_quick_move_infos = function(l_10_0, l_10_1)
+	l_10_0.quick_move_infos.value = l_10_1
+	l_10_0.quick_move_infos.is_valid = true
+	l_10_0.quick_move_infos.id = l_10_0.quick_move_infos.id + 1
 end
-function CoverDataRetriever._set_left_cover(A0_37, A1_38)
-	local L2_39
-	L2_39 = A0_37.left_cover
-	L2_39.value = A1_38
-	L2_39 = A0_37.left_cover
-	L2_39.is_valid = true
+
+CoverDataRetriever._set_left_cover = function(l_11_0, l_11_1)
+	l_11_0.left_cover.value = l_11_1
+	l_11_0.left_cover.is_valid = true
 end
-function CoverDataRetriever._set_right_cover(A0_40, A1_41)
-	local L2_42
-	L2_42 = A0_40.right_cover
-	L2_42.value = A1_41
-	L2_42 = A0_40.right_cover
-	L2_42.is_valid = true
+
+CoverDataRetriever._set_right_cover = function(l_12_0, l_12_1)
+	l_12_0.right_cover.value = l_12_1
+	l_12_0.right_cover.is_valid = true
 end
-function CoverDataRetriever._set_adjacent_covers(A0_43, A1_44, A2_45)
-	A0_43:_set_left_cover(A1_44)
-	A0_43:_set_right_cover(A2_45)
-	A0_43:_update_change_to_left_cover_distance(A1_44)
-	A0_43:_update_change_to_right_cover_distance(A2_45)
-	A0_43:_get_adjacent_quick_move_infos(A1_44, "left_quick_move_infos", A0_43._set_left_quick_move_infos)
-	A0_43:_get_adjacent_quick_move_infos(A2_45, "right_quick_move_infos", A0_43._set_right_quick_move_infos)
-	A0_43:_get_can_peek_at_left_edge(A1_44)
-	A0_43:_get_can_peek_at_right_edge(A2_45)
+
+CoverDataRetriever._set_adjacent_covers = function(l_13_0, l_13_1, l_13_2)
+	l_13_0:_set_left_cover(l_13_1)
+	l_13_0:_set_right_cover(l_13_2)
+	l_13_0:_update_change_to_left_cover_distance(l_13_1)
+	l_13_0:_update_change_to_right_cover_distance(l_13_2)
+	l_13_0:_get_adjacent_quick_move_infos(l_13_1, "left_quick_move_infos", l_13_0._set_left_quick_move_infos)
+	l_13_0:_get_adjacent_quick_move_infos(l_13_2, "right_quick_move_infos", l_13_0._set_right_quick_move_infos)
+	l_13_0:_get_can_peek_at_left_edge(l_13_1)
+	l_13_0:_get_can_peek_at_right_edge(l_13_2)
 end
-function CoverDataRetriever._update_change_to_left_cover_distance(A0_46, A1_47)
-	if A1_47 then
-		A0_46.change_to_left_cover_distance.value = A0_46:_change_to_adjacent_cover_distance(A1_47, A0_46._cover)
+
+CoverDataRetriever._update_change_to_left_cover_distance = function(l_14_0, l_14_1)
+	if l_14_1 then
+		local l_14_2 = l_14_0:_change_to_adjacent_cover_distance(l_14_1, l_14_0._cover)
+		l_14_0.change_to_left_cover_distance.value = l_14_2
 	else
-		A0_46.change_to_left_cover_distance.value = nil
+		l_14_0.change_to_left_cover_distance.value = nil
 	end
-	A0_46.change_to_left_cover_distance.is_valid = true
+	l_14_0.change_to_left_cover_distance.is_valid = true
 end
-function CoverDataRetriever._update_change_to_right_cover_distance(A0_48, A1_49)
-	if A1_49 then
-		A0_48.change_to_right_cover_distance.value = A0_48:_change_to_adjacent_cover_distance(A0_48._cover, A1_49)
+
+CoverDataRetriever._update_change_to_right_cover_distance = function(l_15_0, l_15_1)
+	if l_15_1 then
+		local l_15_2 = l_15_0:_change_to_adjacent_cover_distance(l_15_0._cover, l_15_1)
+		l_15_0.change_to_right_cover_distance.value = l_15_2
 	else
-		A0_48.change_to_right_cover_distance.value = nil
+		l_15_0.change_to_right_cover_distance.value = nil
 	end
-	A0_48.change_to_right_cover_distance.is_valid = true
+	l_15_0.change_to_right_cover_distance.is_valid = true
 end
-function CoverDataRetriever._change_to_adjacent_cover_distance(A0_50, A1_51, A2_52)
-	assert((A2_52:normal():to_polar() - A1_51:normal():to_polar()).spin <= 90)
-	if (A2_52:normal():to_polar() - A1_51:normal():to_polar()).spin <= -90 then
-	elseif (A2_52:normal():to_polar() - A1_51:normal():to_polar()).spin < 0 then
+
+CoverDataRetriever._change_to_adjacent_cover_distance = function(l_16_0, l_16_1, l_16_2)
+	local l_16_3 = l_16_1:normal()
+	local l_16_4 = l_16_2:normal()
+	local l_16_5 = l_16_4:to_polar() - l_16_3:to_polar().spin
+	local l_16_6 = assert
+	l_16_6(l_16_5 <= 90)
+	l_16_6 = nil
+	if l_16_5 <= -90 then
+		l_16_6 = -tweak_data.player.cover.DISTANCE_TO - tweak_data.player.cover.DISTANCE_TO * math.tan(-90 - l_16_5)
+	elseif l_16_5 < 0 then
+		l_16_6 = -tweak_data.player.cover.DISTANCE_TO * math.tan(-l_16_5 / 2)
 	else
+		l_16_6 = tweak_data.player.cover.DISTANCE_TO * math.tan(l_16_5 / 2)
 	end
-	return tweak_data.player.cover.DISTANCE_TO * math.tan((A2_52:normal():to_polar() - A1_51:normal():to_polar()).spin / 2)
+	return l_16_6
 end
-function CoverDataRetriever._get_can_peek_at_left_edge(A0_53, A1_54)
-	local L2_55, L3_56, L4_57, L5_58
-	if A1_54 then
-		L2_55 = A0_53._high_cover
-		if L2_55 then
-			L2_55 = managers
-			L2_55 = L2_55.cover_util
-			L3_56 = L2_55
-			L2_55 = L2_55.high_cover
-			L4_57 = A1_54
-			L2_55 = L2_55(L3_56, L4_57)
-			L2_55 = not L2_55
-		elseif not L2_55 then
-			L3_56 = A0_53
-			L2_55 = A0_53._set_can_peek_at_left_edge
-			L4_57 = false
-			L2_55(L3_56, L4_57)
+
+CoverDataRetriever._get_can_peek_at_left_edge = function(l_17_0, l_17_1)
+	-- upvalues: l_0_2
+	if l_17_1 and (not l_17_0._high_cover or not not managers.cover_util:high_cover(l_17_1)) then
+		l_17_0:_set_can_peek_at_left_edge(false)
+	else
+		local l_17_3 = function(l_18_0)
+		-- upvalues: l_17_0
+		local l_18_1, l_18_2 = l_17_0:_set_can_peek_at_left_edge, l_17_0
+		l_18_1(l_18_2, l_18_0.ray == nil)
+  end
+		local l_17_4 = l_17_0._left_edge_position + math.UP * 50
+		do
+			local l_17_5 = nil
+			l_17_0:_insert_operation(RaycastOperation:new({l_17_4, l_17_4 - l_17_0._cover_right * 100}, l_17_0._can_peek_at_edge_slot_mask, nil), "PeekAtEdge", l_17_0._can_peek_at_edge_priority, l_17_3)
+			l_17_0._operations[l_0_2] = RaycastOperation:new({l_17_4, l_17_4 - l_17_0._cover_right * 100}, l_17_0._can_peek_at_edge_slot_mask, nil)
 		end
-	else
-		function L2_55(A0_59)
-			_UPVALUE0_:_set_can_peek_at_left_edge(A0_59.ray == nil)
-		end
-		L3_56 = A0_53._left_edge_position
-		L4_57 = math
-		L4_57 = L4_57.UP
-		L4_57 = L4_57 * 50
-		L3_56 = L3_56 + L4_57
-		L4_57 = {
-			L5_58,
-			L3_56 - A0_53._cover_right * 100
-		}
-		L5_58 = L3_56
-		L5_58 = RaycastOperation
-		L5_58 = L5_58.new
-		L5_58 = L5_58(L5_58, L4_57, A0_53._can_peek_at_edge_slot_mask, nil)
-		A0_53:_insert_operation(L5_58, "PeekAtEdge", A0_53._can_peek_at_edge_priority, L2_55)
-		A0_53._operations[_UPVALUE0_] = L5_58
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function CoverDataRetriever._set_can_peek_at_left_edge(A0_60, A1_61)
-	local L2_62
-	L2_62 = A0_60.can_peek_at_left_edge
-	L2_62.is_valid = true
-	L2_62 = A0_60.can_peek_at_left_edge
-	L2_62.value = A1_61
+
+CoverDataRetriever._set_can_peek_at_left_edge = function(l_18_0, l_18_1)
+	l_18_0.can_peek_at_left_edge.is_valid = true
+	l_18_0.can_peek_at_left_edge.value = l_18_1
 end
-function CoverDataRetriever._get_can_peek_at_right_edge(A0_63, A1_64)
-	local L2_65, L3_66, L4_67, L5_68
-	if A1_64 then
-		L2_65 = A0_63._high_cover
-		if L2_65 then
-			L2_65 = managers
-			L2_65 = L2_65.cover_util
-			L3_66 = L2_65
-			L2_65 = L2_65.high_cover
-			L4_67 = A1_64
-			L2_65 = L2_65(L3_66, L4_67)
-			L2_65 = not L2_65
-		elseif not L2_65 then
-			L3_66 = A0_63
-			L2_65 = A0_63._set_can_peek_at_right_edge
-			L4_67 = false
-			L2_65(L3_66, L4_67)
-		end
+
+CoverDataRetriever._get_can_peek_at_right_edge = function(l_19_0, l_19_1)
+	-- upvalues: l_0_3
+	if l_19_1 and (not l_19_0._high_cover or not not managers.cover_util:high_cover(l_19_1)) then
+		l_19_0:_set_can_peek_at_right_edge(false)
 	else
-		function L2_65(A0_69)
-			_UPVALUE0_:_set_can_peek_at_right_edge(A0_69.ray == nil)
+		local l_19_3 = function(l_20_0)
+		-- upvalues: l_19_0
+		local l_20_1, l_20_2 = l_19_0:_set_can_peek_at_right_edge, l_19_0
+		l_20_1(l_20_2, l_20_0.ray == nil)
+  end
+		local l_19_4 = l_19_0._right_edge_position + math.UP * 50
+		do
+			local l_19_5 = nil
+			l_19_0:_insert_operation(RaycastOperation:new({l_19_4, l_19_4 + l_19_0._cover_right * 100}, l_19_0._can_peek_at_edge_slot_mask, nil), "PeekAtEdge", l_19_0._can_peek_at_edge_priority, l_19_3)
+			l_19_0._operations[l_0_3] = RaycastOperation:new({l_19_4, l_19_4 + l_19_0._cover_right * 100}, l_19_0._can_peek_at_edge_slot_mask, nil)
 		end
-		L3_66 = A0_63._right_edge_position
-		L4_67 = math
-		L4_67 = L4_67.UP
-		L4_67 = L4_67 * 50
-		L3_66 = L3_66 + L4_67
-		L4_67 = {
-			L5_68,
-			L3_66 + A0_63._cover_right * 100
-		}
-		L5_68 = L3_66
-		L5_68 = RaycastOperation
-		L5_68 = L5_68.new
-		L5_68 = L5_68(L5_68, L4_67, A0_63._can_peek_at_edge_slot_mask, nil)
-		A0_63:_insert_operation(L5_68, "PeekAtEdge", A0_63._can_peek_at_edge_priority, L2_65)
-		A0_63._operations[_UPVALUE0_] = L5_68
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function CoverDataRetriever._set_can_peek_at_right_edge(A0_70, A1_71)
-	local L2_72
-	L2_72 = A0_70.can_peek_at_right_edge
-	L2_72.is_valid = true
-	L2_72 = A0_70.can_peek_at_right_edge
-	L2_72.value = A1_71
+
+CoverDataRetriever._set_can_peek_at_right_edge = function(l_20_0, l_20_1)
+	l_20_0.can_peek_at_right_edge.is_valid = true
+	l_20_0.can_peek_at_right_edge.value = l_20_1
 end
-function CoverDataRetriever._get_adjacent_quick_move_infos(A0_73, A1_74, A2_75, A3_76)
-	local L4_77, L5_78
-	if A1_74 then
-		function L4_77(A0_79)
-			_UPVALUE0_(_UPVALUE1_, A0_79.quick_move_infos)
-		end
-		L5_78 = GetQuickMoveInfosOperation
-		L5_78 = L5_78.new
-		L5_78 = L5_78(L5_78, A1_74)
-		A0_73:_insert_operation(L5_78, "GetQuickMoveInfos", A0_73._adjacent_quick_move_infos_priority, L4_77)
-		A0_73._operations[A2_75] = L5_78
+
+CoverDataRetriever._get_adjacent_quick_move_infos = function(l_21_0, l_21_1, l_21_2, l_21_3)
+	do
+		if l_21_1 then
+			local l_21_5 = function(l_22_0)
+		-- upvalues: l_21_3 , l_21_0
+		l_21_3(l_21_0, l_22_0.quick_move_infos)
+  end
+			l_21_0:_insert_operation(GetQuickMoveInfosOperation:new(l_21_1), "GetQuickMoveInfos", l_21_0._adjacent_quick_move_infos_priority, l_21_5)
+			l_21_0._operations[l_21_2] = GetQuickMoveInfosOperation:new(l_21_1)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
 	else
-		L4_77 = A3_76
-		L5_78 = A0_73
-		L4_77(L5_78, {})
+		l_21_3(l_21_0, {})
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function CoverDataRetriever._set_left_quick_move_infos(A0_80, A1_81)
-	local L2_82
-	L2_82 = A0_80.left_quick_move_infos
-	L2_82.value = A1_81
-	L2_82 = A0_80.left_quick_move_infos
-	L2_82.is_valid = true
+
+CoverDataRetriever._set_left_quick_move_infos = function(l_22_0, l_22_1)
+	l_22_0.left_quick_move_infos.value = l_22_1
+	l_22_0.left_quick_move_infos.is_valid = true
 end
-function CoverDataRetriever._set_right_quick_move_infos(A0_83, A1_84)
-	local L2_85
-	L2_85 = A0_83.right_quick_move_infos
-	L2_85.value = A1_84
-	L2_85 = A0_83.right_quick_move_infos
-	L2_85.is_valid = true
+
+CoverDataRetriever._set_right_quick_move_infos = function(l_23_0, l_23_1)
+	l_23_0.right_quick_move_infos.value = l_23_1
+	l_23_0.right_quick_move_infos.is_valid = true
 end
-function CoverDataRetriever._get_can_move_over_cover(A0_86)
-	local L1_87, L2_88
-	L2_88 = A0_86
-	L1_87 = A0_86._set_can_move_over_cover
-	L1_87(L2_88, managers.cover_util:_static_can_move_over_cover(A0_86._cover))
+
+CoverDataRetriever._get_can_move_over_cover = function(l_24_0)
+	l_24_0:_set_can_move_over_cover(managers.cover_util:_static_can_move_over_cover(l_24_0._cover))
 end
-function CoverDataRetriever._set_can_move_over_cover(A0_89, A1_90)
-	local L2_91
-	L2_91 = A0_89.can_move_over_cover
-	L2_91.value = A1_90
-	L2_91 = A0_89.can_move_over_cover
-	L2_91.is_valid = true
+
+CoverDataRetriever._set_can_move_over_cover = function(l_25_0, l_25_1)
+	l_25_0.can_move_over_cover.value = l_25_1
+	l_25_0.can_move_over_cover.is_valid = true
 end
-function CoverDataRetriever._insert_operation(A0_92, A1_93, A2_94, A3_95, A4_96)
-	A0_92._scheduler:insert_operation(A1_93, A2_94, A3_95, A4_96)
+
+CoverDataRetriever._insert_operation = function(l_26_0, l_26_1, l_26_2, l_26_3, l_26_4)
+	l_26_0._scheduler:insert_operation(l_26_1, l_26_2, l_26_3, l_26_4)
 end
-function CoverDataRetriever._remove_operation(A0_97, A1_98)
-	A0_97._scheduler:remove_operation(A1_98)
+
+CoverDataRetriever._remove_operation = function(l_27_0, l_27_1)
+	l_27_0._scheduler:remove_operation(l_27_1)
 end
+
+

@@ -1,30 +1,39 @@
 require("shared/camera/BlendCamera")
-SwitchCamera = SwitchCamera or class(BlendCamera)
-function SwitchCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0._interpolation_time = 0.1
+if not SwitchCamera then
+	SwitchCamera = class(BlendCamera)
 end
-function SwitchCamera.update(A0_2, A1_3, A2_4, A3_5)
-	BlendCamera.update(A0_2, A1_3, A2_4, A3_5)
-	A0_2._dt = A3_5
+SwitchCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._interpolation_time = 0.1
 end
-function SwitchCamera.post_update(A0_6)
-	if not A0_6._target_camera then
-		return
+
+SwitchCamera.update = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	BlendCamera.update(l_2_0, l_2_1, l_2_2, l_2_3)
+	l_2_0._dt = l_2_3
+end
+
+SwitchCamera.post_update = function(l_3_0)
+	if not l_3_0._target_camera then
+		return 
 	end
-	A0_6._factor = A0_6._factor + A0_6._dt / A0_6._interpolation_time
-	if A0_6._factor > 1 then
-		A0_6._factor = 1
-		if A0_6._source_camera ~= A0_6._target_camera then
-			A0_6._source_camera:set_active(false)
-			A0_6._source_camera = A0_6._target_camera
+	l_3_0._factor = l_3_0._factor + l_3_0._dt / l_3_0._interpolation_time
+	if l_3_0._factor > 1 then
+		l_3_0._factor = 1
+	if l_3_0._source_camera ~= l_3_0._target_camera then
 		end
+		l_3_0._source_camera:set_active(false)
+		l_3_0._source_camera = l_3_0._target_camera
 	end
 	BlendCamera:post_update()
 end
-function SwitchCamera.switch_to_camera(A0_7, A1_8)
+
+SwitchCamera.switch_to_camera = function(l_4_0, l_4_1)
 end
-function SwitchCamera.set_interpolation_time(A0_9, A1_10)
-	assert(A1_10 > 0)
-	A0_9._interpolation_time = A1_10
+
+SwitchCamera.set_interpolation_time = function(l_5_0, l_5_1)
+	local l_5_2 = assert
+	l_5_2(l_5_1 > 0)
+	l_5_0._interpolation_time = l_5_1
 end
+
+

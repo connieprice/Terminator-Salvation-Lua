@@ -1,12 +1,16 @@
-Operation = Operation or class()
-function Operation.start(A0_0)
-	local L1_1
+if not Operation then
+	Operation = class()
 end
-function Operation.cancel(A0_2)
-	local L1_3
+Operation.start = function(l_1_0)
 end
-function Operation.update(A0_4, A1_5)
+
+Operation.cancel = function(l_2_0)
 end
-function Operation.done(A0_6)
-	local L1_7
+
+Operation.update = function(l_3_0, l_3_1)
 end
+
+Operation.done = function(l_4_0)
+end
+
+

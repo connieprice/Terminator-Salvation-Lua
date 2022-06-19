@@ -1,5 +1,9 @@
 require("menu/2D/states/Menu2DState")
-Menu2DStateSyncingToFrontend = Menu2DStateSyncingToFrontend or class(Menu2DState)
-function Menu2DStateSyncingToFrontend.init(A0_0)
-	Menu2DState.init(A0_0, Menu2DStateSyncingToFrontend)
+if not Menu2DStateSyncingToFrontend then
+	Menu2DStateSyncingToFrontend = class(Menu2DState)
 end
+Menu2DStateSyncingToFrontend.init = function(l_1_0)
+	Menu2DState.init(l_1_0, Menu2DStateSyncingToFrontend)
+end
+
+

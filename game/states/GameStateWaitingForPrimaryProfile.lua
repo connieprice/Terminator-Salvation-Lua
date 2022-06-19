@@ -1,12 +1,16 @@
-GameStateWaitingForPrimaryProfile = GameStateWaitingForPrimaryProfile or class(FiniteStateMachineState)
-function GameStateWaitingForPrimaryProfile.init(A0_0)
-	local L1_1
+if not GameStateWaitingForPrimaryProfile then
+	GameStateWaitingForPrimaryProfile = class(FiniteStateMachineState)
 end
-function GameStateWaitingForPrimaryProfile.transition(A0_2)
-	local L1_3
+GameStateWaitingForPrimaryProfile.init = function(l_1_0)
 end
-function GameStateWaitingForPrimaryProfile.exit(A0_4)
+
+GameStateWaitingForPrimaryProfile.transition = function(l_2_0)
+end
+
+GameStateWaitingForPrimaryProfile.exit = function(l_3_0)
 	if managers.game_transition:wants_to_go_to_pre_frontend() or not managers.save:primary_user() then
 		return GameStateWaitingForPrimaryUser
 	end
 end
+
+

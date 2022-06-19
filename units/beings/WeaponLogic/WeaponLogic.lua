@@ -1,61 +1,45 @@
-WeaponLogic = WeaponLogic or class()
-function WeaponLogic.init(A0_0, A1_1, A2_2)
-	A0_0._unit = A1_1
-	A0_0._weapon = A2_2
-	A0_0._weapon_data = A2_2:weapon_data()
-	A0_0._fire_object = A2_2:get_object("fire")
-	assert(A0_0._fire_object)
+if not WeaponLogic then
+	WeaponLogic = class()
 end
-function WeaponLogic.update(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9)
+WeaponLogic.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._unit = l_1_1
+	l_1_0._weapon = l_1_2
+	l_1_0._weapon_data = l_1_2:weapon_data()
+	l_1_0._fire_object = l_1_2:get_object("fire")
+	assert(l_1_0._fire_object)
 end
-function WeaponLogic._update_weapon_data(A0_10, A1_11, A2_12, A3_13, A4_14)
-	local L5_15, L6_16
-	L5_15 = A0_10._weapon_data
-	L5_15.prepare_fire = A1_11
-	L5_15.fire_input = A2_12
-	L5_15.aim_target_position = A3_13
-	L5_15.miss_dispersion = A4_14
-	L6_16 = L5_15._reload_ready
-	if L6_16 then
-		L6_16 = L5_15._reload_required
-		if L6_16 then
-			L5_15._reload_request = true
-		end
+
+WeaponLogic.update = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6)
+end
+
+WeaponLogic._update_weapon_data = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+	local l_3_5 = l_3_0._weapon_data
+	l_3_5.prepare_fire = l_3_1
+	l_3_5.fire_input = l_3_2
+	l_3_5.aim_target_position = l_3_3
+	l_3_5.miss_dispersion = l_3_4
+	if l_3_5._reload_ready and l_3_5._reload_required then
+		l_3_5._reload_request = true
 	end
 end
-function WeaponLogic._aiming_at_target(A0_17, A1_18, A2_19)
-	local L3_20, L4_21, L5_22, L6_23
-	if not A1_18 then
-		L3_20 = false
-		return L3_20
+
+WeaponLogic._aiming_at_target = function(l_4_0, l_4_1, l_4_2)
+	if not l_4_1 then
+		return false
 	end
-	L3_20 = A0_17._fire_object
-	L4_21 = assert
-	L5_22 = L3_20
-	L4_21(L5_22)
-	L5_22 = L3_20
-	L4_21 = L3_20.position
-	L4_21 = L4_21(L5_22)
-	L5_22 = mvector3
-	L5_22 = L5_22.negate
-	L6_23 = L4_21
-	L5_22(L6_23)
-	L5_22 = mvector3
-	L5_22 = L5_22.add
-	L6_23 = L4_21
-	L5_22(L6_23, A1_18)
-	L5_22 = mvector3
-	L5_22 = L5_22.normalize
-	L6_23 = L4_21
-	L5_22 = L5_22(L6_23)
-	if L5_22 > 0 then
-		L6_23 = L3_20.rotation
-		L6_23 = L6_23(L3_20)
-		L6_23 = L6_23.y
-		L6_23 = L6_23(L6_23)
-		return A2_19 >= mvector3.angle(L4_21, L6_23)
+	local l_4_3 = l_4_0._fire_object
+	assert(l_4_3)
+	local l_4_4 = l_4_3:position()
+	mvector3.negate(l_4_4)
+	mvector3.add(l_4_4, l_4_1)
+	local l_4_5 = mvector3.normalize(l_4_4)
+	if l_4_5 > 0 then
+		local l_4_6 = l_4_3:rotation():y()
+		local l_4_7 = mvector3.angle(l_4_4, l_4_6)
+		return l_4_7 <= l_4_2
 	else
-		L6_23 = false
-		return L6_23
+		return false
 	end
 end
+
+

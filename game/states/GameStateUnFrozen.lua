@@ -1,10 +1,15 @@
 require("game/states/GameStateFreeze")
-GameStateUnFrozen = GameStateUnFrozen or class(FiniteStateMachineState)
-function GameStateUnFrozen.init(A0_0)
-	A0_0.game._is_frozen = false
+if not GameStateUnFrozen then
+	GameStateUnFrozen = class(FiniteStateMachineState)
 end
-function GameStateUnFrozen.transition(A0_1)
+GameStateUnFrozen.init = function(l_1_0)
+	l_1_0.game._is_frozen = false
+end
+
+GameStateUnFrozen.transition = function(l_2_0)
 	if managers.game_transition:wants_to_freeze() then
 		return GameStateFreeze
 	end
 end
+
+

@@ -1,60 +1,81 @@
-RailFlyerAiCombat = RailFlyerAiCombat or class()
-function RailFlyerAiCombat.init_data(A0_0, A1_1)
-	local L2_2
-	L2_2 = {}
-	A1_1._combat = L2_2
-	L2_2 = A1_1._combat
-	L2_2.targets = {}
-	L2_2 = {}
-	A1_1._behavior = L2_2
-	L2_2 = A1_1._behavior
-	L2_2.target = nil
-	L2_2 = A1_1._behavior
-	L2_2.follow_target = false
-	L2_2 = A1_1._behavior
-	L2_2.move_to_position = nil
-	L2_2 = A1_1._behavior
-	L2_2.allowed_to_fire = true
+if not RailFlyerAiCombat then
+	RailFlyerAiCombat = class()
 end
-function RailFlyerAiCombat.logic_rail_flyer_combat_passive(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	local L8_11
-	L8_11 = A2_5.ai_data
-	L8_11 = L8_11(A2_5)
-	if L8_11._behavior.target then
-		if L8_11.output.allowed_to_fire then
-			return 0, true
-		end
-	elseif L8_11._combat.targets ~= nil and L8_11._combat.targets[1] then
-		L8_11._behavior.target = L8_11._combat.targets[1]
-		table.remove(L8_11._combat.targets, 1)
-	else
-		L8_11._behavior.target = A0_3:_find_any_targets()
-	end
-	A0_3:_allowed_to_fire(A2_5, L8_11)
-	return nil
+RailFlyerAiCombat.init_data = function(l_1_0, l_1_1)
+	l_1_1._combat = {}
+	l_1_1._combat.targets = {}
+	l_1_1._behavior = {}
+	l_1_1._behavior.target = nil
+	l_1_1._behavior.follow_target = false
+	l_1_1._behavior.move_to_position = nil
+	l_1_1._behavior.allowed_to_fire = true
 end
-function RailFlyerAiCombat._allowed_to_fire(A0_12, A1_13, A2_14)
-	A0_12:_check_for_updates(A1_13)
-	if A2_14._behavior.target and A2_14._move.allowed_to_fire and A2_14._behavior.allowed_to_fire then
-		A2_14.output.allowed_to_fire = true
-	end
-end
-function RailFlyerAiCombat.logic_rail_flyer_combat_fire(A0_15, A1_16, A2_17, A3_18, A4_19, A5_20, A6_21, A7_22)
-	local L8_23
-	L8_23 = A2_17.ai_data
-	L8_23 = L8_23(A2_17)
-	if not L8_23._behavior.target then
-		return 0
-	end
-	if not L8_23._behavior.allowed_to_fire then
+
+RailFlyerAiCombat.logic_rail_flyer_combat_passive = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	local l_2_8 = l_2_2:ai_data()
+	if l_2_8._behavior.target and l_2_8.output.allowed_to_fire then
 		return 0, true
 	end
-	A0_15:_allowed_to_fire(A2_17, L8_23)
+	do return end
+	if l_2_8._combat.targets ~= nil and l_2_8._combat.targets[1] then
+		l_2_8._behavior.target = l_2_8._combat.targets[1]
+		table.remove(l_2_8._combat.targets, 1)
+	else
+		l_2_8._behavior.target = l_2_0:_find_any_targets()
+	end
+	l_2_0:_allowed_to_fire(l_2_2, l_2_8)
 	return nil
 end
-function RailFlyerAiCombat._find_any_targets(A0_24)
-	local L1_25
-	L1_25 = World
-	L1_25 = L1_25.find_units_quick
-	L1_25 = L1_25(L1_25, "all", managers.slot:get_mask("rail_vehicles"))
-	for 
+
+RailFlyerAiCombat._allowed_to_fire = function(l_3_0, l_3_1, l_3_2)
+	l_3_0:_check_for_updates(l_3_1)
+	if l_3_2._behavior.target and l_3_2._move.allowed_to_fire and l_3_2._behavior.allowed_to_fire then
+		l_3_2.output.allowed_to_fire = true
+	end
+end
+
+RailFlyerAiCombat.logic_rail_flyer_combat_fire = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6, l_4_7)
+	local l_4_8 = l_4_2:ai_data()
+	if not l_4_8._behavior.target then
+		return 0
+	end
+	if not l_4_8._behavior.allowed_to_fire then
+		return 0, true
+	end
+	l_4_0:_allowed_to_fire(l_4_2, l_4_8)
+	return nil
+end
+
+RailFlyerAiCombat._find_any_targets = function(l_5_0)
+	local l_5_5, l_5_6 = World:find_units_quick, World
+	l_5_5 = l_5_5(l_5_6, "all", managers.slot:get_mask("rail_vehicles"))
+	local l_5_1 = nil
+	l_5_6 = pairs
+	l_5_1 = l_5_5
+	l_5_6 = l_5_6(l_5_1)
+	for i_0,i_1 in l_5_6 do
+		return l_5_4
+	end
+	return nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+RailFlyerAiCombat._check_for_updates = function(l_6_0, l_6_1)
+	local l_6_6, l_6_7, l_6_8, l_6_9 = nil
+	local l_6_2 = l_6_1:ai_data()
+	if l_6_2._combat.new_targets ~= nil then
+		l_6_2._combat.targets = {}
+		for i_0,i_1 in pairs(l_6_2._combat.new_targets) do
+			if alive(managers.unit_scripting:get_unit_by_name(i_1.script_name)) then
+				table.insert(l_6_2._combat.targets, managers.unit_scripting:get_unit_by_name(i_1.script_name))
+			end
+		end
+		l_6_2._behavior.target = l_6_1:ai_data()._combat.targets[1]
+		l_6_2._combat.new_targets = nil
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+

@@ -1,4 +1,8 @@
-Aim = Aim or class()
-function Aim.init(A0_0, A1_1)
-	A0_0._unit = A1_1
+if not Aim then
+	Aim = class()
 end
+Aim.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+end
+
+

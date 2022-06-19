@@ -1,8 +1,13 @@
 require("menu/2D/states/Menu2DStateStartSync")
-Menu2DStateStartSyncToFrontend = Menu2DStateStartSyncToFrontend or class(Menu2DStateStartSync)
-function Menu2DStateStartSyncToFrontend.init(A0_0)
-	Menu2DStateStartSync.init(A0_0, "frontend", Menu2DStateStartSyncToFrontend)
+if not Menu2DStateStartSyncToFrontend then
+	Menu2DStateStartSyncToFrontend = class(Menu2DStateStartSync)
 end
-function Menu2DStateStartSyncToFrontend._setup_sync_screen(A0_1)
+Menu2DStateStartSyncToFrontend.init = function(l_1_0)
+	Menu2DStateStartSync.init(l_1_0, "frontend", Menu2DStateStartSyncToFrontend)
+end
+
+Menu2DStateStartSyncToFrontend._setup_sync_screen = function(l_2_0)
 	managers.sync_screen:setup_minimal_sync_screen()
 end
+
+

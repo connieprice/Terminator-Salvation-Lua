@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMDeckardStart = AMDeckardStart or class(AMNpcStart)
-AMDeckardStart.unit_type = "deckard"
-function AMDeckardStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMDeckardStart.unit_type)
+if not AMDeckardStart then
+	AMDeckardStart = class(AMNpcStart)
 end
+AMDeckardStart.unit_type = "deckard"
+AMDeckardStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMDeckardStart.unit_type)
+end
+
+

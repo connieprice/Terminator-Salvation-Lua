@@ -1,42 +1,44 @@
 require("projectile/ProjectileSpawner")
-UnitProjectileSpawner = UnitProjectileSpawner or class(ProjectileSpawner)
-function UnitProjectileSpawner.init(A0_0, A1_1)
-	ProjectileSpawner.init(A1_1)
-	A0_0._emitter = managers.action_event:create_emitter()
+if not UnitProjectileSpawner then
+	UnitProjectileSpawner = class(ProjectileSpawner)
 end
-function UnitProjectileSpawner.destroy(A0_2)
-	ProjectileSpawner.destroy(A0_2)
-	A0_2._emitter:destroy()
+UnitProjectileSpawner.init = function(l_1_0, l_1_1)
+	ProjectileSpawner.init(l_1_1)
+	l_1_0._emitter = managers.action_event:create_emitter()
 end
-function UnitProjectileSpawner.spawn_projectile(A0_3, A1_4, A2_5, A3_6)
-	local L4_7, L5_8, L6_9
-	if A2_5 == nil then
-		L5_8 = A0_3._unit
-		L6_9 = L5_8
-		L5_8 = L5_8.position
-		L5_8 = L5_8(L6_9)
-		L4_7 = L5_8
+
+UnitProjectileSpawner.destroy = function(l_2_0)
+	ProjectileSpawner.destroy(l_2_0)
+	l_2_0._emitter:destroy()
+end
+
+UnitProjectileSpawner.spawn_projectile = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	if l_3_2 == nil then
+		local l_3_4, l_3_5 = l_3_0._unit:position()
 	else
-		L4_7 = A2_5
+		local l_3_6 = l_3_2
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_3_3 == nil then
+			do return end
+		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_3_7 = nil
+		do
+			local l_3_8 = nil
+			if World:spawn_unit(l_3_0._projectile_class, l_3_6, nil):base().set_spawning_unit then
+				World:spawn_unit(l_3_0._projectile_class, l_3_6, nil):base():set_spawning_unit(l_3_1)
+			end
+			if l_3_1:base() and l_3_1:base().on_spawn_projectile then
+				l_3_1:base():on_spawn_projectile(l_3_8)
+			end
+			l_3_0._emitter:spawn_projectile(l_3_0._projectile_class, l_3_6, l_3_7)
+			return l_3_8
+		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L5_8 = nil
-	if A3_6 == nil then
-		L6_9 = A0_3._unit
-		L6_9 = L6_9.rotation
-		L6_9 = L6_9(L6_9)
-		L5_8 = L6_9
-	else
-		L5_8 = A3_6
-	end
-	L6_9 = World
-	L6_9 = L6_9.spawn_unit
-	L6_9 = L6_9(L6_9, A0_3._projectile_class, L4_7, L5_8)
-	if L6_9:base().set_spawning_unit then
-		L6_9:base():set_spawning_unit(A1_4)
-	end
-	if A1_4:base() and A1_4:base().on_spawn_projectile then
-		A1_4:base():on_spawn_projectile(L6_9)
-	end
-	A0_3._emitter:spawn_projectile(A0_3._projectile_class, L4_7, L5_8)
-	return L6_9
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 9 
 end
+
+

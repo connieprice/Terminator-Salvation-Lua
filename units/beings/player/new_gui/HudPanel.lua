@@ -1,69 +1,75 @@
-HudPanel = HudPanel or class()
-function HudPanel.init(A0_0, A1_1)
-	A0_0._panel = nil
-	A0_0._use_debug = A1_1
-	A0_0._next_update = 0
-	A0_0._low_frequency_update = 0.2
-	A0_0._mid_frequency_update = 0.1
-	A0_0._frequency_update_time = A0_0._low_frequency_update
-	A0_0._high_frequency_update = false
+if not HudPanel then
+	HudPanel = class()
 end
-function HudPanel.set_mid_frequency_update(A0_2, A1_3)
-	A0_2._mid_frequency_update = A1_3
+HudPanel.init = function(l_1_0, l_1_1)
+	l_1_0._panel = nil
+	l_1_0._use_debug = l_1_1
+	l_1_0._next_update = 0
+	l_1_0._low_frequency_update = 0.2
+	l_1_0._mid_frequency_update = 0.1
+	l_1_0._frequency_update_time = l_1_0._low_frequency_update
+	l_1_0._high_frequency_update = false
 end
-function HudPanel.set_low_frequency_update(A0_4, A1_5)
-	A0_4._low_frequency_update = A1_5
+
+HudPanel.set_mid_frequency_update = function(l_2_0, l_2_1)
+	l_2_0._mid_frequency_update = l_2_1
 end
-function HudPanel.set_alpha(A0_6, A1_7)
-	if not alive(A0_6._panel) then
-		return
+
+HudPanel.set_low_frequency_update = function(l_3_0, l_3_1)
+	l_3_0._low_frequency_update = l_3_1
+end
+
+HudPanel.set_alpha = function(l_4_0, l_4_1)
+	if not alive(l_4_0._panel) then
+		return 
 	end
-	A0_6._alpha = A1_7
-	if A0_6._panel:visible() and not (A0_6._alpha > 0) then
-		A0_6._panel:set_visible(false)
-		if A0_6._use_debug then
-			Application:debug(A0_6._panel:name(), " visible = false")
+	local l_4_2 = l_4_0._panel:visible()
+	l_4_0._alpha = l_4_1
+	if l_4_2 and not l_4_0._alpha > 0 then
+		l_4_0._panel:set_visible(false)
+		if l_4_0._use_debug then
+			Application:debug(l_4_0._panel:name(), " visible = false")
 		end
-	elseif not A0_6._panel:visible() and A0_6._alpha > 0 then
-		A0_6._panel:set_visible(true)
-		if A0_6._use_debug then
-			Application:debug(A0_6._panel:name(), " visible = true")
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	elseif not l_4_2 and l_4_0._alpha > 0 then
+		l_4_0._panel:set_visible(true)
+	if l_4_0._use_debug then
 		end
+		Application:debug(l_4_0._panel:name(), " visible = true")
 	end
 end
-function HudPanel.next_update(A0_8, A1_9)
-	local L2_10
-	L2_10 = A0_8._next_update
-	L2_10 = L2_10 + A1_9
-	A0_8._next_update = L2_10
-	L2_10 = A0_8._high_frequency_update
-	if not L2_10 then
-		L2_10 = A0_8._next_update
-	elseif L2_10 > A0_8._frequency_update_time then
-		A0_8._next_update = 0
-		L2_10 = true
-		return L2_10
+
+HudPanel.next_update = function(l_5_0, l_5_1)
+	l_5_0._next_update = l_5_0._next_update + l_5_1
+	if l_5_0._high_frequency_update or l_5_0._frequency_update_time < l_5_0._next_update then
+		l_5_0._next_update = 0
+		return true
 	end
-	L2_10 = false
-	return L2_10
+	return false
 end
-function HudPanel.use_high_frequency_update(A0_11)
-	if A0_11._use_debug and not A0_11._high_frequency_update then
-		Application:debug(A0_11._panel:name(), "+++++++++++++++++++++++++ set high frequencey +++++++++++++++++++++++++++++")
+
+HudPanel.use_high_frequency_update = function(l_6_0)
+	if l_6_0._use_debug and not l_6_0._high_frequency_update then
+		Application:debug(l_6_0._panel:name(), "+++++++++++++++++++++++++ set high frequencey +++++++++++++++++++++++++++++")
 	end
-	A0_11._high_frequency_update = true
+	l_6_0._high_frequency_update = true
 end
-function HudPanel.use_low_frequency_update(A0_12)
-	if A0_12._use_debug and (A0_12._frequency_update_time ~= A0_12._low_frequency_update or A0_12._high_frequency_update) then
-		Application:debug(A0_12._panel:name(), "------------------------- set low frequencey -----------------------------", A0_12._low_frequency_update)
+
+HudPanel.use_low_frequency_update = function(l_7_0)
+	if l_7_0._use_debug and (l_7_0._frequency_update_time ~= l_7_0._low_frequency_update or l_7_0._high_frequency_update) then
+		Application:debug(l_7_0._panel:name(), "------------------------- set low frequencey -----------------------------", l_7_0._low_frequency_update)
 	end
-	A0_12._frequency_update_time = A0_12._low_frequency_update
-	A0_12._high_frequency_update = false
+	l_7_0._frequency_update_time = l_7_0._low_frequency_update
+	l_7_0._high_frequency_update = false
 end
-function HudPanel.use_mid_frequency_update(A0_13)
-	if A0_13._use_debug and (A0_13._frequency_update_time ~= A0_13._mid_frequency_update or A0_13._high_frequency_update) then
-		Application:debug(A0_13._panel:name(), "======================= set mid frequencey ===============================", A0_13._mid_frequency_update)
+
+HudPanel.use_mid_frequency_update = function(l_8_0)
+	if l_8_0._use_debug and (l_8_0._frequency_update_time ~= l_8_0._mid_frequency_update or l_8_0._high_frequency_update) then
+		Application:debug(l_8_0._panel:name(), "======================= set mid frequencey ===============================", l_8_0._mid_frequency_update)
 	end
-	A0_13._frequency_update_time = A0_13._mid_frequency_update
-	A0_13._high_frequency_update = false
+	l_8_0._frequency_update_time = l_8_0._mid_frequency_update
+	l_8_0._high_frequency_update = false
 end
+
+

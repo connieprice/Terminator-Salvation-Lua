@@ -1,15 +1,20 @@
 require("units/beings/player/camera/PlayerCameraState")
-PlayerCameraOnRailVehicle = PlayerCameraOnRailVehicle or class(PlayerCameraState)
-function PlayerCameraOnRailVehicle.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraOnRailVehicle)
-	A0_0:_set_collision(A0_0._camera._update_no_collision)
+if not PlayerCameraOnRailVehicle then
+	PlayerCameraOnRailVehicle = class(PlayerCameraState)
 end
-function PlayerCameraOnRailVehicle.exit(A0_1)
-	A0_1._camera._state_blend_time_override = nil
+PlayerCameraOnRailVehicle.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraOnRailVehicle)
+	l_1_0:_set_collision(l_1_0._camera._update_no_collision)
 end
-function PlayerCameraOnRailVehicle.update(A0_2, A1_3)
-	local L2_4
-	L2_4 = A0_2._player_data
-	A0_2:_set_camera_name(L2_4.rail_vehicle_camera)
-	A0_2._camera._state_blend_time_override = L2_4.rail_vehicle_camera_blend_time
+
+PlayerCameraOnRailVehicle.exit = function(l_2_0)
+	l_2_0._camera._state_blend_time_override = nil
 end
+
+PlayerCameraOnRailVehicle.update = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0._player_data
+	l_3_0:_set_camera_name(l_3_2.rail_vehicle_camera)
+	l_3_0._camera._state_blend_time_override = l_3_2.rail_vehicle_camera_blend_time
+end
+
+

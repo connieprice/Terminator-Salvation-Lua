@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMCommanderStart = AMCommanderStart or class(AMNpcStart)
-AMCommanderStart.unit_type = "murphy"
-function AMCommanderStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMCommanderStart.unit_type)
+if not AMCommanderStart then
+	AMCommanderStart = class(AMNpcStart)
 end
+AMCommanderStart.unit_type = "murphy"
+AMCommanderStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMCommanderStart.unit_type)
+end
+
+

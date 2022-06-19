@@ -1,92 +1,88 @@
-PlayerDifficultyLevel = PlayerDifficultyLevel or class()
-function PlayerDifficultyLevel.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._unmounted_rail_vehicles = {}
+if not PlayerDifficultyLevel then
+	PlayerDifficultyLevel = class()
 end
-function PlayerDifficultyLevel.set_difficulty_level(A0_2, A1_3)
-	cat_print("debug", "Playing at difficulty level " .. (A1_3 or "nil"))
-	A0_2._difficulty_level = A1_3
-	A0_2:_apply_difficulty_level()
+PlayerDifficultyLevel.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._unmounted_rail_vehicles = {}
 end
-function PlayerDifficultyLevel._apply_difficulty_level(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9, L6_10, L7_11, L8_12
-	L1_5 = A0_4._difficulty_level
-	if L1_5 == 1 then
-		L1_5 = tweak_data
-		L2_6 = L1_5
-		L1_5 = L1_5.setup_easy_difficulty
-		L1_5(L2_6)
+
+PlayerDifficultyLevel.set_difficulty_level = function(l_2_0, l_2_1)
+	local l_2_2 = cat_print
+	local l_2_3 = "debug"
+	local l_2_4 = "Playing at difficulty level "
+	do
+		l_2_4 = l_2_4 .. (l_2_1 or "nil")
+		l_2_2(l_2_3, l_2_4)
+		l_2_0._difficulty_level = l_2_1
+		l_2_2, l_2_3 = l_2_0:_apply_difficulty_level, l_2_0
+		l_2_2(l_2_3)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+PlayerDifficultyLevel._apply_difficulty_level = function(l_3_0)
+	if l_3_0._difficulty_level == 1 then
+		tweak_data:setup_easy_difficulty()
+	elseif l_3_0._difficulty_level == 2 then
+		tweak_data:setup_medium_difficulty()
 	else
-		L1_5 = A0_4._difficulty_level
-		if L1_5 == 2 then
-			L1_5 = tweak_data
-			L2_6 = L1_5
-			L1_5 = L1_5.setup_medium_difficulty
-			L1_5(L2_6)
-		else
-			L1_5 = tweak_data
-			L2_6 = L1_5
-			L1_5 = L1_5.setup_hard_difficulty
-			L1_5(L2_6)
+		tweak_data:setup_hard_difficulty()
+	end
+	if not tweak_data.difficulty[l_3_0._difficulty_level] then
+		local l_3_1, l_3_2, l_3_3 = tweak_data.difficulty.default
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_3_0:_apply_damage_settings(l_3_0._unit:damage(), l_3_1)
+	do
+		local l_3_4 = nil
+		if alive(l_3_0._unit:player_data().on_rail_vehicle) then
+			if not tweak_data.rail_difficulty[l_3_0._difficulty_level] then
+				local l_3_5, l_3_6 = , tweak_data.rail_difficulty.default
+			end
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			local l_3_10, l_3_12, l_3_14, l_3_17 = , l_3_5.on_rail_vehicle:base():apply_damage_settings, l_3_5.on_rail_vehicle:base()
+			local l_3_11, l_3_13, l_3_15, l_3_18 = l_3_0._unit, l_3_12
+			l_3_14(l_3_17, l_3_11, l_3_13)
 		end
-	end
-	L1_5 = tweak_data
-	L1_5 = L1_5.difficulty
-	L2_6 = A0_4._difficulty_level
-	L1_5 = L1_5[L2_6]
-	if not L1_5 then
-		L1_5 = tweak_data
-		L1_5 = L1_5.difficulty
-		L1_5 = L1_5.default
-	end
-	L2_6 = A0_4._apply_damage_settings
-	L2_6(L3_7, L4_8, L5_9)
-	L2_6 = A0_4._unit
-	L2_6 = L2_6.player_data
-	L2_6 = L2_6(L3_7)
-	if L3_7 then
-		L6_10 = A0_4._unit
-		L7_11 = L3_7
-		L4_8(L5_9, L6_10, L7_11)
-	end
-	for L6_10, L7_11 in L3_7(L4_8) do
-		L8_12 = alive
-		L8_12 = L8_12(L7_11)
-		if L8_12 then
-			L8_12 = A0_4._unit
-			if L8_12 == managers.unit_scripting:get_unit_by_name("character_slot1") then
-				L8_12 = tweak_data
-				L8_12 = L8_12.rail_difficulty
-				L8_12 = L8_12[A0_4._difficulty_level]
-				if not L8_12 then
-					L8_12 = tweak_data
-					L8_12 = L8_12.rail_difficulty
-					L8_12 = L8_12.default
+		for i_0,i_1 in pairs(l_3_0._unmounted_rail_vehicles) do
+			local l_3_7 = nil
+			end
+			if alive(i_1) and l_3_0._unit == managers.unit_scripting:get_unit_by_name("character_slot1") then
+				if not tweak_data.rail_difficulty[l_3_0._difficulty_level] then
+					i_1:base():apply_damage_settings(l_3_0._unit, tweak_data.rail_difficulty.default)
 				end
-				L7_11:base():apply_damage_settings(A0_4._unit, L8_12)
 			end
 		end
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 83 
+end
+
+PlayerDifficultyLevel._apply_damage_settings = function(l_4_0, l_4_1, l_4_2)
+	l_4_1:set_damage_multiplier(l_4_2.DAMAGE_MULTIPLIER)
+	l_4_1:set_health_regen_multiplier(l_4_2.HEALTH_REGEN_MULTIPLIER)
+end
+
+PlayerDifficultyLevel.enter_rail = function(l_5_0)
+	l_5_0:_apply_difficulty_level()
+end
+
+PlayerDifficultyLevel.exit_rail = function(l_6_0)
+	local l_6_1 = tweak_data.rail_difficulty.default
+	local l_6_2 = l_6_0._unit:player_data()
+	if alive(l_6_2.on_rail_vehicle) then
+		l_6_0:_apply_damage_settings(l_6_2.on_rail_vehicle:damage(), l_6_1)
 	end
 end
-function PlayerDifficultyLevel._apply_damage_settings(A0_13, A1_14, A2_15)
-	A1_14:set_damage_multiplier(A2_15.DAMAGE_MULTIPLIER)
-	A1_14:set_health_regen_multiplier(A2_15.HEALTH_REGEN_MULTIPLIER)
-end
-function PlayerDifficultyLevel.enter_rail(A0_16)
-	A0_16:_apply_difficulty_level()
-end
-function PlayerDifficultyLevel.exit_rail(A0_17)
-	local L1_18
-	L1_18 = tweak_data
-	L1_18 = L1_18.rail_difficulty
-	L1_18 = L1_18.default
-	if alive(A0_17._unit:player_data().on_rail_vehicle) then
-		A0_17:_apply_damage_settings(A0_17._unit:player_data().on_rail_vehicle:damage(), L1_18)
+
+PlayerDifficultyLevel.register_unmounted_rail_vehicle = function(l_7_0, l_7_1)
+	if not TableAlgorithms.find_value(l_7_1, l_7_0._unmounted_rail_vehicles) then
+		table.insert(l_7_0._unmounted_rail_vehicles, l_7_1)
+		l_7_0:_apply_difficulty_level()
 	end
 end
-function PlayerDifficultyLevel.register_unmounted_rail_vehicle(A0_19, A1_20)
-	if not TableAlgorithms.find_value(A1_20, A0_19._unmounted_rail_vehicles) then
-		table.insert(A0_19._unmounted_rail_vehicles, A1_20)
-		A0_19:_apply_difficulty_level()
-	end
-end
+
+

@@ -1,79 +1,36 @@
 require("units/beings/rail/RailDamage")
-RailDodgeRamDamage = RailDodgeRamDamage or class(RailDamage)
-RailDodgeRamDamage._PARTS = {
-	bodies = {
-		{
-			body_names = {
-				"b_chassi_ray"
-			},
-			name = "chassie",
-			destroyed_sequence_name = "kill_vehicle_1",
-			hp = 50000
-		},
-		{
-			body_names = {"body_hood"},
-			name = "spwn_hood",
-			destroyed_sequence_name = "spawn_hood_dmg",
-			hp = 500
-		},
-		{
-			body_names = {
-				"body_lf_door"
-			},
-			name = "spwn_lf_door_dmg",
-			destroyed_sequence_name = "spawn_lf_door_dmg",
-			hp = 500
-		},
-		{
-			body_names = {
-				"body_lb_door"
-			},
-			name = "spwn_lb_door_dmg",
-			destroyed_sequence_name = "spawn_lb_door_dmg",
-			hp = 500
-		},
-		{
-			body_names = {
-				"body_rf_door"
-			},
-			name = "spwn_rf_door_dmg",
-			destroyed_sequence_name = "spawn_rf_door_dmg",
-			hp = 500
-		},
-		{
-			body_names = {
-				"body_rb_door"
-			},
-			name = "spwn_rb_door_dmg",
-			destroyed_sequence_name = "spawn_rb_door_dmg",
-			hp = 500
-		}
-	},
-	unit_damage_steps = {
-		{
-			damage = 0,
-			sequence_name = "dmg_state_0"
-		},
-		{
-			damage = 0.2,
-			sequence_name = "dmg_state_1"
-		},
-		{
-			damage = 0.5,
-			sequence_name = "dmg_state_2"
-		},
-		{
-			damage = 0.7,
-			sequence_name = "dmg_state_3"
-		}
-	},
-	damage_unit = true,
-	unit_destroyed_sequence = "kill_vehicle_1"
-}
-function RailDodgeRamDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	RailDamage.init(A0_0, A1_1, BodyDamage, A3_3, A4_4, A5_5, A6_6)
-	A0_0:_setup_bodies()
+if not RailDodgeRamDamage then
+	RailDodgeRamDamage = class(RailDamage)
 end
-function RailDodgeRamDamage._setup_bodies(A0_7)
-	RailDamage._setup_body_group(A0_7, RailDodgeRamDamage._PARTS)
+local l_0_0 = RailDodgeRamDamage
+local l_0_1 = {}
+local l_0_2 = {}
+local l_0_3 = {}
+local l_0_4 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+local l_0_5 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+local l_0_6 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+local l_0_7 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+local l_0_8 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+do
+	local l_0_9 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
 end
+ -- WARNING: undefined locals caused missing assignments!
+

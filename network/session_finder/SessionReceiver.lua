@@ -1,15 +1,19 @@
-SessionReceiver = SessionReceiver or class()
-function SessionReceiver.init(A0_0)
-	A0_0._sessions = {}
-	Network:set_receiver("SessionReceiver", A0_0)
+if not SessionReceiver then
+	SessionReceiver = class()
 end
-function SessionReceiver.faith_session_info(A0_1, A1_2, A2_3)
+SessionReceiver.init = function(l_1_0)
+	l_1_0._sessions = {}
+	Network:set_receiver("SessionReceiver", l_1_0)
+end
+
+SessionReceiver.faith_session_info = function(l_2_0, l_2_1, l_2_2)
 	cat_print("pebj", "Received Session Info")
-	A1_2.rpc_sender = A2_3
-	A0_1._sessions[A1_2.name] = A1_2
+	l_2_1.rpc_sender = l_2_2
+	l_2_0._sessions[l_2_1.name] = l_2_1
 end
-function SessionReceiver.session_infos(A0_4)
-	local L1_5
-	L1_5 = A0_4._sessions
-	return L1_5
+
+SessionReceiver.session_infos = function(l_3_0)
+	return l_3_0._sessions
 end
+
+

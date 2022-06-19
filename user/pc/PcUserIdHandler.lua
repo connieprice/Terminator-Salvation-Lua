@@ -1,24 +1,44 @@
 require("user/pc/PcUserId")
-PcUserIdHandler = PcUserIdHandler or class()
-function PcUserIdHandler.init(A0_0)
-	Network:set_receiver("PcUserIdHandler", A0_0)
-	A0_0._next_local_id = 0
-	A0_0._user_id_to_pc_user_id = {}
+if not PcUserIdHandler then
+	PcUserIdHandler = class()
 end
-function PcUserIdHandler.send_id(A0_1, A1_2, A2_3)
-	local L3_4
-	L3_4 = A0_1.user_id_from_platform_specific_user_id
-	L3_4 = L3_4(A0_1, A2_3)
-	if not L3_4 then
-		A0_1._next_local_id = A0_1._next_local_id + 1
-		L3_4 = A0_1._next_local_id
-		A0_1._user_id_to_pc_user_id[L3_4] = A2_3
+PcUserIdHandler.init = function(l_1_0)
+	Network:set_receiver("PcUserIdHandler", l_1_0)
+	l_1_0._next_local_id = 0
+	l_1_0._user_id_to_pc_user_id = {}
+end
+
+PcUserIdHandler.send_id = function(l_2_0, l_2_1, l_2_2)
+	local l_2_3 = l_2_0:user_id_from_platform_specific_user_id(l_2_2)
+	if not l_2_3 then
+		l_2_0._next_local_id = l_2_0._next_local_id + 1
+		l_2_3 = l_2_0._next_local_id
+		l_2_0._user_id_to_pc_user_id[l_2_3] = l_2_2
 	end
-	A1_2:set_id_to_pc_user_id_lookup(L3_4, A2_3.user_id)
+	l_2_1:set_id_to_pc_user_id_lookup(l_2_3, l_2_2.user_id)
 end
-function PcUserIdHandler.set_id_to_pc_user_id_lookup(A0_5, A1_6, A2_7, A3_8)
-	A0_5._user_id_to_pc_user_id[A1_6] = PcUserId:new(A2_7)
+
+PcUserIdHandler.set_id_to_pc_user_id_lookup = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	l_3_0._user_id_to_pc_user_id[l_3_1] = PcUserId:new(l_3_2)
 end
-function PcUserIdHandler.user_id_from_platform_specific_user_id(A0_9, A1_10)
-	local L2_11
-	for 
+
+PcUserIdHandler.user_id_from_platform_specific_user_id = function(l_4_0, l_4_1)
+	local l_4_2, l_4_5, l_4_6, l_4_7 = nil
+	for i_0,i_1 in pairs(l_4_0._user_id_to_pc_user_id) do
+		if l_4_1.user_id == i_1.user_id then
+			l_4_2 = i_0
+	else
+		end
+	end
+	return l_4_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+PcUserIdHandler.platform_specific_user_id_from_user_id = function(l_5_0, l_5_1)
+	local l_5_2 = l_5_0._user_id_to_pc_user_id[l_5_1]
+	assert(l_5_2)
+	return l_5_2
+end
+
+

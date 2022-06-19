@@ -1,5 +1,7 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreVisualFXCutsceneKey = CoreVisualFXCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreVisualFXCutsceneKey then
+	CoreVisualFXCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreVisualFXCutsceneKey.ELEMENT_NAME = "visual_fx"
 CoreVisualFXCutsceneKey.NAME = "Visual Effect"
 CoreVisualFXCutsceneKey:register_serialized_attribute("unit_name", "")
@@ -10,84 +12,137 @@ CoreVisualFXCutsceneKey:register_serialized_attribute("offset", Vector3(0, 0, 0)
 CoreVisualFXCutsceneKey:register_serialized_attribute("rotation", Rotation(), CoreCutsceneKeyBase.string_to_rotation)
 CoreVisualFXCutsceneKey:register_serialized_attribute("force_synch", false, toboolean)
 CoreVisualFXCutsceneKey.control_for_effect = CoreCutsceneKeyBase.standard_combo_box_control
-function CoreVisualFXCutsceneKey.__tostring(A0_0)
-	return "Trigger visual effect \"" .. A0_0:effect() .. "\" on \"" .. A0_0:object_name() .. " in " .. A0_0:unit_name() .. "\"."
+CoreVisualFXCutsceneKey.__tostring = function(l_1_0)
+	return "Trigger visual effect \"" .. l_1_0:effect() .. "\" on \"" .. l_1_0:object_name() .. " in " .. l_1_0:unit_name() .. "\"."
 end
-function CoreVisualFXCutsceneKey.can_evaluate_with_player(A0_1, A1_2)
-	local L2_3
-	L2_3 = true
-	return L2_3
+
+CoreVisualFXCutsceneKey.can_evaluate_with_player = function(l_2_0, l_2_1)
+	return true
 end
-function CoreVisualFXCutsceneKey.prime(A0_4, A1_5)
-	if not World:effect_manager():has_effect(A0_4:effect()) then
-		World:effect_manager():load(A0_4:effect(), false)
+
+CoreVisualFXCutsceneKey.prime = function(l_3_0, l_3_1)
+	local l_3_2 = World:effect_manager()
+	if not l_3_2:has_effect(l_3_0:effect()) then
+		l_3_2:load(l_3_0:effect(), false)
 	end
 end
-function CoreVisualFXCutsceneKey.unload(A0_6, A1_7)
-	A0_6:stop()
+
+CoreVisualFXCutsceneKey.unload = function(l_4_0, l_4_1)
+	l_4_0:stop()
 end
-function CoreVisualFXCutsceneKey.play(A0_8, A1_9, A2_10, A3_11)
-	if A2_10 then
-		A0_8:stop()
-	elseif not A3_11 then
-		A0_8:stop()
-		A0_8:prime(A1_9)
-		function A0_8._effect_abort_func()
-			_UPVALUE0_:kill(_UPVALUE1_)
+
+CoreVisualFXCutsceneKey.play = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	if l_5_2 then
+		l_5_0:stop()
+	elseif not l_5_3 then
+		l_5_0:stop()
+		l_5_0:prime(l_5_1)
+		local l_5_4 = World:effect_manager()
+		do
+			local l_5_5 = l_5_0:_unit_object(l_5_0:unit_name(), l_5_0:object_name(), true)
+			local l_5_6, l_5_7 = l_5_4:spawn, l_5_4
+			local l_5_8 = {}
+			l_5_8.effect = l_5_0:effect()
+			l_5_8.parent = l_5_5
+			l_5_8.position = l_5_0:offset()
+			l_5_8.rotation = l_5_0:rotation()
+			l_5_8.force_synch = l_5_0:force_synch()
+			l_5_6 = l_5_6(l_5_7, l_5_8)
+			l_5_7 = function()
+				-- upvalues: l_5_4 , l_5_6
+				l_5_4:kill(l_5_6)
+      end
+			l_5_0._effect_abort_func = l_5_7
 		end
 	end
 end
-function CoreVisualFXCutsceneKey.update(A0_12, A1_13, A2_14)
-	if A0_12:duration() and A2_14 > A0_12:duration() then
-		A0_12:stop()
+
+CoreVisualFXCutsceneKey.update = function(l_6_0, l_6_1, l_6_2)
+	if l_6_0:duration() and l_6_0:duration() < l_6_2 then
+		l_6_0:stop()
 	end
 end
-function CoreVisualFXCutsceneKey.is_valid_unit_name(A0_15, A1_16)
-	return A1_16 == nil or A1_16 == "" or CoreCutsceneKeyBase.is_valid_unit_name(A0_15, A1_16)
-end
-function CoreVisualFXCutsceneKey.is_valid_object_name(A0_17, A1_18)
-	return A1_18 == nil or A1_18 == "" or table.contains(A0_17:_unit_object_names(A0_17:unit_name()), A1_18) or false
-end
-function CoreVisualFXCutsceneKey.is_valid_effect(A0_19, A1_20)
-	return Database:has("effect", A1_20)
-end
-function CoreVisualFXCutsceneKey.is_valid_duration(A0_21, A1_22)
-	local L2_23
-	L2_23 = A1_22 == nil or A1_22 > 0
-	return L2_23
-end
-function CoreVisualFXCutsceneKey.is_valid_offset(A0_24, A1_25)
-	local L2_26
-	L2_26 = A1_25 ~= nil
-	return L2_26
-end
-function CoreVisualFXCutsceneKey.is_valid_rotation(A0_27, A1_28)
-	local L2_29
-	L2_29 = A1_28 ~= nil
-	return L2_29
-end
-function CoreVisualFXCutsceneKey.refresh_control_for_unit_name(A0_30, A1_31)
-	A0_30.super.refresh_control_for_unit_name(A0_30, A1_31, A0_30:unit_name())
-	A1_31:append("")
-	if A0_30:unit_name() == "" then
-		A1_31:set_value("")
+
+CoreVisualFXCutsceneKey.is_valid_unit_name = function(l_7_0, l_7_1)
+	if l_7_1 ~= nil and l_7_1 ~= "" then
+		local l_7_2 = CoreCutsceneKeyBase.is_valid_unit_name(l_7_0, l_7_1)
+		l_7_2 = l_7_2
+		return l_7_2
 	end
 end
-function CoreVisualFXCutsceneKey.refresh_control_for_object_name(A0_32, A1_33)
-	A0_32.super.refresh_control_for_object_name(A0_32, A1_33, A0_32:unit_name(), A0_32:object_name())
-	A1_33:append("")
-	if A0_32:object_name() == "" or not A0_32:is_valid_object_name(A0_32:object_name()) then
-		A0_32:set_object_name("")
-		A1_33:set_value("")
+
+CoreVisualFXCutsceneKey.is_valid_object_name = function(l_8_0, l_8_1)
+	if l_8_1 ~= nil and l_8_1 ~= "" and not table.contains(l_8_0:_unit_object_names(l_8_0:unit_name()), l_8_1) then
+		local l_8_2 = false
 	end
-	A1_33:set_enabled(A0_32:unit_name() ~= "")
+	l_8_2 = l_8_2
+	return l_8_2
 end
-function CoreVisualFXCutsceneKey.refresh_control_for_effect(A0_34, A1_35)
-	local L2_36
-	L2_36 = A1_35.freeze
-	L2_36(A1_35)
-	L2_36 = A1_35.clear
-	L2_36(A1_35)
-	L2_36 = A0_34.effect
-	L2_36 = L2_36(A0_34)
-	for 
+
+CoreVisualFXCutsceneKey.is_valid_effect = function(l_9_0, l_9_1)
+	local l_9_2, l_9_3 = Database:has, Database
+	local l_9_4 = "effect"
+	local l_9_5 = l_9_1
+	return l_9_2(l_9_3, l_9_4, l_9_5)
+end
+
+CoreVisualFXCutsceneKey.is_valid_duration = function(l_10_0, l_10_1)
+	return l_10_1 == nil or l_10_1 > 0
+end
+
+CoreVisualFXCutsceneKey.is_valid_offset = function(l_11_0, l_11_1)
+	return l_11_1 ~= nil
+end
+
+CoreVisualFXCutsceneKey.is_valid_rotation = function(l_12_0, l_12_1)
+	return l_12_1 ~= nil
+end
+
+CoreVisualFXCutsceneKey.refresh_control_for_unit_name = function(l_13_0, l_13_1)
+	l_13_0.super.refresh_control_for_unit_name(l_13_0, l_13_1, l_13_0:unit_name())
+	l_13_1:append("")
+	if l_13_0:unit_name() == "" then
+		l_13_1:set_value("")
+	end
+end
+
+CoreVisualFXCutsceneKey.refresh_control_for_object_name = function(l_14_0, l_14_1)
+	l_14_0.super.refresh_control_for_object_name(l_14_0, l_14_1, l_14_0:unit_name(), l_14_0:object_name())
+	l_14_1:append("")
+	if l_14_0:object_name() == "" or not l_14_0:is_valid_object_name(l_14_0:object_name()) then
+		l_14_0:set_object_name("")
+		l_14_1:set_value("")
+	end
+	local l_14_2, l_14_3 = l_14_1:set_enabled, l_14_1
+	l_14_2(l_14_3, l_14_0:unit_name() ~= "")
+end
+
+CoreVisualFXCutsceneKey.refresh_control_for_effect = function(l_15_0, l_15_1)
+	l_15_1:freeze()
+	l_15_1:clear()
+	local l_15_2 = l_15_0:effect()
+	local l_15_6, l_15_7 = ipairs, Database:all(false, "effect")
+	l_15_6 = l_15_6(l_15_7)
+	for i_0,i_1 in l_15_6 do
+		l_15_1:append(l_15_5:name())
+		if l_15_5:name() == l_15_2 then
+			l_15_1:set_value(l_15_2)
+		end
+	end
+	l_15_1:thaw()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreVisualFXCutsceneKey.on_attribute_before_changed = function(l_16_0, l_16_1, l_16_2, l_16_3)
+	l_16_0:stop()
+end
+
+CoreVisualFXCutsceneKey.stop = function(l_17_0)
+	if l_17_0._effect_abort_func then
+		l_17_0._effect_abort_func()
+		l_17_0._effect_abort_func = nil
+	end
+end
+
+

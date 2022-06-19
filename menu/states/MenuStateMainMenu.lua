@@ -1,13 +1,18 @@
-MenuStateMainMenu = MenuStateMainMenu or class(FiniteStateMachineState)
-function MenuStateMainMenu.init(A0_0)
+if not MenuStateMainMenu then
+	MenuStateMainMenu = class(FiniteStateMachineState)
+end
+MenuStateMainMenu.init = function(l_1_0)
 	assert(managers.save:profile())
-	A0_0._menu:gui_interface():set_state("main_menu")
+	l_1_0._menu:gui_interface():set_state("main_menu")
 end
-function MenuStateMainMenu.exit(A0_1)
-	local L1_2
+
+MenuStateMainMenu.exit = function(l_2_0)
 end
-function MenuStateMainMenu.update(A0_3, A1_4)
+
+MenuStateMainMenu.update = function(l_3_0, l_3_1)
 end
-function MenuStateMainMenu.transition(A0_5)
-	local L1_6
+
+MenuStateMainMenu.transition = function(l_4_0)
 end
+
+

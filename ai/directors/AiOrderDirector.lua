@@ -1,175 +1,154 @@
 require("ai/directors/AiNavigationOrder.lua")
-AiOrderDirector = AiOrderDirector or class()
-function AiOrderDirector.init(A0_0)
-	local L1_1
-	L1_1 = {}
-	A0_0._unit_navigation_order = L1_1
-	A0_0._next_assignable_move_order_id = 0
-	L1_1 = {}
-	A0_0._units = L1_1
+if not AiOrderDirector then
+	AiOrderDirector = class()
 end
-function AiOrderDirector.add_ai_unit(A0_2, A1_3)
-	A0_2._units[A1_3] = A1_3
+AiOrderDirector.init = function(l_1_0)
+	l_1_0._unit_navigation_order = {}
+	l_1_0._next_assignable_move_order_id = 0
+	l_1_0._units = {}
 end
-function AiOrderDirector.remove_ai_unit(A0_4, A1_5)
-	local L3_6
-	L3_6 = A0_4._units
-	L3_6[A1_5] = nil
-	L3_6 = A0_4._remove_unit
-	L3_6(A0_4, managers.unit_scripting:unit_script_name(A1_5))
+
+AiOrderDirector.add_ai_unit = function(l_2_0, l_2_1)
+	l_2_0._units[l_2_1] = l_2_1
 end
-function AiOrderDirector.give_order(A0_7, A1_8, A2_9, A3_10, A4_11, A5_12)
-	local L6_13, L7_14, L8_15, L9_16, L10_17, L11_18, L12_19, L13_20
-	if L6_13 then
-		for L9_16, L10_17 in L6_13(L7_14) do
-			L11_18 = managers
-			L11_18 = L11_18.unit_scripting
-			L12_19 = L11_18
-			L11_18 = L11_18.get_unit_by_name
-			L13_20 = L10_17.script_name
-			L11_18 = L11_18(L12_19, L13_20)
-			L12_19 = alive
-			L13_20 = L11_18
-			L12_19 = L12_19(L13_20)
-			if not L12_19 then
-				L12_19 = cat_print
-				L13_20 = "warning"
-				L12_19(L13_20, "No unit " .. L10_17.script_name .. " found for AI order")
+
+AiOrderDirector.remove_ai_unit = function(l_3_0, l_3_1)
+	l_3_0._units[l_3_1] = nil
+	l_3_0:_remove_unit(managers.unit_scripting:unit_script_name(l_3_1))
+end
+
+AiOrderDirector.give_order = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5)
+	local l_4_9, l_4_10, l_4_11, l_4_12 = nil
+	if TableAlgorithms.is_empty(l_4_2) then
+		for i_0,i_1 in pairs(l_4_1) do
+			if not alive(managers.unit_scripting:get_unit_by_name(i_1.script_name)) then
+				cat_print("warning", "No unit " .. i_1.script_name .. " found for AI order")
 			else
-				L13_20 = L11_18
-				L12_19 = L11_18.ai_data
-				L12_19 = L12_19(L13_20)
-				L13_20 = L12_19._behavior
-				L13_20.navigation_target = nil
-				L13_20 = L12_19._behavior
-				L13_20.navigation_target_options = {}
-				L13_20 = L12_19._behavior
-				L13_20.navigation_target_reached = true
-				L13_20 = A0_7._apply_arrive_order
-				L13_20(A0_7, L10_17, L12_19, A5_12, A4_11)
+				managers.unit_scripting:get_unit_by_name(i_1.script_name):ai_data()._behavior.navigation_target = nil
+				managers.unit_scripting:get_unit_by_name(i_1.script_name):ai_data()._behavior.navigation_target_options = {}
+				managers.unit_scripting:get_unit_by_name(i_1.script_name):ai_data()._behavior.navigation_target_reached = true
+				l_4_0:_apply_arrive_order(l_4_14, managers.unit_scripting:get_unit_by_name(i_1.script_name):ai_data(), l_4_5, l_4_4)
 			end
 		end
 	else
-		L10_17 = A3_10
-		L12_19 = A0_7
-		L11_18 = A0_7._next_move_order_id
-		L11_18 = L11_18(L12_19)
-		L12_19 = A5_12
-		L13_20 = A4_11
-		for L10_17, L11_18 in L7_14(L8_15) do
-			L12_19 = managers
-			L12_19 = L12_19.unit_scripting
-			L13_20 = L12_19
-			L12_19 = L12_19.get_unit_by_name
-			L12_19 = L12_19(L13_20, L11_18.script_name)
-			L13_20 = alive
-			L13_20 = L13_20(L12_19)
-			if not L13_20 then
-				L13_20 = Application
-				L13_20 = L13_20.error
-				L13_20(L13_20, "Unit " .. L11_18.script_name .. " not found!")
-				return
+		local l_4_19 = AiNavigationOrder:new
+		local l_4_20 = AiNavigationOrder
+		l_4_19 = l_4_19(l_4_20, l_4_1, l_4_2, l_4_3, l_4_0:_next_move_order_id(), l_4_5, l_4_4)
+		local l_4_15 = nil
+		l_4_20 = pairs
+		l_4_15 = l_4_1
+		l_4_20 = l_4_20(l_4_15)
+		for i_0,i_1 in l_4_20 do
+			local l_4_21 = managers.unit_scripting:get_unit_by_name(l_4_18.script_name)
+			if not alive(l_4_21) then
+				Application:error("Unit " .. l_4_18.script_name .. " not found!")
+				return 
 			end
-			L13_20 = L12_19.ai_data
-			L13_20 = L13_20(L12_19)
-			A0_7:_apply_navigation_order(L11_18, L13_20, L6_13)
-			A0_7:_apply_arrive_order(L11_18, L13_20, A5_12, A4_11)
+			local l_4_22 = l_4_21:ai_data()
+			l_4_0:_apply_navigation_order(l_4_18, l_4_22, l_4_19)
+			l_4_0:_apply_arrive_order(l_4_18, l_4_22, l_4_5, l_4_4)
 		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function AiOrderDirector._apply_arrive_order(A0_21, A1_22, A2_23, A3_24, A4_25)
-	local L5_26, L6_27
-	L5_26 = A2_23._behavior
-	L5_26.area_cluster = A3_24
-	L5_26 = A2_23._behavior
-	L6_27 = A1_22.type_name
-	L6_27 = A4_25[L6_27]
-	L5_26.arrive_orders = L6_27
+
+AiOrderDirector._apply_arrive_order = function(l_5_0, l_5_1, l_5_2, l_5_3, l_5_4)
+	l_5_2._behavior.area_cluster = l_5_3
+	l_5_2._behavior.arrive_orders = l_5_4[l_5_1.type_name]
 end
-function AiOrderDirector._convert_waypoints(A0_28, A1_29, A2_30)
-	local L3_31, L4_32, L5_33, L6_34, L7_35, L8_36, L9_37, L10_38
-	L3_31 = {}
-	for L7_35, L8_36 in L4_32(L5_33) do
-		L9_37 = nil
-		L10_38 = L8_36.options
-		if L10_38 then
-			L10_38 = L8_36.options
-			L9_37 = L10_38[A2_30]
-		else
-			L9_37 = nil
+
+AiOrderDirector._convert_waypoints = function(l_6_0, l_6_1, l_6_2)
+	local l_6_7, l_6_8, l_6_9, l_6_10, l_6_11, l_6_12 = nil
+	local l_6_3 = {}
+	for i_0,i_1 in ipairs(l_6_1) do
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if i_1.options then
+			do return end
 		end
-		L10_38 = {}
-		L10_38.position = L8_36.position
-		L10_38.rotation = L8_36.rotation
-		L10_38.options = L9_37
-		L10_38.id = L8_36.id
-		table.insert(L3_31, L10_38)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		table.insert(l_6_3, {position = l_6_14.position, rotation = l_6_14.rotation, options = nil, id = l_6_14.id})
 	end
-	return L3_31
+	return l_6_3
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function AiOrderDirector._apply_navigation_order(A0_39, A1_40, A2_41, A3_42)
-	local L4_43, L5_44
-	L4_43 = cat_print
-	L5_44 = "ai"
-	L4_43(L5_44, "New navigation target for " .. A1_40.script_name)
-	L5_44 = A0_39
-	L4_43 = A0_39._remove_unit
-	L4_43(L5_44, A1_40.script_name)
-	L4_43 = A0_39._unit_navigation_order
-	L5_44 = A1_40.script_name
-	L4_43[L5_44] = A3_42
-	L5_44 = A3_42
-	L4_43 = A3_42.unit_waypoint_path
-	L4_43 = L4_43(L5_44, A1_40.script_name)
-	L5_44 = nil
-	if L4_43 then
-		L5_44 = A0_39:_convert_waypoints(L4_43.waypoints, A1_40.type_name)
+
+AiOrderDirector._apply_navigation_order = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	cat_print("ai", "New navigation target for " .. l_7_1.script_name)
+	l_7_0:_remove_unit(l_7_1.script_name)
+	l_7_0._unit_navigation_order[l_7_1.script_name] = l_7_3
+	local l_7_4 = (l_7_3:unit_waypoint_path(l_7_1.script_name))
+	local l_7_5 = nil
+	if l_7_4 then
+		l_7_5 = l_7_0:_convert_waypoints(l_7_4.waypoints, l_7_1.type_name)
 	end
-	A2_41._behavior.navigation_target = L5_44
-	A2_41._behavior.navigation_target_options = A3_42:movement_options()[A1_40.type_name] or {}
-	A2_41._behavior.navigation_target_reached = false
-	A2_41._behavior.arrive_orders = nil
-	A2_41._behavior.cluster = nil
-	if A2_41._cover then
-		if not A2_41._behavior.navigation_target then
-			A2_41._cover.navigation_target = nil
-			A2_41._cover.navigation_target_rotation = nil
+	l_7_2._behavior.navigation_target = l_7_5
+	if not l_7_3:movement_options()[l_7_1.type_name] then
+		l_7_2._behavior.navigation_target_options = {}
+	end
+	l_7_2._behavior.navigation_target_reached = false
+	l_7_2._behavior.arrive_orders = nil
+	l_7_2._behavior.cluster = nil
+	if l_7_2._cover then
+		local l_7_6 = l_7_2._behavior.navigation_target
+		if not l_7_6 then
+			l_7_2._cover.navigation_target = nil
+			l_7_2._cover.navigation_target_rotation = nil
+		end
+	else
+		local l_7_7 = #l_7_6
+		l_7_2._cover.navigation_target = l_7_6[l_7_7]
+		l_7_2._cover.navigation_target_rotation = l_7_2._cover.navigation_target.rotation
+		if not l_7_2._cover.navigation_target_rotation then
+			if l_7_7 < 2 then
+				l_7_2._cover.navigation_target_rotation = Rotation(0, 0, 0)
+			end
 		else
-			A2_41._cover.navigation_target = A2_41._behavior.navigation_target[#A2_41._behavior.navigation_target]
-			A2_41._cover.navigation_target_rotation = A2_41._cover.navigation_target.rotation
-			if not A2_41._cover.navigation_target_rotation then
-				if #A2_41._behavior.navigation_target < 2 then
-					A2_41._cover.navigation_target_rotation = Rotation(0, 0, 0)
-				else
-					A2_41._cover.navigation_target_rotation = Rotation:look_at(A2_41._behavior.navigation_target[#A2_41._behavior.navigation_target - 1].position, A2_41._behavior.navigation_target[#A2_41._behavior.navigation_target].position, math.UP)
+			l_7_2._cover.navigation_target_rotation = Rotation:look_at(l_7_6[l_7_7 - 1].position, l_7_6[l_7_7].position, math.UP)
+		end
+		l_7_2._cover.go_to = nil
+		l_7_2._cover.cover_info = nil
+		l_7_2.output.target_cover_info = nil
+	end
+end
+
+AiOrderDirector._next_move_order_id = function(l_8_0)
+	local l_8_1 = l_8_0._next_assignable_move_order_id
+	l_8_0._next_assignable_move_order_id = l_8_0._next_assignable_move_order_id + 1
+	return l_8_1
+end
+
+AiOrderDirector._remove_unit = function(l_9_0, l_9_1)
+	if l_9_0._unit_navigation_order[l_9_1] then
+		l_9_0._unit_navigation_order[l_9_1] = nil
+	end
+end
+
+AiOrderDirector.unit_navigation_order = function(l_10_0, l_10_1)
+	return l_10_0._unit_navigation_order[l_10_1]
+end
+
+AiOrderDirector.update = function(l_11_0, l_11_1, l_11_2)
+	local l_11_3, l_11_4, l_11_5, l_11_6, l_11_7, l_11_8, l_11_9, l_11_10, l_11_11, l_11_12, l_11_13, l_11_14, l_11_15, l_11_16 = nil, nil, nil
+	for i_0,i_1 in pairs(l_11_0._unit_navigation_order) do
+		l_11_3 = managers.unit_scripting:get_unit_by_name(i_0)
+		if alive(l_11_3) then
+			l_11_4 = l_11_3:ai_data()
+			l_11_5 = l_11_4._behavior._last_completed_navigation_target == l_11_4._behavior.navigation_target
+			if l_11_5 then
+				l_11_4._behavior.navigation_target = nil
+				if l_11_4._cover then
+					l_11_4._cover.navigation_target = nil
 				end
+				l_11_0:_remove_unit(i_0)
 			end
-			A2_41._cover.go_to = nil
-			A2_41._cover.cover_info = nil
-			A2_41.output.target_cover_info = nil
+		else
+			l_11_0:_remove_unit(i_0)
 		end
 	end
 end
-function AiOrderDirector._next_move_order_id(A0_45)
-	local L1_46, L2_47
-	L1_46 = A0_45._next_assignable_move_order_id
-	L2_47 = A0_45._next_assignable_move_order_id
-	L2_47 = L2_47 + 1
-	A0_45._next_assignable_move_order_id = L2_47
-	return L1_46
-end
-function AiOrderDirector._remove_unit(A0_48, A1_49)
-	local L2_50
-	L2_50 = A0_48._unit_navigation_order
-	L2_50 = L2_50[A1_49]
-	if L2_50 then
-		L2_50 = A0_48._unit_navigation_order
-		L2_50[A1_49] = nil
-	end
-end
-function AiOrderDirector.unit_navigation_order(A0_51, A1_52)
-	return A0_51._unit_navigation_order[A1_52]
-end
-function AiOrderDirector.update(A0_53, A1_54, A2_55)
-	local L3_56, L4_57, L5_58, L6_59, L7_60, L8_61, L9_62
-	for L9_62, 
+
+

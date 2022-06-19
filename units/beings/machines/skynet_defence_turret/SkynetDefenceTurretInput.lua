@@ -1,53 +1,55 @@
-SkynetDefenceTurretInput = SkynetDefenceTurretInput or class()
-function SkynetDefenceTurretInput.init(A0_0, A1_1)
-	A0_0:clear()
+if not SkynetDefenceTurretInput then
+	SkynetDefenceTurretInput = class()
 end
-function SkynetDefenceTurretInput.clear(A0_2)
-	local L1_3
-	A0_2._aim_target_position = nil
-	A0_2._aim_target_position_missile = nil
-	A0_2._fire_missile = false
-	A0_2._fire_gatling = false
+SkynetDefenceTurretInput.init = function(l_1_0, l_1_1)
+	l_1_0:clear()
 end
-function SkynetDefenceTurretInput.fire_missile(A0_4)
-	local L1_5
-	L1_5 = A0_4._fire_missile
-	return L1_5
+
+SkynetDefenceTurretInput.clear = function(l_2_0)
+	l_2_0._aim_target_position = nil
+	l_2_0._aim_target_position_missile = nil
+	l_2_0._fire_missile = false
+	l_2_0._fire_gatling = false
 end
-function SkynetDefenceTurretInput.set_fire_missile(A0_6)
-	local L1_7
-	A0_6._fire_missile = true
+
+SkynetDefenceTurretInput.fire_missile = function(l_3_0)
+	return l_3_0._fire_missile
 end
-function SkynetDefenceTurretInput.fire_gatling(A0_8)
-	local L1_9
-	L1_9 = A0_8._fire_gatling
-	return L1_9
+
+SkynetDefenceTurretInput.set_fire_missile = function(l_4_0)
+	l_4_0._fire_missile = true
 end
-function SkynetDefenceTurretInput.set_fire_gatling(A0_10)
-	local L1_11
-	A0_10._fire_gatling = true
+
+SkynetDefenceTurretInput.fire_gatling = function(l_5_0)
+	return l_5_0._fire_gatling
 end
-function SkynetDefenceTurretInput.aim_target_position(A0_12)
-	local L1_13
-	L1_13 = A0_12._aim_target_position
-	return L1_13
+
+SkynetDefenceTurretInput.set_fire_gatling = function(l_6_0)
+	l_6_0._fire_gatling = true
 end
-function SkynetDefenceTurretInput.set_aim_target_position(A0_14, A1_15)
-	A0_14._aim_target_position = A1_15
+
+SkynetDefenceTurretInput.aim_target_position = function(l_7_0)
+	return l_7_0._aim_target_position
 end
-function SkynetDefenceTurretInput.aim_target_position_missile(A0_16)
-	local L1_17
-	L1_17 = A0_16._aim_target_position_missile
-	return L1_17
+
+SkynetDefenceTurretInput.set_aim_target_position = function(l_8_0, l_8_1)
+	l_8_0._aim_target_position = l_8_1
 end
-function SkynetDefenceTurretInput.set_aim_target_position_missile(A0_18, A1_19)
-	A0_18._aim_target_position_missile = A1_19
+
+SkynetDefenceTurretInput.aim_target_position_missile = function(l_9_0)
+	return l_9_0._aim_target_position_missile
 end
-function SkynetDefenceTurretInput.miss_dispersion(A0_20)
-	local L1_21
-	L1_21 = A0_20._miss_dispersion
-	return L1_21
+
+SkynetDefenceTurretInput.set_aim_target_position_missile = function(l_10_0, l_10_1)
+	l_10_0._aim_target_position_missile = l_10_1
 end
-function SkynetDefenceTurretInput.set_miss_dispersion(A0_22, A1_23)
-	A0_22._miss_dispersion = A1_23
+
+SkynetDefenceTurretInput.miss_dispersion = function(l_11_0)
+	return l_11_0._miss_dispersion
 end
+
+SkynetDefenceTurretInput.set_miss_dispersion = function(l_12_0, l_12_1)
+	l_12_0._miss_dispersion = l_12_1
+end
+
+

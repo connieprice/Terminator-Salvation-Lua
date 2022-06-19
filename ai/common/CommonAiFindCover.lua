@@ -1,241 +1,123 @@
-CommonAiFindCover = CommonAiFindCover or class()
-function CommonAiFindCover.init_data(A0_0, A1_1)
-	local L2_2
-	L2_2 = {}
-	A1_1._cover = L2_2
-	L2_2 = A1_1._cover
-	L2_2.threat = nil
-	L2_2 = A1_1._cover
-	L2_2.navigation_target = nil
-	L2_2 = A1_1._cover
-	L2_2.hide = true
-	L2_2 = A1_1._cover
-	L2_2.cover_info = nil
-	L2_2 = A1_1._cover
-	L2_2.go_to = nil
+if not CommonAiFindCover then
+	CommonAiFindCover = class()
 end
-function CommonAiFindCover.logic_common_find_cover_main(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	assert(A2_5:ai_data().graph)
-	A2_5:ai_data().graph:set_max_search_nodes(tweak_data.ai.search_graph_util.FIND_COVER_MAX_SEARCH_GRAPH_NODES)
-	A0_3:_do_logic_common_find_cover_main(A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	A2_5:ai_data().graph:set_max_search_nodes(tweak_data.ai.search_graph_util.DEFAULT_MAX_SEARCH_GRAPH_NODES)
+CommonAiFindCover.init_data = function(l_1_0, l_1_1)
+	l_1_1._cover = {}
+	l_1_1._cover.threat = nil
+	l_1_1._cover.navigation_target = nil
+	l_1_1._cover.hide = true
+	l_1_1._cover.cover_info = nil
+	l_1_1._cover.go_to = nil
 end
-function CommonAiFindCover._do_logic_common_find_cover_main(A0_11, A1_12, A2_13, A3_14, A4_15, A5_16, A6_17, A7_18)
-	local L8_19, L9_20, L10_21, L11_22, L12_23, L13_24
-	L9_20 = A2_13
-	L8_19 = A2_13.ai_data
-	L8_19 = L8_19(L9_20)
-	L9_20 = L8_19._behavior
-	L9_20 = L9_20.use_covers
-	if L9_20 then
-		L9_20 = L8_19._behavior
-		L9_20 = L9_20.arrive_orders
-		if L9_20 then
-			L9_20 = L8_19._behavior
-			L9_20 = L9_20.arrive_orders
-			L9_20 = L9_20.use_covers
-		end
-	elseif not L9_20 then
-		L9_20 = L8_19._cover
-		L9_20.go_to = nil
-		L9_20 = L8_19._cover
-		L9_20.cover_info = nil
-		return
+
+CommonAiFindCover.logic_common_find_cover_main = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	local l_2_8 = l_2_2:ai_data()
+	assert(l_2_8.graph)
+	l_2_8.graph:set_max_search_nodes(tweak_data.ai.search_graph_util.FIND_COVER_MAX_SEARCH_GRAPH_NODES)
+	l_2_0:_do_logic_common_find_cover_main(l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	l_2_8.graph:set_max_search_nodes(tweak_data.ai.search_graph_util.DEFAULT_MAX_SEARCH_GRAPH_NODES)
+end
+
+CommonAiFindCover._do_logic_common_find_cover_main = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4, l_3_5, l_3_6, l_3_7)
+	local l_3_8 = l_3_2:ai_data()
+	if not l_3_8._behavior.use_covers or l_3_8._behavior.arrive_orders and not l_3_8._behavior.arrive_orders.use_covers then
+		l_3_8._cover.go_to = nil
+		l_3_8._cover.cover_info = nil
+		return 
 	end
-	L9_20, L10_21, L11_22 = nil, nil, nil
-	L12_23 = L8_19._cover
-	L12_23 = L12_23.navigation_target
-	if L12_23 then
-		L12_23 = L8_19._behavior
-		L12_23 = L12_23.navigation_target_reached
-		if not L12_23 then
-			L12_23 = L8_19._cover
-			L12_23 = L12_23.navigation_target
-			L10_21 = L12_23.position
-			L12_23 = L8_19._cover
-			L12_23 = L12_23.navigation_target_rotation
-			L13_24 = L12_23
-			L12_23 = L12_23.y
-			L12_23 = L12_23(L13_24)
-			L12_23 = 10000 * L12_23
-			L9_20 = L10_21 + L12_23
-			L12_23 = tweak_data
-			L12_23 = L12_23.ai
-			L12_23 = L12_23.cover
-			L11_22 = L12_23.MAX_DISTANCE_TO_SCRIPT_COVER
+	local l_3_9, l_3_10, l_3_11 = nil, nil, nil
+	if l_3_8._cover.navigation_target and not l_3_8._behavior.navigation_target_reached then
+		l_3_10 = l_3_8._cover.navigation_target.position
+		l_3_9 = l_3_10 + 10000 * l_3_8._cover.navigation_target_rotation:y()
+		l_3_11 = tweak_data.ai.cover.MAX_DISTANCE_TO_SCRIPT_COVER
+	else
+		if l_3_8._cover.threat then
+			l_3_10 = l_3_2:position()
+			l_3_9 = l_3_8._cover.threat:last_known_position()
+			l_3_11 = tweak_data.ai.cover.MAX_DISTANCE_TO_THREAT_COVER
+		if not l_3_9 then
+			end
+			l_3_9 = l_3_10 + 10000 * l_3_8._cover.threat:last_known_direction()
+		end
+	end
+	if l_3_9 then
+		local l_3_12 = l_3_8.output.target_cover_info
+		if l_3_12 and mvector3.distance(l_3_12:closest_cover_point():position(), l_3_10) < l_3_11 and managers.cover:is_cover_from_threat(l_3_12:cover(), l_3_9, tweak_data.ai.cover.MIN_DISTANCE_TO_THREAT, tweak_data.ai.cover.MIN_THREAT_ANGLE) then
+			if l_3_8.input.in_target_cover or l_3_8.input.entering_target_cover then
+				l_3_8._cover.cover_info = l_3_12
+				l_3_8._cover.go_to = nil
+				return 
+			end
+		else
+			if l_3_8._cover.cover_info ~= l_3_12 or l_3_8._cover.go_to == nil then
+				l_3_8._cover.cover_info = l_3_12
+				local l_3_13 = l_3_12:closest_cover_point():position()
+				if NavigationGraphUtilities.ai_shortest_path(l_3_2, l_3_13, true) then
+					l_3_8._cover.go_to = l_3_13
+					return 
+				end
+			end
+		else
+			l_3_8._cover.go_to = nil
+		end
+		local l_3_14 = l_3_0:_find_best_cover(l_3_2, l_3_10, l_3_9, l_3_11, tweak_data.ai.cover.MIN_DISTANCE_TO_THREAT, tweak_data.ai.cover.MIN_THREAT_ANGLE, not l_3_8._cover.hide)
+		if l_3_14 then
+			l_3_8._cover.go_to = l_3_14.go_to
+			l_3_8._cover.cover_info = l_3_14.cover_info
 		end
 	else
-		L12_23 = L8_19._cover
-		L12_23 = L12_23.threat
-		if L12_23 then
-			L13_24 = A2_13
-			L12_23 = A2_13.position
-			L12_23 = L12_23(L13_24)
-			L10_21 = L12_23
-			L12_23 = L8_19._cover
-			L12_23 = L12_23.threat
-			L13_24 = L12_23
-			L12_23 = L12_23.last_known_position
-			L12_23 = L12_23(L13_24)
-			L9_20 = L12_23
-			L12_23 = tweak_data
-			L12_23 = L12_23.ai
-			L12_23 = L12_23.cover
-			L11_22 = L12_23.MAX_DISTANCE_TO_THREAT_COVER
-			if not L9_20 then
-				L12_23 = L8_19._cover
-				L12_23 = L12_23.threat
-				L13_24 = L12_23
-				L12_23 = L12_23.last_known_direction
-				L12_23 = L12_23(L13_24)
-				L12_23 = 10000 * L12_23
-				L9_20 = L10_21 + L12_23
-			end
-		end
-	end
-	if L9_20 then
-		L12_23 = L8_19.output
-		L12_23 = L12_23.target_cover_info
-		if L12_23 then
-			L13_24 = mvector3
-			L13_24 = L13_24.distance
-			L13_24 = L13_24(L12_23:closest_cover_point():position(), L10_21)
-			if L11_22 > L13_24 then
-				L13_24 = managers
-				L13_24 = L13_24.cover
-				L13_24 = L13_24.is_cover_from_threat
-				L13_24 = L13_24(L13_24, L12_23:cover(), L9_20, tweak_data.ai.cover.MIN_DISTANCE_TO_THREAT, tweak_data.ai.cover.MIN_THREAT_ANGLE)
-				if L13_24 then
-					L13_24 = L8_19.input
-					L13_24 = L13_24.in_target_cover
-					if not L13_24 then
-						L13_24 = L8_19.input
-						L13_24 = L13_24.entering_target_cover
-					else
-						if L13_24 then
-							L13_24 = L8_19._cover
-							L13_24.cover_info = L12_23
-							L13_24 = L8_19._cover
-							L13_24.go_to = nil
-							return
-					end
-					else
-						L13_24 = L8_19._cover
-						L13_24 = L13_24.cover_info
-						if L13_24 == L12_23 then
-							L13_24 = L8_19._cover
-							L13_24 = L13_24.go_to
-						elseif L13_24 == nil then
-							L13_24 = L8_19._cover
-							L13_24.cover_info = L12_23
-							L13_24 = L12_23.closest_cover_point
-							L13_24 = L13_24(L12_23)
-							L13_24 = L13_24.position
-							L13_24 = L13_24(L13_24)
-							if NavigationGraphUtilities.ai_shortest_path(A2_13, L13_24, true) then
-								L8_19._cover.go_to = L13_24
-								return
-							else
-								L8_19._cover.go_to = nil
-							end
-						end
-					end
-				end
-			end
-		end
-		L13_24 = A0_11._find_best_cover
-		L13_24 = L13_24(A0_11, A2_13, L10_21, L9_20, L11_22, tweak_data.ai.cover.MIN_DISTANCE_TO_THREAT, tweak_data.ai.cover.MIN_THREAT_ANGLE, not L8_19._cover.hide)
-		if L13_24 then
-			L8_19._cover.go_to = L13_24.go_to
-			L8_19._cover.cover_info = L13_24.cover_info
-		else
-			L8_19._cover.go_to = nil
-			L8_19._cover.cover_info = nil
-		end
+		l_3_8._cover.go_to = nil
+		l_3_8._cover.cover_info = nil
 	end
 end
-function CommonAiFindCover._find_best_cover(A0_25, A1_26, A2_27, A3_28, A4_29, A5_30, A6_31, A7_32, A8_33)
-	local L9_34, L10_35, L11_36, L12_37, L13_38, L14_39, L15_40, L16_41, L17_42, L18_43, L19_44, L20_45, L21_46, L22_47, L23_48, L24_49, L25_50
-	L9_34 = 100
-	L10_35 = tweak_data
-	L10_35 = L10_35.player
-	L10_35 = L10_35.cover
-	L10_35 = L10_35.DISTANCE_TO
-	L11_36 = tweak_data
-	L11_36 = L11_36.player
-	L11_36 = L11_36.cover
-	L11_36 = L11_36.DISTANCE_FROM_EDGE
-	L13_38 = A1_26
-	L12_37 = A1_26.ai_data
-	L12_37 = L12_37(L13_38)
-	L13_38 = managers
-	L13_38 = L13_38.cover
-	L14_39 = L13_38
-	L13_38 = L13_38.get_covers_from_threat
-	L18_43 = A5_30
-	L19_44 = A6_31
-	L13_38 = L13_38(L14_39, L15_40, L16_41, L17_42, L18_43, L19_44)
-	if not A7_32 then
-		L14_39 = {}
-		for L18_43, L19_44 in L15_40(L16_41) do
-			L20_45 = managers
-			L20_45 = L20_45.ai
-			L20_45 = L20_45.cover_manager
-			L21_46 = L20_45
-			L20_45 = L20_45.closest_cover_point
-			L22_47 = A1_26
-			L23_48 = L19_44
-			L24_49 = A2_27
-			L25_50 = tweak_data
-			L25_50 = L25_50.ai
-			L25_50 = L25_50.cover
-			L25_50 = L25_50.WIDTH_NEEDED
-			L21_46 = L20_45(L21_46, L22_47, L23_48, L24_49, L25_50, L10_35, L11_36)
-			if L20_45 then
-				L23_48 = L20_45
-				L22_47 = L20_45.position
-				L22_47 = L22_47(L23_48)
-				L23_48 = L22_47 - A2_27
-				L24_49 = math
-				L24_49 = L24_49.dot
-				L25_50 = L23_48
-				L24_49 = L24_49(L25_50, L23_48)
-				if L9_34 > L24_49 then
-					L14_39.squared_distance = L24_49
-					L25_50 = CoverInfo
-					L25_50 = L25_50.new
-					L25_50 = L25_50(L25_50, L19_44, L20_45, L24_49)
-					L14_39.cover_info = L25_50
-					L14_39.go_to = nil
-					return L14_39
+
+CommonAiFindCover._find_best_cover = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6, l_4_7, l_4_8)
+	local l_4_9 = 100
+	local l_4_10 = tweak_data.player.cover.DISTANCE_TO
+	local l_4_11 = tweak_data.player.cover.DISTANCE_FROM_EDGE
+	local l_4_12 = l_4_1:ai_data()
+	local l_4_18 = managers.cover:get_covers_from_threat
+	local l_4_19 = managers.cover
+	l_4_18 = l_4_18(l_4_19, l_4_2, l_4_4, l_4_3, l_4_5, l_4_6)
+	local l_4_13 = nil
+	if not l_4_7 then
+		local l_4_14 = nil
+		l_4_13 = ipairs
+		l_4_14 = l_4_18
+		l_4_13 = l_4_13(l_4_14)
+		for i_0,i_1 in l_4_13 do
+			local l_4_20, l_4_21 = managers.ai.cover_manager:closest_cover_point(l_4_1, l_4_17, l_4_2, tweak_data.ai.cover.WIDTH_NEEDED, l_4_10, l_4_11)
+			if l_4_20 then
+				local l_4_22 = l_4_20:position()
+				local l_4_23 = l_4_22 - l_4_2
+				local l_4_24 = math.dot(l_4_23, l_4_23)
+				if l_4_24 < l_4_9 then
+					return l_4_19
+					l_4_19 = {squared_distance = l_4_24, cover_info = CoverInfo:new(l_4_17, l_4_20, l_4_24), go_to = nil}
 				end
-				L25_50 = L14_39.cover_info
-				if L25_50 then
-					L25_50 = L14_39.cover_info
-					L25_50 = L25_50.squared_distance_to_cover_position
-					L25_50 = L25_50(L25_50)
-				elseif L24_49 < L25_50 then
-					if not L21_46 then
-						L25_50 = L14_39.peek_position
-					elseif not L25_50 then
-						L25_50 = L20_45.position
-						L25_50 = L25_50(L20_45)
-						L25_50 = L25_50 + L19_44:normal() * (tweak_data.ai.cover.PATH_DISTANCE_TO_COVER - tweak_data.player.cover.DISTANCE_TO)
-						if NavigationGraphUtilities.ai_shortest_path(A1_26, L25_50, true) then
-							L14_39.squared_distance = L24_49
-							L14_39.cover_info = CoverInfo:new(L19_44, L20_45, L24_49)
-							L14_39.go_to = NavigationGraphUtilities.ai_shortest_path(A1_26, L25_50, true)[#NavigationGraphUtilities.ai_shortest_path(A1_26, L25_50, true)]
-							L14_39.peek_position = L21_46
-						end
-					end
+			if (not l_4_19.cover_info or l_4_24 < l_4_19.cover_info:squared_distance_to_cover_position()) and (l_4_21 or not l_4_19.peek_position) then
 				end
+				local l_4_25 = l_4_20:position() + l_4_17:normal() * (tweak_data.ai.cover.PATH_DISTANCE_TO_COVER - tweak_data.player.cover.DISTANCE_TO)
+				local l_4_26 = NavigationGraphUtilities.ai_shortest_path(l_4_1, l_4_25, true)
+			if l_4_26 then
+				end
+				l_4_19.squared_distance = l_4_24
+				l_4_19.cover_info = CoverInfo:new(l_4_17, l_4_20, l_4_24)
+				l_4_19.go_to = l_4_26[#l_4_26]
+				l_4_19.peek_position = l_4_21
 			end
 		end
-		if L15_40 == nil then
-			return L15_40
+		if l_4_19.cover_info == nil then
+			return nil
 		end
-		return L14_39
+		return l_4_19
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
-	L14_39 = nil
-	return L14_39
+	l_4_19 = nil
+	return l_4_19
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

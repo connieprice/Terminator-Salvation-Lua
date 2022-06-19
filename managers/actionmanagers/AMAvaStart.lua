@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMAvaStart = AMAvaStart or class(AMNpcStart)
-AMAvaStart.unit_type = "ava"
-function AMAvaStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMAvaStart.unit_type)
+if not AMAvaStart then
+	AMAvaStart = class(AMNpcStart)
 end
+AMAvaStart.unit_type = "ava"
+AMAvaStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMAvaStart.unit_type)
+end
+
+

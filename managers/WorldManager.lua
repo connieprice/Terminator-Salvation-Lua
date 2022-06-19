@@ -2,66 +2,76 @@ require("managers/ActionManager")
 require("managers/AreaManager")
 require("managers/triggers/Triggers")
 require("mission_objective/AssignedMissionObjectiveManager")
-WorldManager = WorldManager or class(CoreWorldManager)
-function WorldManager.init(A0_0)
-	A0_0._id_to_checkpoint = {}
-	CoreWorldManager.init(A0_0)
-	Triggers.init(A0_0)
+if not WorldManager then
+	WorldManager = class(CoreWorldManager)
+end
+WorldManager.init = function(l_1_0)
+	l_1_0._id_to_checkpoint = {}
+	CoreWorldManager.init(l_1_0)
+	Triggers.init(l_1_0)
 	managers.assigned_mission_objective = AssignedMissionObjectiveManager:new()
 end
-function WorldManager.destroy(A0_1)
+
+WorldManager.destroy = function(l_2_0)
 	managers.assigned_mission_objective:destroy()
 	managers.assigned_mission_objective = nil
 end
-function WorldManager.update(A0_2, A1_3, A2_4)
-	CoreWorldManager.update(A0_2, A1_3, A2_4)
-	managers.assigned_mission_objective:update(A2_4)
+
+WorldManager.update = function(l_3_0, l_3_1, l_3_2)
+	CoreWorldManager.update(l_3_0, l_3_1, l_3_2)
+	managers.assigned_mission_objective:update(l_3_2)
 end
-function WorldManager.clear_units(A0_5)
-	local L1_6, L2_7, L3_8, L4_9, L5_10, L6_11
-	L1_6 = World
-	L1_6 = L1_6.find_units_quick
-	L5_10 = L4_9
-	L6_11 = 2
-	L6_11 = L4_9(L5_10, L6_11, 3, 4, 5, 6, 8, 9, 12, 13, 15, 25)
-	L1_6 = L1_6(L2_7, L3_8, L4_9, L5_10, L6_11, L4_9(L5_10, L6_11, 3, 4, 5, 6, 8, 9, 12, 13, 15, 25))
-	for L5_10, L6_11 in L2_7(L3_8) do
-		if alive(L6_11) and L6_11:name() ~= "light_streaks" then
-			cat_debug("editor", "delete ", L6_11:name())
-			World:delete_unit(L6_11)
+
+WorldManager.clear_units = function(l_4_0)
+	local l_4_5, l_4_6 = World:find_units_quick, World
+	l_4_5 = l_4_5(l_4_6, "all", World:make_slot_mask(2, 3, 4, 5, 6, 8, 9, 12, 13, 15, 25))
+	local l_4_1 = nil
+	l_4_6 = ipairs
+	l_4_1 = l_4_5
+	l_4_6 = l_4_6(l_4_1)
+	for i_0,i_1 in l_4_6 do
+		if alive(l_4_4) and l_4_4:name() ~= "light_streaks" then
+			cat_debug("editor", "delete ", l_4_4:name())
+			World:delete_unit(l_4_4)
 		end
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function WorldManager.stop_simulation(A0_12)
-	CoreWorldManager.stop_simulation(A0_12)
+
+WorldManager.stop_simulation = function(l_5_0)
+	CoreWorldManager.stop_simulation(l_5_0)
 	if Application:editor() then
-		A0_12:clear_units()
+		l_5_0:clear_units()
 	end
 	managers.area:stop_simulation()
 end
-function WorldManager.current_stage(A0_13)
-	return (CoreWorldManager.current_stage(A0_13))
+
+WorldManager.current_stage = function(l_6_0)
+	return CoreWorldManager.current_stage(l_6_0)
 end
-function WorldManager.add_checkpoint(A0_14, A1_15)
-	assert(not A0_14._id_to_checkpoint[A1_15.checkpoint_index])
-	A0_14._id_to_checkpoint[A1_15.checkpoint_index] = A1_15
+
+WorldManager.add_checkpoint = function(l_7_0, l_7_1)
+	assert(not l_7_0._id_to_checkpoint[l_7_1.checkpoint_index])
+	l_7_0._id_to_checkpoint[l_7_1.checkpoint_index] = l_7_1
 end
-function WorldManager.checkpoint(A0_16, A1_17)
-	assert(A0_16._id_to_checkpoint[A1_17], "checkpoint_index:" .. A1_17 .. " not found!")
-	return A0_16._id_to_checkpoint[A1_17]
+
+WorldManager.checkpoint = function(l_8_0, l_8_1)
+	assert(l_8_0._id_to_checkpoint[l_8_1], "checkpoint_index:" .. l_8_1 .. " not found!")
+	return l_8_0._id_to_checkpoint[l_8_1]
 end
-function WorldManager.has_checkpoint(A0_18, A1_19)
-	local L2_20
-	L2_20 = A0_18._id_to_checkpoint
-	L2_20 = L2_20[A1_19]
-	L2_20 = L2_20 ~= nil
-	return L2_20
+
+WorldManager.has_checkpoint = function(l_9_0, l_9_1)
+	return l_9_0._id_to_checkpoint[l_9_1] ~= nil
 end
-function WorldManager.activate_current_stage(A0_21)
-	local L1_22
+
+WorldManager.activate_current_stage = function(l_10_0)
 end
-function WorldManager.post_sync_stage_activation(A0_23)
-	if A0_23._current_stage then
-		CoreWorldManager.activate_current_stage(A0_23)
+
+WorldManager.post_sync_stage_activation = function(l_11_0)
+	if l_11_0._current_stage then
+		CoreWorldManager.activate_current_stage(l_11_0)
 	end
 end
+
+

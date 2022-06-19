@@ -1,13 +1,18 @@
-AMPlayer = AMPlayer or class(CoreActionElement)
-function AMPlayer.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMPlayer then
+	AMPlayer = class(CoreActionElement)
+end
+AMPlayer.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 	World:preload_unit("player")
 end
-function AMPlayer.activate_now(A0_3)
-	A0_3._unit = World:spawn_unit("player", A0_3.position, A0_3.rotation)
-	script_data.player = A0_3._unit
-	if A0_3.player_start then
-		A0_3._unit:player_data().spawning_id = A0_3.player_start.spawner_id[1]
+
+AMPlayer.activate_now = function(l_2_0)
+	l_2_0._unit = World:spawn_unit("player", l_2_0.position, l_2_0.rotation)
+	script_data.player = l_2_0._unit
+	if l_2_0.player_start then
+		l_2_0._unit:player_data().spawning_id = l_2_0.player_start.spawner_id[1]
 	end
-	A0_3:deactivate_now()
+	l_2_0:deactivate_now()
 end
+
+

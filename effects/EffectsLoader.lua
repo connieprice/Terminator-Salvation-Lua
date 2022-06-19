@@ -1,16 +1,25 @@
-EffectsLoader = EffectsLoader or class()
-function EffectsLoader.init(A0_0)
+if not EffectsLoader then
+	EffectsLoader = class()
+end
+EffectsLoader.init = function(l_1_0)
 	cat_print("debug", "Preloading effects...")
-	A0_0:load_effects(File:new_parse_xml("data/effects/global_effects.xml"):children())
-	A0_0._effect_manager = World:effect_manager()
+	local l_1_1 = File:new_parse_xml("data/effects/global_effects.xml")
+	l_1_0:load_effects(l_1_1:children())
+	l_1_0._effect_manager = World:effect_manager()
 end
-function EffectsLoader.load_effects(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L6_6, L7_7
-	for L6_6 in A1_2, nil, nil do
-		L7_7 = A0_1.load_effect
-		L7_7(A0_1, L6_6:parameter("name"))
+
+EffectsLoader.load_effects = function(l_2_0, l_2_1)
+	local l_2_5, l_2_6 = nil
+	local l_2_2 = l_2_1
+	for i_0 in l_2_2 do
+		l_2_0:load_effect(i_0:parameter("name"))
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function EffectsLoader.load_effect(A0_8, A1_9)
-	World:effect_manager():load(A1_9)
+
+EffectsLoader.load_effect = function(l_3_0, l_3_1)
+	World:effect_manager():load(l_3_1)
 end
+
+

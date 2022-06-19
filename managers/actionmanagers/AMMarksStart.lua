@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMMarksStart = AMMarksStart or class(AMNpcStart)
-AMMarksStart.unit_type = "marks"
-function AMMarksStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMMarksStart.unit_type)
+if not AMMarksStart then
+	AMMarksStart = class(AMNpcStart)
 end
+AMMarksStart.unit_type = "marks"
+AMMarksStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMMarksStart.unit_type)
+end
+
+

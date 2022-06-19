@@ -1,89 +1,121 @@
 require("units/beings/player_tank/gui/MachineHudPanel")
 require("units/beings/player_tank/gui/MachineText")
-CodePanel = CodePanel or class(MachineHudPanel)
-function CodePanel.init(A0_0, A1_1)
-	MachineHudPanel.init(A0_0, A1_1)
-	A0_0._parent_panel = A1_1
-	A0_0._x = A0_0._parent_panel:width() / 2 + tweak_data.machine.hud.CENTER_SPACE / 2
-	A0_0._y = A0_0._parent_panel:height()
-	A0_0._width = A0_0._parent_panel:width() / 2 - tweak_data.machine.hud.CENTER_SPACE / 2
-	A0_0._height = tweak_data.machine.hud.TURRET_PANEL_HEIGHT
-	A0_0._code_panel = A0_0._parent_panel:panel({
-		name = "code_panel",
-		width = A0_0._width,
-		height = A0_0._height,
-		layer = 100
-	})
-	A0_0._code_panel:set_leftbottom(A0_0._x, A0_0._y)
-	A0_0._code_texts = {}
-	A0_0._code_texts[1] = Localizer:lookup("machine_hud_trajectory_logging")
-	A0_0._code_texts[2] = Localizer:lookup("machine_hud_status_column_1")
-	A0_0._code_texts[3] = Localizer:lookup("machine_hud_status_column_2")
-	A0_0._code_text_index = 1
-	A0_0._code_text = MachineText:new(A0_0._code_panel, 0, 0, tweak_data.machine.hud.text.TEXT_FONT_SCALE_SMALL_SIZE)
-	A0_0._next_update = 0
-	A0_0._next_alpha_update_time = 0
-	A0_0._dt_since_last_alpha_update = 0
+if not CodePanel then
+	CodePanel = class(MachineHudPanel)
 end
-function CodePanel.panel(A0_2)
-	local L1_3
-	L1_3 = A0_2._code_panel
-	return L1_3
+CodePanel.init = function(l_1_0, l_1_1)
+	MachineHudPanel.init(l_1_0, l_1_1)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._x = l_1_0._parent_panel:width() / 2 + tweak_data.machine.hud.CENTER_SPACE / 2
+	l_1_0._y = l_1_0._parent_panel:height()
+	l_1_0._width = l_1_0._parent_panel:width() / 2 - tweak_data.machine.hud.CENTER_SPACE / 2
+	l_1_0._height = tweak_data.machine.hud.TURRET_PANEL_HEIGHT
+	local l_1_2, l_1_3 = l_1_0._parent_panel:panel, l_1_0._parent_panel
+	local l_1_4 = {}
+	l_1_4.name = "code_panel"
+	l_1_4.width = l_1_0._width
+	l_1_4.height = l_1_0._height
+	l_1_4.layer = 100
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._code_panel = l_1_2
+	l_1_2 = l_1_0._code_panel
+	l_1_2, l_1_3 = l_1_2:set_leftbottom, l_1_2
+	l_1_4 = l_1_0._x
+	l_1_2(l_1_3, l_1_4, l_1_0._y)
+	l_1_0._code_texts, l_1_2 = l_1_2, {}
+	l_1_2 = l_1_0._code_texts
+	l_1_3 = Localizer
+	l_1_3, l_1_4 = l_1_3:lookup, l_1_3
+	l_1_3 = l_1_3(l_1_4, "machine_hud_trajectory_logging")
+	l_1_2[1] = l_1_3
+	l_1_2 = l_1_0._code_texts
+	l_1_3 = Localizer
+	l_1_3, l_1_4 = l_1_3:lookup, l_1_3
+	l_1_3 = l_1_3(l_1_4, "machine_hud_status_column_1")
+	l_1_2[2] = l_1_3
+	l_1_2 = l_1_0._code_texts
+	l_1_3 = Localizer
+	l_1_3, l_1_4 = l_1_3:lookup, l_1_3
+	l_1_3 = l_1_3(l_1_4, "machine_hud_status_column_2")
+	l_1_2[3] = l_1_3
+	l_1_0._code_text_index = 1
+	l_1_2 = MachineText
+	l_1_2, l_1_3 = l_1_2:new, l_1_2
+	l_1_4 = l_1_0._code_panel
+	l_1_2 = l_1_2(l_1_3, l_1_4, 0, 0, tweak_data.machine.hud.text.TEXT_FONT_SCALE_SMALL_SIZE)
+	l_1_0._code_text = l_1_2
+	l_1_0._next_update = 0
+	l_1_0._next_alpha_update_time = 0
+	l_1_0._dt_since_last_alpha_update = 0
 end
-function CodePanel.update(A0_4, A1_5, A2_6)
-	if A0_4._need_boot_update then
-		MachineHudPanel.update(A0_4, A2_6)
+
+CodePanel.panel = function(l_2_0)
+	return l_2_0._code_panel
+end
+
+CodePanel.update = function(l_3_0, l_3_1, l_3_2)
+	if l_3_0._need_boot_update then
+		MachineHudPanel.update(l_3_0, l_3_2)
 	end
-	A0_4._need_boot_update = A0_4._wants_to_shut_down or A0_4._wants_to_start_up
-	if not A0_4.startup_done or A0_4._shuting_down then
-		return
+	if not l_3_0._wants_to_shut_down then
+		l_3_0._need_boot_update = l_3_0._wants_to_start_up
 	end
-	if A1_5 > A0_4._next_update then
-		A0_4._code_text:set_text(A0_4._code_texts[A0_4._code_text_index], false, 12)
-		A0_4._code_text_index = A0_4._code_text_index + 1
-		if A0_4._code_text_index > #A0_4._code_texts then
-			A0_4._code_text_index = 1
+	if not l_3_0.startup_done or l_3_0._shuting_down then
+		return 
+	end
+	if l_3_0._next_update < l_3_1 then
+		l_3_0._code_text:set_text(l_3_0._code_texts[l_3_0._code_text_index], false, 12)
+		l_3_0._code_text_index = l_3_0._code_text_index + 1
+		if #l_3_0._code_texts < l_3_0._code_text_index then
+			l_3_0._code_text_index = 1
 		end
-		A0_4._next_update = A0_4._next_update + 3
+		l_3_0._next_update = l_3_0._next_update + 3
 	end
-	A0_4._dt_since_last_alpha_update = A0_4._dt_since_last_alpha_update + A2_6
-	if A1_5 > A0_4._next_alpha_update_time then
-		A0_4._code_text:update(A0_4._dt_since_last_alpha_update)
-		A0_4._next_alpha_update_time = A1_5 + tweak_data.machine.hud.TEXT_UPDATE_FREQUENCY
-		A0_4._dt_since_last_alpha_update = 0
+	l_3_0._dt_since_last_alpha_update = l_3_0._dt_since_last_alpha_update + l_3_2
+	if l_3_0._next_alpha_update_time < l_3_1 then
+		l_3_0._code_text:update(l_3_0._dt_since_last_alpha_update)
+		l_3_0._next_alpha_update_time = l_3_1 + tweak_data.machine.hud.TEXT_UPDATE_FREQUENCY
+		l_3_0._dt_since_last_alpha_update = 0
 	end
 end
-function CodePanel.get_target_size(A0_7)
-	local L1_8, L2_9
-	L1_8 = A0_7._width
-	L2_9 = A0_7._height
-	return L1_8, L2_9
+
+CodePanel.get_target_size = function(l_4_0)
+	return l_4_0._width, l_4_0._height
 end
-function CodePanel.set_size_y(A0_10, A1_11)
+
+CodePanel.set_size_y = function(l_5_0, l_5_1)
 end
-function CodePanel.shutdown(A0_12, A1_13, A2_14)
-	A0_12._code_text:set_text_alpha(0)
-	A0_12._shuting_down = true
-	MachineHudPanel.shutdown(A0_12, A1_13, A2_14)
+
+CodePanel.shutdown = function(l_6_0, l_6_1, l_6_2)
+	l_6_0._code_text:set_text_alpha(0)
+	l_6_0._shuting_down = true
+	MachineHudPanel.shutdown(l_6_0, l_6_1, l_6_2)
 end
-function CodePanel.enable(A0_15, A1_16)
-	if A1_16 <= 0.25 then
-	else
+
+CodePanel.enable = function(l_7_0, l_7_1)
+	if l_7_1 <= 0.25 then
+		l_7_0._height = tweak_data.machine.hud.TURRET_PANEL_HEIGHT * l_7_1
+		l_7_0._code_panel:set_height(l_7_0._height)
+		l_7_0._code_panel:set_leftbottom(l_7_0._x, l_7_0._y)
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	A0_15._height = tweak_data.machine.hud.TURRET_PANEL_HEIGHT * A1_16
-	A0_15._code_panel:set_height(A0_15._height)
-	A0_15._code_panel:set_leftbottom(A0_15._x, A0_15._y)
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 4 
 end
-function CodePanel.disable(A0_17)
-	A0_17._disable = true
-	A0_17._code_panel:set_height(0)
-	A0_17._code_panel:set_leftbottom(A0_17._x, A0_17._y)
+
+CodePanel.disable = function(l_8_0)
+	l_8_0._disable = true
+	l_8_0._code_panel:set_height(0)
+	l_8_0._code_panel:set_leftbottom(l_8_0._x, l_8_0._y)
 end
-function CodePanel.show(A0_18)
-	MachineHudPanel.show(A0_18)
-	A0_18._code_text:set_text_alpha(1)
+
+CodePanel.show = function(l_9_0)
+	MachineHudPanel.show(l_9_0)
+	l_9_0._code_text:set_text_alpha(1)
 end
-function CodePanel.hide(A0_19)
-	MachineHudPanel.hide(A0_19)
-	A0_19._code_text:set_text_alpha(0)
+
+CodePanel.hide = function(l_10_0)
+	MachineHudPanel.hide(l_10_0)
+	l_10_0._code_text:set_text_alpha(0)
 end
+
+

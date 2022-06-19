@@ -1,133 +1,94 @@
-DualSphereSmoothPopController = DualSphereSmoothPopController or class()
-function DualSphereSmoothPopController.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._min_r = A1_1
-	A0_0._indent = A2_2
-	A0_0._ignore_unit = A3_3
+if not DualSphereSmoothPopController then
+	DualSphereSmoothPopController = class()
 end
-function DualSphereSmoothPopController.wanted_position(A0_4, A1_5, A2_6, A3_7)
-	local L4_8, L5_9, L6_10, L7_11, L8_12, L9_13, L10_14, L11_15, L12_16, L13_17, L14_18, L15_19, L16_20, L17_21, L18_22, L19_23, L20_24, L21_25, L22_26, L23_27, L24_28, L25_29, L26_30, L27_31
-	L4_8 = 0.01
-	L5_9, L6_10 = nil, nil
-	L7_11 = A2_6 - A1_5
-	L9_13 = L7_11
-	L8_12 = L7_11.length
-	L8_12 = L8_12(L9_13)
-	if L4_8 >= L8_12 then
-		return A1_5
+DualSphereSmoothPopController.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._min_r = l_1_1
+	l_1_0._indent = l_1_2
+	l_1_0._ignore_unit = l_1_3
+end
+
+DualSphereSmoothPopController.wanted_position = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	local l_2_4 = 0.01
+	local l_2_5, l_2_6 = nil, nil
+	local l_2_7 = l_2_2 - l_2_1
+	local l_2_8 = l_2_7:length()
+	if l_2_8 <= l_2_4 then
+		return l_2_1
 	end
-	L9_13 = 20
-	L10_14 = 40
-	L11_15 = L7_11 / L8_12
-	L12_16 = 0
-	L13_17 = L11_15 * L12_16
-	L13_17 = A1_5 - L13_17
-	L14_18 = A2_6
-	L15_19 = {
-		L16_20,
-		L17_21,
-		L18_22,
-		L19_23,
-		L20_24,
-		L21_25,
-		L22_26
-	}
-	L16_20 = "ray"
-	L17_21 = L13_17
-	L18_22 = L14_18
-	L19_23 = "ray_type"
-	L20_24 = "camera"
-	L21_25 = "sphere_cast_radius"
-	L22_26 = L9_13
-	L16_20 = A0_4._ignore_unit
-	if L16_20 then
-		L16_20 = table
-		L16_20 = L16_20.insert
-		L17_21 = L15_19
-		L18_22 = "ignore_unit"
-		L16_20(L17_21, L18_22)
-		L16_20 = table
-		L16_20 = L16_20.insert
-		L17_21 = L15_19
-		L18_22 = A0_4._ignore_unit
-		L16_20(L17_21, L18_22)
+	local l_2_9 = 20
+	local l_2_10 = 40
+	local l_2_11 = l_2_7 / l_2_8
+	local l_2_12 = 0
+	local l_2_13 = l_2_1 - l_2_11 * l_2_12
+	local l_2_14 = l_2_2
+	local l_2_15 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if "ray" then
+		table.insert(l_2_13, l_2_14)
+		table.insert(l_2_15, l_2_0._ignore_unit)
 	end
-	L16_20 = World
-	L17_21 = L16_20
-	L16_20 = L16_20.raycast
-	L18_22 = unpack
-	L19_23 = L15_19
-	L27_31 = L18_22(L19_23)
-	L16_20 = L16_20(L17_21, L18_22, L19_23, L20_24, L21_25, L22_26, L23_27, L24_28, L25_29, L26_30, L27_31, L18_22(L19_23))
-	L17_21 = 0
-	L18_22 = L11_15 * L17_21
-	L18_22 = A1_5 - L18_22
-	L19_23 = A2_6
-	L20_24 = {
-		L21_25,
-		L22_26,
-		L23_27,
-		L24_28,
-		L25_29,
-		L26_30,
-		L27_31
-	}
-	L21_25 = "ray"
-	L22_26 = L18_22
-	L23_27 = L19_23
-	L24_28 = "ray_type"
-	L25_29 = "camera"
-	L26_30 = "sphere_cast_radius"
-	L27_31 = L10_14
-	L21_25 = A0_4._ignore_unit
-	if L21_25 then
-		L21_25 = table
-		L21_25 = L21_25.insert
-		L22_26 = L20_24
-		L23_27 = "ignore_unit"
-		L21_25(L22_26, L23_27)
-		L21_25 = table
-		L21_25 = L21_25.insert
-		L22_26 = L20_24
-		L23_27 = A0_4._ignore_unit
-		L21_25(L22_26, L23_27)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_2_16 = World:raycast(unpack("ray_type"))
+	local l_2_17 = 0
+	local l_2_18 = l_2_1 - l_2_11 * l_2_17
+	local l_2_19 = l_2_2
+	local l_2_20 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if "sphere_cast_radius" then
+		table.insert(l_2_9, l_2_19)
+		table.insert(l_2_20, l_2_0._ignore_unit)
 	end
-	L21_25 = World
-	L22_26 = L21_25
-	L21_25 = L21_25.raycast
-	L23_27 = unpack
-	L24_28 = L20_24
-	L27_31 = L23_27(L24_28)
-	L21_25 = L21_25(L22_26, L23_27, L24_28, L25_29, L26_30, L27_31, L23_27(L24_28))
-	if L21_25 then
-		L22_26 = nil
-		if L16_20 then
-			L23_27 = L16_20.distance
-			L22_26 = L23_27 - L12_16
-		else
-			L22_26 = L8_12
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_2_21 = World:raycast(unpack("ray_type"))
+	if l_2_21 then
+		local l_2_22 = nil
+		if l_2_16 then
+			do return end
 		end
-		L23_27 = L21_25.hit_position
-		L24_28 = L21_25.position
-		L23_27 = L23_27 - L24_28
-		L25_29 = L7_11
-		L24_28 = L7_11.angle
-		L26_30 = L23_27
-		L24_28 = L24_28(L25_29, L26_30)
-		L25_29 = assert
-		L26_30 = L24_28 >= 0 and L24_28 <= 90
-		L27_31 = L24_28
-		L25_29(L26_30, L27_31)
-		L25_29 = L21_25.distance
-		L25_29 = L25_29 - L17_21
-		L25_29 = L25_29 + L10_14
-		L26_30 = L24_28 / 90
-		L27_31 = L26_30 * L8_12
-		L27_31 = L27_31 + (1 - L26_30) * L25_29
-		L27_31 = math.clamp(L27_31, 0, L22_26)
-		L6_10 = A1_5 + L27_31 * L11_15
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_2_23 = l_2_21.hit_position - l_2_21.position
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_2_24 = l_2_7:angle("sphere_cast_radius")
+		local l_2_25 = assert
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_2_25(l_2_24 >= 0 and l_2_24 <= 90, l_2_10)
+		l_2_25 = l_2_21.distance
+		l_2_25 = l_2_25 - l_2_17
+		l_2_25 = l_2_25 + l_2_10
+		local l_2_28 = l_2_24 / 90
+		local l_2_29 = l_2_28 * l_2_8 + (1 - l_2_28) * (l_2_25)
+		l_2_29 = math.clamp(l_2_29, 0, l_2_22)
+		l_2_6 = l_2_1 + l_2_29 * l_2_11
 	else
-		L6_10 = A2_6
+		l_2_6 = l_2_2
 	end
-	A0_4._last_distance = L5_9
-	return L6_10
+	l_2_0._last_distance = l_2_5
+	return l_2_6
 end
+
+

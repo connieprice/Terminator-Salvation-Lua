@@ -1,271 +1,205 @@
 require("menu/loading_screen/LoadingScreen")
 require("menu/loading_screen/PhysicsModifier")
 require("menu/loading_screen/LoadingCameraNoise")
-LevelLoadingScreen = LevelLoadingScreen or class(LoadingScreen)
-LevelLoadingScreen.fonts = {
-	"faith_font_22"
-}
-LevelLoadingScreen.textures = {
-	"gui_disc_icon",
-	"security_camera_noise_1",
-	"security_camera_noise_2",
-	"security_camera_noise_3",
-	"security_camera_noise_4",
-	"security_camera_edgebleed"
-}
-function LevelLoadingScreen.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6, A7_7, A8_8)
-	A0_0._height_modifier = PhysicsModifier:new(loading_screen_tweak_data.INITIAL_HEIGHT)
-	A0_0._yaw_modifier = PhysicsModifier:new(loading_screen_tweak_data.INITIAL_YAW)
-	A0_0._rotation_controllers = {}
-	A0_0:_setup_rotation_controllers(A5_5)
-	A0_0._time_since_input = 9999
-	A0_0._yaw_idle_time = 0
-	A0_0._height_idle_time = 0
-	A0_0._time = 0
-	LoadingScreen.init(A0_0, A1_1, A2_2, A3_3, A4_4, A6_6, A7_7, A8_8)
-	A0_0._camera_noise = LoadingCameraNoise:new(A0_0._panel, loading_screen_tweak_data.CAMERA_NOISE_ALPHA)
+if not LevelLoadingScreen then
+	LevelLoadingScreen = class(LoadingScreen)
 end
-function LevelLoadingScreen.start(A0_9)
-	A0_9._sound = Sound:make_bank("ui_menu_sound", "loading_screen_loop")
-	A0_9._sound_instance = A0_9._sound:play()
-	A0_9._sound_instance:set_control_ramp("gain_abs", 0, 1, 1)
-	LoadingScreen.start(A0_9)
+local l_0_0 = LevelLoadingScreen
+local l_0_1 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_0.textures, l_0_1 = l_0_1, {"faith_font_22", "security_camera_noise_1", "security_camera_noise_2", "security_camera_noise_3", "security_camera_noise_4", "security_camera_edgebleed"}
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6, l_1_7, l_1_8)
+	l_1_0._height_modifier = PhysicsModifier:new(loading_screen_tweak_data.INITIAL_HEIGHT)
+	l_1_0._yaw_modifier = PhysicsModifier:new(loading_screen_tweak_data.INITIAL_YAW)
+	l_1_0._rotation_controllers = {}
+	l_1_0:_setup_rotation_controllers(l_1_5)
+	l_1_0._time_since_input = 9999
+	l_1_0._yaw_idle_time = 0
+	l_1_0._height_idle_time = 0
+	l_1_0._time = 0
+	LoadingScreen.init(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_6, l_1_7, l_1_8)
+	l_1_0._camera_noise = LoadingCameraNoise:new(l_1_0._panel, loading_screen_tweak_data.CAMERA_NOISE_ALPHA)
 end
-function LevelLoadingScreen.update(A0_10, A1_11)
-	LoadingScreen.update(A0_10, A1_11)
-	A0_10._time = A0_10._time + A1_11
-	A0_10._camera_noise:update(A1_11)
-	A0_10:update_camera(A1_11)
+
+l_0_0.init = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_2_0)
+	l_2_0._sound = Sound:make_bank("ui_menu_sound", "loading_screen_loop")
+	l_2_0._sound_instance = l_2_0._sound:play()
+	l_2_0._sound_instance:set_control_ramp("gain_abs", 0, 1, 1)
+	LoadingScreen.start(l_2_0)
 end
-function LevelLoadingScreen.fade_down(A0_12)
-	LoadingScreen.fade_down(A0_12)
-	A0_12._sound_instance:set_control_ramp("gain_abs", 1, 0, 1)
+
+l_0_0.start = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_3_0, l_3_1)
+	LoadingScreen.update(l_3_0, l_3_1)
+	l_3_0._time = l_3_0._time + l_3_1
+	l_3_0._camera_noise:update(l_3_1)
+	l_3_0:update_camera(l_3_1)
 end
-function LevelLoadingScreen.update_camera(A0_13, A1_14)
-	local L2_15, L3_16, L4_17, L5_18, L6_19, L7_20, L8_21, L9_22, L10_23, L11_24, L12_25
-	L3_16 = A0_13
-	L2_15 = A0_13._rotation_input
-	L2_15 = L2_15(L3_16)
-	L3_16 = Vector3
-	L4_17 = math
-	L4_17 = L4_17.clamp
-	L5_18 = L2_15.x
-	L6_19 = -1
-	L7_20 = 1
-	L4_17 = L4_17(L5_18, L6_19, L7_20)
-	L5_18 = math
-	L5_18 = L5_18.clamp
-	L6_19 = L2_15.y
-	L7_20 = -1
-	L8_21 = 1
-	L5_18 = L5_18(L6_19, L7_20, L8_21)
-	L6_19 = 0
-	L3_16 = L3_16(L4_17, L5_18, L6_19)
-	L2_15 = L3_16
-	L3_16, L4_17 = nil, nil
-	L5_18 = math
-	L5_18 = L5_18.abs
-	L6_19 = L2_15.x
-	L5_18 = L5_18(L6_19)
-	L6_19 = loading_screen_tweak_data
-	L6_19 = L6_19.INPUT_IDLE_THRESHOLD
-	if L5_18 < L6_19 then
-		L5_18 = math
-		L5_18 = L5_18.abs
-		L6_19 = L2_15.y
-		L5_18 = L5_18(L6_19)
-		L6_19 = loading_screen_tweak_data
-		L6_19 = L6_19.INPUT_IDLE_THRESHOLD
-		if L5_18 < L6_19 then
-			L5_18 = A0_13._time_since_input
-			L5_18 = L5_18 + A1_14
-			A0_13._time_since_input = L5_18
-		end
+
+l_0_0.update = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_4_0)
+	LoadingScreen.fade_down(l_4_0)
+	l_4_0._sound_instance:set_control_ramp("gain_abs", 1, 0, 1)
+end
+
+l_0_0.fade_down = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_5_0, l_5_1)
+	local l_5_2 = l_5_0:_rotation_input()
+	l_5_2 = Vector3(math.clamp(l_5_2.x, -1, 1), math.clamp(l_5_2.y, -1, 1), 0)
+	local l_5_3, l_5_4 = nil, nil
+	if math.abs(l_5_2.x) < loading_screen_tweak_data.INPUT_IDLE_THRESHOLD and math.abs(l_5_2.y) < loading_screen_tweak_data.INPUT_IDLE_THRESHOLD then
+		l_5_0._time_since_input = l_5_0._time_since_input + l_5_1
 	else
-		A0_13._time_since_input = 0
+		l_5_0._time_since_input = 0
 	end
-	L5_18 = A0_13._time_since_input
-	L6_19 = loading_screen_tweak_data
-	L6_19 = L6_19.INPUT_IDLE_TIMEOUT
-	if L5_18 > L6_19 then
-		L6_19 = A0_13
-		L5_18 = A0_13._idle_movement
-		L7_20 = A1_14
-		L6_19 = L5_18(L6_19, L7_20)
-		L4_17 = L6_19
-		L3_16 = L5_18
+	if loading_screen_tweak_data.INPUT_IDLE_TIMEOUT < l_5_0._time_since_input then
+		l_5_3 = l_5_0:_idle_movement(l_5_1)
 	else
-		L5_18 = L2_15.x
-		L6_19 = loading_screen_tweak_data
-		L6_19 = L6_19.YAW_ACCELERATION
-		L3_16 = L5_18 * L6_19
-		L5_18 = L2_15.y
-		L6_19 = loading_screen_tweak_data
-		L6_19 = L6_19.HEIGHT_ACCELERATION
-		L4_17 = L5_18 * L6_19
+		l_5_3 = l_5_2.x * loading_screen_tweak_data.YAW_ACCELERATION
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
 	end
-	L5_18 = A0_13._yaw_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_acceleration
-	L7_20 = L3_16
-	L5_18(L6_19, L7_20)
-	L5_18 = A0_13._yaw_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_velocity_limit
-	L7_20 = loading_screen_tweak_data
-	L7_20 = L7_20.YAW_MAX_VELOCITY
-	L5_18(L6_19, L7_20)
-	L5_18 = A0_13._yaw_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_damper
-	L7_20 = loading_screen_tweak_data
-	L7_20 = L7_20.YAW_DAMPING_CONSTANT
-	L8_21 = loading_screen_tweak_data
-	L8_21 = L8_21.YAW_SPRING_DAMPING_CONSTANT
-	L5_18(L6_19, L7_20, L8_21)
-	L5_18 = A0_13._yaw_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_spring
-	L7_20 = loading_screen_tweak_data
-	L7_20 = L7_20.YAW_SPRING_LENGTH
-	L8_21 = 0
-	L9_22 = loading_screen_tweak_data
-	L9_22 = L9_22.YAW_SPRING_CONSTANT
-	L5_18(L6_19, L7_20, L8_21, L9_22)
-	L5_18 = A0_13._height_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_acceleration
-	L7_20 = L4_17
-	L5_18(L6_19, L7_20)
-	L5_18 = A0_13._height_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_velocity_limit
-	L7_20 = loading_screen_tweak_data
-	L7_20 = L7_20.HEIGHT_MAX_VELOCITY
-	L5_18(L6_19, L7_20)
-	L5_18 = A0_13._height_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_damper
-	L7_20 = loading_screen_tweak_data
-	L7_20 = L7_20.HEIGHT_DAMPING_CONSTANT
-	L8_21 = loading_screen_tweak_data
-	L8_21 = L8_21.HEIGHT_SPRING_DAMPING_CONSTANT
-	L5_18(L6_19, L7_20, L8_21)
-	L5_18 = A0_13._height_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.set_spring
-	L7_20 = loading_screen_tweak_data
-	L7_20 = L7_20.HEIGHT_SPRING_LENGTH
-	L8_21 = 0
-	L9_22 = loading_screen_tweak_data
-	L9_22 = L9_22.HEIGHT_SPRING_CONSTANT
-	L5_18(L6_19, L7_20, L8_21, L9_22)
-	L5_18 = A0_13._height_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.update
-	L7_20 = A1_14
-	L5_18(L6_19, L7_20)
-	L5_18 = A0_13._yaw_modifier
-	L6_19 = L5_18
-	L5_18 = L5_18.update
-	L7_20 = A1_14
-	L5_18(L6_19, L7_20)
-	L5_18 = loading_screen_tweak_data
-	L5_18 = L5_18.ROLL_FACTOR
-	L6_19 = A0_13._height_modifier
-	L7_20 = L6_19
-	L6_19 = L6_19.value
-	L6_19 = L6_19(L7_20)
-	L5_18 = L5_18 * L6_19
-	L6_19 = A0_13._yaw_modifier
-	L7_20 = L6_19
-	L6_19 = L6_19.value
-	L6_19 = L6_19(L7_20)
-	L5_18 = L5_18 * L6_19
-	L6_19 = loading_screen_tweak_data
-	L6_19 = L6_19.PITCH_DRAG_FACTOR
-	L7_20 = A0_13._height_modifier
-	L7_20 = L7_20._velocity
-	L6_19 = L6_19 * L7_20
-	L8_21 = A0_13
-	L7_20 = A0_13._calculate_camera_movement
-	L9_22 = A1_14
-	L7_20 = L7_20(L8_21, L9_22)
-	L9_22 = A0_13
-	L8_21 = A0_13._calculate_positions
-	L10_23 = L7_20.height
-	L9_22 = L8_21(L9_22, L10_23)
-	L10_23 = Rotation
-	L11_24 = L6_19
-	L12_25 = L7_20.yaw
-	L10_23 = L10_23(L11_24, L12_25, L5_18)
-	L11_24 = Vector3
-	L12_25 = 0
-	L11_24 = L11_24(L12_25, 0, loading_screen_tweak_data.CAMERA_DISTANCE)
-	L12_25 = L11_24.rotate_with
-	L12_25 = L12_25(L11_24, L10_23)
-	L12_25 = L8_21 + L12_25
-	A0_13._camera:set_position(L12_25)
-	A0_13._rotation = Rotation:look_at(L12_25, L9_22, Vector3(0, 1, 0))
-	A0_13._camera:new_set_rotation(A0_13._rotation)
-	A0_13._camera:set_fov(loading_screen_tweak_data.CAMERA_FOV)
+	l_5_0._yaw_modifier:set_acceleration(l_5_3)
+	l_5_0._yaw_modifier:set_velocity_limit(loading_screen_tweak_data.YAW_MAX_VELOCITY)
+	l_5_0._yaw_modifier:set_damper(loading_screen_tweak_data.YAW_DAMPING_CONSTANT, loading_screen_tweak_data.YAW_SPRING_DAMPING_CONSTANT)
+	l_5_0._yaw_modifier:set_spring(loading_screen_tweak_data.YAW_SPRING_LENGTH, 0, loading_screen_tweak_data.YAW_SPRING_CONSTANT)
+	l_5_0._height_modifier:set_acceleration(l_5_4)
+	l_5_0._height_modifier:set_velocity_limit(loading_screen_tweak_data.HEIGHT_MAX_VELOCITY)
+	l_5_0._height_modifier:set_damper(loading_screen_tweak_data.HEIGHT_DAMPING_CONSTANT, loading_screen_tweak_data.HEIGHT_SPRING_DAMPING_CONSTANT)
+	l_5_0._height_modifier:set_spring(loading_screen_tweak_data.HEIGHT_SPRING_LENGTH, 0, loading_screen_tweak_data.HEIGHT_SPRING_CONSTANT)
+	l_5_0._height_modifier:update(l_5_1)
+	l_5_0._yaw_modifier:update(l_5_1)
+	local l_5_5 = loading_screen_tweak_data.ROLL_FACTOR * l_5_0._height_modifier:value() * l_5_0._yaw_modifier:value()
+	local l_5_6 = loading_screen_tweak_data.PITCH_DRAG_FACTOR * l_5_0._height_modifier._velocity
+	local l_5_7 = l_5_0:_calculate_camera_movement(l_5_1)
+	local l_5_8, l_5_9 = l_5_0:_calculate_positions(l_5_7.height)
+	local l_5_10 = Rotation(l_5_6, l_5_7.yaw, l_5_5)
+	local l_5_11 = Vector3(0, 0, loading_screen_tweak_data.CAMERA_DISTANCE)
+	local l_5_12 = l_5_8 + l_5_11:rotate_with(l_5_10)
+	l_5_0._camera:set_position(l_5_12)
+	l_5_0._rotation = Rotation:look_at(l_5_12, l_5_9, Vector3(0, 1, 0))
+	l_5_0._camera:new_set_rotation(l_5_0._rotation)
+	l_5_0._camera:set_fov(loading_screen_tweak_data.CAMERA_FOV)
 end
-function LevelLoadingScreen._calculate_camera_movement(A0_26, A1_27)
-	local L2_28
-	L2_28 = {}
-	L2_28.height = A0_26._height_modifier:value()
-	L2_28.yaw = A0_26._yaw_modifier:value()
-	return L2_28
+
+l_0_0.update_camera = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_6_0, l_6_1)
+	local l_6_2 = {}
+	l_6_2.height = l_6_0._height_modifier:value()
+	l_6_2.yaw = l_6_0._yaw_modifier:value()
+	return l_6_2
 end
-function LevelLoadingScreen._idle_movement(A0_29, A1_30)
-	local L2_31, L3_32, L4_33, L5_34
-	L2_31 = A0_29._yaw_idle_time
-	L2_31 = L2_31 + A1_30
-	A0_29._yaw_idle_time = L2_31
-	L2_31 = A0_29._height_idle_time
-	L2_31 = L2_31 + A1_30
-	A0_29._height_idle_time = L2_31
-	L2_31 = loading_screen_tweak_data
-	L2_31 = L2_31.IDLE_YAW_ACCELERATION
-	L3_32 = loading_screen_tweak_data
-	L3_32 = L3_32.IDLE_HEIGHT_ACCELERATION
-	L4_33 = A0_29._yaw_idle_time
-	L5_34 = loading_screen_tweak_data
-	L5_34 = L5_34.IDLE_HEIGHT_LOOP_TIME
-	L5_34 = 0.5 * L5_34
-	if L4_33 > L5_34 then
-		L2_31 = -L2_31
-		L4_33 = A0_29._yaw_idle_time
-		L5_34 = loading_screen_tweak_data
-		L5_34 = L5_34.IDLE_HEIGHT_LOOP_TIME
-		if L4_33 > L5_34 then
-			A0_29._yaw_idle_time = 0
+
+l_0_0._calculate_camera_movement = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_7_0, l_7_1)
+	l_7_0._yaw_idle_time = l_7_0._yaw_idle_time + l_7_1
+	l_7_0._height_idle_time = l_7_0._height_idle_time + l_7_1
+	if 0.5 * loading_screen_tweak_data.IDLE_HEIGHT_LOOP_TIME < l_7_0._yaw_idle_time then
+		local l_7_2, l_7_3 = -loading_screen_tweak_data.IDLE_YAW_ACCELERATION, loading_screen_tweak_data.IDLE_HEIGHT_ACCELERATION
+	if loading_screen_tweak_data.IDLE_HEIGHT_LOOP_TIME < l_7_0._yaw_idle_time then
+		end
+		l_7_0._yaw_idle_time = 0
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if 0.5 * loading_screen_tweak_data.IDLE_YAW_LOOP_TIME < l_7_0._height_idle_time then
+		local l_7_4 = nil
+	if loading_screen_tweak_data.IDLE_YAW_LOOP_TIME < l_7_0._height_idle_time then
 		end
 	end
-	L4_33 = A0_29._height_idle_time
-	L5_34 = loading_screen_tweak_data
-	L5_34 = L5_34.IDLE_YAW_LOOP_TIME
-	L5_34 = 0.5 * L5_34
-	if L4_33 > L5_34 then
-		L3_32 = -L3_32
-		L4_33 = A0_29._height_idle_time
-		L5_34 = loading_screen_tweak_data
-		L5_34 = L5_34.IDLE_YAW_LOOP_TIME
-		if L4_33 > L5_34 then
-			A0_29._height_idle_time = 0
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_7_4, -l_7_3
+end
+
+l_0_0._idle_movement = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_8_0, l_8_1)
+	local l_8_2 = (l_8_1 + loading_screen_tweak_data.HEIGHT_SPRING_LENGTH) / (2 * loading_screen_tweak_data.HEIGHT_SPRING_LENGTH)
+	local l_8_3 = l_8_0._resources.high_pivot:position() + Vector3(0, loading_screen_tweak_data.HIGH_CAMERA_OFFSET, 0)
+	local l_8_4 = l_8_0._resources.low_pivot:position() + Vector3(0, loading_screen_tweak_data.LOW_CAMERA_OFFSET, 0)
+	local l_8_5 = l_8_0._resources.high_pivot:position() + Vector3(0, loading_screen_tweak_data.HIGH_PIVOT_OFFSET, 0)
+	local l_8_6 = l_8_0._resources.low_pivot:position() + Vector3(0, loading_screen_tweak_data.LOW_PIVOT_OFFSET, 0)
+	return l_8_4 + l_8_2 * (l_8_3 - l_8_4), l_8_6 + l_8_2 * (l_8_5 - l_8_6)
+end
+
+l_0_0._calculate_positions = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_9_0, l_9_1)
+	local l_9_5, l_9_6, l_9_7, l_9_8, l_9_9, l_9_10, l_9_11, l_9_12 = nil
+	for i_0,i_1 in ipairs(l_9_1) do
+		l_9_0:_setup_rotation_controller_by_controller_index(i_1.index, i_1.input_names, i_1.options)
+	end
+end
+
+l_0_0._setup_rotation_controllers = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	if not l_10_1 then
+		return 
+	end
+	local l_10_4 = Input:controller(l_10_1)
+	if l_10_4 then
+		local l_10_5 = {}
+		l_10_5.controller = l_10_4
+		l_10_5.controller_input_names = l_10_2
+		l_10_5.options = l_10_3
+		table.insert(l_10_0._rotation_controllers, l_10_5)
+	end
+end
+
+l_0_0._setup_rotation_controller_by_controller_index = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_11_0)
+	local l_11_4, l_11_5, l_11_6, l_11_7, l_11_8, l_11_9, l_11_13, l_11_14, l_11_15, l_11_16, l_11_19, l_11_23, l_11_24 = nil
+	for i_0,i_1 in ipairs(l_11_0._rotation_controllers) do
+		for l_11_20,l_11_21 in pairs(i_1.controller_input_names) do
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			local l_11_25 = l_11_11.controller:axis(l_11_16)
+			if l_11_11.options.invert_y then
+				local l_11_28 = Vector3
+				local l_11_29 = l_11_25.x
+				l_11_28 = l_11_28(l_11_29, -l_11_25.y, l_11_25.z)
+				l_11_25 = l_11_28
+			end
+			local l_11_27 = l_11_25:length
+			l_11_27 = l_11_27(l_11_25)
+			local l_11_26 = nil
+			if l_11_27 > 0.01 then
+				return l_11_25
+			end
 		end
 	end
-	L4_33 = L2_31
-	L5_34 = L3_32
-	return L4_33, L5_34
+	do
+		local l_11_18 = 0
+		return Vector3(0, 0, l_11_18)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function LevelLoadingScreen._calculate_positions(A0_35, A1_36)
-	local L2_37
-	L2_37 = loading_screen_tweak_data
-	L2_37 = L2_37.HEIGHT_SPRING_LENGTH
-	L2_37 = A1_36 + L2_37
-	L2_37 = L2_37 / (2 * loading_screen_tweak_data.HEIGHT_SPRING_LENGTH)
-	return A0_35._resources.low_pivot:position() + Vector3(0, loading_screen_tweak_data.LOW_CAMERA_OFFSET, 0) + L2_37 * (A0_35._resources.high_pivot:position() + Vector3(0, loading_screen_tweak_data.HIGH_CAMERA_OFFSET, 0) - (A0_35._resources.low_pivot:position() + Vector3(0, loading_screen_tweak_data.LOW_CAMERA_OFFSET, 0))), A0_35._resources.low_pivot:position() + Vector3(0, loading_screen_tweak_data.LOW_PIVOT_OFFSET, 0) + L2_37 * (A0_35._resources.high_pivot:position() + Vector3(0, loading_screen_tweak_data.HIGH_PIVOT_OFFSET, 0) - (A0_35._resources.low_pivot:position() + Vector3(0, loading_screen_tweak_data.LOW_PIVOT_OFFSET, 0)))
-end
-function LevelLoadingScreen._setup_rotation_controllers(A0_38, A1_39)
-	for 
+
+l_0_0._rotation_input = l_0_1
+

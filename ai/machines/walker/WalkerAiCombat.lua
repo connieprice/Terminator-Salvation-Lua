@@ -1,209 +1,218 @@
-WalkerAiCombat = WalkerAiCombat or class(CommonAiCombat)
-function WalkerAiCombat.init_data(A0_0, A1_1)
-	CommonAiCombat.init_data(A0_0, A1_1)
-	A1_1._combat._select_firing_targets = WalkerAiCombat._select_firing_targets
-	A1_1._combat._primary_fire_timer = 0
-	A1_1._combat._secondary_fire_timer = 0
+if not WalkerAiCombat then
+	WalkerAiCombat = class(CommonAiCombat)
 end
-function WalkerAiCombat._select_firing_targets(A0_2, A1_3, A2_4, A3_5)
-	local L4_6, L5_7, L6_8, L7_9, L8_10, L9_11
-	L4_6 = A1_3._targeting
-	L4_6 = L4_6.current_secondary_threats
-	if L4_6 then
-		L4_6 = TableAlgorithms
-		L4_6 = L4_6.is_empty
-		L5_7 = A1_3._targeting
-		L5_7 = L5_7.current_secondary_threats
-		L4_6 = L4_6(L5_7)
-		L4_6 = not L4_6
+WalkerAiCombat.init_data = function(l_1_0, l_1_1)
+	CommonAiCombat.init_data(l_1_0, l_1_1)
+	l_1_1._combat._select_firing_targets = WalkerAiCombat._select_firing_targets
+	l_1_1._combat._primary_fire_timer = 0
+	l_1_1._combat._secondary_fire_timer = 0
+end
+
+WalkerAiCombat._select_firing_targets = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	if l_2_1._targeting.current_secondary_threats then
+		local l_2_4, l_2_5 = not TableAlgorithms.is_empty(l_2_1._targeting.current_secondary_threats)
 	end
-	L5_7 = A1_3._combat
-	L6_8 = A1_3._combat
-	L6_8 = L6_8._last_time
-	L6_8 = L6_8 or A2_4
-	L5_7._last_time = L6_8
-	L5_7 = A1_3._combat
-	L5_7 = L5_7._last_time
-	L5_7 = A2_4 - L5_7
-	L6_8 = A1_3._combat
-	L6_8._last_time = A2_4
-	L6_8 = WalkerAiCombat
-	L6_8 = L6_8._update_firing_timers
-	L7_9 = A1_3
-	L8_10 = L5_7
-	L6_8(L7_9, L8_10)
-	L6_8 = A1_3._targeting
-	L6_8 = L6_8.currently_targeted_threat
-	L7_9 = A1_3._combat
-	L7_9 = L7_9._primary_fire_timer
-	L7_9 = L7_9 <= 0
-	L8_10 = A1_3._combat
-	L8_10 = L8_10._secondary_fire_timer
-	L8_10 = L8_10 <= 0
-	L9_11 = {}
-	L9_11.primary_weapon = {}
-	L9_11.secondary_weapon = {}
-	if A3_5 then
-		L9_11.primary_weapon = WalkerAiCombat._weapon_target(A0_2, L6_8)
-		if L7_9 then
-			WalkerAiCombat._secondary_weapon_primary_target(L9_11, A0_2, A1_3)
-		elseif L8_10 and A1_3._targeting.current_secondary_threats[2] then
-			WalkerAiCombat._secondary_weapon_secondary_target(L9_11, A0_2, A1_3)
+	l_2_1._combat._last_time = l_2_1._combat._last_time or l_2_2
+	local l_2_6 = nil
+	WalkerAiCombat._update_firing_timers(l_2_1, l_2_2 - l_2_1._combat._last_time)
+	local l_2_7 = nil
+	local l_2_15 = l_2_1._targeting.currently_targeted_threat
+	if l_2_3 then
+		if l_2_1._combat._primary_fire_timer <= 0 then
+			WalkerAiCombat._secondary_weapon_primary_target({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}, l_2_0, l_2_1)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		elseif l_2_1._combat._secondary_fire_timer <= 0 and l_2_1._targeting.current_secondary_threats[2] then
+			WalkerAiCombat._secondary_weapon_secondary_target({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}, l_2_0, l_2_1)
 		end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
 	else
-		if A1_3._targeting.current_secondary_threats[1] then
-			L9_11.primary_weapon = WalkerAiCombat._weapon_target(A0_2, A1_3._targeting.current_secondary_threats[1])
+		if l_2_1._targeting.current_secondary_threats[1] then
+			{
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}.primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_1._targeting.current_secondary_threats[1])
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
 		else
-			L9_11.primary_weapon = WalkerAiCombat._weapon_target(A0_2, L6_8)
+			{
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}.primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)
 		end
-		if L8_10 and A1_3._targeting.current_secondary_threats[2] and A1_3._targeting.current_secondary_threats[2] == A1_3._targeting.current_secondary_threats[1] then
-			WalkerAiCombat._secondary_weapon_secondary_target(L9_11, A0_2, A1_3)
-		elseif L7_9 then
-			WalkerAiCombat._secondary_weapon_primary_target(L9_11, A0_2, A1_3)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_2_1._combat._secondary_fire_timer <= 0 and l_2_1._targeting.current_secondary_threats[2] and l_2_1._targeting.current_secondary_threats[2] == l_2_1._targeting.current_secondary_threats[1] then
+			WalkerAiCombat._secondary_weapon_secondary_target({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}, l_2_0, l_2_1)
 		end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	elseif l_2_1._combat._primary_fire_timer <= 0 then
+		WalkerAiCombat._secondary_weapon_primary_target({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}, l_2_0, l_2_1)
 	end
-	A1_3.output.firing_target = L9_11.primary_weapon.target_unit
-	A1_3.output.firing_target_position = L9_11.primary_weapon.target_position
-	A1_3.output.allowed_to_fire = L9_11.primary_weapon.allowed_to_fire
-	A1_3.output.secondary_weapon_firing_target = L9_11.secondary_weapon.target_unit
-	A1_3.output.secondary_weapon_firing_target_position = L9_11.secondary_weapon.target_position
-	A1_3.output.secondary_weapon_allowed_to_fire = L9_11.secondary_weapon.allowed_to_fire
+	local l_2_16 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1.output.firing_target = ({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}).primary_weapon.target_unit
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1.output.firing_target_position = ({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}).primary_weapon.target_position
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1.output.allowed_to_fire = ({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}).primary_weapon.allowed_to_fire
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1.output.secondary_weapon_firing_target = ({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}).secondary_weapon.target_unit
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1.output.secondary_weapon_firing_target_position = ({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}).secondary_weapon.target_position
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1.output.secondary_weapon_allowed_to_fire = ({
+primary_weapon = {}, 
+secondary_weapon = {}, primary_weapon = WalkerAiCombat._weapon_target(l_2_0, l_2_15)}).secondary_weapon.allowed_to_fire
 end
-function WalkerAiCombat._update_firing_timers(A0_12, A1_13)
-	local L2_14, L3_15, L4_16
-	L2_14 = A0_12._targeting
-	L2_14 = L2_14.currently_targeted_threat
-	L3_15 = A0_12._combat
-	L3_15 = L3_15._primary_fire_timer
-	if L3_15 > 0 then
-		L3_15 = A0_12._combat
-		L4_16 = A0_12._combat
-		L4_16 = L4_16._primary_fire_timer
-		L4_16 = L4_16 - A1_13
-		L3_15._primary_fire_timer = L4_16
+
+WalkerAiCombat._update_firing_timers = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0._targeting.currently_targeted_threat
+	if l_3_0._combat._primary_fire_timer > 0 then
+		l_3_0._combat._primary_fire_timer = l_3_0._combat._primary_fire_timer - l_3_1
 	end
-	L3_15 = A0_12._combat
-	L3_15 = L3_15._secondary_fire_timer
-	if L3_15 > 0 then
-		L3_15 = A0_12._combat
-		L4_16 = A0_12._combat
-		L4_16 = L4_16._secondary_fire_timer
-		L4_16 = L4_16 - A1_13
-		L3_15._secondary_fire_timer = L4_16
+	if l_3_0._combat._secondary_fire_timer > 0 then
+		l_3_0._combat._secondary_fire_timer = l_3_0._combat._secondary_fire_timer - l_3_1
 	end
-	L3_15 = WalkerAiCombat
-	L3_15 = L3_15._is_unit_quickmoving
-	L4_16 = L2_14.unit
-	L4_16 = L4_16(L2_14)
-	L3_15 = L3_15(L4_16, L4_16(L2_14))
-	if L3_15 then
-		L4_16 = A0_12._combat
-		L4_16 = L4_16._last_primary_target_quickmove_state
-		if not L4_16 then
-			L4_16 = A0_12._combat
-			L4_16._primary_fire_timer = 0
-		end
+	local l_3_3 = WalkerAiCombat._is_unit_quickmoving(l_3_2:unit())
+	if l_3_3 and not l_3_0._combat._last_primary_target_quickmove_state then
+		l_3_0._combat._primary_fire_timer = 0
 	end
-	L4_16 = A0_12._combat
-	L4_16._last_primary_target_quickmove_state = L3_15
-	L4_16 = false
-	if A0_12._targeting.current_secondary_threats[2] then
-		L4_16 = WalkerAiCombat._is_unit_quickmoving(A0_12._targeting.current_secondary_threats[2]:unit())
+	l_3_0._combat._last_primary_target_quickmove_state = l_3_3
+	local l_3_4 = false
+	if l_3_0._targeting.current_secondary_threats[2] then
+		l_3_4 = WalkerAiCombat._is_unit_quickmoving(l_3_0._targeting.current_secondary_threats[2]:unit())
 	end
-	if L4_16 and not A0_12._combat._last_secondary_target_quickmove_state then
-		A0_12._combat._secondary_fire_timer = 0
+	if l_3_4 and not l_3_0._combat._last_secondary_target_quickmove_state then
+		l_3_0._combat._secondary_fire_timer = 0
 	end
-	A0_12._combat._last_secondary_target_quickmove_state = L4_16
+	l_3_0._combat._last_secondary_target_quickmove_state = l_3_4
 end
-function WalkerAiCombat._is_threat_quickmoving(A0_17)
-	local L1_18
-	L1_18 = A0_17.unit
-	L1_18 = L1_18(A0_17)
-	if not alive(L1_18) then
+
+WalkerAiCombat._is_threat_quickmoving = function(l_4_0)
+	local l_4_1 = l_4_0:unit()
+	if not alive(l_4_1) then
 		return false
 	end
-	return WalkerAiCombat._is_unit_quickmoving(L1_18)
+	local l_4_2 = WalkerAiCombat._is_unit_quickmoving
+	local l_4_3 = l_4_1
+	return l_4_2(l_4_3)
 end
-function WalkerAiCombat._is_unit_quickmoving(A0_19)
-	if alive(A0_19) and A0_19:player_data() and A0_19:player_data().quickmove then
+
+WalkerAiCombat._is_unit_quickmoving = function(l_5_0)
+	if alive(l_5_0) then
+		local l_5_1 = l_5_0:player_data()
+	if l_5_1 then
+		end
+	if l_5_1.quickmove then
+		end
 		return true
 	end
 	return false
 end
-function WalkerAiCombat._secondary_weapon_primary_target(A0_20, A1_21, A2_22)
-	local L3_23, L4_24
-	L3_23 = A2_22._targeting
-	L3_23 = L3_23.currently_targeted_threat
-	L4_24 = WalkerAiCombat
-	L4_24 = L4_24._is_threat_quickmoving
-	L4_24 = L4_24(L3_23)
-	L4_24 = not L4_24
-	A0_20.secondary_weapon = WalkerAiCombat._weapon_target(A1_21, L3_23, L4_24)
-	if L3_23:unit_line_of_sight() and not WalkerAiCombat._threat_in_cover(L3_23) then
+
+WalkerAiCombat._secondary_weapon_primary_target = function(l_6_0, l_6_1, l_6_2)
+	local l_6_3 = l_6_2._targeting.currently_targeted_threat
+	local l_6_4 = not WalkerAiCombat._is_threat_quickmoving(l_6_3)
+	l_6_0.secondary_weapon = WalkerAiCombat._weapon_target(l_6_1, l_6_3, l_6_4)
+	local l_6_5 = (l_6_1:ai_data())
+	local l_6_6 = nil
+	local l_6_7 = WalkerAiCombat._threat_in_cover(l_6_3)
+	if l_6_3:unit_line_of_sight() and not l_6_7 then
+		l_6_6 = tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_PRIMARY_TARGET_OUT_OF_COVER_TIME
 	else
+		l_6_6 = tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_PRIMARY_TARGET_TIME
 	end
-	A1_21:ai_data()._combat._primary_fire_timer = math.random(tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_PRIMARY_TARGET_TIME.min, tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_PRIMARY_TARGET_TIME.max)
+	l_6_5._combat._primary_fire_timer = math.random(l_6_6.min, l_6_6.max)
 end
-function WalkerAiCombat._secondary_weapon_secondary_target(A0_25, A1_26, A2_27)
-	local L3_28, L4_29
-	L3_28 = A2_27._targeting
-	L3_28 = L3_28.current_secondary_threats
-	L3_28 = L3_28[2]
-	L4_29 = WalkerAiCombat
-	L4_29 = L4_29._is_threat_quickmoving
-	L4_29 = L4_29(L3_28)
-	L4_29 = not L4_29
-	A0_25.secondary_weapon = WalkerAiCombat._weapon_target(A1_26, L3_28, L4_29)
-	A1_26:ai_data()._combat._secondary_fire_timer = math.random(tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_SECONDARY_TARGET_TIME.min, tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_SECONDARY_TARGET_TIME.max)
+
+WalkerAiCombat._secondary_weapon_secondary_target = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_2._targeting.current_secondary_threats[2]
+	local l_7_4 = not WalkerAiCombat._is_threat_quickmoving(l_7_3)
+	l_7_0.secondary_weapon = WalkerAiCombat._weapon_target(l_7_1, l_7_3, l_7_4)
+	local l_7_5 = l_7_1:ai_data()
+	local l_7_6 = tweak_data.ai.machines.walker.SECONDARY_WEAPON_ON_SECONDARY_TARGET_TIME
+	l_7_5._combat._secondary_fire_timer = math.random(l_7_6.min, l_7_6.max)
 end
-function WalkerAiCombat._threat_in_cover(A0_30)
-	if not alive(A0_30:unit()) then
+
+WalkerAiCombat._threat_in_cover = function(l_8_0)
+	if not alive(l_8_0:unit()) then
 		return false
 	end
-	if not A0_30:unit():player_data() then
+	local l_8_1 = l_8_0:unit():player_data()
+	if not l_8_1 then
 		return false
 	end
-	return A0_30:unit():player_data().in_cover
+	return l_8_1.in_cover
 end
-function WalkerAiCombat._weapon_target(A0_31, A1_32, A2_33)
-	local L3_34, L4_35, L5_36
-	L3_34 = {}
-	L4_35 = alive
-	L5_36 = A1_32.unit
-	L5_36 = L5_36(A1_32)
-	L4_35 = L4_35(L5_36, L5_36(A1_32))
-	if not L4_35 then
-		return L3_34
+
+WalkerAiCombat._weapon_target = function(l_9_0, l_9_1, l_9_2)
+	local l_9_3 = {}
+	if not alive(l_9_1:unit()) then
+		return l_9_3
 	end
-	L5_36 = A1_32
-	L4_35 = A1_32.unit_line_of_fire
-	L4_35 = L4_35(L5_36)
-	if A2_33 then
-		L5_36 = WalkerAiCombat
-		L5_36 = L5_36._threat_in_cover
-		L5_36 = L5_36(A1_32)
-		if L5_36 then
-			L4_35 = false
-		end
+	local l_9_4 = l_9_1:unit_line_of_fire()
+	if l_9_2 and WalkerAiCombat._threat_in_cover(l_9_1) then
+		l_9_4 = false
 	end
-	if L4_35 then
-		L5_36 = A1_32.unit
-		L5_36 = L5_36(A1_32)
-		L3_34.target_unit = L5_36
-		L3_34.allowed_to_fire = true
+	if l_9_4 then
+		l_9_3.target_unit = l_9_1:unit()
+		l_9_3.allowed_to_fire = true
 	else
-		L5_36 = nil
-		if A1_32:last_known_position() and A2_33 then
-			if (A0_31:position() - A1_32:last_known_position()):length() > tweak_data.ai.machines.walker.SECONDARY_WEAPON_AVOID_DIRECT_FIRE_DISTANCE then
-				L5_36 = A1_32:last_known_position() + (A0_31:position() - A1_32:last_known_position()):normalized() * tweak_data.ai.machines.walker.SECONDARY_WEAPON_AVOID_DIRECT_FIRE_DISTANCE
+		local l_9_5 = nil
+		local l_9_6 = l_9_1:last_known_position()
+		if l_9_6 and l_9_2 then
+			local l_9_7 = l_9_0:position() - l_9_6
+			if tweak_data.ai.machines.walker.SECONDARY_WEAPON_AVOID_DIRECT_FIRE_DISTANCE < l_9_7:length() then
+				l_9_5 = l_9_1:last_known_position() + l_9_7:normalized() * tweak_data.ai.machines.walker.SECONDARY_WEAPON_AVOID_DIRECT_FIRE_DISTANCE
 			end
 		else
-			L5_36 = WalkerAiCombat._threat_firing_position(A0_31:position(), A1_32)
+			l_9_5 = WalkerAiCombat._threat_firing_position(l_9_0:position(), l_9_1)
 		end
-		if L5_36 then
-			L3_34.target_position = L5_36
-			L3_34.allowed_to_fire = IntelUtilities.ai_have_position_line_of_fire(A0_31, L5_36, nil, 200)
+	if l_9_5 then
 		end
+		l_9_3.target_position = l_9_5
+		l_9_3.allowed_to_fire = IntelUtilities.ai_have_position_line_of_fire(l_9_0, l_9_5, nil, 200)
 	end
-	return L3_34
+	return l_9_3
 end
+
+

@@ -1,31 +1,34 @@
 require("units/weapons/WeaponUtilities")
 require("units/weapons/GenericWeapon")
-M4Carbine = M4Carbine or class(GenericWeapon)
-function M4Carbine.init(A0_0, A1_1)
-	GenericWeapon.init(A0_0, A1_1)
-	assert(A0_0._reload_unit)
-	A0_0._reload = World:spawn_unit(A0_0._reload_unit, A1_1:position(), A1_1:rotation())
-	A0_0:reload_attach()
+if not M4Carbine then
+	M4Carbine = class(GenericWeapon)
 end
-function M4Carbine.destroy(A0_2)
-	GenericWeapon.destroy(A0_2)
-	if alive(A0_2._reload) then
-		A0_2._reload:set_slot(0)
+M4Carbine.init = function(l_1_0, l_1_1)
+	GenericWeapon.init(l_1_0, l_1_1)
+	assert(l_1_0._reload_unit)
+	l_1_0._reload = World:spawn_unit(l_1_0._reload_unit, l_1_1:position(), l_1_1:rotation())
+	l_1_0:reload_attach()
+end
+
+M4Carbine.destroy = function(l_2_0)
+	GenericWeapon.destroy(l_2_0)
+	if alive(l_2_0._reload) then
+		l_2_0._reload:set_slot(0)
 	end
-	A0_2._reload = nil
+	l_2_0._reload = nil
 end
-function M4Carbine.setup(A0_3, A1_4)
-	GenericWeapon.setup(A0_3, A1_4)
+
+M4Carbine.setup = function(l_3_0, l_3_1)
+	GenericWeapon.setup(l_3_0, l_3_1)
 end
-function M4Carbine.reload_release(A0_5)
-	assert(A0_5._user_unit)
-	A0_5._user_unit:link("a_weapon_left_front", A0_5._reload, A0_5._reload:orientation_object():name())
+
+M4Carbine.reload_release = function(l_4_0)
+	assert(l_4_0._user_unit)
+	l_4_0._user_unit:link("a_weapon_left_front", l_4_0._reload, l_4_0._reload:orientation_object():name())
 end
-function M4Carbine.reload_attach(A0_6)
-	local L2_7, L3_8, L4_9
-	L2_7 = A0_6._unit
-	L3_8 = L2_7
-	L2_7 = L2_7.link
-	L4_9 = A0_6._reload_attachment
-	L2_7(L3_8, L4_9, A0_6._reload, A0_6._reload:orientation_object():name())
+
+M4Carbine.reload_attach = function(l_5_0)
+	l_5_0._unit:link(l_5_0._reload_attachment, l_5_0._reload, l_5_0._reload:orientation_object():name())
 end
+
+

@@ -46,9 +46,13 @@ require("units/beings/rail/Buggy/RailBuggyDamage")
 require("units/beings/rail/Pickup/RailDodgeRamDamage")
 base_require("units/weapons/PipeBomb", nil, "RELEASE")
 base_require("units/data/VehicleData", nil, "RELEASE")
-RailSetup = RailSetup or class()
-function RailSetup.init()
-	local L0_0, L1_1
+if not RailSetup then
+	RailSetup = class()
 end
-function RailSetup.update(A0_2, A1_3)
+RailSetup.init = function()
 end
+
+RailSetup.update = function(l_2_0, l_2_1)
+end
+
+

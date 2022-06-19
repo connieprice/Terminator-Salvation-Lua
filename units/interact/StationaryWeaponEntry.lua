@@ -1,22 +1,32 @@
 require("units/interact/Interactable")
-StationaryWeaponEntry = StationaryWeaponEntry or class(Interactable)
-function StationaryWeaponEntry.init(A0_0, A1_1)
-	Interactable.init(A0_0, A1_1)
+if not StationaryWeaponEntry then
+	StationaryWeaponEntry = class(Interactable)
 end
-function StationaryWeaponEntry.can_interact_with_player(A0_2, A1_3)
-	if not Interactable.can_interact_with_player(A0_2, A1_3) then
+StationaryWeaponEntry.init = function(l_1_0, l_1_1)
+	Interactable.init(l_1_0, l_1_1)
+end
+
+StationaryWeaponEntry.can_interact_with_player = function(l_2_0, l_2_1)
+	if not Interactable.can_interact_with_player(l_2_0, l_2_1) then
 		return false
 	end
-	return not A0_2._unit:base() or not A0_2._unit:base():user_unit()
+	if l_2_0._unit:base() then
+		local l_2_2 = not l_2_0._unit:base():user_unit()
+		l_2_2 = l_2_2
+		return l_2_2
+	end
 end
-function StationaryWeaponEntry.arbitrate_interact(A0_4, A1_5)
+
+StationaryWeaponEntry.arbitrate_interact = function(l_3_0, l_3_1)
 end
-function StationaryWeaponEntry.interact(A0_6, A1_7)
-	assert(A1_7:player_data())
-	A1_7:player_data()._mounted_weapon = A0_6._unit
+
+StationaryWeaponEntry.interact = function(l_4_0, l_4_1)
+	assert(l_4_1:player_data())
+	l_4_1:player_data()._mounted_weapon = l_4_0._unit
 end
-function StationaryWeaponEntry.interactable_type(A0_8)
-	local L1_9
-	L1_9 = A0_8._entry_type
-	return L1_9
+
+StationaryWeaponEntry.interactable_type = function(l_5_0)
+	return l_5_0._entry_type
 end
+
+

@@ -1,192 +1,190 @@
-RailFlyerAiMove = RailFlyerAiMove or class()
-function RailFlyerAiMove.init_data(A0_0, A1_1)
-	local L2_2
-	L2_2 = {}
-	A1_1._move = L2_2
-	L2_2 = A1_1._move
-	L2_2.fire_locked = true
-	L2_2 = A1_1._move
-	L2_2.behavior_locked = true
-	L2_2 = A1_1._move
-	L2_2.looking_locked = true
-	L2_2 = A1_1._move
-	L2_2.allowed_to_fire = false
-	L2_2 = A1_1._move
-	L2_2.latest_approach_time = 0
-	A1_1.default_waypoint_pause_time = 0
-	L2_2 = A1_1._move
-	L2_2.target_from_behind = true
-	L2_2 = tweak_data
-	L2_2 = L2_2.rail
-	L2_2 = L2_2.flyer
-	L2_2 = L2_2.ARRIVED_RADIUS
-	A1_1.arrived_radius = L2_2
-	L2_2 = A1_1._move
-	L2_2.path_info = {}
-	L2_2 = A1_1._move
-	L2_2 = L2_2.path_info
-	L2_2.path = nil
-	L2_2 = A1_1._move
-	L2_2.normalized_speed_factor = 1000
-	L2_2 = A1_1.input
-	L2_2 = L2_2.target_range
-	if L2_2 == nil then
-		L2_2 = A1_1.input
-		L2_2.target_range = tweak_data.rail.flyer.DEFAULT_TARGET_RANGE
-	end
-	L2_2 = A1_1.input
-	L2_2.collision_slotmask = managers.slot:get_mask("rail_vehicles")
+if not RailFlyerAiMove then
+	RailFlyerAiMove = class()
 end
-function RailFlyerAiMove.logic_rail_flyer_move_init(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	local L8_11
-	L8_11 = 0
-	return L8_11
+RailFlyerAiMove.init_data = function(l_1_0, l_1_1)
+	l_1_1._move = {}
+	l_1_1._move.fire_locked = true
+	l_1_1._move.behavior_locked = true
+	l_1_1._move.looking_locked = true
+	l_1_1._move.allowed_to_fire = false
+	l_1_1._move.latest_approach_time = 0
+	l_1_1.default_waypoint_pause_time = 0
+	l_1_1._move.target_from_behind = true
+	l_1_1.arrived_radius = tweak_data.rail.flyer.ARRIVED_RADIUS
+	l_1_1._move.path_info = {}
+	l_1_1._move.path_info.path = nil
+	l_1_1._move.normalized_speed_factor = 1000
+	if l_1_1.input.target_range == nil then
+		l_1_1.input.target_range = tweak_data.rail.flyer.DEFAULT_TARGET_RANGE
+	end
+	l_1_1.input.collision_slotmask = managers.slot:get_mask("rail_vehicles")
 end
-function RailFlyerAiMove.logic_rail_flyer_move_start(A0_12, A1_13, A2_14, A3_15, A4_16, A5_17, A6_18, A7_19)
-	local L8_20
-	L8_20 = A2_14.ai_data
-	L8_20 = L8_20(A2_14)
-	if L8_20:new_path_requested() then
-		A0_12:_find_path(A2_14, L8_20)
+
+RailFlyerAiMove.logic_rail_flyer_move_init = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	return 0
+end
+
+RailFlyerAiMove.logic_rail_flyer_move_start = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4, l_3_5, l_3_6, l_3_7)
+	local l_3_8 = l_3_2:ai_data()
+	if l_3_8:new_path_requested() then
+		l_3_0:_find_path(l_3_2, l_3_8)
 	end
-	if L8_20._move.path ~= nil then
-		A0_12:_set_path(A2_14, L8_20)
-		L8_20._move.path = nil
+	if l_3_8._move.path ~= nil then
+		l_3_0:_set_path(l_3_2, l_3_8)
+		l_3_8._move.path = nil
 	end
-	if L8_20._behavior.target ~= nil and alive(L8_20._behavior.target) then
-		if L8_20.input.moving_to_position ~= nil and mvector3.distance(L8_20.input.moving_to_position, L8_20._behavior.target:position()) > tweak_data.rail.flyer.LOST_DISTANCE then
-			A0_12:_set_path(A2_14, L8_20)
+	if l_3_8._behavior.target ~= nil and alive(l_3_8._behavior.target) then
+		if l_3_8.input.moving_to_position ~= nil and tweak_data.rail.flyer.LOST_DISTANCE < mvector3.distance(l_3_8.input.moving_to_position, l_3_8._behavior.target:position()) then
+			l_3_0:_set_path(l_3_2, l_3_8)
 		end
-		L8_20.output.move_speed = A0_12:_get_pursuit_speed(A2_14, L8_20._behavior.target, L8_20)
+		l_3_8.output.move_speed = l_3_0:_get_pursuit_speed(l_3_2, l_3_8._behavior.target, l_3_8)
 	end
 	return nil
 end
-function RailFlyerAiMove._flyer_is_behind_target_vehicle(A0_21, A1_22, A2_23, A3_24)
-	local L4_25
-	L4_25 = A2_23 - A1_22
-	return mvector3.dot(A3_24, L4_25) >= 0
+
+RailFlyerAiMove._flyer_is_behind_target_vehicle = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	local l_4_4 = l_4_2 - l_4_1
+	local l_4_5 = mvector3.dot(l_4_3, l_4_4)
+	return l_4_5 >= 0
 end
-function RailFlyerAiMove._waypoint_is_behind_target_vehicle(A0_26, A1_27, A2_28, A3_29)
-	local L4_30, L5_31
-	L4_30 = A1_27.input
-	L4_30 = L4_30.moving_to_position
-	if L4_30 ~= nil then
-		L4_30 = A3_29
-		L5_31 = A1_27.input
-		L5_31 = L5_31.moving_to_position
-		L5_31 = A2_28 - L5_31
-		return mvector3.dot(L4_30, L5_31) >= 0
+
+RailFlyerAiMove._waypoint_is_behind_target_vehicle = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	if l_5_1.input.moving_to_position ~= nil then
+		local l_5_4 = l_5_3
+		local l_5_5 = l_5_2 - l_5_1.input.moving_to_position
+		local l_5_6 = mvector3.dot(l_5_4, l_5_5)
+		return l_5_6 >= 0
 	else
-		L4_30 = true
-		return L4_30
+		return true
 	end
 end
-function RailFlyerAiMove._allowed_to_fire(A0_32, A1_33, A2_34, A3_35)
-	A1_33.output.firing_target_position = A1_33._behavior.target:position()
-	A1_33.output.firing_target = A1_33._behavior.target
-	A1_33._move.allowed_to_fire = mvector3.distance(A2_34, A3_35) < A1_33.input.target_range + tweak_data.rail.flyer.RANGE_SPREAD
+
+RailFlyerAiMove._allowed_to_fire = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	local l_6_4 = mvector3.distance(l_6_2, l_6_3)
+	l_6_1.output.firing_target_position = l_6_1._behavior.target:position()
+	l_6_1.output.firing_target = l_6_1._behavior.target
+	local l_6_5 = l_6_1._move
+	l_6_5.allowed_to_fire = l_6_4 < l_6_1.input.target_range + tweak_data.rail.flyer.RANGE_SPREAD
 end
-function RailFlyerAiMove._get_pursuit_speed(A0_36, A1_37, A2_38, A3_39)
-	local L4_40, L5_41, L6_42, L7_43, L8_44, L9_45, L10_46, L11_47, L12_48, L13_49, L14_50, L15_51
-	L15_51 = A1_37
-	L14_50 = A1_37.position
-	L14_50 = L14_50(L15_51)
-	L4_40 = L14_50
-	L15_51 = A2_38
-	L14_50 = A2_38.position
-	L14_50 = L14_50(L15_51)
-	L5_41 = L14_50
-	L14_50 = mvector3
-	L14_50 = L14_50.distance
-	L15_51 = L5_41.with_z
-	L15_51 = L15_51(L5_41, 0)
-	L14_50 = L14_50(L15_51, L4_40:with_z(0))
-	L6_42 = L14_50
-	L15_51 = A2_38
-	L14_50 = A2_38.rotation
-	L14_50 = L14_50(L15_51)
-	L15_51 = L14_50
-	L14_50 = L14_50.y
-	L14_50 = L14_50(L15_51)
-	L7_43 = L14_50
-	L15_51 = A2_38
-	L14_50 = A2_38.base
-	L14_50 = L14_50(L15_51)
-	L15_51 = L14_50
-	L14_50 = L14_50.get_speed_vector
-	L14_50 = L14_50(L15_51)
-	L8_44 = L14_50
-	L14_50 = mvector3
-	L14_50 = L14_50.dot
-	L15_51 = L7_43
-	L14_50 = L14_50(L15_51, L8_44)
-	L9_45 = L14_50
-	L15_51 = A0_36
-	L14_50 = A0_36._flyer_is_behind_target_vehicle
-	L14_50 = L14_50(L15_51, L4_40, L5_41, L7_43)
-	L15_51 = A3_39._move
-	L15_51 = L15_51.target_from_behind
-	if L15_51 then
-		L15_51 = A3_39.input
-		L15_51 = L15_51.target_range
-		if L6_42 > L15_51 then
-			L15_51 = math
-			L15_51 = L15_51.max
-			L15_51 = L15_51(tweak_data.rail.flyer.SPEED_CORRECTION, L9_45)
-			L12_48 = L15_51 * (L6_42 / A3_39.input.target_range)
-		else
-			L15_51 = A3_39.input
-			L15_51 = L15_51.target_range
-			L15_51 = L6_42 / L15_51
-			L12_48 = L9_45 * L15_51
+
+RailFlyerAiMove._get_pursuit_speed = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	local l_7_4, l_7_5, l_7_6, l_7_7, l_7_8, l_7_9, l_7_10, l_7_11, l_7_12, l_7_13 = nil, nil, nil, nil, nil, nil, nil, nil, nil, nil
+	l_7_4 = l_7_1:position()
+	l_7_5 = l_7_2:position()
+	l_7_6 = mvector3.distance(l_7_5:with_z(0), l_7_4:with_z(0))
+	l_7_7 = l_7_2:rotation():y()
+	l_7_8 = l_7_2:base():get_speed_vector()
+	l_7_9 = mvector3.dot(l_7_7, l_7_8)
+	if l_7_3._move.target_from_behind then
+		if l_7_3.input.target_range < l_7_6 then
+			do return end
 		end
-	elseif not L14_50 then
-		L15_51 = A3_39.input
-		L15_51 = L15_51.target_range
-		if L6_42 > L15_51 then
-			L15_51 = math
-			L15_51 = L15_51.max
-			L15_51 = L15_51(tweak_data.rail.flyer.SPEED_CORRECTION, L9_45)
-			L12_48 = L15_51 * (L6_42 / A3_39.input.target_range)
-		else
-			L15_51 = A3_39.input
-			L15_51 = L15_51.target_range
-			L15_51 = 2 * L15_51
-			L15_51 = L15_51 - L6_42
-			L15_51 = L15_51 / A3_39.input.target_range
-			L12_48 = L9_45 * L15_51
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	elseif not l_7_0:_flyer_is_behind_target_vehicle(l_7_4, l_7_5, l_7_7) then
+		if l_7_3.input.target_range < l_7_6 then
+			do return end
 		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
 	else
-		L15_51 = tweak_data
-		L15_51 = L15_51.rail
-		L15_51 = L15_51.flyer
-		L15_51 = L15_51.RETARDATION_DISTANCE
-		L12_48 = L9_45 * (1 + (L6_42 + L15_51) / L15_51)
+		if l_7_3.input.moving_to_position ~= nil then
+			l_7_3._combat.target_from_here = l_7_5 - l_7_3.input.target_range * l_7_7
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			mvector3.set_z(l_7_3._combat.target_from_here, mvector3.z(l_7_3.input.moving_to_position))
+		end
+		l_7_13 = math.clamp(l_7_12, tweak_data.rail.flyer.MIN_SPEED, tweak_data.rail.flyer.MAX_SPEED) / l_7_3._move.normalized_speed_factor
+		l_7_0:_allowed_to_fire(l_7_3, l_7_4, l_7_5)
+		return l_7_13
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	L15_51 = A3_39.input
-	L15_51 = L15_51.moving_to_position
-	if L15_51 ~= nil then
-		A3_39._combat.target_from_here = L5_41 - A3_39.input.target_range * L7_43
-		mvector3.set_z(A3_39._combat.target_from_here, mvector3.z(L15_51))
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 100 
+end
+
+RailFlyerAiMove._find_and_set_closest_waypoint = function(l_8_0, l_8_1, l_8_2)
+	local l_8_3 = l_8_1:ai_data()
+	l_8_0:_set_path(l_8_2, l_8_3)
+end
+
+RailFlyerAiMove._get_closest_waypoint = function(l_9_0, l_9_1, l_9_2)
+	local l_9_3, l_9_9, l_9_10, l_9_16, l_9_17 = nil
+	if l_9_1:ai_data():path() ~= nil then
+		local l_9_4, l_9_5 = , nil
+		for l_9_13,l_9_14 in pairs(l_9_4) do
+			local l_9_6 = nil
+			local l_9_19 = mvector3.distance
+			local l_9_20 = l_9_2
+			l_9_19 = l_9_19(l_9_20, l_9_4[1])
+			local l_9_18 = nil
+			l_9_6 = l_9_19
+			if not l_9_5 or l_9_6 < l_9_5 then
+				l_9_6 = l_9_5
+				l_9_3 = l_9_15
+			end
+		end
 	end
-	L13_49 = math.clamp(L12_48, tweak_data.rail.flyer.MIN_SPEED, tweak_data.rail.flyer.MAX_SPEED) / A3_39._move.normalized_speed_factor
-	A0_36:_allowed_to_fire(A3_39, L4_40, L5_41)
-	return L13_49
+	if not l_9_3 then
+		local l_9_11, l_9_12 = , l_9_1:position
+		return l_9_12(l_9_1)
+	end
+	return l_9_3
 end
-function RailFlyerAiMove._find_and_set_closest_waypoint(A0_52, A1_53, A2_54)
-	local L3_55
-	L3_55 = A1_53.ai_data
-	L3_55 = L3_55(A1_53)
-	A0_52:_set_path(A2_54, L3_55)
+
+RailFlyerAiMove._find_path = function(l_10_0, l_10_1, l_10_2)
+	if l_10_2._move._closest_track == false then
+		local l_10_3 = 50000
+		local l_10_4 = 1
+		local l_10_5 = nil
+		local l_10_6 = l_10_1:position()
+		local l_10_11, l_10_12 = World:find_units_quick, World
+		l_10_11 = l_10_11(l_10_12, "all", World:make_slot_mask(43))
+		local l_10_7 = nil
+		l_10_12 = pairs
+		l_10_7 = l_10_11
+		l_10_12 = l_10_12(l_10_7)
+		for i_0,i_1 in l_10_12 do
+			if l_10_10:name() == "rail_path" then
+				local l_10_13, l_10_14, l_10_15 = l_10_10:path():get_closest_point(l_10_6)
+			if l_10_15 < l_10_3 then
+				end
+				l_10_3 = l_10_15
+				l_10_4 = l_10_14
+				l_10_2._move.path_info.path = l_10_10
+			end
+		end
+		l_10_0:_set_path(l_10_1, l_10_2)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	else
+		l_10_2.default_waypoints = nil
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
 end
-function RailFlyerAiMove._get_closest_waypoint(A0_56, A1_57, A2_58)
-	local L3_59, L4_60, L5_61, L6_62
-	L5_61 = A1_57
-	L4_60 = A1_57.ai_data
-	L4_60 = L4_60(L5_61)
-	L5_61 = L4_60
-	L4_60 = L4_60.path
-	L4_60 = L4_60(L5_61)
-	if L4_60 ~= nil then
-		L5_61, L6_62 = nil, nil
-		for 
+
+RailFlyerAiMove._set_path = function(l_11_0, l_11_1, l_11_2)
+	local l_11_3 = l_11_2._move.path_info.path
+	if l_11_3 then
+		l_11_3:path():add_user(l_11_1)
+		local l_11_4, l_11_5, l_11_6 = l_11_3:path():get_closest_point(l_11_1:position())
+		local l_11_7 = l_11_3:path():get(l_11_5, l_11_2._move.displacement)
+		local l_11_8 = l_11_3:path():get2(l_11_3:path(), l_11_5, l_11_2._move.displacement)
+	if l_11_7 then
+		end
+	if #l_11_7 > 0 then
+		end
+		l_11_2:set_new_path(nil, false)
+		l_11_2:set_waypoints(l_11_7)
+		l_11_2:set_new_path(l_11_8, false)
+		l_11_2._move.path_info.path = l_11_3
+	end
+end
+
+

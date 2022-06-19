@@ -1,7 +1,12 @@
-AMSceneTrigger = AMSceneTrigger or class(CoreActionElement)
-function AMSceneTrigger.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMSceneTrigger then
+	AMSceneTrigger = class(CoreActionElement)
 end
-function AMSceneTrigger.activate_now(A0_3)
-	A0_3:deactivate_now()
+AMSceneTrigger.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
+
+AMSceneTrigger.activate_now = function(l_2_0)
+	l_2_0:deactivate_now()
+end
+
+

@@ -1,46 +1,69 @@
-WorldDefinitionMenuUnit = WorldDefinitionMenuUnit or class()
-function WorldDefinitionMenuUnit.init(A0_0, A1_1)
-	A0_0._unit_name = A1_1:parameter("name")
-	A0_0._generic = Generic:new(A1_1)
-	A1_1:for_each("values", callback(A0_0, A0_0, "parse_values"))
+if not WorldDefinitionMenuUnit then
+	WorldDefinitionMenuUnit = class()
 end
-function WorldDefinitionMenuUnit.parse_values(A0_2, A1_3)
-	A0_2._values = WorldDefinitionMenuUnitValues:new(A1_3)
+WorldDefinitionMenuUnit.init = function(l_1_0, l_1_1)
+	l_1_0._unit_name = l_1_1:parameter("name")
+	l_1_0._generic = Generic:new(l_1_1)
+	l_1_1:for_each("values", callback(l_1_0, l_1_0, "parse_values"))
 end
-function WorldDefinitionMenuUnit.create_unit(A0_4, A1_5)
-	A0_4._unit = managers.worlddefinition:make_unit(A0_4._unit_name, A0_4._generic, A1_5)
-	if A0_4._values then
-		A0_4._values:set_values(A0_4._unit)
+
+WorldDefinitionMenuUnit.parse_values = function(l_2_0, l_2_1)
+	l_2_0._values = WorldDefinitionMenuUnitValues:new(l_2_1)
+end
+
+WorldDefinitionMenuUnit.create_unit = function(l_3_0, l_3_1)
+	l_3_0._unit = managers.worlddefinition:make_unit(l_3_0._unit_name, l_3_0._generic, l_3_1)
+	if l_3_0._values then
+		l_3_0._values:set_values(l_3_0._unit)
 	end
-	return A0_4._unit
+	return l_3_0._unit
 end
-WorldDefinitionMenuUnitValues = WorldDefinitionMenuUnitValues or class()
-function WorldDefinitionMenuUnitValues.init(A0_6, A1_7)
-	local L2_8, L3_9, L4_10, L5_11
-	A0_6._values = L2_8
-	for L5_11 in L2_8(L3_9) do
-		A0_6._values[L5_11:parameter("name")] = A0_6:parse_value(L5_11)
+
+if not WorldDefinitionMenuUnitValues then
+	WorldDefinitionMenuUnitValues = class()
+end
+WorldDefinitionMenuUnitValues.init = function(l_4_0, l_4_1)
+	local l_4_5, l_4_6, l_4_7 = nil
+	l_4_0._values = {}
+	for i_0 in l_4_1:children() do
+		l_4_0._values[i_0:parameter("name")] = l_4_0:parse_value(l_4_8)
 	end
 end
-function WorldDefinitionMenuUnitValues.parse_value(A0_12, A1_13)
-	local L2_14, L3_15, L4_16, L5_17, L6_18, L7_19, L8_20
-	L3_15 = A1_13
-	L2_14 = A1_13.parameter
-	L2_14 = L2_14(L3_15, L4_16)
-	if L2_14 == "table" then
-		L3_15 = {}
-		for L7_19 in L4_16(L5_17) do
-			L8_20 = L7_19.parameter
-			L8_20 = L8_20(L7_19, "name")
-			L8_20 = tonumber(L8_20) or L8_20
-			L3_15[L8_20] = A0_12:parse_value(L7_19)
+
+WorldDefinitionMenuUnitValues.parse_value = function(l_5_0, l_5_1)
+	local l_5_7, l_5_8, l_5_14 = nil
+	local l_5_2 = l_5_1:parameter("type")
+	if l_5_2 == "table" then
+		local l_5_3 = {}
+		for i_0 in l_5_1:children() do
+			local l_5_15 = i_0:parameter("name")
+			if not tonumber(l_5_15) then
+				local l_5_17 = l_5_0:parse_value
+			end
+			local l_5_18 = l_5_0
+			l_5_17 = l_5_17(l_5_18, l_5_9)
+			local l_5_16 = nil
+			l_5_3[l_5_15] = l_5_17
 		end
-		return L3_15
+		return l_5_3
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
-	L3_15 = A1_13.parameter
-	L3_15 = L3_15(L4_16, L5_17)
-	return L4_16(L5_17, L6_18)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	local l_5_10 = nil
+	local l_5_11 = nil
+	local l_5_12 = nil
+	do
+		local l_5_13 = nil
+		return string_to_value(l_5_2, l_5_10)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function WorldDefinitionMenuUnitValues.set_values(A0_21, A1_22)
-	A1_22:menu_widget():data():load_data_from_table(A0_21._values)
+
+WorldDefinitionMenuUnitValues.set_values = function(l_6_0, l_6_1)
+	l_6_1:menu_widget():data():load_data_from_table(l_6_0._values)
 end
+
+

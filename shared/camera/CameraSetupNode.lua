@@ -1,21 +1,22 @@
-CameraSetupNode = CameraSetupNode or class()
-function CameraSetupNode.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._class_name = A1_1
-	A0_0._settings = A2_2
-	A0_0._children = A3_3
+if not CameraSetupNode then
+	CameraSetupNode = class()
 end
-function CameraSetupNode.class_name(A0_4)
-	local L1_5
-	L1_5 = A0_4._class_name
-	return L1_5
+CameraSetupNode.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._class_name = l_1_1
+	l_1_0._settings = l_1_2
+	l_1_0._children = l_1_3
 end
-function CameraSetupNode.settings(A0_6)
-	local L1_7
-	L1_7 = A0_6._settings
-	return L1_7
+
+CameraSetupNode.class_name = function(l_2_0)
+	return l_2_0._class_name
 end
-function CameraSetupNode.children(A0_8)
-	local L1_9
-	L1_9 = A0_8._children
-	return L1_9
+
+CameraSetupNode.settings = function(l_3_0)
+	return l_3_0._settings
 end
+
+CameraSetupNode.children = function(l_4_0)
+	return l_4_0._children
+end
+
+

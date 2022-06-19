@@ -1,43 +1,60 @@
-PlayerHudSound = PlayerHudSound or class()
-function PlayerHudSound.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._objective_complete_sound = Sound:make_bank("stingers_sound", "stinger_objective_complete")
-	A0_0._new_objective_sound = Sound:make_bank("stingers_sound", "stinger_new_objective")
-	A0_0._checkpoint_sound = Sound:make_bank("stingers_sound", "stinger_checkpoint")
-	A0_0._look_at_available_sound = Sound:make_bank("ui_menu_sound", "hud_look_at_stinger")
-	A0_0._look_at_enter_sound = Sound:make_bank("ui_menu_sound", "ui_look_at_enter")
-	A0_0._look_at_exit_sound = Sound:make_bank("ui_menu_sound", "ui_look_at_exit")
-	managers.action_event:register_listener(A0_0, A1_1, A1_1)
+if not PlayerHudSound then
+	PlayerHudSound = class()
 end
-function PlayerHudSound.destroy(A0_2)
-	managers.action_event:unregister_listener(A0_2)
+PlayerHudSound.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._objective_complete_sound = Sound:make_bank("stingers_sound", "stinger_objective_complete")
+	l_1_0._new_objective_sound = Sound:make_bank("stingers_sound", "stinger_new_objective")
+	l_1_0._checkpoint_sound = Sound:make_bank("stingers_sound", "stinger_checkpoint")
+	l_1_0._look_at_available_sound = Sound:make_bank("ui_menu_sound", "hud_look_at_stinger")
+	l_1_0._look_at_enter_sound = Sound:make_bank("ui_menu_sound", "ui_look_at_enter")
+	l_1_0._look_at_exit_sound = Sound:make_bank("ui_menu_sound", "ui_look_at_exit")
+	managers.action_event:register_listener(l_1_0, l_1_1, l_1_1)
 end
-function PlayerHudSound.unit_hud_mission_objective_new(A0_3, A1_4)
-	assert(A0_3._unit == A1_4)
-	A0_3._new_objective_sound:play()
+
+PlayerHudSound.destroy = function(l_2_0)
+	managers.action_event:unregister_listener(l_2_0)
 end
-function PlayerHudSound.unit_hud_mission_objective_completed(A0_5, A1_6)
-	assert(A0_5._unit == A1_6)
-	A0_5._objective_complete_sound:play()
+
+PlayerHudSound.unit_hud_mission_objective_new = function(l_3_0, l_3_1)
+	local l_3_2 = assert
+	l_3_2(l_3_0._unit == l_3_1)
+	l_3_2 = l_3_0._new_objective_sound
+	l_3_2(l_3_2)
 end
-function PlayerHudSound.progress_updated(A0_7)
-	A0_7._checkpoint_sound:play()
+
+PlayerHudSound.unit_hud_mission_objective_completed = function(l_4_0, l_4_1)
+	local l_4_2 = assert
+	l_4_2(l_4_0._unit == l_4_1)
+	l_4_2 = l_4_0._objective_complete_sound
+	l_4_2(l_4_2)
 end
-function PlayerHudSound.update(A0_8, A1_9, A2_10, A3_11)
-	A0_8:_check_if_look_at_is_available()
-	A0_8:_check_if_look_at_pressed()
+
+PlayerHudSound.progress_updated = function(l_5_0)
+	l_5_0._checkpoint_sound:play()
 end
-function PlayerHudSound._check_if_look_at_is_available(A0_12)
-	if A0_12._unit:player_data().look_at_position and not A0_12._look_at_position then
-		A0_12._look_at_available_sound:play()
+
+PlayerHudSound.update = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	l_6_0:_check_if_look_at_is_available()
+	l_6_0:_check_if_look_at_pressed()
+end
+
+PlayerHudSound._check_if_look_at_is_available = function(l_7_0)
+	local l_7_1 = l_7_0._unit:player_data().look_at_position
+	if l_7_1 and not l_7_0._look_at_position then
+		l_7_0._look_at_available_sound:play()
 	end
-	A0_12._look_at_position = A0_12._unit:player_data().look_at_position
+	l_7_0._look_at_position = l_7_1
 end
-function PlayerHudSound._check_if_look_at_pressed(A0_13)
-	if not A0_13._look_at_is_pressed and A0_13._unit:camera_data().look_at_position_override then
-		A0_13._look_at_enter_sound:play()
-	elseif A0_13._look_at_is_pressed and not A0_13._unit:camera_data().look_at_position_override then
-		A0_13._look_at_exit_sound:play()
+
+PlayerHudSound._check_if_look_at_pressed = function(l_8_0)
+	local l_8_1 = l_8_0._unit:camera_data().look_at_position_override
+	if not l_8_0._look_at_is_pressed and l_8_1 then
+		l_8_0._look_at_enter_sound:play()
+	elseif l_8_0._look_at_is_pressed and not l_8_1 then
+		l_8_0._look_at_exit_sound:play()
 	end
-	A0_13._look_at_is_pressed = A0_13._unit:camera_data().look_at_position_override
+	l_8_0._look_at_is_pressed = l_8_1
 end
+
+

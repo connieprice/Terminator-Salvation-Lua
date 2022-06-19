@@ -1,30 +1,49 @@
 core:module("CoreViewportManagerVPInterface")
 core:require_module("CoreClass")
-ViewportManagerVPInterface = ViewportManagerVPInterface or CoreClass.class()
-function ViewportManagerVPInterface.init(A0_0, A1_1)
-	A0_0._host = A1_1
+if not ViewportManagerVPInterface then
+	ViewportManagerVPInterface = CoreClass.class()
 end
-function ViewportManagerVPInterface.reg_vp(A0_2, A1_3)
-	return A0_2._host:_reg_vp(A1_3)
+ViewportManagerVPInterface.init = function(l_1_0, l_1_1)
+	l_1_0._host = l_1_1
 end
-function ViewportManagerVPInterface.activate_vp(A0_4, A1_5)
-	A0_4._host:_activate_vp(A1_5)
+
+ViewportManagerVPInterface.reg_vp = function(l_2_0, l_2_1)
+	local l_2_2, l_2_3 = l_2_0._host:_reg_vp, l_2_0._host
+	local l_2_4 = l_2_1
+	return l_2_2(l_2_3, l_2_4)
 end
-function ViewportManagerVPInterface.deactivate_vp(A0_6, A1_7)
-	A0_6._host:_deactivate_vp(A1_7)
+
+ViewportManagerVPInterface.activate_vp = function(l_3_0, l_3_1)
+	l_3_0._host:_activate_vp(l_3_1)
 end
-function ViewportManagerVPInterface.feed_environment(A0_8, A1_9, A2_10, A3_11)
-	A0_8._host:_feed_environment(A1_9, A2_10, A3_11)
+
+ViewportManagerVPInterface.deactivate_vp = function(l_4_0, l_4_1)
+	l_4_0._host:_deactivate_vp(l_4_1)
 end
-function ViewportManagerVPInterface.destroy_viewport(A0_12, A1_13, A2_14)
-	A0_12._host:_destroy_viewport(A1_13, A2_14)
+
+ViewportManagerVPInterface.feed_environment = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	l_5_0._host:_feed_environment(l_5_1, l_5_2, l_5_3)
 end
-function ViewportManagerVPInterface.create_environment_change(A0_15, A1_16, A2_17, A3_18)
-	return A0_15._host:_create_environment_change(A1_16, A2_17, A3_18)
+
+ViewportManagerVPInterface.destroy_viewport = function(l_6_0, l_6_1, l_6_2)
+	l_6_0._host:_destroy_viewport(l_6_1, l_6_2)
 end
-function ViewportManagerVPInterface.set_environment_name_cache(A0_19, A1_20)
-	A0_19._host:_set_environment_name_cache(A1_20)
+
+ViewportManagerVPInterface.create_environment_change = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	local l_7_4, l_7_5 = l_7_0._host:_create_environment_change, l_7_0._host
+	local l_7_6 = l_7_1
+	local l_7_7 = l_7_2
+	local l_7_8 = l_7_3
+	return l_7_4(l_7_5, l_7_6, l_7_7, l_7_8)
 end
-function ViewportManagerVPInterface.environment_name_cache(A0_21)
-	return A0_21._host:_environment_name_cache()
+
+ViewportManagerVPInterface.set_environment_name_cache = function(l_8_0, l_8_1)
+	l_8_0._host:_set_environment_name_cache(l_8_1)
 end
+
+ViewportManagerVPInterface.environment_name_cache = function(l_9_0)
+	local l_9_1, l_9_2 = l_9_0._host:_environment_name_cache, l_9_0._host
+	return l_9_1(l_9_2)
+end
+
+

@@ -1,50 +1,51 @@
 require("projectile/magnetic_charge/states/MagneticChargeState")
 require("projectile/magnetic_charge/states/MagneticChargeAttaching")
-MagneticChargeNotActivated = MagneticChargeNotActivated or class(MagneticChargeState)
-function MagneticChargeNotActivated.enter(A0_0)
-	A0_0._collision_attachment_point = nil
-	A0_0._event_emitter:magnetic_charge_enabled(A0_0._unit)
+if not MagneticChargeNotActivated then
+	MagneticChargeNotActivated = class(MagneticChargeState)
 end
-function MagneticChargeNotActivated.update(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L5_6, L6_7, L7_8, L8_9, L9_10, L10_11
-	L2_3 = A0_1._collision_attachment_point
-	if L2_3 then
-		L2_3 = MagneticChargeAttaching
-		L3_4 = L2_3
-		L2_3 = L2_3.new
-		L4_5 = A0_1._unit
-		L5_6 = A0_1._collision_attachment_point
-		return L2_3(L3_4, L4_5, L5_6)
+MagneticChargeNotActivated.enter = function(l_1_0)
+	local l_1_1 = l_1_0._unit:base()
+	l_1_0._collision_attachment_point = nil
+	l_1_0._event_emitter:magnetic_charge_enabled(l_1_0._unit)
+end
+
+MagneticChargeNotActivated.update = function(l_2_0, l_2_1)
+	local l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_11, l_2_12, l_2_13 = nil
+	if l_2_0._collision_attachment_point then
+		local l_2_2, l_2_3 = MagneticChargeAttaching:new, MagneticChargeAttaching
+		local l_2_4 = l_2_0._unit
+		local l_2_5 = l_2_0._collision_attachment_point
+		return l_2_2(l_2_3, l_2_4, l_2_5)
 	end
-	L2_3 = A0_1._unit
-	L3_4 = L2_3
-	L2_3 = L2_3.base
-	L2_3 = L2_3(L3_4)
-	L3_4 = World
-	L4_5 = L3_4
-	L3_4 = L3_4.find_units
-	L5_6 = "sphere"
-	L9_10 = L8_9
-	L10_11 = "enemies"
-	L10_11 = L8_9(L9_10, L10_11)
-	L3_4 = L3_4(L4_5, L5_6, L6_7, L7_8, L8_9, L9_10, L10_11, L8_9(L9_10, L10_11))
-	L4_5, L5_6 = nil, nil
-	for L9_10 = 1, #L3_4 do
-		L10_11 = L3_4[L9_10]
-		if L2_3:_closest_attachment_point(L10_11) and (not L5_6 or L5_6 > L2_3:_closest_attachment_point(L10_11)) then
-			L4_5, L5_6 = L2_3:_closest_attachment_point(L10_11)
+	local l_2_14 = l_2_0._unit:base()
+	local l_2_15 = (World:find_units("sphere", l_2_0._unit:position(), l_2_14._magnetic_radius, managers.slot:get_mask("enemies")))
+	local l_2_16, l_2_17 = nil, nil
+	for l_2_21 = 1, #l_2_15 do
+		local l_2_22, l_2_29 = l_2_15[l_2_21]
+		local l_2_32 = l_2_14
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_2_23, l_2_24, l_2_30, l_2_31 = nil
+		if l_2_29 and (not l_2_17 or l_2_32 < l_2_17) then
+			l_2_17 = 
+			l_2_16 = l_2_29
 		end
 	end
-	if L4_5 then
-		if L5_6 < L6_7 then
-			L9_10 = L4_5
-			return L6_7(L7_8, L8_9, L9_10)
-		end
+	if l_2_16 and l_2_17 < l_2_14._magnetic_radius then
+		local l_2_25, l_2_26 = MagneticChargeAttaching:new, MagneticChargeAttaching
+		local l_2_27 = l_2_0._unit
+		local l_2_28 = l_2_16
+		return l_2_25(l_2_26, l_2_27, l_2_28)
 	end
 end
-function MagneticChargeNotActivated.collision_callback(A0_12, A1_13, A2_14, A3_15, A4_16, A5_17, A6_18, A7_19, A8_20)
-	if A0_12._unit:base():_closest_attachment_point(A4_16) and A0_12._unit:base():_closest_attachment_point(A4_16) < A0_12._unit:base()._magnetic_radius then
-		A0_12._unit:base()._body:set_keyframed()
-		A0_12._collision_attachment_point = A0_12._unit:base():_closest_attachment_point(A4_16)
+
+MagneticChargeNotActivated.collision_callback = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4, l_3_5, l_3_6, l_3_7, l_3_8)
+	local l_3_9 = l_3_0._unit:base()
+	local l_3_10, l_3_11 = l_3_9:_closest_attachment_point(l_3_4)
+	if l_3_10 and l_3_11 < l_3_9._magnetic_radius then
+		l_3_0._unit:base()._body:set_keyframed()
+		l_3_0._collision_attachment_point = l_3_10
 	end
 end
+
+

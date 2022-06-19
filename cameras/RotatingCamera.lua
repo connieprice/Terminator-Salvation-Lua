@@ -1,34 +1,34 @@
 require("shared/camera/SharedCamera")
-RotatingCamera = RotatingCamera or class(SharedCamera)
-function RotatingCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0:reset()
+if not RotatingCamera then
+	RotatingCamera = class(SharedCamera)
 end
-function RotatingCamera.parse_parameters(A0_2, A1_3)
-	local L2_4
-	L2_4 = A1_3.parameter
-	L2_4 = L2_4(A1_3, "rotate")
-	if L2_4 then
-		A0_2._rotate = math.string_to_vector(L2_4)
+RotatingCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0:reset()
+end
+
+RotatingCamera.parse_parameters = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_1:parameter("rotate")
+	if l_2_2 then
+		l_2_0._rotate = math.string_to_vector(l_2_2)
 	end
 end
-function RotatingCamera.update(A0_5, A1_6, A2_7, A3_8)
-	SharedCamera.update(A0_5, A1_6, A2_7, A3_8)
-	if A0_5._active then
-		A0_5:_update_rotate(A3_8)
+
+RotatingCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3)
+	if l_3_0._active then
+		l_3_0:_update_rotate(l_3_3)
 	end
 end
-function RotatingCamera._update_rotate(A0_9, A1_10)
-	local L2_11, L3_12
-	L2_11 = A0_9._unit
-	L3_12 = L2_11
-	L2_11 = L2_11.local_rotation
-	L2_11 = L2_11(L3_12)
-	L3_12 = Rotation
-	L3_12 = L3_12(A0_9._rotate.x * A1_10, A0_9._rotate.y * A1_10, A0_9._rotate.z * A1_10)
-	L3_12 = L2_11 * L3_12
-	A0_9._unit:set_local_rotation(L3_12)
+
+RotatingCamera._update_rotate = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._unit:local_rotation()
+	local l_4_3 = l_4_2 * Rotation(l_4_0._rotate.x * l_4_1, l_4_0._rotate.y * l_4_1, l_4_0._rotate.z * l_4_1)
+	l_4_0._unit:set_local_rotation(l_4_3)
 end
-function RotatingCamera.reset(A0_13)
-	A0_13._rotate = Rotation(0, 0, 0)
+
+RotatingCamera.reset = function(l_5_0)
+	l_5_0._rotate = Rotation(0, 0, 0)
 end
+
+

@@ -1,29 +1,31 @@
-AMMissionObjective = AMMissionObjective or class(CoreActionElement)
-function AMMissionObjective.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMMissionObjective then
+	AMMissionObjective = class(CoreActionElement)
 end
-function AMMissionObjective.activate_now(A0_3)
-	if A0_3._mode == "start" then
-		A0_3:activate_start()
-	elseif A0_3._mode == "completed" then
-		A0_3:activate_completed()
+AMMissionObjective.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+end
+
+AMMissionObjective.activate_now = function(l_2_0)
+	if l_2_0._mode == "start" then
+		l_2_0:activate_start()
+	elseif l_2_0._mode == "completed" then
+		l_2_0:activate_completed()
 	else
 		error("bad action type!")
-		return
+		return 
 	end
-	A0_3:deactivate_now()
+	l_2_0:deactivate_now()
 end
-function AMMissionObjective.activate_start(A0_4)
-	local L1_5
-	L1_5 = cat_print
-	L1_5("debug", "Mission Objective", A0_4.objective_id, "has started!")
-	L1_5 = managers
-	L1_5 = L1_5.mission_objective
-	L1_5 = L1_5.objective
-	L1_5 = L1_5(L1_5, A0_4.objective_id)
-	managers.assigned_mission_objective:start_objective(L1_5, A0_4.assigned_to, tonumber(A0_4.time))
+
+AMMissionObjective.activate_start = function(l_3_0)
+	cat_print("debug", "Mission Objective", l_3_0.objective_id, "has started!")
+	local l_3_1 = managers.mission_objective:objective(l_3_0.objective_id)
+	managers.assigned_mission_objective:start_objective(l_3_1, l_3_0.assigned_to, tonumber(l_3_0.time))
 end
-function AMMissionObjective.activate_completed(A0_6)
-	cat_print("debug", "Mission Objective", A0_6.objective_id, "is now completed!")
-	managers.assigned_mission_objective:complete_objective(A0_6.objective_id)
+
+AMMissionObjective.activate_completed = function(l_4_0)
+	cat_print("debug", "Mission Objective", l_4_0.objective_id, "is now completed!")
+	managers.assigned_mission_objective:complete_objective(l_4_0.objective_id)
 end
+
+

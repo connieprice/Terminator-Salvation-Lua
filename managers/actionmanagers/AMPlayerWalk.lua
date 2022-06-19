@@ -1,21 +1,25 @@
-AMPlayerWalk = AMPlayerWalk or class(CoreActionElement)
-function AMPlayerWalk.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMPlayerWalk then
+	AMPlayerWalk = class(CoreActionElement)
 end
-function AMPlayerWalk.activate_now(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8, L6_9
-	L1_4 = managers
-	L1_4 = L1_4.player
-	L1_4 = L1_4.players
-	L1_4 = L1_4(L2_5)
-	for L5_8, L6_9 in L2_5(L3_6) do
-		if alive(L6_9) then
-			if A0_3._mode == "limitations_on" then
-				L6_9:player_data().limited_to_walk = A0_3.limited_to_walk
-			elseif A0_3._mode == "limitations_off" then
-				L6_9:player_data().limited_to_walk = false
+AMPlayerWalk.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+end
+
+AMPlayerWalk.activate_now = function(l_2_0)
+	local l_2_5, l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_11, l_2_12, l_2_13, l_2_14 = nil
+	local l_2_1 = managers.player:players()
+	for i_0,i_1 in pairs(l_2_1) do
+		if alive(i_1) then
+			if l_2_0._mode == "limitations_on" then
+				i_1:player_data().limited_to_walk = l_2_0.limited_to_walk
 			end
+		elseif l_2_0._mode == "limitations_off" then
+			i_1:player_data().limited_to_walk = false
 		end
 	end
-	L2_5(L3_6)
+	l_2_0:deactivate_now()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

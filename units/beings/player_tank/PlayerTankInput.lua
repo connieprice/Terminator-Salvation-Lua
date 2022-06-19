@@ -1,61 +1,62 @@
 require("units/beings/CharacterInput")
-PlayerTankInput = PlayerTankInput or class(CharacterInput)
+if not PlayerTankInput then
+	PlayerTankInput = class(CharacterInput)
+end
 PlayerTankInputAccessControlled = access_control_wrapper(PlayerTankInput)
-function PlayerTankInput.init(A0_0, A1_1)
-	CharacterInput.init(A0_0, A1_1)
+PlayerTankInput.init = function(l_1_0, l_1_1)
+	CharacterInput.init(l_1_0, l_1_1)
 end
-function PlayerTankInput.clear(A0_2)
-	A0_2._aim_target_position = nil
-	A0_2._eye_target_position = nil
-	A0_2._primary_fire_l = false
-	A0_2._primary_fire_r = false
-	A0_2._secondary_fire_l = false
-	A0_2._secondary_fire_r = false
-	A0_2._miss_dispersion = 0
-	A0_2._look_input_axis = nil
-	CharacterInput.clear(A0_2)
+
+PlayerTankInput.clear = function(l_2_0)
+	l_2_0._aim_target_position = nil
+	l_2_0._eye_target_position = nil
+	l_2_0._primary_fire_l = false
+	l_2_0._primary_fire_r = false
+	l_2_0._secondary_fire_l = false
+	l_2_0._secondary_fire_r = false
+	l_2_0._miss_dispersion = 0
+	l_2_0._look_input_axis = nil
+	CharacterInput.clear(l_2_0)
 end
-function PlayerTankInput.set_primary_fire_l(A0_3)
-	local L1_4
-	A0_3._primary_fire_l = true
+
+PlayerTankInput.set_primary_fire_l = function(l_3_0)
+	l_3_0._primary_fire_l = true
 end
-function PlayerTankInput.set_primary_fire_r(A0_5)
-	local L1_6
-	A0_5._primary_fire_r = true
+
+PlayerTankInput.set_primary_fire_r = function(l_4_0)
+	l_4_0._primary_fire_r = true
 end
-function PlayerTankInput.set_secondary_fire_l(A0_7)
-	local L1_8
-	A0_7._secondary_fire_l = true
+
+PlayerTankInput.set_secondary_fire_l = function(l_5_0)
+	l_5_0._secondary_fire_l = true
 end
-function PlayerTankInput.set_secondary_fire_r(A0_9)
-	local L1_10
-	A0_9._secondary_fire_r = true
+
+PlayerTankInput.set_secondary_fire_r = function(l_6_0)
+	l_6_0._secondary_fire_r = true
 end
-function PlayerTankInput.set_look_input_axis(A0_11, A1_12)
-	A0_11._look_input_axis = A1_12
+
+PlayerTankInput.set_look_input_axis = function(l_7_0, l_7_1)
+	l_7_0._look_input_axis = l_7_1
 end
-function PlayerTankInput.primary_fire_l(A0_13)
-	local L1_14
-	L1_14 = A0_13._primary_fire_l
-	return L1_14
+
+PlayerTankInput.primary_fire_l = function(l_8_0)
+	return l_8_0._primary_fire_l
 end
-function PlayerTankInput.primary_fire_r(A0_15)
-	local L1_16
-	L1_16 = A0_15._primary_fire_r
-	return L1_16
+
+PlayerTankInput.primary_fire_r = function(l_9_0)
+	return l_9_0._primary_fire_r
 end
-function PlayerTankInput.secondary_fire_l(A0_17)
-	local L1_18
-	L1_18 = A0_17._secondary_fire_l
-	return L1_18
+
+PlayerTankInput.secondary_fire_l = function(l_10_0)
+	return l_10_0._secondary_fire_l
 end
-function PlayerTankInput.secondary_fire_r(A0_19)
-	local L1_20
-	L1_20 = A0_19._secondary_fire_r
-	return L1_20
+
+PlayerTankInput.secondary_fire_r = function(l_11_0)
+	return l_11_0._secondary_fire_r
 end
-function PlayerTankInput.look_input_axis(A0_21)
-	local L1_22
-	L1_22 = A0_21._look_input_axis
-	return L1_22
+
+PlayerTankInput.look_input_axis = function(l_12_0)
+	return l_12_0._look_input_axis
 end
+
+

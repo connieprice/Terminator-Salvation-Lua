@@ -1,153 +1,161 @@
 require("network/control/UnitControl")
 require("shared/TableAlgorithms")
-PlayerControl = PlayerControl or class(UnitControl)
-PlayerControl._ANIM_MOVEMENT_SPEED_GLOBALS = {
-	"walking_speed",
-	"running_speed"
-}
-function not_functions(A0_0)
-	return type(A0_0) ~= "function"
+if not PlayerControl then
+	PlayerControl = class(UnitControl)
 end
-function PlayerControl.init(A0_1, A1_2)
-	UnitControl.init(A0_1, A1_2)
-	managers.player:register_player_unit(A1_2)
-end
-function PlayerControl.destroy(A0_3, A1_4)
-	UnitControl.destroy(A0_3, A1_4)
-	managers.player:unregister_player_unit(A1_4)
-end
-function PlayerControl.send_input(A0_5, A1_6)
-	local L2_7, L3_8
-	L2_7 = assert
-	L3_8 = A1_6
-	L2_7(L3_8)
-	L2_7 = A0_5._unit
-	L3_8 = L2_7
-	L2_7 = L2_7.input
-	L2_7 = L2_7(L3_8)
-	L3_8 = TableAlgorithms
-	L3_8 = L3_8.copy_if
-	L3_8 = L3_8(L2_7, not_functions)
-	A1_6:player_input(A0_5:unit_id(), L3_8)
-	L2_7:clear()
-end
-function PlayerControl.receive_input(A0_9, A1_10)
-	A0_9._unit:input():set(A1_10)
-end
-function PlayerControl.player_input(A0_11, A1_12)
-	A0_11:push_input(A1_12)
-end
-PlayerControl.user_controlled_extensions = {
-	"hud",
-	"hud_sound",
-	"mission_objective",
-	"dynamic_dialog",
-	"pickup_outline",
-	"enemy_weakspot_outline",
-	"teammate_outline"
-}
-function PlayerControl.set_user_controlled_extensions_enabled(A0_13, A1_14)
-	local L2_15, L3_16, L4_17, L5_18, L6_19, L7_20, L8_21
-	L2_15 = A0_13._unit
-	L3_16 = L2_15.extensions
-	L3_16 = L3_16(L4_17)
-	for L7_20, L8_21 in L4_17(L5_18) do
-		if TableAlgorithms.find_value(L8_21, L3_16) then
-			L2_15:set_extension_update_enabled(L8_21, A1_14)
-			if L2_15:extensions_infos()[L8_21].set_extension_enabled then
-				L2_15:extensions_infos()[L8_21]:set_extension_enabled(A1_14)
+local l_0_0 = PlayerControl
+local l_0_1 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_0.user_controlled_extensions, l_0_1 = l_0_1, {"walking_speed", "running_speed", "mission_objective", "dynamic_dialog", "pickup_outline", "enemy_weakspot_outline", "teammate_outline"}
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_7_0, l_7_1)
+	local l_7_7, l_7_8, l_7_9, l_7_10, l_7_11, l_7_12, l_7_13, l_7_14, l_7_15, l_7_16 = nil
+	local l_7_2 = l_7_0._unit
+	local l_7_3 = l_7_2:extensions()
+	for i_0,i_1 in pairs(PlayerControl.user_controlled_extensions) do
+		if TableAlgorithms.find_value(i_1, l_7_3) then
+			l_7_2:set_extension_update_enabled(i_1, l_7_1)
+		if l_7_2:extensions_infos()[i_1].set_extension_enabled then
 			end
+			l_7_2:extensions_infos()[i_1]:set_extension_enabled(l_7_1)
 		end
 	end
 end
-function PlayerControl.set_ai_controlled(A0_22)
-	local L1_23
-	L1_23 = UnitControl
-	L1_23 = L1_23.set_ai_controlled
-	L1_23(A0_22)
-	L1_23 = A0_22._unit
-	L1_23:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
-	L1_23:damage():set_health_regen(tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_DELAY)
-	L1_23:base():set_rotation_speed(tweak_data.ai.humans.ai_player.ROTATION_SPEED)
-	L1_23:base():set_mover_high_quality(false)
-	L1_23:base():set_low_frequency_update_enabled(true)
-	A0_22:set_user_controlled_extensions_enabled(false)
-	L1_23:player_data().peek_side_obstacle = false
-	L1_23:player_data().cover_obstacle = false
-	L1_23:player_data().under_fire_reactions_enabled = true
-	L1_23:player_data().large_idles_enabled = true
-	A0_22:_set_movement_speed(L1_23, tweak_data.ai.humans.ai_player.MOVEMENT_SPEED_MULTPLIER)
-	if L1_23:pickup_outline() then
-		L1_23:pickup_outline():clean_up()
+
+l_0_0.set_user_controlled_extensions_enabled = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_8_0)
+	UnitControl.set_ai_controlled(l_8_0)
+	local l_8_1 = l_8_0._unit
+	l_8_1:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
+	l_8_1:damage():set_health_regen(tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_DELAY)
+	local l_8_2 = l_8_1:base()
+	l_8_2:set_rotation_speed(tweak_data.ai.humans.ai_player.ROTATION_SPEED)
+	l_8_2:set_mover_high_quality(false)
+	l_8_2:set_low_frequency_update_enabled(true)
+	l_8_0:set_user_controlled_extensions_enabled(false)
+	local l_8_3 = l_8_1:player_data()
+	l_8_3.peek_side_obstacle = false
+	l_8_3.cover_obstacle = false
+	l_8_3.under_fire_reactions_enabled = true
+	l_8_3.large_idles_enabled = true
+	l_8_0:_set_movement_speed(l_8_1, tweak_data.ai.humans.ai_player.MOVEMENT_SPEED_MULTPLIER)
+	if l_8_1:pickup_outline() then
+		l_8_1:pickup_outline():clean_up()
 	end
-	if L1_23:enemy_weakspot_outline() then
-		L1_23:enemy_weakspot_outline():clean_up()
+	if l_8_1:enemy_weakspot_outline() then
+		l_8_1:enemy_weakspot_outline():clean_up()
 	end
-	if L1_23:teammate_outline() then
-		L1_23:teammate_outline():clean_up()
-	end
-end
-function PlayerControl.set_user_controlled(A0_24, A1_25)
-	local L2_26
-	L2_26 = UnitControl
-	L2_26 = L2_26.set_user_controlled
-	L2_26(A0_24, A1_25)
-	L2_26 = A0_24._unit
-	L2_26:damage_data():scale_health(tweak_data.player.damage.HEALTH)
-	L2_26:damage():set_health_regen(tweak_data.player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.player.damage.HEALTH_REGEN_DELAY)
-	L2_26:base():set_rotation_speed(tweak_data.player.ROTATION_SPEED)
-	L2_26:base():set_mover_high_quality(true)
-	L2_26:base():set_low_frequency_update_enabled(false)
-	A0_24:set_user_controlled_extensions_enabled(true)
-	L2_26:player_data().peek_side_obstacle = true
-	L2_26:player_data().cover_obstacle = true
-	L2_26:player_data().under_fire_reactions_enabled = true
-	L2_26:player_data().large_idles_enabled = false
-	A0_24:_set_movement_speed(L2_26, 1)
-end
-function PlayerControl.set_remote_controlled(A0_27)
-	UnitControl.set_remote_controlled(A0_27)
-	A0_27._unit:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
-	A0_27._unit:damage():set_health_regen(tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_DELAY)
-	A0_27._unit:base():set_rotation_speed(10)
-	A0_27._unit:base():set_mover_high_quality(false)
-	A0_27._unit:base():set_low_frequency_update_enabled(true)
-	A0_27:set_user_controlled_extensions_enabled(false)
-	A0_27._unit:player_data().peek_side_obstacle = false
-	A0_27._unit:player_data().cover_obstacle = false
-	A0_27._unit:player_data().under_fire_reactions_enabled = true
-	A0_27._unit:player_data().large_idles_enabled = true
-end
-function PlayerControl.set_no_control(A0_28)
-	UnitControl.set_no_control(A0_28)
-	A0_28._unit:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
-	A0_28._unit:damage():set_health_regen(tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_DELAY)
-	A0_28._unit:base():set_rotation_speed(10)
-	A0_28._unit:base():set_mover_high_quality(false)
-	A0_28._unit:base():set_low_frequency_update_enabled(true)
-	A0_28:set_user_controlled_extensions_enabled(false)
-	A0_28._unit:player_data().peek_side_obstacle = false
-	A0_28._unit:player_data().cover_obstacle = false
-	A0_28._unit:player_data().under_fire_reactions_enabled = true
-	A0_28._unit:player_data().large_idles_enabled = true
-end
-function PlayerControl._set_movement_speed(A0_29, A1_30, A2_31)
-	local L3_32, L4_33, L5_34, L6_35, L7_36, L8_37, L9_38, L10_39, L11_40
-	L4_33 = A1_30
-	L3_32 = A1_30.base
-	L3_32 = L3_32(L4_33)
-	L4_33 = L3_32
-	L3_32 = L3_32.character_anims
-	L3_32 = L3_32(L4_33)
-	L4_33 = tweak_data
-	L4_33 = L4_33.player
-	L4_33 = L4_33.movement
-	L4_33 = L4_33.speed
-	L4_33 = L4_33[L3_32]
-	for L8_37, L9_38 in L5_34(L6_35) do
-		L10_39 = L4_33[L9_38]
-		L11_40 = L10_39 * A2_31
-		A1_30:anim_state_machine():set_global(L9_38, L11_40)
-		A1_30:player_data()[L9_38] = L11_40
+	if l_8_1:teammate_outline() then
+		l_8_1:teammate_outline():clean_up()
 	end
 end
+
+l_0_0.set_ai_controlled = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_9_0, l_9_1)
+	UnitControl.set_user_controlled(l_9_0, l_9_1)
+	local l_9_2 = l_9_0._unit
+	l_9_2:damage_data():scale_health(tweak_data.player.damage.HEALTH)
+	l_9_2:damage():set_health_regen(tweak_data.player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.player.damage.HEALTH_REGEN_DELAY)
+	local l_9_3 = l_9_2:base()
+	l_9_3:set_rotation_speed(tweak_data.player.ROTATION_SPEED)
+	l_9_3:set_mover_high_quality(true)
+	l_9_3:set_low_frequency_update_enabled(false)
+	l_9_0:set_user_controlled_extensions_enabled(true)
+	local l_9_4 = l_9_2:player_data()
+	l_9_4.peek_side_obstacle = true
+	l_9_4.cover_obstacle = true
+	l_9_4.under_fire_reactions_enabled = true
+	l_9_4.large_idles_enabled = false
+	l_9_0:_set_movement_speed(l_9_2, 1)
+end
+
+l_0_0.set_user_controlled = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_10_0)
+	UnitControl.set_remote_controlled(l_10_0)
+	local l_10_1 = l_10_0._unit
+	l_10_1:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
+	l_10_1:damage():set_health_regen(tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_DELAY)
+	local l_10_2 = l_10_1:base()
+	l_10_2:set_rotation_speed(10)
+	l_10_2:set_mover_high_quality(false)
+	l_10_2:set_low_frequency_update_enabled(true)
+	l_10_0:set_user_controlled_extensions_enabled(false)
+	local l_10_3 = l_10_1:player_data()
+	l_10_3.peek_side_obstacle = false
+	l_10_3.cover_obstacle = false
+	l_10_3.under_fire_reactions_enabled = true
+	l_10_3.large_idles_enabled = true
+end
+
+l_0_0.set_remote_controlled = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_11_0)
+	UnitControl.set_no_control(l_11_0)
+	local l_11_1 = l_11_0._unit
+	l_11_1:damage_data():scale_health(tweak_data.ai.humans.ai_player.damage.HEALTH)
+	l_11_1:damage():set_health_regen(tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_PER_SECOND, tweak_data.ai.humans.ai_player.damage.HEALTH_REGEN_DELAY)
+	local l_11_2 = l_11_1:base()
+	l_11_2:set_rotation_speed(10)
+	l_11_2:set_mover_high_quality(false)
+	l_11_2:set_low_frequency_update_enabled(true)
+	l_11_0:set_user_controlled_extensions_enabled(false)
+	local l_11_3 = l_11_1:player_data()
+	l_11_3.peek_side_obstacle = false
+	l_11_3.cover_obstacle = false
+	l_11_3.under_fire_reactions_enabled = true
+	l_11_3.large_idles_enabled = true
+end
+
+l_0_0.set_no_control = l_0_1
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_1 = function(l_12_0, l_12_1, l_12_2)
+	local l_12_8, l_12_9, l_12_10, l_12_11, l_12_12, l_12_13 = nil
+	local l_12_3 = l_12_1:base():character_anims()
+	do
+		local l_12_4 = tweak_data.player.movement.speed[l_12_3]
+		for i_0,i_1 in pairs(PlayerControl._ANIM_MOVEMENT_SPEED_GLOBALS) do
+			l_12_1:anim_state_machine():set_global(l_12_15, l_12_4[i_1] * l_12_2)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_12_1:player_data()[l_12_15] = l_12_4[i_1] * l_12_2
+		end
+	end
+	 -- WARNING: undefined locals caused missing assignments!
+end
+
+l_0_0._set_movement_speed = l_0_1
+

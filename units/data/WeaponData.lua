@@ -1,38 +1,40 @@
-WeaponData = WeaponData or class()
-function WeaponData.init(A0_0, A1_1)
-	A0_0._clip_size = 0
-	A0_0._bullets_in_clip = 0
-	A0_0._max_ammo = 0
-	A0_0._ammo_pool = 0
-	A0_0._spread = 0
-	A0_0._dispersion_modifier = 0
-	A0_0._dispersion = 0
-	A0_0.miss_dispersion = 0
-	A0_0.fire_input = 0
-	A0_0.fire_trigger_threshold = 0.9
-	A0_0.fire_trigger_release_threshold = 0.89
-	A0_0.aim_target_position = Vector3(0, 0, 0)
-	A0_0.forced_semi_automatic_fire = false
-	A0_0._fire_start = false
-	A0_0._fire_end = false
-	A0_0._firing = false
-	A0_0._fire_enabled = false
-	A0_0._on_fire = false
-	A0_0._reload_ready = false
-	A0_0._reload_required = false
-	A0_0._reload_request = false
-	A0_0._range = 0
-	A0_0._can_aim = true
-	A0_0._overheat_anim = nil
-	A0_0._full_outline_weapon = false
+if not WeaponData then
+	WeaponData = class()
 end
-function WeaponData.bullets_in_clip(A0_2)
-	local L1_3
-	L1_3 = A0_2._bullets_in_clip
-	return L1_3
+WeaponData.init = function(l_1_0, l_1_1)
+	l_1_0._clip_size = 0
+	l_1_0._bullets_in_clip = 0
+	l_1_0._max_ammo = 0
+	l_1_0._ammo_pool = 0
+	l_1_0._spread = 0
+	l_1_0._dispersion_modifier = 0
+	l_1_0._dispersion = 0
+	l_1_0.miss_dispersion = 0
+	l_1_0.fire_input = 0
+	l_1_0.fire_trigger_threshold = 0.9
+	l_1_0.fire_trigger_release_threshold = 0.89
+	l_1_0.aim_target_position = Vector3(0, 0, 0)
+	l_1_0.forced_semi_automatic_fire = false
+	l_1_0._fire_start = false
+	l_1_0._fire_end = false
+	l_1_0._firing = false
+	l_1_0._fire_enabled = false
+	l_1_0._on_fire = false
+	l_1_0._reload_ready = false
+	l_1_0._reload_required = false
+	l_1_0._reload_request = false
+	l_1_0._range = 0
+	l_1_0._can_aim = true
+	l_1_0._overheat_anim = nil
+	l_1_0._full_outline_weapon = false
 end
-function WeaponData.ammo_pool(A0_4)
-	local L1_5
-	L1_5 = A0_4._ammo_pool
-	return L1_5
+
+WeaponData.bullets_in_clip = function(l_2_0)
+	return l_2_0._bullets_in_clip
 end
+
+WeaponData.ammo_pool = function(l_3_0)
+	return l_3_0._ammo_pool
+end
+
+

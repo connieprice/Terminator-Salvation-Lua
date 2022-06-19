@@ -1,58 +1,75 @@
 require("units/beings/player/gui/PanelFader")
-SubtitlePanelStateFading = SubtitlePanelStateFading or class()
-function SubtitlePanelStateFading.init(A0_0, A1_1, A2_2, A3_3)
-	A3_3 = A3_3 or 20
-	A0_0._alpha = PanelFader:new(A0_0.subtitle:panel(), A1_1, A3_3)
-	A0_0._alpha:set_target(A2_2)
+if not SubtitlePanelStateFading then
+	SubtitlePanelStateFading = class()
 end
-function SubtitlePanelStateFading.update(A0_4, A1_5)
-	A0_4._alpha:update(A1_5)
+SubtitlePanelStateFading.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	if not l_1_3 then
+		l_1_3 = 20
+	end
+	l_1_0._alpha = PanelFader:new(l_1_0.subtitle:panel(), l_1_1, l_1_3)
+	l_1_0._alpha:set_target(l_1_2)
 end
-function SubtitlePanelStateFading.transition(A0_6)
-	if A0_6._alpha:has_reached_target() then
-		return A0_6:next_state()
+
+SubtitlePanelStateFading.update = function(l_2_0, l_2_1)
+	l_2_0._alpha:update(l_2_1)
+end
+
+SubtitlePanelStateFading.transition = function(l_3_0)
+	if l_3_0._alpha:has_reached_target() then
+		local l_3_1, l_3_2 = l_3_0:next_state, l_3_0
+		return l_3_1(l_3_2)
 	end
 end
-SubtitlePanelStateFadeIn = SubtitlePanelStateFadeIn or class(SubtitlePanelStateFading)
-function SubtitlePanelStateFadeIn.init(A0_7)
-	SubtitlePanelStateFading.init(A0_7, 0, 1, 40)
+
+if not SubtitlePanelStateFadeIn then
+	SubtitlePanelStateFadeIn = class(SubtitlePanelStateFading)
 end
-function SubtitlePanelStateFadeIn.next_state(A0_8)
-	local L1_9
-	L1_9 = SubtitlePanelStateDisplaying
-	return L1_9
+SubtitlePanelStateFadeIn.init = function(l_4_0)
+	SubtitlePanelStateFading.init(l_4_0, 0, 1, 40)
 end
-SubtitlePanelStateDisplaying = SubtitlePanelStateDisplaying or class()
-function SubtitlePanelStateDisplaying.init(A0_10)
-	local L1_11
-	A0_10._timer = 0
-	A0_10._max_time = 4
-	A0_10._min_time = 0.5
+
+SubtitlePanelStateFadeIn.next_state = function(l_5_0)
+	return SubtitlePanelStateDisplaying
 end
-function SubtitlePanelStateDisplaying.update(A0_12, A1_13)
-	local L2_14
-	L2_14 = A0_12._timer
-	L2_14 = L2_14 + A1_13
-	A0_12._timer = L2_14
+
+if not SubtitlePanelStateDisplaying then
+	SubtitlePanelStateDisplaying = class()
 end
-function SubtitlePanelStateDisplaying.transition(A0_15)
-	if A0_15.subtitle:lines_are_dismissed() and A0_15._timer > A0_15._min_time then
+SubtitlePanelStateDisplaying.init = function(l_6_0)
+	l_6_0._timer = 0
+	l_6_0._max_time = 4
+	l_6_0._min_time = 0.5
+end
+
+SubtitlePanelStateDisplaying.update = function(l_7_0, l_7_1)
+	l_7_0._timer = l_7_0._timer + l_7_1
+end
+
+SubtitlePanelStateDisplaying.transition = function(l_8_0)
+	if l_8_0.subtitle:lines_are_dismissed() and l_8_0._min_time < l_8_0._timer then
 		return SubtitlePanelStateFadeOut
 	end
 end
-SubtitlePanelStateFadeOut = SubtitlePanelStateFadeOut or class(SubtitlePanelStateFading)
-function SubtitlePanelStateFadeOut.init(A0_16)
-	SubtitlePanelStateFading.init(A0_16, 1, 0)
+
+if not SubtitlePanelStateFadeOut then
+	SubtitlePanelStateFadeOut = class(SubtitlePanelStateFading)
 end
-function SubtitlePanelStateFadeOut.next_state(A0_17)
-	local L1_18
-	L1_18 = SubtitlePanelStateDone
-	return L1_18
+SubtitlePanelStateFadeOut.init = function(l_9_0)
+	SubtitlePanelStateFading.init(l_9_0, 1, 0)
 end
-SubtitlePanelStateDone = SubtitlePanelStateDone or class()
-function SubtitlePanelStateDone.init(A0_19)
-	A0_19.subtitle:set_fade_is_done()
+
+SubtitlePanelStateFadeOut.next_state = function(l_10_0)
+	return SubtitlePanelStateDone
 end
-function SubtitlePanelStateDone.transition(A0_20)
-	local L1_21
+
+if not SubtitlePanelStateDone then
+	SubtitlePanelStateDone = class()
 end
+SubtitlePanelStateDone.init = function(l_11_0)
+	l_11_0.subtitle:set_fade_is_done()
+end
+
+SubtitlePanelStateDone.transition = function(l_12_0)
+end
+
+

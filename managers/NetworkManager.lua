@@ -1,56 +1,67 @@
 require("network/Host")
 require("network/Peer")
-NetworkManager = NetworkManager or class()
-function NetworkManager.init(A0_0, A1_1)
-	A0_0._host = Host:new()
-	A0_0._peer = Peer:new()
+if not NetworkManager then
+	NetworkManager = class()
 end
-function NetworkManager.destroy(A0_2)
-	A0_2:stop_hosting()
-	A0_2._peer:destroy()
-	A0_2._peer = nil
-	A0_2._host:destroy()
-	A0_2._host = nil
+NetworkManager.init = function(l_1_0, l_1_1)
+	l_1_0._host = Host:new()
+	l_1_0._peer = Peer:new()
 end
-function NetworkManager.update(A0_3, A1_4)
-	if A0_3._host then
-		A0_3._host:update(A1_4)
+
+NetworkManager.destroy = function(l_2_0)
+	l_2_0:stop_hosting()
+	l_2_0._peer:destroy()
+	l_2_0._peer = nil
+	l_2_0._host:destroy()
+	l_2_0._host = nil
+end
+
+NetworkManager.update = function(l_3_0, l_3_1)
+	if l_3_0._host then
+		l_3_0._host:update(l_3_1)
 	end
-	if A0_3._peer then
-		A0_3._peer:update(A1_4)
+	if l_3_0._peer then
+		l_3_0._peer:update(l_3_1)
 	end
 end
-function NetworkManager.save(A0_5, A1_6)
-	A1_6.host = {}
-	A0_5._host:save(A1_6.host)
-	A1_6.peer = {}
-	A0_5._peer:save(A1_6.peer)
+
+NetworkManager.save = function(l_4_0, l_4_1)
+	l_4_1.host = {}
+	l_4_0._host:save(l_4_1.host)
+	l_4_1.peer = {}
+	l_4_0._peer:save(l_4_1.peer)
 end
-function NetworkManager.load(A0_7, A1_8)
-	A0_7._host = Host:new()
-	A0_7._host:load(A1_8.host)
-	A0_7._peer = Peer
-	A0_7._peer:load(A1_8.peer)
+
+NetworkManager.load = function(l_5_0, l_5_1)
+	l_5_0._host = Host:new()
+	l_5_0._host:load(l_5_1.host)
+	l_5_0._peer = Peer
+	l_5_0._peer:load(l_5_1.peer)
 end
-function NetworkManager.wants_to_load_world(A0_9)
-	return A0_9._peer:wants_to_load_world()
+
+NetworkManager.wants_to_load_world = function(l_6_0)
+	local l_6_1, l_6_2 = l_6_0._peer:wants_to_load_world, l_6_0._peer
+	return l_6_1(l_6_2)
 end
-function NetworkManager.ack_load_world(A0_10)
-	A0_10._peer:ack_load_world()
+
+NetworkManager.ack_load_world = function(l_7_0)
+	l_7_0._peer:ack_load_world()
 end
-function NetworkManager.host(A0_11)
-	local L1_12
-	L1_12 = A0_11._host
-	return L1_12
+
+NetworkManager.host = function(l_8_0)
+	return l_8_0._host
 end
-function NetworkManager.peer(A0_13)
-	local L1_14
-	L1_14 = A0_13._peer
-	return L1_14
+
+NetworkManager.peer = function(l_9_0)
+	return l_9_0._peer
 end
-function NetworkManager.start_hosting(A0_15)
-	A0_15._host:session_provider():received_ownership()
+
+NetworkManager.start_hosting = function(l_10_0)
+	l_10_0._host:session_provider():received_ownership()
 end
-function NetworkManager.stop_hosting(A0_16)
-	A0_16._host:session_provider():lost_ownership()
+
+NetworkManager.stop_hosting = function(l_11_0)
+	l_11_0._host:session_provider():lost_ownership()
 end
+
+

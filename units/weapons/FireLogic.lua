@@ -1,389 +1,544 @@
 require("utils/SimpleRandomGenerator")
-FireLogic = FireLogic or class()
-function FireLogic.init(A0_0, A1_1)
-	local L2_2
-	A0_0._unit = A1_1
-	A0_0._fire_time = 0
-	A0_0._firing = false
-	A0_0._enabled = false
-	A0_0._fire_trigger_hold = false
-	A0_0._last_fire_input = 0
-	A0_0._sustained_burst = false
-	A0_0._pause_update = false
-	L2_2 = A0_0._unit
-	L2_2 = L2_2.weapon_data
-	L2_2 = L2_2(L2_2)
-	A0_0._wdata = L2_2
-	L2_2 = A0_0._random_burst_variation
-	if L2_2 then
-		L2_2 = SimpleRandomGenerator
-		L2_2 = L2_2.new
-		L2_2 = L2_2(L2_2, A0_0._random_burst_variation)
-		A0_0._random_generator = L2_2
+if not FireLogic then
+	FireLogic = class()
+end
+FireLogic.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._fire_time = 0
+	l_1_0._firing = false
+	l_1_0._enabled = false
+	l_1_0._fire_trigger_hold = false
+	l_1_0._last_fire_input = 0
+	l_1_0._sustained_burst = false
+	l_1_0._pause_update = false
+	l_1_0._wdata = l_1_0._unit:weapon_data()
+	if l_1_0._random_burst_variation then
+		l_1_0._random_generator = SimpleRandomGenerator:new(l_1_0._random_burst_variation)
 	end
-	A0_0._init_logic = true
-	L2_2 = A0_0._clip_size
-	if L2_2 < 0 then
-		L2_2 = A0_0._wdata
-		L2_2._clip_size = math.huge
+	l_1_0._init_logic = true
+	if l_1_0._clip_size < 0 then
+		l_1_0._wdata._clip_size = math.huge
 	else
-		L2_2 = A0_0._wdata
-		L2_2._clip_size = A0_0._clip_size
+		l_1_0._wdata._clip_size = l_1_0._clip_size
 	end
-	L2_2 = A0_0._bullets_in_clip
-	if L2_2 < 0 then
-		L2_2 = A0_0._wdata
-		L2_2._bullets_in_clip = math.huge
+	if l_1_0._bullets_in_clip < 0 then
+		l_1_0._wdata._bullets_in_clip = math.huge
 	else
-		L2_2 = A0_0._wdata
-		L2_2._bullets_in_clip = A0_0._bullets_in_clip
+		l_1_0._wdata._bullets_in_clip = l_1_0._bullets_in_clip
 	end
-	L2_2 = A0_0._ammo_pool
-	if L2_2 < 0 then
-		L2_2 = A0_0._wdata
-		L2_2._ammo_pool = math.huge
+	if l_1_0._ammo_pool < 0 then
+		l_1_0._wdata._ammo_pool = math.huge
 	else
-		L2_2 = A0_0._wdata
-		L2_2._ammo_pool = A0_0._ammo_pool
+		l_1_0._wdata._ammo_pool = l_1_0._ammo_pool
 	end
-	L2_2 = A0_0._max_ammo
-	if L2_2 < 0 then
-		L2_2 = A0_0._wdata
-		L2_2._max_ammo = math.huge
+	if l_1_0._max_ammo < 0 then
+		l_1_0._wdata._max_ammo = math.huge
 	else
-		L2_2 = A0_0._wdata
-		L2_2._max_ammo = A0_0._max_ammo
+		l_1_0._wdata._max_ammo = l_1_0._max_ammo
 	end
-	L2_2 = A0_0._disable_update_scheduling
-	if L2_2 then
-		L2_2 = {}
-		function L2_2.update(A0_3, ...)
-			local L3_5
-			L3_5 = _UPVALUE0_
-			L3_5 = L3_5._update
-			L3_5(...)
-		end
-		A0_0._updater = L2_2
+	if l_1_0._disable_update_scheduling then
+		local l_1_2 = {}
+		l_1_2.update = function(l_2_0, ...)
+			-- upvalues: l_1_0
+			l_1_0._update(...)
+    end
+		l_1_0._updater = l_1_2
 	else
-		L2_2 = "fire_logic"
-		A0_0._updater = UpdateSchedulerDtMethod:new(managers.update_scheduler:add_function(A0_0._update, L2_2))
+		local l_1_3 = "fire_logic"
+		l_1_0._updater = UpdateSchedulerDtMethod:new(managers.update_scheduler:add_function(l_1_0._update, l_1_3))
 	end
-	A0_0._extension_enabled = true
+	l_1_0._extension_enabled = true
 end
-function FireLogic.unit(A0_6)
-	local L1_7
-	L1_7 = A0_6._unit
-	return L1_7
+
+FireLogic.unit = function(l_2_0)
+	return l_2_0._unit
 end
-function FireLogic.on_extension_update_enabled(A0_8, A1_9)
-	A0_8._update_enabled = A1_9
-	if A1_9 then
-		A0_8._unit:set_extension_update_enabled("logic", true)
-		A0_8._extension_enabled = true
-	end
-end
-function FireLogic.destroy(A0_10)
-	if not A0_10._disable_update_scheduling then
-		A0_10._updater:remove()
+
+FireLogic.on_extension_update_enabled = function(l_3_0, l_3_1)
+	l_3_0._update_enabled = l_3_1
+	if l_3_1 then
+		l_3_0._unit:set_extension_update_enabled("logic", true)
+		l_3_0._extension_enabled = true
 	end
 end
-function FireLogic.update(A0_11, A1_12, A2_13, A3_14)
-	A0_11._updater:update(A0_11, A3_14, A1_12, A2_13)
-	if A0_11._extension_enabled and not A0_11._update_enabled and not A0_11._firing then
-		A0_11._extension_enabled = false
-		A0_11._unit:set_extension_update_enabled("logic", false)
+
+FireLogic.destroy = function(l_4_0)
+	if not l_4_0._disable_update_scheduling then
+		l_4_0._updater:remove()
 	end
 end
-function FireLogic._update(A0_15, A1_16, A2_17, A3_18)
-	local L4_19, L5_20
-	L4_19 = A0_15._wdata
-	L5_20 = A0_15._pause_update
-	if L5_20 then
-		L5_20 = L4_19.fire_input
-		if L5_20 == 0 then
-		end
-	end
-	L5_20 = A0_15._fire_delay
-	if A0_15._init_logic then
-		if 0 > A0_15._clip_size then
-			A0_15._clip_size = math.huge
-		end
-		if 0 > A0_15._bullets_in_clip then
-			A0_15._bullets_in_clip = math.huge
-		end
-		if 0 > A0_15._ammo_pool then
-			A0_15._ammo_pool = math.huge
-		end
-		if 0 > A0_15._max_ammo then
-			A0_15._max_ammo = math.huge
-		end
-		if 0 > A0_15._bullets_in_burst then
-			A0_15._bullets_in_burst = math.huge
-		end
-		L4_19.fire_trigger_threshold = tweak_data.player.weapon.FIRE_TRIGGER_THRESHOLD
-		L4_19.fire_trigger_release_threshold = tweak_data.player.weapon.FIRE_TRIGGER_RELEASE_THRESHOLD
-		L4_19.forced_semi_automatic_fire = not A0_15._fully_automatic
-		L4_19._clip_size = A0_15._clip_size
-		L4_19._ammo_pool = A0_15._ammo_pool
-		L4_19._max_ammo = A0_15._max_ammo
-		A0_15:_reset_burst_count()
-		A0_15._init_logic = false
-	end
-	assert(A0_15._ammo_pool <= A0_15._max_ammo)
-	assert(0 <= A0_15._bullets_in_clip and A0_15._bullets_in_clip <= A0_15._clip_size)
-	A0_15._last_fire_input = L4_19.fire_input
-	L4_19._fire_start = false
-	L4_19._fire_end = false
-	L4_19._on_fire = false
-	if L4_19._fire_enabled then
-		if L4_19._reload_request then
-			A0_15:reload(true)
-			L4_19._reload_request = false
-		end
-		if true or A0_15._firing then
-			if A0_15._bullets_in_clip == 0 then
-				if A0_15._auto_reload then
-					A0_15:reload(false)
-				end
-			elseif true and not A0_15._firing then
-				if A3_18 > A0_15._fire_time + L5_20 then
-					A0_15:fire_start(A3_18)
-					A0_15:fire(A3_18)
-				end
-			elseif A0_15._firing and A3_18 > A0_15._fire_time + L5_20 then
-				A0_15:fire(A3_18)
-			end
-		end
-		if A0_15._firing and (A0_15._bullets_in_clip == 0 or (A0_15._fire_trigger_hold and not (A0_15._last_fire_input >= L4_19.fire_trigger_release_threshold and L4_19.fire_input < L4_19.fire_trigger_release_threshold) or A0_15._last_fire_input < L4_19.fire_trigger_threshold and L4_19.fire_input >= L4_19.fire_trigger_threshold and not A0_15._fire_trigger_hold) and A0_15._fully_automatic and not L4_19.forced_semi_automatic_fire and 0 < A0_15._bullets_in_burst and A0_15._burst_count == 0 or not ((A0_15._fire_trigger_hold and not (A0_15._last_fire_input >= L4_19.fire_trigger_release_threshold and L4_19.fire_input < L4_19.fire_trigger_release_threshold) or A0_15._last_fire_input < L4_19.fire_trigger_threshold and L4_19.fire_input >= L4_19.fire_trigger_threshold and not A0_15._fire_trigger_hold) and A0_15._fully_automatic and not L4_19.forced_semi_automatic_fire) and (not A0_15._sustained_burst or A0_15._burst_count == 0)) then
-			A0_15:fire_end(A3_18)
-		end
-	elseif A0_15._firing then
-		A0_15:fire_end(A3_18)
-	end
-	L4_19._bullets_in_clip = A0_15._bullets_in_clip
-	L4_19._ammo_pool = A0_15._ammo_pool
-	L4_19._reload_ready = 0 < A0_15._ammo_pool and A3_18 > A0_15._fire_time + L5_20
-	L4_19._reload_required = 0 < A0_15._ammo_pool and A0_15._bullets_in_clip == 0
-	A0_15._fire_trigger_hold, L4_19._firing = (A0_15._fire_trigger_hold and not (A0_15._last_fire_input >= L4_19.fire_trigger_release_threshold and L4_19.fire_input < L4_19.fire_trigger_release_threshold) or A0_15._last_fire_input < L4_19.fire_trigger_threshold and L4_19.fire_input >= L4_19.fire_trigger_threshold and not A0_15._fire_trigger_hold) and A0_15._fully_automatic and not L4_19.forced_semi_automatic_fire, A0_15._firing
-	A0_15._pause_update = not A0_15._firing and A3_18 > A0_15._fire_time + L5_20
-end
-function FireLogic.fire_start(A0_21, A1_22)
-	assert(A0_21._firing == false)
-	A0_21._firing = true
-	A0_21._wdata._fire_start = true
-	if A0_21._unit:base().fire_start then
-		A0_21._unit:base():fire_start(A1_22)
+
+FireLogic.update = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	l_5_0._updater:update(l_5_0, l_5_3, l_5_1, l_5_2)
+	if l_5_0._extension_enabled and not l_5_0._update_enabled and not l_5_0._firing then
+		l_5_0._extension_enabled = false
+		l_5_0._unit:set_extension_update_enabled("logic", false)
 	end
 end
-function FireLogic._reset_burst_count(A0_23)
-	if A0_23._random_burst_variation and A0_23._bullets_in_burst then
-		A0_23._burst_count = A0_23._bullets_in_burst - A0_23._random_burst_variation + A0_23._random_generator:rand() % (2 * A0_23._random_burst_variation)
-		assert(A0_23._burst_count > 0)
+
+FireLogic._update = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	local l_6_4 = l_6_0._wdata
+	if not l_6_0._pause_update or l_6_4.fire_input == 0 then
+		local l_6_5 = l_6_0._fire_delay
+	end
+	local l_6_6 = l_6_0._burst_delay
+	if l_6_0._init_logic then
+		if l_6_0._clip_size < 0 then
+			l_6_0._clip_size = math.huge
+		end
+		if l_6_0._bullets_in_clip < 0 then
+			l_6_0._bullets_in_clip = math.huge
+		end
+		if l_6_0._ammo_pool < 0 then
+			l_6_0._ammo_pool = math.huge
+		end
+		if l_6_0._max_ammo < 0 then
+			l_6_0._max_ammo = math.huge
+		end
+		if l_6_0._bullets_in_burst < 0 then
+			l_6_0._bullets_in_burst = math.huge
+		end
+		l_6_4.fire_trigger_threshold = tweak_data.player.weapon.FIRE_TRIGGER_THRESHOLD
+		l_6_4.fire_trigger_release_threshold = tweak_data.player.weapon.FIRE_TRIGGER_RELEASE_THRESHOLD
+		l_6_4.forced_semi_automatic_fire = not l_6_0._fully_automatic
+		l_6_4._clip_size = l_6_0._clip_size
+		l_6_4._ammo_pool = l_6_0._ammo_pool
+		l_6_4._max_ammo = l_6_0._max_ammo
+		l_6_0:_reset_burst_count()
+		l_6_0._init_logic = false
+	end
+	local l_6_7 = assert
+	l_6_7(l_6_0._ammo_pool <= l_6_0._max_ammo)
+	l_6_7 = assert
+	l_6_7(l_6_0._bullets_in_clip >= 0 and l_6_0._bullets_in_clip <= l_6_0._clip_size)
+	l_6_7 = l_6_0._last_fire_input
+	if l_6_7 < l_6_4.fire_trigger_threshold then
+		l_6_7 = l_6_4.fire_input
+	if l_6_4.fire_trigger_threshold > l_6_7 then
+		end
+	end
+	l_6_7 = false
+	do
+		local l_6_17, l_6_19 = , ((not l_6_0._fire_trigger_hold or l_6_4.fire_trigger_release_threshold <= l_6_0._last_fire_input and l_6_4.fire_input < l_6_4.fire_trigger_release_threshold) and not l_6_7)
+	end
+	l_6_0._last_fire_input = l_6_4.fire_input
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if not l_6_19 or not l_6_0._fully_automatic or l_6_4._fire_enabled then
+		if l_6_4._reload_request then
+			l_6_0:reload(true)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+		if ((not l_6_0._firing and not l_6_4.forced_semi_automatic_fire and l_6_0._fire_time + l_6_6 < l_6_3 and true) or l_6_0._firing) and l_6_0._bullets_in_clip == 0 and l_6_0._auto_reload then
+			l_6_0:reload(false)
+		end
+		do return end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+		if true and not l_6_0._firing and l_6_0._fire_time + l_6_5 < l_6_3 then
+			l_6_0:fire_start(l_6_3)
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_6_0:fire(l_6_3)
+		end
+		do return end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_6_0._firing and l_6_0._fire_time + l_6_5 < l_6_3 then
+			l_6_0:fire(l_6_3)
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if l_6_0._firing and (l_6_0._bullets_in_clip == 0 or ((not l_6_4.forced_semi_automatic_fire and l_6_0._bullets_in_burst > 0 and l_6_0._burst_count == 0) or not not l_6_4.forced_semi_automatic_fire and (not l_6_0._sustained_burst or l_6_0._burst_count == 0))) then
+			l_6_0:fire_end(l_6_3)
+		end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	elseif l_6_0._firing then
+		l_6_0:fire_end(l_6_3)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_4._bullets_in_clip = l_6_0._bullets_in_clip
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_4._ammo_pool = l_6_0._ammo_pool
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_4._reload_ready = l_6_0._ammo_pool > 0 and l_6_0._fire_time + l_6_5 < l_6_3
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_4._reload_required = l_6_0._ammo_pool > 0 and l_6_0._bullets_in_clip == 0
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_4._firing = l_6_0._firing
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0._fire_trigger_hold = not l_6_4.forced_semi_automatic_fire
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_6_0._pause_update = not l_6_0._firing and l_6_0._fire_time + l_6_5 < l_6_3
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+FireLogic.fire_start = function(l_7_0, l_7_1)
+	local l_7_2 = assert
+	l_7_2(l_7_0._firing == false)
+	l_7_0._firing = true
+	l_7_2 = l_7_0._wdata
+	l_7_2._fire_start = true
+	l_7_2 = l_7_0._unit
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_7_2.fire_start then
+		l_7_2:fire_start(l_7_1)
+	end
+end
+
+FireLogic._reset_burst_count = function(l_8_0)
+	if l_8_0._random_burst_variation and l_8_0._bullets_in_burst then
+		l_8_0._burst_count = l_8_0._bullets_in_burst - l_8_0._random_burst_variation + l_8_0._random_generator:rand() % (2 * l_8_0._random_burst_variation)
+		local l_8_1 = assert
+		l_8_1(l_8_0._burst_count > 0)
 	else
-		A0_23._burst_count = A0_23._bullets_in_burst
+		l_8_0._burst_count = l_8_0._bullets_in_burst
 	end
 end
-function FireLogic.fire_end(A0_24, A1_25)
-	A0_24._firing = false
-	A0_24:_reset_burst_count()
-	A0_24._wdata._fire_end = true
-	if A0_24._unit:base().fire_end then
-		A0_24._unit:base():fire_end(A1_25)
+
+FireLogic.fire_end = function(l_9_0, l_9_1)
+	l_9_0._firing = false
+	l_9_0:_reset_burst_count()
+	l_9_0._wdata._fire_end = true
+	local l_9_2 = l_9_0._unit:base()
+	if l_9_2.fire_end then
+		l_9_2:fire_end(l_9_1)
 	end
 end
-function FireLogic.fire(A0_26, A1_27)
-	assert(A0_26._bullets_in_clip > 0)
-	A0_26._fire_time = A1_27
-	A0_26._bullets_in_clip = A0_26._bullets_in_clip - 1
-	A0_26._burst_count = math.max(A0_26._burst_count - 1, 0)
-	A0_26._wdata._on_fire = true
-	if A0_26._unit:base().fire then
-		A0_26._unit:base():fire(A1_27)
+
+FireLogic.fire = function(l_10_0, l_10_1)
+	local l_10_2 = assert
+	l_10_2(l_10_0._bullets_in_clip > 0)
+	l_10_0._fire_time = l_10_1
+	l_10_2 = l_10_0._bullets_in_clip
+	l_10_2 = l_10_2 - 1
+	l_10_0._bullets_in_clip = l_10_2
+	l_10_2 = math
+	l_10_2 = l_10_2.max
+	l_10_2 = l_10_2(l_10_0._burst_count - 1, 0)
+	l_10_0._burst_count = l_10_2
+	l_10_2 = l_10_0._wdata
+	l_10_2._on_fire = true
+	l_10_2 = l_10_0._unit
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_10_2.fire then
+		l_10_2:fire(l_10_1)
 	end
 end
-function FireLogic.reload(A0_28, A1_29)
-	local L2_30
-	L2_30 = A0_28._ammo_pool
-	if L2_30 > 0 then
-		L2_30 = A0_28._clip_size
-		L2_30 = L2_30 - A0_28._bullets_in_clip
-		if L2_30 > A0_28._ammo_pool then
-			L2_30 = A0_28._ammo_pool
+
+FireLogic.reload = function(l_11_0, l_11_1)
+	if l_11_0._ammo_pool > 0 then
+		if (l_11_0._ammo_pool >= l_11_0._clip_size - l_11_0._bullets_in_clip or l_11_1) and l_11_0._reload_refill and l_11_0._reload_refill < l_11_0._ammo_pool then
+			local l_11_2 = l_11_0._reload_refill
 		end
-		if A1_29 and A0_28._reload_refill and L2_30 > A0_28._reload_refill then
-			L2_30 = A0_28._reload_refill
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_11_0._bullets_in_clip = l_11_0._bullets_in_clip + l_11_2
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		if not script_debug or not script_debug.infinite_ammo or not 0 then
+			l_11_0._ammo_pool = l_11_0._ammo_pool - l_11_2
+			local l_11_5 = nil
+			assert(l_11_0._bullets_in_clip >= 0)
 		end
-		A0_28._bullets_in_clip = A0_28._bullets_in_clip + L2_30
-		L2_30 = script_debug and script_debug.infinite_ammo and 0 or L2_30
-		A0_28._ammo_pool = A0_28._ammo_pool - L2_30
-		assert(0 <= A0_28._bullets_in_clip)
+		 -- WARNING: missing end command somewhere! Added here
 	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 33 
 end
-function FireLogic.set_ammo(A0_31, A1_32)
-	local L2_33
-	L2_33 = assert
-	L2_33(A1_32 >= 0)
-	L2_33 = A0_31.max_ammo
-	L2_33 = L2_33(A0_31)
-	if L2_33 < 0 then
-		L2_33 = math.huge or L2_33
-	end
-	A1_32 = math.clamp(A1_32, 0, L2_33)
-	A0_31._ammo_pool = A1_32
-	A0_31._bullets_in_clip = 0
-	A0_31:reload(false)
-end
-function FireLogic.fill_ammo(A0_34, A1_35)
-	local L2_36
-	L2_36 = A0_34._max_ammo
-	L2_36 = L2_36 - A0_34:bullet_count()
-	A0_34._ammo_pool = A0_34._ammo_pool + math.max(0, math.min(A1_35, L2_36))
-	assert(0 <= A0_34._ammo_pool)
-	assert(A0_34._ammo_pool <= A0_34._max_ammo)
-	return (math.max(0, math.min(A1_35, L2_36)))
-end
-function FireLogic.clip_size(A0_37)
-	local L1_38
-	L1_38 = A0_37._clip_size
-	return L1_38
-end
-function FireLogic.ammo_pool(A0_39)
-	local L1_40
-	L1_40 = A0_39._ammo_pool
-	return L1_40
-end
-function FireLogic.bullet_count(A0_41)
-	return A0_41._bullets_in_clip + A0_41._ammo_pool
-end
-function FireLogic.bullet_space_left(A0_42)
-	return A0_42._max_ammo - A0_42:bullet_count()
-end
-function FireLogic.remove_bullets(A0_43, A1_44)
-	A1_44 = math.max(0, math.min(A1_44, A0_43:bullet_count()))
-	A0_43._ammo_pool = A0_43._ammo_pool - math.min(A1_44, A0_43._ammo_pool)
-	assert(0 <= A0_43._ammo_pool)
-	A1_44 = A1_44 - math.min(A1_44, A0_43._ammo_pool)
-	A0_43._bullets_in_clip = A0_43._bullets_in_clip - A1_44
-	assert(0 <= A0_43._bullets_in_clip)
-end
-function FireLogic.has_overheat(A0_45)
-	local L1_46
-	L1_46 = A0_45._overheat_threshold
-	if L1_46 then
-		L1_46 = A0_45._overheat_threshold
-		L1_46 = L1_46 > 0
-	end
-	return L1_46
-end
-function FireLogic.show_overheat_hud(A0_47)
-	local L1_48
-	L1_48 = A0_47._overheat_hud
-	return L1_48
-end
-function FireLogic.max_ammo(A0_49)
-	local L1_50
-	L1_50 = A0_49._max_ammo
-	return L1_50
-end
-FireLogicOverheat = FireLogicOverheat or class(FireLogic)
-function FireLogicOverheat.init(A0_51, A1_52)
-	FireLogic.init(A0_51, A1_52)
-	A0_51._heat = 0
-	A0_51._cooldown_time = 0
-	A0_51._is_overheated = false
-	A0_51._anim_played = false
-	A0_51._cooldown_delay = 0
-	A0_51._heat_end_time = 0
-	A0_51._overheat_cooldown_delay = A0_51._overheat_cooldown_delay or 1
-	A0_51._cooldown_to_firing_delay = A0_51._overheat_cooldown_delay
-	A0_51._overheated_to_cooldown_delay = A0_51._overheat_cooldown_delay or 1
-end
-function FireLogicOverheat.fire(A0_53, A1_54)
-	FireLogic.fire(A0_53, A1_54)
-	A0_53._heat_end_time = A1_54 + A0_53._fire_delay
-end
-function FireLogicOverheat._update_overheat_status(A0_55, A1_56, A2_57)
-	if not A0_55._is_overheated then
-		if A1_56 < A0_55._heat_end_time then
-			A0_55._heat = A0_55._heat + A2_57
-		elseif A0_55._heat >= 0 and A1_56 > A0_55._fire_time + A0_55._cooldown_delay then
-			if A0_55._cooldown then
-				A0_55._heat = A0_55._heat - A2_57 * (A0_55._overheat_threshold / A0_55._cooldown)
-			else
-				A0_55._heat = A0_55._heat - A2_57
-			end
+
+FireLogic.set_ammo = function(l_12_0, l_12_1)
+	do
+		local l_12_2 = assert
+		l_12_2(l_12_1 >= 0)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_12_2 >= 0 or not math.huge then
+			l_12_1 = math.clamp(l_12_1, 0, l_12_2)
+			l_12_0._ammo_pool = l_12_1
+			l_12_0._bullets_in_clip = 0
+			l_12_0:reload(false)
 		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
-	if A0_55._is_overheated then
-		if 0 < A0_55._overheated_to_cooldown_delay then
-			A0_55._overheated_to_cooldown_delay = A0_55._overheated_to_cooldown_delay - A2_57
-		else
-			A0_55._cooldown_time = A0_55._cooldown_time - A2_57
-			if A0_55._overheat_anim and A0_55._cooldown_time < A0_55._coldown_until_anim and not A0_55._anim_played then
-				A0_55._wdata._overheat_anim = A0_55._overheat_anim
-				A0_55._anim_played = true
-			end
-			if 0 >= A0_55._cooldown_time then
-				if 0 < A0_55._cooldown_to_firing_delay then
-					A0_55._cooldown_to_firing_delay = A0_55._cooldown_to_firing_delay - A2_57
-				else
-					A0_55._anim_played = false
-					A0_55._is_overheated = false
-					A0_55._overheated_to_cooldown_delay = A0_55._overheat_cooldown_delay
-					A0_55._cooldown_to_firing_delay = A0_55._overheat_cooldown_delay
-					if A0_55._run_overheat_sequence then
-						managers.sequence:run_sequence_simple("overheat_off", A0_55._unit)
-					end
-				end
-			end
-		end
-	end
-	if A0_55._heat >= A0_55._overheat_threshold then
-		A0_55._cooldown_time = A0_55._overheat_cooldown
-		A0_55._is_overheated = true
-		A0_55._heat = 0
-		if A0_55._firing then
-			A0_55:fire_end(A1_56)
-		end
-		if A0_55._overheat_effect then
-			World:effect_manager():spawn({
-				effect = A0_55._overheat_effect,
-				parent = A0_55._unit:get_object("fire")
-			})
-		end
-		if A0_55._run_overheat_sequence then
-			managers.sequence:run_sequence_simple("overheat_on", A0_55._unit)
-		end
-	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 15 
 end
-function FireLogicOverheat.update(A0_58, A1_59, A2_60, A3_61)
-	if not A0_58._is_overheated then
-		FireLogic.update(A0_58, A1_59, A2_60, A3_61)
-	end
-	A0_58:_update_overheat_status(A2_60, A3_61)
+
+FireLogic.fill_ammo = function(l_13_0, l_13_1)
+	local l_13_2 = l_13_0._max_ammo - l_13_0:bullet_count()
+	local l_13_3 = math.max(0, math.min(l_13_1, l_13_2))
+	l_13_0._ammo_pool = l_13_0._ammo_pool + l_13_3
+	local l_13_4 = assert
+	l_13_4(l_13_0._ammo_pool >= 0)
+	l_13_4 = assert
+	l_13_4(l_13_0._ammo_pool <= l_13_0._max_ammo)
+	return l_13_3
 end
-function FireLogicOverheat.get_overheat_percent(A0_62)
-	local L1_63, L2_64, L3_65
-	L2_64 = A0_62._is_overheated
-	if not L2_64 then
-		L2_64 = A0_62._heat
-		L3_65 = A0_62._overheat_threshold
-		L1_63 = L2_64 / L3_65
+
+FireLogic.clip_size = function(l_14_0)
+	return l_14_0._clip_size
+end
+
+FireLogic.ammo_pool = function(l_15_0)
+	return l_15_0._ammo_pool
+end
+
+FireLogic.bullet_count = function(l_16_0)
+	return l_16_0._bullets_in_clip + l_16_0._ammo_pool
+end
+
+FireLogic.bullet_space_left = function(l_17_0)
+	return l_17_0._max_ammo - l_17_0:bullet_count()
+end
+
+FireLogic.remove_bullets = function(l_18_0, l_18_1)
+	l_18_1 = math.max(0, math.min(l_18_1, l_18_0:bullet_count()))
+	local l_18_2 = math.min(l_18_1, l_18_0._ammo_pool)
+	l_18_0._ammo_pool = l_18_0._ammo_pool - l_18_2
+	local l_18_3 = assert
+	l_18_3(l_18_0._ammo_pool >= 0)
+	l_18_1 = l_18_1 - l_18_2
+	l_18_3 = l_18_0._bullets_in_clip
+	l_18_3 = l_18_3 - (l_18_1)
+	l_18_0._bullets_in_clip = l_18_3
+	l_18_3 = assert
+	l_18_3(l_18_0._bullets_in_clip >= 0)
+end
+
+FireLogic.has_overheat = function(l_19_0)
+	return not l_19_0._overheat_threshold or l_19_0._overheat_threshold > 0
+end
+
+FireLogic.show_overheat_hud = function(l_20_0)
+	return l_20_0._overheat_hud
+end
+
+FireLogic.max_ammo = function(l_21_0)
+	return l_21_0._max_ammo
+end
+
+if not FireLogicOverheat then
+	FireLogicOverheat = class(FireLogic)
+end
+FireLogicOverheat.init = function(l_22_0, l_22_1)
+	FireLogic.init(l_22_0, l_22_1)
+	l_22_0._heat = 0
+	l_22_0._cooldown_time = 0
+	l_22_0._is_overheated = false
+	l_22_0._anim_played = false
+	l_22_0._cooldown_delay = 0
+	l_22_0._heat_end_time = 0
+	l_22_0._overheat_cooldown_delay = l_22_0._overheat_cooldown_delay or 1
+	l_22_0._cooldown_to_firing_delay = l_22_0._overheat_cooldown_delay
+	l_22_0._overheated_to_cooldown_delay = l_22_0._overheat_cooldown_delay or 1
+end
+
+FireLogicOverheat.fire = function(l_23_0, l_23_1)
+	FireLogic.fire(l_23_0, l_23_1)
+	l_23_0._heat_end_time = l_23_1 + l_23_0._fire_delay
+end
+
+FireLogicOverheat._update_overheat_status = function(l_24_0, l_24_1, l_24_2)
+	if not l_24_0._is_overheated then
+		if l_24_1 < l_24_0._heat_end_time then
+			l_24_0._heat = l_24_0._heat + l_24_2
+		end
+	elseif l_24_0._heat >= 0 and l_24_0._fire_time + l_24_0._cooldown_delay < l_24_1 then
+		if l_24_0._cooldown then
+			l_24_0._heat = l_24_0._heat - l_24_2 * (l_24_0._overheat_threshold / l_24_0._cooldown)
+		end
 	else
-		L2_64 = A0_62._cooldown_time
-		L3_65 = A0_62._overheat_cooldown
-		L1_63 = L2_64 / L3_65
+		l_24_0._heat = l_24_0._heat - l_24_2
 	end
-	if L1_63 < 0 then
-		L1_63 = 0
+	if l_24_0._is_overheated then
+		if l_24_0._overheated_to_cooldown_delay > 0 then
+			l_24_0._overheated_to_cooldown_delay = l_24_0._overheated_to_cooldown_delay - l_24_2
+		end
+	else
+		l_24_0._cooldown_time = l_24_0._cooldown_time - l_24_2
+		if l_24_0._overheat_anim and l_24_0._cooldown_time < l_24_0._coldown_until_anim and not l_24_0._anim_played then
+			l_24_0._wdata._overheat_anim = l_24_0._overheat_anim
+			l_24_0._anim_played = true
+		end
+	if l_24_0._cooldown_time <= 0 then
+		end
+		if l_24_0._cooldown_to_firing_delay > 0 then
+			l_24_0._cooldown_to_firing_delay = l_24_0._cooldown_to_firing_delay - l_24_2
+		end
+	else
+		l_24_0._anim_played = false
+		l_24_0._is_overheated = false
+		l_24_0._overheated_to_cooldown_delay = l_24_0._overheat_cooldown_delay
+		l_24_0._cooldown_to_firing_delay = l_24_0._overheat_cooldown_delay
+	if l_24_0._run_overheat_sequence then
+		end
+		managers.sequence:run_sequence_simple("overheat_off", l_24_0._unit)
 	end
-	return L1_63
+	if l_24_0._overheat_threshold <= l_24_0._heat then
+		l_24_0._cooldown_time = l_24_0._overheat_cooldown
+		l_24_0._is_overheated = true
+		l_24_0._heat = 0
+		if l_24_0._firing then
+			l_24_0:fire_end(l_24_1)
+		end
+		if l_24_0._overheat_effect then
+			local l_24_3, l_24_4 = World:effect_manager():spawn, World:effect_manager()
+			local l_24_5 = {}
+			l_24_5.effect = l_24_0._overheat_effect
+			l_24_5.parent = l_24_0._unit:get_object("fire")
+			l_24_3(l_24_4, l_24_5)
+		end
+	if l_24_0._run_overheat_sequence then
+		end
+		managers.sequence:run_sequence_simple("overheat_on", l_24_0._unit)
+	end
 end
-function FireLogicOverheat.is_overheated(A0_66)
-	local L1_67
-	L1_67 = A0_66._is_overheated
-	return L1_67
+
+FireLogicOverheat.update = function(l_25_0, l_25_1, l_25_2, l_25_3)
+	if not l_25_0._is_overheated then
+		FireLogic.update(l_25_0, l_25_1, l_25_2, l_25_3)
+	end
+	l_25_0:_update_overheat_status(l_25_2, l_25_3)
 end
-function FireLogicOverheat.destroy(A0_68)
-	local L1_69
+
+FireLogicOverheat.get_overheat_percent = function(l_26_0)
+	local l_26_1 = nil
+	if not l_26_0._is_overheated then
+		l_26_1 = l_26_0._heat / l_26_0._overheat_threshold
+	else
+		l_26_1 = l_26_0._cooldown_time / l_26_0._overheat_cooldown
+	end
+	if l_26_1 < 0 then
+		l_26_1 = 0
+	end
+	return l_26_1
 end
+
+FireLogicOverheat.is_overheated = function(l_27_0)
+	return l_27_0._is_overheated
+end
+
+FireLogicOverheat.destroy = function(l_28_0)
+end
+
+

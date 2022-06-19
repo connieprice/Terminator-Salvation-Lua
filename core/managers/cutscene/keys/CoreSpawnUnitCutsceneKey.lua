@@ -1,5 +1,7 @@
 require("core/managers/cutscene/keys/CoreSetupCutsceneKeyBase")
-CoreSpawnUnitCutsceneKey = CoreSpawnUnitCutsceneKey or class(CoreSetupCutsceneKeyBase)
+if not CoreSpawnUnitCutsceneKey then
+	CoreSpawnUnitCutsceneKey = class(CoreSetupCutsceneKeyBase)
+end
 CoreSpawnUnitCutsceneKey.ELEMENT_NAME = "spawn_unit"
 CoreSpawnUnitCutsceneKey.NAME = "Spawn Unit"
 CoreSpawnUnitCutsceneKey:register_serialized_attribute("name", "")
@@ -18,231 +20,272 @@ CoreSpawnUnitCutsceneKey.control_for_unit_type = CoreSetupCutsceneKeyBase.standa
 CoreSpawnUnitCutsceneKey.control_for_divider = CoreSetupCutsceneKeyBase.standard_divider_control
 CoreSpawnUnitCutsceneKey.control_for_parent_unit_name = CoreSetupCutsceneKeyBase.standard_combo_box_control
 CoreSpawnUnitCutsceneKey.control_for_parent_object_name = CoreSetupCutsceneKeyBase.standard_combo_box_control
-function CoreSpawnUnitCutsceneKey.__tostring(A0_0)
-	local L2_1
-	L2_1 = string
-	L2_1 = L2_1.format
-	return L2_1("Spawn %s named \"%s\".", A0_0:unit_type(), A0_0:name())
+CoreSpawnUnitCutsceneKey.__tostring = function(l_1_0)
+	local l_1_1 = string.format
+	local l_1_2 = "Spawn %s named \"%s\"."
+	local l_1_3 = l_1_0:unit_type()
+	local l_1_4, l_1_5 = l_1_0:name(), .end
+	return l_1_1(l_1_2, l_1_3, l_1_4, l_1_5)
 end
-function CoreSpawnUnitCutsceneKey.prime(A0_2, A1_3)
-	if A0_2:is_valid() then
-		World:preload_unit(A0_2:unit_type())
+
+CoreSpawnUnitCutsceneKey.prime = function(l_2_0, l_2_1)
+	if l_2_0:is_valid() then
+		World:preload_unit(l_2_0:unit_type())
 	end
-	A0_2:_spawn_unit()
+	l_2_0:_spawn_unit()
 end
-function CoreSpawnUnitCutsceneKey.unload(A0_4, A1_5)
-	if A0_4._cast then
-		A0_4:_delete_unit()
+
+CoreSpawnUnitCutsceneKey.unload = function(l_3_0, l_3_1)
+	if l_3_0._cast then
+		l_3_0:_delete_unit()
 	end
 end
-function CoreSpawnUnitCutsceneKey.play(A0_6, A1_7, A2_8, A3_9)
-	A0_6:_reparent_unit()
+
+CoreSpawnUnitCutsceneKey.play = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	l_4_0:_reparent_unit()
 end
-function CoreSpawnUnitCutsceneKey.is_valid_unit_category(A0_10, A1_11)
+
+CoreSpawnUnitCutsceneKey.is_valid_unit_category = function(l_5_0, l_5_1)
 	if not Application:ews_enabled() then
 		return true
+	elseif l_5_1 ~= nil then
+		local l_5_2 = table.contains(UnitDatabase:get_unit_types(), l_5_1)
 	else
-		return A1_11 ~= nil and table.contains(UnitDatabase:get_unit_types(), A1_11)
-	end
-end
-function CoreSpawnUnitCutsceneKey.is_valid_unit_type(A0_12, A1_13)
-	return A1_13 ~= nil and UnitDatabase:get_unit_data(A1_13) ~= nil
-end
-function CoreSpawnUnitCutsceneKey.is_valid_name(A0_14, A1_15)
-	if A1_15 == nil or #A1_15 <= 3 or string.match(A1_15, "[a-z_0-9]+") ~= A1_15 then
 		return false
 	end
-	return A0_14:_unit(A1_15, true) == nil or A0_14:_unit(A1_15, true) == A0_14._spawned_unit
 end
-function CoreSpawnUnitCutsceneKey.control_for_database_browser_button(A0_16, A1_17)
-	local L2_18
-	L2_18 = EWS
-	L2_18 = L2_18.Button
-	L2_18 = L2_18(L2_18, A1_17, "Pick From Database Browser", "", "")
-	L2_18:connect("EVT_COMMAND_BUTTON_CLICKED", callback(A0_16, A0_16, "_on_database_browser_button_clicked"), L2_18)
-	return L2_18
+
+CoreSpawnUnitCutsceneKey.is_valid_unit_type = function(l_6_0, l_6_1)
+	return l_6_1 ~= nil and UnitDatabase:get_unit_data(l_6_1) ~= nil
 end
-function CoreSpawnUnitCutsceneKey.refresh_control_for_unit_category(A0_19, A1_20)
-	local L2_21, L3_22, L4_23, L5_24, L6_25, L7_26
-	L2_21 = A1_20.freeze
-	L2_21(L3_22)
-	L2_21 = A1_20.clear
-	L2_21(L3_22)
-	L2_21 = A0_19.unit_category
-	L2_21 = L2_21(L3_22)
-	L7_26 = L4_23(L5_24)
-	for L6_25, L7_26 in L3_22(L4_23, L5_24, L6_25, L7_26, L4_23(L5_24)) do
-		A1_20:append(L7_26)
-		if L7_26 == L2_21 then
-			A1_20:set_value(L2_21)
+
+CoreSpawnUnitCutsceneKey.is_valid_name = function(l_7_0, l_7_1)
+	if l_7_1 == nil or #l_7_1 <= 3 or string.match(l_7_1, "[a-z_0-9]+") ~= l_7_1 then
+		return false
+	end
+	local l_7_2 = l_7_0:_unit(l_7_1, true)
+	return l_7_2 == nil or l_7_2 == l_7_0._spawned_unit
+end
+
+CoreSpawnUnitCutsceneKey.control_for_database_browser_button = function(l_8_0, l_8_1)
+	local l_8_2 = EWS:Button(l_8_1, "Pick From Database Browser", "", "")
+	l_8_2:connect("EVT_COMMAND_BUTTON_CLICKED", callback(l_8_0, l_8_0, "_on_database_browser_button_clicked"), l_8_2)
+	return l_8_2
+end
+
+CoreSpawnUnitCutsceneKey.refresh_control_for_unit_category = function(l_9_0, l_9_1)
+	l_9_1:freeze()
+	l_9_1:clear()
+	local l_9_2 = l_9_0:unit_category()
+	local l_9_6, l_9_7 = ipairs, UnitDatabase:get_unit_types()
+	l_9_6 = l_9_6(l_9_7)
+	for i_0,i_1 in l_9_6 do
+		l_9_1:append(l_9_5)
+		if l_9_5 == l_9_2 then
+			l_9_1:set_value(l_9_2)
 		end
 	end
-	L3_22(L4_23)
+	l_9_1:thaw()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSpawnUnitCutsceneKey.refresh_control_for_unit_type(A0_27, A1_28)
-	local L2_29, L3_30, L4_31, L5_32, L6_33, L7_34, L8_35
-	L3_30 = A1_28
-	L2_29 = A1_28.freeze
-	L2_29(L3_30)
-	L3_30 = A1_28
-	L2_29 = A1_28.clear
-	L2_29(L3_30)
-	L3_30 = A0_27
-	L2_29 = A0_27.unit_type
-	L2_29 = L2_29(L3_30)
-	L3_30 = A0_27.unit_category
-	L3_30 = L3_30(L4_31)
-	if L3_30 then
-		L3_30 = table
-		L3_30 = L3_30.collect
-		L7_34 = A0_27
-		L8_35 = L6_33(L7_34)
-		L3_30 = L3_30(L4_31, L5_32)
-	else
-		L3_30 = L3_30 or {}
-	end
-	for L7_34, L8_35 in L4_31(L5_32) do
-		A1_28:append(L8_35)
-		if L8_35 == L2_29 then
-			A1_28:set_value(L2_29)
+
+CoreSpawnUnitCutsceneKey.refresh_control_for_unit_type = function(l_10_0, l_10_1)
+	l_10_1:freeze()
+	l_10_1:clear()
+	local l_10_2 = l_10_0:unit_type()
+	if l_10_0:unit_category() then
+		local l_10_8, l_10_9, l_10_10, l_10_11, l_10_12, l_10_13, l_10_14, l_10_15 = table.collect, UnitDatabase:get_unit_data_by_type, UnitDatabase, l_10_0:unit_category(), .end
+		l_10_9 = l_10_9(l_10_10, l_10_11, l_10_12, l_10_13, l_10_14, l_10_15)
+		l_10_10 = function(l_11_0)
+			local l_11_1, l_11_2 = l_11_0:name, l_11_0
+			return l_11_1(l_11_2)
+    end
+		l_10_8 = l_10_8(l_10_9, l_10_10)
+	if not l_10_8 then
 		end
 	end
-	L4_31(L5_32)
-end
-function CoreSpawnUnitCutsceneKey.refresh_control_for_parent_unit_name(A0_36, A1_37)
-	local L2_38, L3_39, L4_40, L5_41, L6_42, L7_43, L8_44
-	L3_39 = A1_37
-	L2_38 = A1_37.freeze
-	L2_38(L3_39)
-	L3_39 = A1_37
-	L2_38 = A1_37.clear
-	L2_38(L3_39)
-	L2_38 = table
-	L2_38 = L2_38.exclude
-	L3_39 = A0_36._unit_names
-	L3_39 = L3_39(L4_40)
-	L8_44 = L4_40(L5_41)
-	L2_38 = L2_38(L3_39, L4_40, L5_41, L6_42, L7_43, L8_44, L4_40(L5_41))
-	L3_39 = table
-	L3_39 = L3_39.empty
-	L3_39 = L3_39(L4_40)
-	if L3_39 then
-		L3_39 = A1_37.set_enabled
-		L3_39(L4_40, L5_41)
-	else
-		L3_39 = A1_37.set_enabled
-		L3_39(L4_40, L5_41)
-		L3_39 = A0_36.parent_unit_name
-		L3_39 = L3_39(L4_40)
-		for L7_43, L8_44 in L4_40(L5_41) do
-			A1_37:append(L8_44)
-			if L8_44 == L3_39 then
-				A1_37:set_value(L3_39)
+	do
+		local l_10_3, l_10_4 = nil
+	end
+	l_10_9 = ipairs
+	l_10_10, l_10_8 = l_10_8, {}
+	l_10_9 = l_10_9(l_10_10)
+	for l_10_12,l_10_13 in l_10_9 do
+		do
+			local l_10_5, l_10_6, l_10_7 = nil
+			l_10_14, l_10_15 = l_10_1:append, l_10_1
+			l_10_5 = l_10_13
+			l_10_14(l_10_15, l_10_5)
+			if l_10_13 == l_10_2 then
+				l_10_14, l_10_15 = l_10_1:set_value, l_10_1
+				l_10_5 = l_10_2
+				l_10_14(l_10_15, l_10_5)
 			end
 		end
+		l_10_1:thaw()
 	end
-	L3_39 = A1_37.thaw
-	L3_39(L4_40)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSpawnUnitCutsceneKey.refresh_control_for_parent_object_name(A0_45, A1_46)
-	local L2_47, L3_48, L4_49, L5_50, L6_51, L7_52, L8_53
-	L3_48 = A1_46
-	L2_47 = A1_46.freeze
-	L2_47(L3_48)
-	L3_48 = A1_46
-	L2_47 = A1_46.clear
-	L2_47(L3_48)
-	L3_48 = A0_45
-	L2_47 = A0_45._unit_object_names
-	L8_53 = L4_49(L5_50)
-	L2_47 = L2_47(L3_48, L4_49, L5_50, L6_51, L7_52, L8_53, L4_49(L5_50))
-	L3_48 = #L2_47
-	if L3_48 == 0 then
-		L3_48 = A1_46.set_enabled
-		L3_48(L4_49, L5_50)
+
+CoreSpawnUnitCutsceneKey.refresh_control_for_parent_unit_name = function(l_11_0, l_11_1)
+	l_11_1:freeze()
+	l_11_1:clear()
+	local l_11_7, l_11_8 = table.exclude, l_11_0:_unit_names()
+	l_11_7 = l_11_7(l_11_8, l_11_0:name())
+	local l_11_2 = nil
+	l_11_8 = table
+	l_11_8 = l_11_8.empty
+	l_11_2 = l_11_7
+	l_11_8 = l_11_8(l_11_2)
+	if l_11_8 then
+		l_11_8, l_11_2 = l_11_1:set_enabled, l_11_1
+		l_11_8(l_11_2, false)
 	else
-		L3_48 = A1_46.set_enabled
-		L3_48(L4_49, L5_50)
-		L3_48 = A0_45.parent_object_name
-		L3_48 = L3_48(L4_49)
-		for L7_52, L8_53 in L4_49(L5_50) do
-			A1_46:append(L8_53)
-			if L8_53 == L3_48 then
-				A1_46:set_value(L3_48)
+		l_11_8, l_11_2 = l_11_1:set_enabled, l_11_1
+		l_11_8(l_11_2, true)
+		l_11_8, l_11_2 = l_11_0:parent_unit_name, l_11_0
+		l_11_8 = l_11_8(l_11_2)
+		local l_11_3 = nil
+		l_11_2 = pairs
+		l_11_3 = l_11_7
+		l_11_2 = l_11_2(l_11_3)
+		for i_0,i_1 in l_11_2 do
+			l_11_1:append(l_11_6)
+			if l_11_6 == l_11_8 then
+				l_11_1:set_value(l_11_8)
 			end
 		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
-	L3_48 = A1_46.thaw
-	L3_48(L4_49)
+	l_11_8(l_11_1)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreSpawnUnitCutsceneKey.on_attribute_changed(A0_54, A1_55, A2_56, A3_57)
-	assert(A0_54._cast)
-	if A0_54._spawned_unit == nil then
-		A0_54:_spawn_unit()
-	elseif A1_55 == "unit_type" then
-		A0_54._cast:delete_unit(A0_54:name())
-		A0_54:_spawn_unit()
-	elseif A1_55 == "name" then
-		assert(A0_54:_unit(A2_56, true) == nil or A0_54:_unit(A2_56, true) == A0_54._spawned_unit)
-		A0_54._cast:rename_unit(A3_57, A2_56)
-	elseif A1_55 == "parent_object_name" or A1_55 == "offset" or A1_55 == "rotation" then
-		A0_54:_reparent_unit()
+
+CoreSpawnUnitCutsceneKey.refresh_control_for_parent_object_name = function(l_12_0, l_12_1)
+	l_12_1:freeze()
+	l_12_1:clear()
+	local l_12_7, l_12_8 = l_12_0:_unit_object_names, l_12_0
+	l_12_7 = l_12_7(l_12_8, l_12_0:parent_unit_name())
+	local l_12_2 = nil
+	l_12_8 = #l_12_7
+	if l_12_8 == 0 then
+		l_12_8, l_12_2 = l_12_1:set_enabled, l_12_1
+		l_12_8(l_12_2, false)
+	else
+		l_12_8, l_12_2 = l_12_1:set_enabled, l_12_1
+		l_12_8(l_12_2, true)
+		l_12_8, l_12_2 = l_12_0:parent_object_name, l_12_0
+		l_12_8 = l_12_8(l_12_2)
+		local l_12_3 = nil
+		l_12_2 = ipairs
+		l_12_3 = l_12_7
+		l_12_2 = l_12_2(l_12_3)
+		for i_0,i_1 in l_12_2 do
+			l_12_1:append(l_12_6)
+			if l_12_6 == l_12_8 then
+				l_12_1:set_value(l_12_8)
+			end
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+	l_12_8(l_12_1)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+CoreSpawnUnitCutsceneKey.on_attribute_changed = function(l_13_0, l_13_1, l_13_2, l_13_3)
+	assert(l_13_0._cast)
+	if l_13_0._spawned_unit == nil then
+		l_13_0:_spawn_unit()
+	elseif l_13_1 == "unit_type" then
+		l_13_0._cast:delete_unit(l_13_0:name())
+		l_13_0:_spawn_unit()
+	elseif l_13_1 == "name" then
+		local l_13_4 = l_13_0:_unit(l_13_2, true)
+		do
+			local l_13_5 = assert
+			l_13_5(l_13_4 == nil or l_13_4 == l_13_0._spawned_unit)
+			l_13_5 = l_13_0._cast
+			l_13_5(l_13_5, l_13_3, l_13_2)
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	elseif l_13_1 == "parent_object_name" or l_13_1 == "offset" or l_13_1 == "rotation" then
+		l_13_0:_reparent_unit()
 	end
 end
-function CoreSpawnUnitCutsceneKey._spawn_unit(A0_58)
-	if A0_58:is_valid() and A0_58._cast and A0_58._cast:unit(A0_58:name()) == nil then
-		A0_58._spawned_unit = A0_58._cast:spawn_unit(A0_58:name(), A0_58:unit_type())
-		A0_58:_reparent_unit()
+
+CoreSpawnUnitCutsceneKey._spawn_unit = function(l_14_0)
+	if l_14_0:is_valid() and l_14_0._cast and l_14_0._cast:unit(l_14_0:name()) == nil then
+		l_14_0._spawned_unit = l_14_0._cast:spawn_unit(l_14_0:name(), l_14_0:unit_type())
+		l_14_0:_reparent_unit()
 	end
 end
-function CoreSpawnUnitCutsceneKey._delete_unit(A0_59)
-	if A0_59:is_valid() and A0_59._cast then
-		A0_59._cast:delete_unit(A0_59:name())
+
+CoreSpawnUnitCutsceneKey._delete_unit = function(l_15_0)
+	if l_15_0:is_valid() and l_15_0._cast then
+		l_15_0._cast:delete_unit(l_15_0:name())
 	end
 end
-function CoreSpawnUnitCutsceneKey._reparent_unit(A0_60)
-	if A0_60._spawned_unit then
-		A0_60._spawned_unit:unlink()
-		if A0_60:_unit_object(A0_60:parent_unit_name(), A0_60:parent_object_name(), true) then
-			A0_60:_unit(A0_60:parent_unit_name()):link(A0_60:_unit_object(A0_60:parent_unit_name(), A0_60:parent_object_name(), true):name(), A0_60._spawned_unit)
-			A0_60._spawned_unit:set_local_position(A0_60:offset())
-			A0_60._spawned_unit:set_local_rotation(A0_60:rotation())
-			A0_60._cast:_set_unit_and_children_visible(A0_60._spawned_unit, A0_60._cast:unit_visible(A0_60:name()) and A0_60:_unit(A0_60:parent_unit_name()):visible())
+
+CoreSpawnUnitCutsceneKey._reparent_unit = function(l_16_0)
+	if l_16_0._spawned_unit then
+		l_16_0._spawned_unit:unlink()
+		local l_16_1 = l_16_0:_unit_object(l_16_0:parent_unit_name(), l_16_0:parent_object_name(), true)
+	if l_16_1 then
+		end
+		local l_16_2 = l_16_0:_unit(l_16_0:parent_unit_name())
+		l_16_2:link(l_16_1:name(), l_16_0._spawned_unit)
+		l_16_0._spawned_unit:set_local_position(l_16_0:offset())
+		l_16_0._spawned_unit:set_local_rotation(l_16_0:rotation())
+		if l_16_0._cast:unit_visible(l_16_0:name()) then
+			l_16_0._cast:_set_unit_and_children_visible(l_16_0._spawned_unit, l_16_2:visible())
 		end
 	end
 end
-function CoreSpawnUnitCutsceneKey.update_gui(A0_61, A1_62, A2_63)
-	if A0_61._database_browser and A0_61._database_browser:update(A1_62, A2_63) then
-		if alive(A0_61._cutscene_editor_window) then
-			A0_61._cutscene_editor_window:set_enabled(true)
-			A0_61._cutscene_editor_window:set_focus()
+
+CoreSpawnUnitCutsceneKey.update_gui = function(l_17_0, l_17_1, l_17_2)
+	if l_17_0._database_browser and l_17_0._database_browser:update(l_17_1, l_17_2) then
+		if alive(l_17_0._cutscene_editor_window) then
+			l_17_0._cutscene_editor_window:set_enabled(true)
+			l_17_0._cutscene_editor_window:set_focus()
 		end
-		A0_61._cutscene_editor_window = nil
-		A0_61._database_browser = nil
+		l_17_0._cutscene_editor_window = nil
+		l_17_0._database_browser = nil
 	end
 end
-function CoreSpawnUnitCutsceneKey._on_database_browser_button_clicked(A0_64, A1_65)
-	A0_64._cutscene_editor_window = A1_65:parent()
-	while A0_64._cutscene_editor_window and type_name(A0_64._cutscene_editor_window) ~= "EWSFrame" do
-		A0_64._cutscene_editor_window = A0_64._cutscene_editor_window:parent()
+
+CoreSpawnUnitCutsceneKey._on_database_browser_button_clicked = function(l_18_0, l_18_1)
+	l_18_0._cutscene_editor_window = l_18_1:parent()
+	while l_18_0._cutscene_editor_window and type_name(l_18_0._cutscene_editor_window) ~= "EWSFrame" do
+		l_18_0._cutscene_editor_window = l_18_0._cutscene_editor_window:parent()
 	end
-	assert(A0_64._cutscene_editor_window, "Button is not inside a top-level window.")
-	A0_64._cutscene_editor_window:set_enabled(false)
-	A0_64._database_browser = CoreDBDialog:new("unit", A0_64, A0_64._on_database_browser_entry_selected, ProjectDatabase)
+	assert(l_18_0._cutscene_editor_window, "Button is not inside a top-level window.")
+	l_18_0._cutscene_editor_window:set_enabled(false)
+	l_18_0._database_browser = CoreDBDialog:new("unit", l_18_0, l_18_0._on_database_browser_entry_selected, ProjectDatabase)
 end
-function CoreSpawnUnitCutsceneKey._on_database_browser_entry_selected(A0_66)
-	local L1_67
-	L1_67 = A0_66._database_browser
-	if L1_67 then
-		L1_67 = A0_66._database_browser
-		L1_67 = L1_67.get_value
-		L1_67 = L1_67(L1_67)
+
+CoreSpawnUnitCutsceneKey._on_database_browser_entry_selected = function(l_19_0)
+	if l_19_0._database_browser then
+		local l_19_1, l_19_2, l_19_3, l_19_4 = l_19_0._database_browser:get_value()
 	end
-	assert(L1_67, "Callback should only be called if an entry was selected.")
-	if UnitDatabase:get_unit_data(L1_67:name()) then
-		A0_66:set_unit_category(UnitDatabase:get_unit_data(L1_67:name()):type())
-		A0_66:set_unit_type(UnitDatabase:get_unit_data(L1_67:name()):name())
-		A0_66:refresh_control_for_attribute("unit_category")
-		A0_66:refresh_control_for_attribute("unit_type")
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	assert(l_19_1, "Callback should only be called if an entry was selected.")
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	local l_19_5 = nil
+	if UnitDatabase:get_unit_data(l_19_1:name()) then
+		l_19_0:set_unit_category(UnitDatabase:get_unit_data(l_19_1:name()):type())
+		l_19_0:set_unit_type(UnitDatabase:get_unit_data(l_19_1:name()):name())
+		l_19_0:refresh_control_for_attribute("unit_category")
+		l_19_0:refresh_control_for_attribute("unit_type")
 	end
 end
+
+

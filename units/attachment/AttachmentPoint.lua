@@ -1,56 +1,86 @@
-AttachmentPoint = AttachmentPoint or class()
-function AttachmentPoint.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._unit = A1_1
-	A0_0._name = A2_2
-	A0_0._object = A3_3
-	A0_0._attached_units = {}
+if not AttachmentPoint then
+	AttachmentPoint = class()
 end
-function AttachmentPoint.destroy(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9
-	for L4_8, L5_9 in L1_5(L2_6) do
-		if alive(L5_9) and L5_9:attachment() then
-			L5_9:attachment():detached_from_unit(A0_4._unit)
+AttachmentPoint.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._unit = l_1_1
+	l_1_0._name = l_1_2
+	l_1_0._object = l_1_3
+	l_1_0._attached_units = {}
+end
+
+AttachmentPoint.destroy = function(l_2_0)
+	local l_2_4, l_2_5, l_2_6, l_2_7, l_2_8, l_2_9 = nil
+	for i_0,i_1 in pairs(l_2_0._attached_units) do
+		if alive(i_1) and i_1:attachment() then
+			i_1:attachment():detached_from_unit(l_2_0._unit)
 		end
 	end
 end
-function AttachmentPoint.valid(A0_10)
-	return alive(A0_10._unit)
+
+AttachmentPoint.valid = function(l_3_0)
+	local l_3_1 = alive
+	local l_3_2 = l_3_0._unit
+	return l_3_1(l_3_2)
 end
-function AttachmentPoint.name(A0_11)
-	local L1_12
-	L1_12 = A0_11._name
-	return L1_12
+
+AttachmentPoint.name = function(l_4_0)
+	return l_4_0._name
 end
-function AttachmentPoint.position(A0_13)
-	return A0_13._object:position()
+
+AttachmentPoint.position = function(l_5_0)
+	local l_5_1, l_5_2 = l_5_0._object:position, l_5_0._object
+	return l_5_1(l_5_2)
 end
-function AttachmentPoint.rotation(A0_14)
-	return A0_14._object:rotation()
+
+AttachmentPoint.rotation = function(l_6_0)
+	local l_6_1, l_6_2 = l_6_0._object:rotation, l_6_0._object
+	return l_6_1(l_6_2)
 end
-function AttachmentPoint.attach_unit(A0_15, A1_16, A2_17)
-	assert(A1_16:get_object(A2_17))
-	assert(TableAlgorithms.count_if(A0_15._attached_units, function(A0_18)
-		return A0_18 == _UPVALUE0_
-	end) == 0)
-	A0_15._unit:link(A0_15._object:name(), A1_16, A2_17)
-	table.insert(A0_15._attached_units, A1_16)
-	if A1_16:attachment() then
-		A1_16:attachment():attached_to_unit(A0_15._unit)
+
+AttachmentPoint.attach_unit = function(l_7_0, l_7_1, l_7_2)
+	assert(l_7_1:get_object(l_7_2))
+	local l_7_3 = assert
+	l_7_3(TableAlgorithms.count_if(l_7_0._attached_units, function(l_8_0)
+		-- upvalues: l_7_1
+		return l_8_0 == l_7_1
+  end) == 0)
+	l_7_3 = l_7_0._unit
+	l_7_3(l_7_3, l_7_0._object:name(), l_7_1, l_7_2)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_3(l_7_0._attached_units, l_7_1)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_7_3 then
+		l_7_3:attached_to_unit(l_7_0._unit)
 	end
 end
-function AttachmentPoint.detach_unit(A0_19, A1_20)
-	assert(TableAlgorithms.count_if(A0_19._attached_units, function(A0_21)
-		return A0_21 == _UPVALUE0_
-	end) == 1)
-	TableAlgorithms.remove_if(A0_19._attached_units, function(A0_22)
-		return A0_22 == _UPVALUE0_
-	end)
-	if A1_20:attachment() then
-		A1_20:attachment():detached_from_unit(A0_19._unit)
+
+AttachmentPoint.detach_unit = function(l_8_0, l_8_1)
+	local l_8_2 = assert
+	l_8_2(TableAlgorithms.count_if(l_8_0._attached_units, function(l_9_0)
+		-- upvalues: l_8_1
+		return l_9_0 == l_8_1
+  end) == 1)
+	l_8_2 = TableAlgorithms
+	l_8_2 = l_8_2.remove_if
+	l_8_2(l_8_0._attached_units, function(l_10_0)
+		-- upvalues: l_8_1
+		return l_10_0 == l_8_1
+  end)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_8_2 then
+		l_8_2:detached_from_unit(l_8_0._unit)
 	end
 end
-function AttachmentPoint.attached_units(A0_23)
-	local L1_24
-	L1_24 = A0_23._attached_units
-	return L1_24
+
+AttachmentPoint.attached_units = function(l_9_0)
+	return l_9_0._attached_units
 end
+
+

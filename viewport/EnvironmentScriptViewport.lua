@@ -1,48 +1,34 @@
-EnvironmentScriptViewport = EnvironmentScriptViewport or class(CoreScriptViewport.ScriptViewport)
-function EnvironmentScriptViewport.environment_change_name(A0_0)
-	local L1_1
-	L1_1 = A0_0._environment_change
-	if L1_1 then
-		L1_1 = A0_0._environment_change
-		L1_1 = L1_1.environment_name
-		return L1_1
+if not EnvironmentScriptViewport then
+	EnvironmentScriptViewport = class(CoreScriptViewport.ScriptViewport)
+end
+EnvironmentScriptViewport.environment_change_name = function(l_1_0)
+	if l_1_0._environment_change then
+		return l_1_0._environment_change.environment_name
 	end
 end
-function EnvironmentScriptViewport.environment_change_alternative(A0_2)
-	local L1_3
-	L1_3 = A0_2._environment_change
-	if L1_3 then
-		L1_3 = A0_2._environment_change
-		L1_3 = L1_3.alternative_environment
-		return L1_3
+
+EnvironmentScriptViewport.environment_change_alternative = function(l_2_0)
+	if l_2_0._environment_change then
+		return l_2_0._environment_change.alternative_environment
 	end
 end
-function EnvironmentScriptViewport.set_environment(A0_4, A1_5, A2_6)
-	local L3_7, L4_8, L5_9
-	L3_7 = A1_5
-	L4_8 = RenderSettings
-	L4_8 = L4_8.split_screen
-	if L4_8 then
-		L5_9 = A1_5
-		L5_9 = L5_9 .. "_coop"
-		if managers.environment:exists(L5_9) or Database:lookup("environment", L5_9):valid() then
-			L3_7 = L5_9
+
+EnvironmentScriptViewport.set_environment = function(l_3_0, l_3_1, l_3_2)
+	local l_3_3 = l_3_1
+	local l_3_4 = RenderSettings.split_screen
+	if l_3_4 then
+		local l_3_5 = l_3_1 .. "_coop"
+	if managers.environment:exists(l_3_5) or Database:lookup("environment", l_3_5):valid() then
 		end
+		l_3_3 = l_3_5
 	end
-	L5_9 = A0_4._vpm_interface
-	L5_9 = L5_9.set_environment_name_cache
-	L5_9(L5_9, A1_5)
-	L5_9 = A0_4._vpm_interface
-	L5_9 = L5_9.create_environment_change
-	L5_9 = L5_9(L5_9, A0_4._environment_change, L3_7, A2_6)
-	A0_4._environment_change = L5_9
-	L5_9 = A0_4._environment_change
-	if L5_9 then
-		L5_9 = A0_4._environment_change
-		L5_9.alternative_environment = L4_8
-		L5_9 = A0_4._environment_change
-		L5_9.environment_name = A1_5
+	l_3_0._vpm_interface:set_environment_name_cache(l_3_1)
+	l_3_0._environment_change = l_3_0._vpm_interface:create_environment_change(l_3_0._environment_change, l_3_3, l_3_2)
+	if l_3_0._environment_change then
+		l_3_0._environment_change.alternative_environment = l_3_4
+		l_3_0._environment_change.environment_name = l_3_1
 	end
-	L5_9 = A0_4.feed_now
-	L5_9(A0_4)
+	l_3_0:feed_now()
 end
+
+

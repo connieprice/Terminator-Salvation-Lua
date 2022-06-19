@@ -2,119 +2,119 @@ core:module("CoreSongCrossfadeBox")
 core:require_module("CoreKeywordArguments")
 core:require_module("CoreClass")
 core:require_module("CoreEvent")
-SongCrossfadeBox = SongCrossfadeBox or CoreClass.class()
-function SongCrossfadeBox.init(A0_0, ...)
-	local L2_2, L3_3
-	L2_2 = CoreKeywordArguments
-	L2_2 = L2_2.KeywordArguments
-	L3_3 = L2_2
-	L2_2 = L2_2.new
-	L2_2 = L2_2(L3_3, ...)
-	L3_3 = L2_2.mandatory_object
-	L3_3 = L3_3(L2_2, "parent")
-	A0_0._ews_parent = L3_3
-	L3_3 = L2_2.assert_all_consumed
-	L3_3(L2_2)
-	A0_0._song_project = nil
-	L3_3 = EWS
-	L3_3 = L3_3.Panel
-	L3_3 = L3_3(L3_3, A0_0._ews_parent, "", "")
-	A0_0.panel = L3_3
-	L3_3 = EWS
-	L3_3 = L3_3.TextCtrl
-	L3_3 = L3_3(L3_3, A0_0.panel, "0.00", "", "")
-	A0_0.song_change_fadein_ctrl = L3_3
-	L3_3 = EWS
-	L3_3 = L3_3.TextCtrl
-	L3_3 = L3_3(L3_3, A0_0.panel, "0.00", "", "")
-	A0_0.song_change_fadeout_ctrl = L3_3
-	L3_3 = CoreEvent
-	L3_3 = L3_3.callback
-	L3_3 = L3_3(A0_0, A0_0, "_on_change_fadein")
-	A0_0._on_change_fadein_cb = L3_3
-	L3_3 = CoreEvent
-	L3_3 = L3_3.callback
-	L3_3 = L3_3(A0_0, A0_0, "_on_change_fadeout")
-	A0_0._on_change_fadeout_cb = L3_3
-	L3_3 = A0_0._enable_callbacks
-	L3_3(A0_0)
-	L3_3 = EWS
-	L3_3 = L3_3.FlexGridSizer
-	L3_3 = L3_3(L3_3, 3, 2, 5, 5)
-	L3_3:add(EWS:StaticText(A0_0.panel, "", "", ""), 0, 0, "")
-	L3_3:add(EWS:StaticText(A0_0.panel, "", "", ""), 0, 0, "")
-	L3_3:add(EWS:StaticText(A0_0.panel, "          Fade-in (used when changing to this Song and Mode):", "", ""), 0, 0, "ALIGN_RIGHT")
-	L3_3:add(A0_0.song_change_fadein_ctrl, 0, 0, "")
-	L3_3:add(EWS:StaticText(A0_0.panel, "          Fade-out (used when changing from this Song and Mode):", "", ""), 0, 0, "ALIGN_RIGHT")
-	L3_3:add(A0_0.song_change_fadeout_ctrl, 0, 0, "")
-	A0_0.box_sizer = EWS:BoxSizer("HORIZONTAL")
-	A0_0.box_sizer:add(L3_3, 0, 0, "")
-	A0_0.panel:set_sizer(A0_0.box_sizer)
-	A0_0:_set_enabled(false)
+if not SongCrossfadeBox then
+	SongCrossfadeBox = CoreClass.class()
 end
-function SongCrossfadeBox.global_redraw(A0_4, A1_5)
-	A0_4._song_project = A1_5 or assert(A0_4._song_project)
-	if A0_4._mode_name then
-		if not A0_4._song_project:find_mode({
-			name = A0_4._mode_name
-		}) then
-			A0_4._mode_name = nil
+SongCrossfadeBox.init = function(l_1_0, ...)
+	l_1_0._ews_parent = CoreKeywordArguments.KeywordArguments:new(...):mandatory_object("parent")
+	CoreKeywordArguments.KeywordArguments:new(...):assert_all_consumed()
+	l_1_0._song_project = nil
+	l_1_0.panel = EWS:Panel(l_1_0._ews_parent, "", "")
+	l_1_0.song_change_fadein_ctrl = EWS:TextCtrl(l_1_0.panel, "0.00", "", "")
+	l_1_0.song_change_fadeout_ctrl = EWS:TextCtrl(l_1_0.panel, "0.00", "", "")
+	l_1_0._on_change_fadein_cb = CoreEvent.callback(l_1_0, l_1_0, "_on_change_fadein")
+	l_1_0._on_change_fadeout_cb = CoreEvent.callback(l_1_0, l_1_0, "_on_change_fadeout")
+	l_1_0:_enable_callbacks()
+	local l_1_2 = nil
+	EWS:FlexGridSizer(3, 2, 5, 5):add(EWS:StaticText(l_1_0.panel, "", "", ""), 0, 0, "")
+	EWS:FlexGridSizer(3, 2, 5, 5):add(EWS:StaticText(l_1_0.panel, "", "", ""), 0, 0, "")
+	EWS:FlexGridSizer(3, 2, 5, 5):add(EWS:StaticText(l_1_0.panel, "          Fade-in (used when changing to this Song and Mode):", "", ""), 0, 0, "ALIGN_RIGHT")
+	EWS:FlexGridSizer(3, 2, 5, 5):add(l_1_0.song_change_fadein_ctrl, 0, 0, "")
+	EWS:FlexGridSizer(3, 2, 5, 5):add(EWS:StaticText(l_1_0.panel, "          Fade-out (used when changing from this Song and Mode):", "", ""), 0, 0, "ALIGN_RIGHT")
+	EWS:FlexGridSizer(3, 2, 5, 5):add(l_1_0.song_change_fadeout_ctrl, 0, 0, "")
+	l_1_0.box_sizer = EWS:BoxSizer("HORIZONTAL")
+	l_1_0.box_sizer:add(EWS:FlexGridSizer(3, 2, 5, 5), 0, 0, "")
+	l_1_0.panel:set_sizer(l_1_0.box_sizer)
+	l_1_0:_set_enabled(false)
+end
+
+SongCrossfadeBox.global_redraw = function(l_2_0, l_2_1)
+	do
+		if not l_2_1 then
+			l_2_0._song_project = assert(l_2_0._song_project)
 		end
+		if l_2_0._mode_name then
+			local l_2_3 = l_2_0._song_project:find_mode
+			local l_2_4 = l_2_0._song_project
+			l_2_3 = l_2_3(l_2_4, {name = l_2_0._mode_name})
+		if not l_2_3 then
+			end
+			l_2_0._mode_name = nil
+		end
+		l_2_0:_redraw()
 	end
-	A0_4:_redraw()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function SongCrossfadeBox.mode_selected(A0_6, A1_7)
-	A0_6._mode_name = A1_7
-	A0_6:_redraw()
+
+SongCrossfadeBox.mode_selected = function(l_3_0, l_3_1)
+	l_3_0._mode_name = l_3_1
+	l_3_0:_redraw()
 end
-function SongCrossfadeBox.mode_deselected(A0_8)
-	A0_8._mode_name = nil
-	A0_8:_redraw()
+
+SongCrossfadeBox.mode_deselected = function(l_4_0)
+	l_4_0._mode_name = nil
+	l_4_0:_redraw()
 end
-function SongCrossfadeBox._redraw(A0_9)
-	A0_9:_disable_callbacks()
-	if A0_9._mode_name then
-		A0_9.song_change_fadein_ctrl:set_value(A0_9._song_project:find_mode({
-			name = A0_9._mode_name
-		}).song_change_fadein)
-		A0_9.song_change_fadeout_ctrl:set_value(A0_9._song_project:find_mode({
-			name = A0_9._mode_name
-		}).song_change_fadeout)
-		A0_9:_set_enabled(true)
+
+SongCrossfadeBox._redraw = function(l_5_0)
+	l_5_0:_disable_callbacks()
+	if l_5_0._mode_name then
+		local l_5_1, l_5_2 = l_5_0._song_project:find_mode, l_5_0._song_project
+		local l_5_3 = {}
+		l_5_3.name = l_5_0._mode_name
+		l_5_1 = l_5_1(l_5_2, l_5_3)
+		l_5_2 = l_5_0.song_change_fadein_ctrl
+		l_5_2, l_5_3 = l_5_2:set_value, l_5_2
+		l_5_2(l_5_3, l_5_1.song_change_fadein)
+		l_5_2 = l_5_0.song_change_fadeout_ctrl
+		l_5_2, l_5_3 = l_5_2:set_value, l_5_2
+		l_5_2(l_5_3, l_5_1.song_change_fadeout)
+		l_5_2, l_5_3 = l_5_0:_set_enabled, l_5_0
+		l_5_2(l_5_3, true)
 	else
-		A0_9.song_change_fadein_ctrl:set_value("0.00")
-		A0_9.song_change_fadeout_ctrl:set_value("0.00")
-		A0_9:_set_enabled(false)
+		l_5_0.song_change_fadein_ctrl:set_value("0.00")
+		l_5_0.song_change_fadeout_ctrl:set_value("0.00")
+		l_5_0:_set_enabled(false)
 	end
-	A0_9:_enable_callbacks()
+	l_5_0:_enable_callbacks()
 end
-function SongCrossfadeBox._enable_callbacks(A0_10)
-	A0_10.song_change_fadein_ctrl:connect("EVT_COMMAND_TEXT_UPDATED", A0_10._on_change_fadein_cb)
-	A0_10.song_change_fadeout_ctrl:connect("EVT_COMMAND_TEXT_UPDATED", A0_10._on_change_fadeout_cb)
+
+SongCrossfadeBox._enable_callbacks = function(l_6_0)
+	l_6_0.song_change_fadein_ctrl:connect("EVT_COMMAND_TEXT_UPDATED", l_6_0._on_change_fadein_cb)
+	l_6_0.song_change_fadeout_ctrl:connect("EVT_COMMAND_TEXT_UPDATED", l_6_0._on_change_fadeout_cb)
 end
-function SongCrossfadeBox._disable_callbacks(A0_11)
-	A0_11.song_change_fadein_ctrl:disconnect("EVT_COMMAND_TEXT_UPDATED", A0_11._on_change_fadein_cb)
-	A0_11.song_change_fadeout_ctrl:disconnect("EVT_COMMAND_TEXT_UPDATED", A0_11._on_change_fadeout_cb)
+
+SongCrossfadeBox._disable_callbacks = function(l_7_0)
+	l_7_0.song_change_fadein_ctrl:disconnect("EVT_COMMAND_TEXT_UPDATED", l_7_0._on_change_fadein_cb)
+	l_7_0.song_change_fadeout_ctrl:disconnect("EVT_COMMAND_TEXT_UPDATED", l_7_0._on_change_fadeout_cb)
 end
-function SongCrossfadeBox._set_enabled(A0_12, A1_13)
-	A0_12.song_change_fadein_ctrl:set_enabled(A1_13)
-	A0_12.song_change_fadeout_ctrl:set_enabled(A1_13)
+
+SongCrossfadeBox._set_enabled = function(l_8_0, l_8_1)
+	l_8_0.song_change_fadein_ctrl:set_enabled(l_8_1)
+	l_8_0.song_change_fadeout_ctrl:set_enabled(l_8_1)
 end
-function SongCrossfadeBox._on_change_fadein(A0_14)
-	if A0_14._mode_name and tonumber(A0_14.song_change_fadein_ctrl:get_value()) then
-		A0_14._song_project:set_mode_parameter({
-			mode_name = A0_14._mode_name,
-			parameter = "song_change_fadein",
-			value = A0_14.song_change_fadein_ctrl:get_value()
-		})
-	end
-end
-function SongCrossfadeBox._on_change_fadeout(A0_15)
-	if A0_15._mode_name and tonumber(A0_15.song_change_fadeout_ctrl:get_value()) then
-		A0_15._song_project:set_mode_parameter({
-			mode_name = A0_15._mode_name,
-			parameter = "song_change_fadeout",
-			value = A0_15.song_change_fadeout_ctrl:get_value()
-		})
+
+SongCrossfadeBox._on_change_fadein = function(l_9_0)
+	if l_9_0._mode_name and tonumber(l_9_0.song_change_fadein_ctrl:get_value()) then
+		local l_9_1, l_9_2 = l_9_0._song_project:set_mode_parameter, l_9_0._song_project
+		local l_9_3 = {}
+		l_9_3.mode_name = l_9_0._mode_name
+		l_9_3.parameter = "song_change_fadein"
+		l_9_3.value = l_9_0.song_change_fadein_ctrl:get_value()
+		l_9_1(l_9_2, l_9_3)
 	end
 end
+
+SongCrossfadeBox._on_change_fadeout = function(l_10_0)
+	if l_10_0._mode_name and tonumber(l_10_0.song_change_fadeout_ctrl:get_value()) then
+		local l_10_1, l_10_2 = l_10_0._song_project:set_mode_parameter, l_10_0._song_project
+		local l_10_3 = {}
+		l_10_3.mode_name = l_10_0._mode_name
+		l_10_3.parameter = "song_change_fadeout"
+		l_10_3.value = l_10_0.song_change_fadeout_ctrl:get_value()
+		l_10_1(l_10_2, l_10_3)
+	end
+end
+
+

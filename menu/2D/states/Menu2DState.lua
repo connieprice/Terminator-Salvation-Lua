@@ -1,18 +1,20 @@
 require("shared/FiniteStateMachine")
-Menu2DState = Menu2DState or class(FiniteStateMachineState)
-function Menu2DState.init(A0_0, A1_1)
-	A0_0._self_class = A1_1
-	A0_0._state_transition_lookup = Menu2DStateTransitionLookup:new(A0_0._state_data.state_transitions)
+if not Menu2DState then
+	Menu2DState = class(FiniteStateMachineState)
 end
-function Menu2DState.transition(A0_2)
-	local L1_3
-	L1_3 = A0_2._state_data
-	L1_3 = L1_3.menu
-	L1_3 = L1_3.state_transition_data
-	L1_3 = L1_3.requested_state
-	if A0_2._state_transition_lookup:state(L1_3) == A0_2._self_class then
+Menu2DState.init = function(l_1_0, l_1_1)
+	l_1_0._self_class = l_1_1
+	l_1_0._state_transition_lookup = Menu2DStateTransitionLookup:new(l_1_0._state_data.state_transitions)
+end
+
+Menu2DState.transition = function(l_2_0)
+	local l_2_1 = l_2_0._state_data.menu.state_transition_data.requested_state
+	local l_2_2 = l_2_0._state_transition_lookup:state(l_2_1)
+	if l_2_2 == l_2_0._self_class then
 		return nil
 	else
-		return (A0_2._state_transition_lookup:state(L1_3))
+		return l_2_2
 	end
 end
+
+

@@ -1,12 +1,17 @@
-AMVolumeSet = AMVolumeSet or class(CoreActionElement)
-function AMVolumeSet.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMVolumeSet then
+	AMVolumeSet = class(CoreActionElement)
 end
-function AMVolumeSet.activate_now(A0_3)
-	if A0_3._mode == "activate" then
-		managers.volume:activate_set(A0_3.volume_set)
-	elseif A0_3._mode == "deactivate" then
-		managers.volume:deactivate_set(A0_3.volume_set)
+AMVolumeSet.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+end
+
+AMVolumeSet.activate_now = function(l_2_0)
+	if l_2_0._mode == "activate" then
+		managers.volume:activate_set(l_2_0.volume_set)
+	elseif l_2_0._mode == "deactivate" then
+		managers.volume:deactivate_set(l_2_0.volume_set)
 	end
-	A0_3:deactivate_now()
+	l_2_0:deactivate_now()
 end
+
+

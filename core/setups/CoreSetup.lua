@@ -1,20 +1,23 @@
 require("core/setups/CoreNanoSetup")
-function cap_framerate_hijack(A0_0, A1_1)
-	Global.application_framerate_cap = tonumber(A1_1) or 0
-	A0_0:hijacked_cap_framerate(Global.application_framerate_cap)
+cap_framerate_hijack = function(l_1_0, l_1_1)
+	Global.application_framerate_cap = tonumber(l_1_1) or 0
+	l_1_0:hijacked_cap_framerate(Global.application_framerate_cap)
 end
+
 Global.application_framerate_cap = Global.application_framerate_cap or 0
 hijack_func(Application, "cap_framerate", callback(nil, _G, "cap_framerate_hijack"))
-function coroutine_resume_hijack(...)
-	local L1_3
-	L1_3 = {
-		coroutine.hijacked_resume(...)
-	}
-	if not L1_3[1] then
-		Application:stack_dump_error(L1_3[2])
+coroutine_resume_hijack = function(...)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if not ({coroutine.hijacked_resume(...)})[1] then
+		local l_2_3 = nil
+		Application:stack_dump_error(({coroutine.hijacked_resume(...)})[2])
 	end
-	return unpack(L1_3)
+	local l_2_1 = nil
+	local l_2_2 = unpack
+	return l_2_2(l_2_1)
 end
+
 hijack_func(coroutine, "resume", callback(nil, _G, "coroutine_resume_hijack"))
 base_require("core/utils/dev/ews/CoreEWS", nil, "DEBUG")
 base_require("core/units/CoreSpawnSystem", nil, "RELEASE")
@@ -86,16 +89,20 @@ base_require("core/utils/dev/tools/cutscene_editor/CoreCutsceneEditor", nil, "DE
 base_require("core/utils/dev/editor/CoreEditor", nil, "DEBUG")
 base_require("core/utils/dev/editor/WorldHolder", nil, "RELEASE")
 d = managers.debug
-Global.category_print = Global.category_print or {}
-Global.category_print_initialized = Global.category_print_initialized or {}
+if not Global.category_print then
+	Global.category_print = {}
+end
+if not Global.category_print_initialized then
+	Global.category_print_initialized = {}
+end
 if base_is_required("DEBUG") then
 	NetEWS:new()
 	NetEWSServer:new()
 end
-function core_setup.pre_init()
-	local L0_4, L1_5
+core_setup.pre_init = function()
 end
-function core_setup.init()
+
+core_setup.init = function()
 	assert(core_nano_setup.initialized(), "Must initialize core_nano_setup first.")
 	assert(not core_setup.is_initialized, "Must only initialize core_setup once.")
 	core_setup.is_initialized = true
@@ -107,17 +114,23 @@ function core_setup.init()
 	if not Application:editor() then
 		if SystemInfo:platform() == "WIN32" then
 			core_setup_resolution()
-		elseif SystemInfo:platform() == "X360" or SystemInfo:platform() == "PS3" and SystemInfo:widescreen() then
-			core_setup.wide = true
-			core_setup.aspect_ratio = 1.7777778
+		else
+			if SystemInfo:platform() == "X360" or SystemInfo:platform() == "PS3" and SystemInfo:widescreen() then
+				core_setup.wide = true
+				core_setup.aspect_ratio = 1.7777778
+			end
 		else
 			core_setup.wide = false
 			core_setup.aspect_ratio = 1.3333334
 		end
 	else
-		core_setup.aspect_ratio = RenderSettings.resolution.x / RenderSettings.resolution.y
-		core_setup.wide = core_setup.aspect_ratio > 1.34
-		core_nano_setup.setup_postprocessor_environment()
+		local l_4_0 = RenderSettings.resolution
+		core_setup.aspect_ratio = l_4_0.x / l_4_0.y
+		local l_4_1 = core_setup
+		l_4_1.wide = core_setup.aspect_ratio > 1.34
+		l_4_1 = core_nano_setup
+		l_4_1 = l_4_1.setup_postprocessor_environment
+		l_4_1()
 	end
 	managers.controller = core_or_local("ControllerManager")
 	managers.slot = core_or_local("SlotManager")
@@ -157,7 +170,9 @@ function core_setup.init()
 	end
 	d = managers.debug
 	if Application:ews_enabled() then
-		managers.toolhub = managers.toolhub or ToolHub:new()
+		if not managers.toolhub then
+			managers.toolhub = ToolHub:new()
+		end
 		if not Application:editor() then
 			managers.toolhub:add("Unit Reloader", get_core_or_local("UnitReloader"))
 		end
@@ -175,69 +190,338 @@ function core_setup.init()
 		managers.toolhub:add(get_core_or_local("Puppeteer").EDITOR_TITLE, get_core_or_local("Puppeteer"))
 		managers.toolhub:add(get_core_or_local("UnitEditor").TOOLHUB_NAME, get_core_or_local("UnitEditor"))
 		managers.toolhub:add(get_core_or_local("CutsceneEditor").EDITOR_TITLE, get_core_or_local("CutsceneEditor"))
-		if not Global.NEW_CORE_GENERATION_2 then
-			managers.toolhub:add("Material Editor", get_core_or_local("MaterialEditor"))
-			managers.toolhub:add("Volume Editor", get_core_or_local("VolumeEditor"))
-			managers.toolhub:add("Unit Test Browser", get_core_or_local("UnitTestBrowser"))
-			managers.toolhub:add("Luaspy", LuaSpy)
+	if not Global.NEW_CORE_GENERATION_2 then
 		end
+		managers.toolhub:add("Material Editor", get_core_or_local("MaterialEditor"))
+		managers.toolhub:add("Volume Editor", get_core_or_local("VolumeEditor"))
+		managers.toolhub:add("Unit Test Browser", get_core_or_local("UnitTestBrowser"))
+		managers.toolhub:add("Luaspy", LuaSpy)
 	end
 end
-function core_setup.post_init()
+
+core_setup.post_init = function()
 	managers.sequence:preload()
 	managers.cutscene:post_init()
 end
-function core_setup_resolution()
+
+core_setup_resolution = function()
+	local l_6_0, l_6_1 = core_setup_get_mode()
+	local l_6_2 = RenderSettings.resolution
 	core_setup_apply_aspect_settings()
-	if core_setup_get_mode().x ~= RenderSettings.resolution.x or core_setup_get_mode().y ~= RenderSettings.resolution.y or core_setup_get_mode().z ~= RenderSettings.resolution.z or core_setup_get_mode() ~= RenderSettings.fullscreen then
-		RenderSettings.resolution = core_setup_get_mode()
-		RenderSettings.fullscreen = core_setup_get_mode()
+	if l_6_0.x ~= l_6_2.x or l_6_0.y ~= l_6_2.y or l_6_0.z ~= l_6_2.z or l_6_1 ~= RenderSettings.fullscreen then
+		RenderSettings.resolution = l_6_0
+		RenderSettings.fullscreen = l_6_1
 		core_setup.flag_rs_apply = true
 	end
 end
-function core_setup_apply_aspect_settings()
-	local L0_6
-	L0_6 = core_setup
-	L0_6.aspect_ratio = core_setup_get_aspect()
-	L0_6 = core_setup
-	L0_6.wide = core_setup.aspect_ratio > 1.34
-	L0_6 = core_setup
-	L0_6.flag_rs_apply = true
+
+core_setup_apply_aspect_settings = function()
+	core_setup.aspect_ratio = core_setup_get_aspect()
+	local l_7_0 = core_setup
+	l_7_0.wide = core_setup.aspect_ratio > 1.34
+	l_7_0 = core_setup
+	l_7_0.flag_rs_apply = true
 end
-function core_setup_get_mode()
-	local L0_7, L1_8, L2_9, L3_10, L4_11, L5_12
-	L0_7 = Application
-	L0_7 = L0_7.render_settings_filename
-	L0_7 = L0_7(L1_8)
-	if L1_8 then
-		for L4_11 in L1_8(L2_9) do
-			L5_12 = L4_11.name
-			L5_12 = L5_12(L4_11)
-			if L5_12 == "d3d_device" then
-				L5_12 = nil
+
+core_setup_get_mode = function()
+	local l_8_4, l_8_5 = nil
+	local l_8_0 = Application:render_settings_filename()
+	if File:config_exists(l_8_0) then
+		for i_0 in File:parse_xml(l_8_0):children() do
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if i_0:name() == "d3d_device" then
 				if Application:render_settings_dirty() then
-					L5_12 = core_setup_auto_detect_resolution()
-				else
-					L5_12 = math.string_to_vector(L4_11:parameter("resolution"))
+					do return end
 				end
-				L5_12 = Vector3(L5_12.x, L5_12.y, tonumber(L4_11:parameter("refresh_rate")))
-				return L5_12, L4_11:parameter("windowed") == "false"
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Confused about usage of registers!
+
+				local l_8_7 = nil
+				return Vector3(nil.x, nil.y, tonumber(l_8_6:parameter("refresh_rate"))), l_8_6:parameter("windowed") == "false"
 			end
 		end
 	end
-	return L1_8, L2_9
+	return RenderSettings.resolution, RenderSettings.fullscreen
 end
-function core_setup_auto_detect_resolution()
-	local L0_13, L1_14, L2_15, L3_16
-	L0_13 = SystemInfo
-	L1_14 = L0_13
-	L0_13 = L0_13.desktop_resolution
-	L0_13 = L0_13(L1_14)
-	L1_14 = L0_13.x
-	L2_15 = L0_13.y
-	L1_14 = L1_14 * L2_15
-	L2_15 = math
-	L2_15 = L2_15.huge
-	L3_16 = RenderSettings
-	L3_16 = L3_16.resolution
-	for 
+
+core_setup_auto_detect_resolution = function()
+	local l_9_7, l_9_8, l_9_9, l_9_10, l_9_11, l_9_12, l_9_13, l_9_14 = nil
+	local l_9_0 = SystemInfo:desktop_resolution()
+	local l_9_1 = l_9_0.x * l_9_0.y
+	local l_9_2 = math.huge
+	local l_9_3 = RenderSettings.resolution
+	for i_0,i_1 in ipairs(RenderSettings.modes) do
+		if ((l_9_0.z > 0 and l_9_0.z) or i_1.z == l_9_3.z) and math.abs(l_9_1 - i_1.x * i_1.y) < l_9_2 then
+			l_9_2 = math.abs(l_9_1 - i_1.x * i_1.y)
+			l_9_3 = i_1
+		end
+	end
+	File:open(Application:render_settings_filename(), "w"):puts("<renderer_config>\n\t<d3d_device adapter=\"" .. RenderSettings.adapter .. "\" resolution=\"" .. l_9_3.x .. " " .. l_9_3.y .. "\" refresh_rate=\"" .. l_9_3.z .. "\" windowed=\"" .. tostring(not RenderSettings.fullscreen) .. "\" aspect_ratio=\"" .. l_9_3.x / l_9_3.y .. "\"/>\n</renderer_config>")
+	File:open(Application:render_settings_filename(), "w"):close()
+	return l_9_3
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+core_setup_get_aspect = function()
+	if File:config_exists(Application:render_settings_filename()) then
+		local l_10_3 = File:parse_xml
+		l_10_3 = l_10_3(File, Application:render_settings_filename())
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		for i_0 in l_10_3 do
+			if l_10_2:name() == "d3d_device" and l_10_2:parameter("aspect_ratio") ~= "" then
+				local l_10_4 = tonumber
+				local l_10_5, l_10_6, l_10_7 = l_10_2:parameter("aspect_ratio"), .end
+				return l_10_4(l_10_5, l_10_6, l_10_7)
+			end
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	return l_10_3
+end
+
+core_setup.update = function(l_11_0, l_11_1)
+	if core_setup.flag_rs_apply then
+		Application:apply_render_settings()
+		core_setup.flag_rs_apply = false
+	if managers.viewport then
+		end
+		managers.viewport:resolution_changed()
+	end
+	if managers.viewport.update then
+		managers.viewport:update(l_11_0, l_11_1)
+	end
+	if managers.worldcamera.update then
+		managers.worldcamera:update(l_11_0, l_11_1)
+	end
+	if managers.controller.update then
+		managers.controller:update(l_11_0, l_11_1)
+	end
+	if managers.cutscene and managers.cutscene.update then
+		managers.cutscene:update()
+	end
+	if managers.aihivebrain.update then
+		managers.aihivebrain:update(l_11_0, l_11_1)
+	end
+	if managers.environment.update then
+		managers.environment:update(l_11_0, l_11_1)
+	end
+	if managers.volume.update then
+		managers.volume:update(l_11_0, l_11_1)
+	end
+	if managers.config.update then
+		managers.config:update(l_11_0, l_11_1)
+	end
+	if managers.music.update then
+		managers.music:update(l_11_0, l_11_1)
+	end
+	if managers.sequence.update then
+		managers.sequence:update(l_11_0, l_11_1)
+	end
+	if managers.environment_effects.update then
+		managers.environment_effects:update(l_11_0, l_11_1)
+	end
+	if managers.sound_environment then
+		managers.sound_environment:update(l_11_0, l_11_1)
+	end
+	if managers.environment_area then
+		managers.environment_area:update(l_11_0, l_11_1)
+	end
+	if managers.expression.update then
+		managers.expression:update(l_11_0, l_11_1)
+	end
+	if managers.benchmark.update then
+		managers.benchmark:update(l_11_0, l_11_1)
+	end
+	if managers.global_texture.update then
+		managers.global_texture:update(l_11_0, l_11_1)
+	end
+	if managers.prefhud and managers.prefhud.update then
+		managers.prefhud:update(l_11_0, l_11_1)
+	end
+	if managers.toolhub and managers.toolhub.update then
+		managers.toolhub:update(l_11_0, l_11_1)
+	end
+	if managers.subtitle and managers.subtitle.update then
+		managers.subtitle:update(TimerManager:game_animation():time(), TimerManager:game_animation():delta_time())
+	end
+	if managers.rumble.update then
+		managers.rumble:update(l_11_0, l_11_1)
+	end
+	if managers.shadow.update then
+		managers.shadow:update(l_11_0, l_11_1)
+	end
+	if managers.DOF.update then
+		managers.DOF:update(l_11_0, l_11_1)
+	end
+	if managers.overlay_effect.update then
+		managers.overlay_effect:update(l_11_0, l_11_1)
+	end
+	if managers.debug and managers.debug.update then
+		managers.debug:update(TimerManager:wall():time(), TimerManager:wall():delta_time())
+	end
+	if rawget(_G, "NET_EWS_CLIENT") and NET_EWS_CLIENT.update then
+		NET_EWS_CLIENT:update(l_11_0, l_11_1)
+	end
+	if rawget(_G, "NET_EWS_SERVER") and NET_EWS_SERVER.update then
+		NET_EWS_SERVER:update(l_11_0, l_11_1)
+	end
+end
+
+core_setup.paused_update = function(l_12_0, l_12_1)
+	if core_setup.flag_rs_apply then
+		Application:apply_render_settings()
+		core_setup.flag_rs_apply = false
+	if managers.viewport then
+		end
+		managers.viewport:resolution_changed()
+	end
+	if managers.viewport.paused_update then
+		managers.viewport:paused_update(l_12_0, l_12_1)
+	end
+	if managers.controller.update then
+		managers.controller:paused_update(l_12_0, l_12_1)
+	end
+	if managers.cutscene and managers.cutscene.paused_update then
+		managers.cutscene:paused_update(l_12_0, l_12_1)
+	end
+	if managers.aihivebrain.paused_update then
+		managers.aihivebrain:paused_update(l_12_0, l_12_1)
+	end
+	if managers.environment.update then
+		managers.environment:update(l_12_0, l_12_1)
+	end
+	if managers.volume.paused_update then
+		managers.volume:paused_update(l_12_0, l_12_1)
+	end
+	if managers.config.paused_update then
+		managers.config:paused_update(l_12_0, l_12_1)
+	end
+	if managers.music.paused_update then
+		managers.music:paused_update(l_12_0, l_12_1)
+	end
+	if managers.sequence.paused_update then
+		managers.sequence:paused_update(l_12_0, l_12_1)
+	end
+	if managers.expression.paused_update then
+		managers.expression:paused_update(l_12_0, l_12_1)
+	end
+	if managers.benchmark.paused_update then
+		managers.benchmark:paused_update(l_12_0, l_12_1)
+	end
+	if managers.DOF.paused_update then
+		managers.DOF:paused_update(l_12_0, l_12_1)
+	end
+	if managers.rumble.paused_update then
+		managers.rumble:paused_update(l_12_0, l_12_1)
+	end
+	if managers.toolhub and managers.toolhub.paused_update then
+		managers.toolhub:paused_update(l_12_0, l_12_1)
+	end
+	if managers.shadow.paused_update then
+		managers.shadow:paused_update(l_12_0, l_12_1)
+	end
+	if managers.overlay_effect.paused_update then
+		managers.overlay_effect:paused_update(l_12_0, l_12_1)
+	end
+	if managers.debug and managers.debug.paused_update then
+		managers.debug:paused_update(TimerManager:wall():time(), TimerManager:wall():delta_time())
+	end
+	if managers.global_texture.paused_update then
+		managers.global_texture:paused_update(l_12_0, l_12_1)
+	end
+	if rawget(_G, "NET_EWS_CLIENT") and NET_EWS_CLIENT.paused_update then
+		NET_EWS_CLIENT:paused_update(l_12_0, l_12_1)
+	end
+	if rawget(_G, "NET_EWS_SERVER") and NET_EWS_SERVER.paused_update then
+		NET_EWS_SERVER:paused_update(l_12_0, l_12_1)
+	end
+end
+
+core_setup.end_update = function(l_13_0, l_13_1)
+	if managers.environment.end_update then
+		managers.environment:end_update()
+	end
+	if managers.toolhub and managers.toolhub.end_update then
+		managers.toolhub:end_update(l_13_0, l_13_1)
+	end
+end
+
+core_setup.paused_end_update = function(l_14_0, l_14_1)
+	if managers.environment.end_update then
+		managers.environment:end_update()
+	end
+end
+
+core_setup.render = function()
+	if managers.portal.render then
+		managers.portal:render()
+	end
+	if managers.viewport.render then
+		managers.viewport:render()
+	end
+	if managers.overlay_effect.render then
+		managers.overlay_effect:render()
+	end
+end
+
+core_setup.setup_category_print = function()
+	if Global.category_print_initialized.core_setup then
+		return 
+	end
+	Global.category_print.debug = true
+	Global.category_print.editor = false
+	Global.category_print.sequence = false
+	Global.category_print.controller_manager = false
+	Global.category_print_initialized.core_setup = true
+end
+
+core_setup.destroy = function()
+	if managers.toolhub then
+		managers.toolhub:destroy()
+	end
+	if managers.global_texture.destroy then
+		managers.global_texture:destroy()
+	end
+	if managers.cutscene then
+		managers.cutscene:destroy()
+	end
+	if managers.subtitle then
+		managers.subtitle:destroy()
+	end
+	if managers.viewport then
+		managers.viewport:destroy()
+	end
+	if managers.overlay_effect then
+		managers.overlay_effect:destroy()
+	end
+	if managers.worldcamera then
+		managers.worldcamera:destroy()
+	end
+	if managers.editor then
+		managers.editor:destroy()
+	end
+	if managers.volume then
+		managers.volume:destroy()
+	end
+	if managers.music then
+		managers.music:destroy()
+	end
+	if managers.environment then
+		managers.environment:destroy()
+	end
+	if managers.debug then
+		managers.debug:destroy()
+	end
+	if managers.prefhud then
+		managers.prefhud:destroy()
+	end
+end
+
+

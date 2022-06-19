@@ -1,11 +1,18 @@
 require("local_user/activity_tracker/LocalUserActivityTracker")
-PcLocalUserActivityTracker = PcLocalUserActivityTracker or class(LocalUserActivityTracker)
-function PcLocalUserActivityTracker.init(A0_0, A1_1, A2_2)
-	LocalUserActivityTracker.init(A0_0, A1_1, A2_2)
+if not PcLocalUserActivityTracker then
+	PcLocalUserActivityTracker = class(LocalUserActivityTracker)
 end
-function PcLocalUserActivityTracker._game_mode_changed(A0_3, A1_4)
+PcLocalUserActivityTracker.init = function(l_1_0, l_1_1, l_1_2)
+	LocalUserActivityTracker.init(l_1_0, l_1_1, l_1_2)
 end
-function PcLocalUserActivityTracker._world_changed(A0_5, A1_6)
+
+PcLocalUserActivityTracker._game_mode_changed = function(l_2_0, l_2_1)
 end
-function PcLocalUserActivityTracker._activity_changed(A0_7, A1_8)
+
+PcLocalUserActivityTracker._world_changed = function(l_3_0, l_3_1)
 end
+
+PcLocalUserActivityTracker._activity_changed = function(l_4_0, l_4_1)
+end
+
+

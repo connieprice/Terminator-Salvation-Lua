@@ -19,426 +19,457 @@ require("units/beings/player/camera/PlayerCameraQuickMovingOverCover")
 require("units/beings/player/camera/PlayerCameraStrangul")
 require("units/beings/player/camera/PlayerCameraUnknownState")
 require("units/beings/player/camera/PlayerCameraWounded")
-PlayerCamera = PlayerCamera or class(CameraRoot)
+if not PlayerCamera then
+	PlayerCamera = class(CameraRoot)
+end
 PlayerCamera.CAMERA_NAMESPACE = "player"
-function PlayerCamera.init(A0_0, A1_1)
-	local L2_2, L3_3
-	L2_2 = CameraRoot
-	L2_2 = L2_2.init
-	L3_3 = A0_0
-	L2_2(L3_3, A1_1)
-	A0_0._camera_name = nil
-	L3_3 = A1_1
-	L2_2 = A1_1.player_data
-	L2_2 = L2_2(L3_3)
-	A0_0._player_data = L2_2
-	L3_3 = A1_1
-	L2_2 = A1_1.damage_data
-	L2_2 = L2_2(L3_3)
-	A0_0._damage_data = L2_2
-	L2_2 = A0_0._unit
-	L3_3 = L2_2
-	L2_2 = L2_2.camera_data
-	L2_2 = L2_2(L3_3)
-	A0_0._unit_camera_data = L2_2
-	L2_2 = FastSmootherPopController
-	L2_2 = L2_2()
-	L3_3 = L2_2.set_parameter
-	L3_3(L2_2, "ignore_units", {A1_1})
-	L3_3 = L2_2.set_parameter
-	L3_3(L2_2, "smooth_radius", 30)
-	L3_3 = L2_2.set_parameter
-	L3_3(L2_2, "near_radius", 5)
-	L3_3 = L2_2.set_parameter
-	L3_3(L2_2, "precision", 0.005)
-	A0_0._pop_controller = L2_2
-	A0_0._zoom_camera_active = false
-	A0_0._collision_function = nil
-	L3_3 = A0_0._state_class
-	L3_3 = L3_3(A0_0)
-	A0_0._state_machine = FiniteStateMachine:new(A0_0, "_camera", L3_3)
-	A0_0._head = A1_1:get_object("Head")
-	A0_0._root_camera = nil
-	A0_0._unit:set_extension_update_enabled("camera", false)
-	A0_0._look_at_fov = Interpolator:new(0, 4)
-	A0_0.__cover_camera_index = 1
-	A0_0._camera_distance = 10000
-	A0_0._camera_max_velocity = 250
+PlayerCamera.init = function(l_1_0, l_1_1)
+	CameraRoot.init(l_1_0, l_1_1)
+	l_1_0._camera_name = nil
+	l_1_0._player_data = l_1_1:player_data()
+	l_1_0._damage_data = l_1_1:damage_data()
+	l_1_0._unit_camera_data = l_1_0._unit:camera_data()
+	local l_1_2 = FastSmootherPopController()
+	local l_1_3, l_1_4 = l_1_2:set_parameter, l_1_2
+	local l_1_5 = "ignore_units"
+	local l_1_6 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	l_1_3(l_1_4, l_1_5, l_1_6)
+	l_1_3(l_1_4, l_1_5, l_1_6)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5, l_1_6)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5, l_1_6)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._state_machine = l_1_4
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._head = l_1_4
+	l_1_0._root_camera = nil
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_4(l_1_5, l_1_6, false)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_0._look_at_fov = l_1_4
+	l_1_0.__cover_camera_index = 1
+	l_1_0._camera_distance = 10000
+	l_1_0._camera_max_velocity = 250
 end
-function PlayerCamera._create_cover_camera_duplicates(A0_4)
-	local L1_5, L2_6, L3_7, L4_8, L5_9, L6_10, L7_11, L8_12, L9_13, L10_14, L11_15
-	L1_5 = {
-		L2_6,
-		L3_7,
-		L4_8,
-		L5_9
-	}
-	L2_6 = {}
-	L2_6.base_name = "incover_crouch_left_1_base"
-	L2_6.camera_name = "incover_crouch_left_1"
-	L2_6.duplicate_camera_name = "incover_crouch_left_2"
-	L3_7 = {}
-	L3_7.base_name = "incover_crouch_right_1_base"
-	L3_7.camera_name = "incover_crouch_right_1"
-	L3_7.duplicate_camera_name = "incover_crouch_right_2"
-	L4_8 = {}
-	L4_8.base_name = "incover_stand_left_1_base"
-	L4_8.camera_name = "incover_stand_left_1"
-	L4_8.duplicate_camera_name = "incover_stand_left_2"
-	L5_9.base_name = "incover_stand_right_1_base"
-	L5_9.camera_name = "incover_stand_right_1"
-	L5_9.duplicate_camera_name = "incover_stand_right_2"
-	L2_6 = managers
-	L2_6 = L2_6.camera
-	L3_7 = A0_4._unit
-	L4_8 = A0_4._root_camera
-	for L8_12, L9_13 in L5_9(L6_10) do
-		L11_15 = L2_6
-		L10_14 = L2_6.create_cameras
-		L10_14 = L10_14(L11_15, PlayerCamera.CAMERA_NAMESPACE, L3_7, L9_13.base_name)
-		L11_15 = CameraRoot
-		L11_15 = L11_15._find_camera_non_cached
-		L11_15 = L11_15(A0_4, L10_14, L9_13.camera_name)
-		assert(L11_15)
-		L11_15._name = L9_13.duplicate_camera_name
-		L4_8:add_child_camera(L10_14)
+
+PlayerCamera._create_cover_camera_duplicates = function(l_2_0)
+	local l_2_8, l_2_9, l_2_10, l_2_11 = nil
+	local l_2_1 = {}
+	local l_2_2 = {}
+	l_2_2.base_name = "incover_crouch_left_1_base"
+	l_2_2.camera_name = "incover_crouch_left_1"
+	l_2_2.duplicate_camera_name = "incover_crouch_left_2"
+	local l_2_3 = {}
+	l_2_3.base_name = "incover_crouch_right_1_base"
+	l_2_3.camera_name = "incover_crouch_right_1"
+	l_2_3.duplicate_camera_name = "incover_crouch_right_2"
+	local l_2_4 = {}
+	l_2_4.base_name = "incover_stand_left_1_base"
+	l_2_4.camera_name = "incover_stand_left_1"
+	l_2_4.duplicate_camera_name = "incover_stand_left_2"
+	local l_2_5 = {}
+	l_2_5.base_name = "incover_stand_right_1_base"
+	l_2_5.camera_name = "incover_stand_right_1"
+	l_2_5.duplicate_camera_name = "incover_stand_right_2"
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	l_2_2 = managers
+	l_2_2 = l_2_2.camera
+	l_2_3 = l_2_0._unit
+	l_2_4 = l_2_0._root_camera
+	l_2_5 = pairs
+	l_2_5 = l_2_5(l_2_1)
+	for i_0,i_1 in l_2_5 do
+		assert(CameraRoot._find_camera_non_cached(l_2_0, l_2_2:create_cameras(PlayerCamera.CAMERA_NAMESPACE, l_2_3, i_1.base_name), i_1.camera_name))
+		CameraRoot._find_camera_non_cached(l_2_0, l_2_2:create_cameras(PlayerCamera.CAMERA_NAMESPACE, l_2_3, i_1.base_name), i_1.camera_name)._name = l_2_13.duplicate_camera_name
+		l_2_4:add_child_camera(l_2_2:create_cameras(PlayerCamera.CAMERA_NAMESPACE, l_2_3, i_1.base_name))
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function PlayerCamera.on_activate(A0_16, A1_17)
-	A0_16._unit:set_extension_update_enabled("camera", A1_17)
-	if A1_17 then
-		assert(not A0_16._root_camera)
-		A0_16._root_camera = managers.camera:create_cameras(PlayerCamera.CAMERA_NAMESPACE, A0_16._unit)
-		A0_16:_create_cover_camera_duplicates()
-		A0_16:build_camera_name_map()
+
+PlayerCamera.on_activate = function(l_3_0, l_3_1)
+	l_3_0._unit:set_extension_update_enabled("camera", l_3_1)
+	if l_3_1 then
+		assert(not l_3_0._root_camera)
+		l_3_0._root_camera = managers.camera:create_cameras(PlayerCamera.CAMERA_NAMESPACE, l_3_0._unit)
+		l_3_0:_create_cover_camera_duplicates()
+		l_3_0:build_camera_name_map()
 	else
-		assert(A0_16._root_camera)
-		A0_16._root_camera:destroy()
-		A0_16._root_camera = nil
-		A0_16:destroy_camera_name_map()
+		assert(l_3_0._root_camera)
+		l_3_0._root_camera:destroy()
+		l_3_0._root_camera = nil
+		l_3_0:destroy_camera_name_map()
 	end
 end
-function PlayerCamera.post_processing(A0_18, A1_19, A2_20)
-	local L3_21, L4_22, L5_23
-	L4_22 = A0_18
-	L3_21 = A0_18._collision_function
-	L5_23 = A1_19
-	L3_21(L4_22, L5_23, A2_20)
-	L3_21 = RenderSettings
-	L3_21 = L3_21.split_screen
-	if L3_21 then
-		L4_22 = tweak_data
-		L4_22 = L4_22.player
-		L4_22 = L4_22.camera
-		L4_22 = L4_22.split_screen_fov_multiplier
-		L5_23 = A0_18._camera_data
-		L5_23 = L5_23.fov
-		L5_23 = L5_23 * L4_22
-		A0_18._camera_data.fov = math.min(tweak_data.player.camera.split_screen_fov_max, L5_23)
+
+PlayerCamera.post_processing = function(l_4_0, l_4_1, l_4_2)
+	l_4_0:_collision_function(l_4_1, l_4_2)
+	local l_4_3 = RenderSettings.split_screen
+	if l_4_3 then
+		local l_4_4 = tweak_data.player.camera.split_screen_fov_multiplier
+		local l_4_5 = l_4_0._camera_data.fov * l_4_4
+		l_4_0._camera_data.fov = math.min(tweak_data.player.camera.split_screen_fov_max, l_4_5)
 	end
 end
-function PlayerCamera.update(A0_24, A1_25, A2_26, A3_27)
-	local L4_28, L5_29
-	L5_29 = A0_24
-	L4_28 = A0_24.is_active
-	L4_28 = L4_28(L5_29)
-	if not L4_28 then
-		return
+
+PlayerCamera.update = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	if not l_5_0:is_active() then
+		return 
 	end
-	L4_28 = assert
-	L5_29 = A0_24._root_camera
-	L4_28(L5_29)
-	L4_28 = A0_24._state_machine
-	L5_29 = L4_28
-	L4_28 = L4_28.update
-	L4_28(L5_29, A3_27)
-	L4_28 = A0_24._camera_name
-	L5_29 = A0_24._state_blend_time_override
-	L5_29 = L5_29 or A0_24:_blend_time(L4_28)
-	A0_24:view_camera(L4_28, L5_29)
-	A0_24:_update_look_at(A3_27)
-	CameraRoot.update(A0_24, A1_25, A2_26, A3_27)
-end
-function PlayerCamera._update_look_at(A0_30, A1_31)
-	local L2_32, L3_33, L4_34
-	L2_32 = A0_30._unit_camera_data
-	L3_33 = L2_32.eye_position
-	L4_34 = L2_32.eye_target_position
-	if not L3_33 or not L4_34 then
-		return
+	assert(l_5_0._root_camera)
+	l_5_0._state_machine:update(l_5_3)
+	local l_5_4 = l_5_0._camera_name
+	if not l_5_0._state_blend_time_override then
+		local l_5_5, l_5_6, l_5_7, l_5_8 = l_5_0:_blend_time(l_5_4)
 	end
-	A0_30:_update_look_at_position(A1_31, L3_33, L4_34)
-	A0_30:_update_look_at_fov(A1_31)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_5_0:view_camera(l_5_4, l_5_5)
+	l_5_0:_update_look_at(l_5_3)
+	CameraRoot.update(l_5_0, l_5_1, l_5_2, l_5_3)
 end
-function PlayerCamera._update_look_at_position(A0_35, A1_36, A2_37, A3_38)
-	local L4_39, L5_40, L6_41, L7_42, L8_43, L9_44, L10_45
-	L4_39 = assert
-	L5_40 = A2_37
-	L4_39(L5_40)
-	L4_39 = assert
-	L5_40 = A3_38
-	L4_39(L5_40)
-	L4_39 = A0_35._unit_camera_data
-	L5_40 = L4_39.look_at_position_override
-	L6_41 = A3_38 - A2_37
-	L7_42 = Rotation
-	L8_43 = A3_38 - A2_37
-	L9_44 = math
-	L9_44 = L9_44.UP
-	L7_42 = L7_42(L8_43, L9_44)
-	L8_43 = A3_38 - A2_37
-	L9_44 = L8_43
-	L8_43 = L8_43.length
-	L8_43 = L8_43(L9_44)
-	if L5_40 then
-		L9_44 = L5_40 - A2_37
-		L10_45 = Rotation
-		L10_45 = L10_45(L9_44, math.UP)
-		if A0_35._current_override_rotation then
+
+PlayerCamera._update_look_at = function(l_6_0, l_6_1)
+	local l_6_2 = l_6_0._unit_camera_data
+	local l_6_3 = l_6_2.eye_position
+	local l_6_4 = l_6_2.eye_target_position
+	if not l_6_3 or not l_6_4 then
+		return 
+	end
+	l_6_0:_update_look_at_position(l_6_1, l_6_3, l_6_4)
+	l_6_0:_update_look_at_fov(l_6_1)
+end
+
+PlayerCamera._update_look_at_position = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	assert(l_7_2)
+	assert(l_7_3)
+	local l_7_4 = l_7_0._unit_camera_data
+	local l_7_5 = l_7_4.look_at_position_override
+	local l_7_6 = l_7_3 - l_7_2
+	local l_7_7 = Rotation(l_7_3 - l_7_2, math.UP)
+	local l_7_8 = l_7_3 - l_7_2:length()
+	if l_7_5 then
+		local l_7_9 = l_7_5 - l_7_2
+		local l_7_10 = (Rotation(l_7_9, math.UP))
+		local l_7_11 = nil
+		if l_7_0._current_override_rotation then
+			l_7_11 = l_7_0._current_override_rotation
 		else
+			l_7_11 = l_7_7
 		end
-		A0_35._current_override_rotation = L7_42:slerp(L10_45, A1_36 * 10)
-		A0_35._look_at_override_length, L4_39.eye_target_position = (L5_40 - A2_37):length(), A2_37 + L7_42:slerp(L10_45, A1_36 * 10):y() * (L7_42:y():angle(L9_44) / 180 * L8_43 + (1 - L7_42:y():angle(L9_44) / 180) * (L5_40 - A2_37):length())
+		local l_7_12 = l_7_11:y():angle(l_7_9)
+		local l_7_13 = l_7_11:slerp(l_7_10, l_7_1 * 10)
+		l_7_0._current_override_rotation = l_7_13
+		local l_7_14 = l_7_5 - l_7_2:length()
+		local l_7_15 = l_7_12 / 180
+		local l_7_16 = l_7_15 * l_7_8 + (1 - l_7_15) * l_7_14
+		l_7_4.eye_target_position = l_7_2 + l_7_13:y() * l_7_16
+		l_7_0._look_at_override_length = l_7_14
+	elseif l_7_0._current_override_rotation then
+		local l_7_17 = math.min(l_7_1 * 10, 1)
+		local l_7_18 = l_7_0._current_override_rotation:slerp(l_7_7, l_7_17)
+		local l_7_19 = l_7_0._look_at_override_length + (l_7_8 - l_7_0._look_at_override_length) * l_7_17
+		l_7_4.eye_target_position = l_7_2 + l_7_18:y() * l_7_19
+		if l_7_18:y():angle(l_7_6) < 0.1 and math.abs(l_7_19 - l_7_0._look_at_override_length) < 0.1 then
+			l_7_0._current_override_rotation = nil
+		end
 	else
-		L9_44 = A0_35._current_override_rotation
-		if L9_44 then
-			L9_44 = math
-			L9_44 = L9_44.min
-			L10_45 = A1_36 * 10
-			L9_44 = L9_44(L10_45, 1)
-			L10_45 = A0_35._current_override_rotation
-			L10_45 = L10_45.slerp
-			L10_45 = L10_45(L10_45, L7_42, L9_44)
-			L4_39.eye_target_position = A2_37 + L10_45:y() * (A0_35._look_at_override_length + (L8_43 - A0_35._look_at_override_length) * L9_44)
-			if L10_45:y():angle(L6_41) < 0.1 and math.abs(A0_35._look_at_override_length + (L8_43 - A0_35._look_at_override_length) * L9_44 - A0_35._look_at_override_length) < 0.1 then
-				A0_35._current_override_rotation = nil
-			else
-				A0_35._look_at_override_length = A0_35._look_at_override_length + (L8_43 - A0_35._look_at_override_length) * L9_44
-				A0_35._current_override_rotation = L10_45
+		l_7_0._look_at_override_length = l_7_19
+		l_7_0._current_override_rotation = l_7_18
+	end
+end
+
+PlayerCamera._update_look_at_fov = function(l_8_0, l_8_1)
+	local l_8_2 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_8_0._unit_camera_data.look_at_relative_fov_override and l_8_0._unit_camera_data.look_at_relative_fov_override then
+		l_8_2 = l_8_0._unit_camera_data.look_at_relative_fov_override
+	else
+		l_8_2 = 0
+	end
+	l_8_0._look_at_fov:set_target(l_8_2)
+	l_8_0._look_at_fov:update(l_8_1)
+	local l_8_3 = nil
+	local l_8_4 = l_8_0._look_at_fov:value()
+	if l_8_0:active_camera() then
+		local l_8_5 = nil
+	if l_8_0:find_parent(l_8_0:active_camera(), "look_at_fov") then
+		end
+		l_8_0:find_parent(l_8_0:active_camera(), "look_at_fov"):set_fov(l_8_4)
+	end
+end
+
+PlayerCamera._near_edge_modifiers = function(l_9_0, l_9_1)
+	local l_9_2, l_9_3 = nil
+	if l_9_0 then
+		local l_9_4 = nil
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		local l_9_5 = nil
+		l_9_4 = (1 - math.clamp(l_9_0 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * (1 - math.clamp(l_9_0 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * tweak_data.player.camera.cover.EDGE_OFFSET
+		if not l_9_1 then
+			l_9_4 = -(l_9_4)
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_9_5 = (1 - math.clamp(l_9_0 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * (1 - math.clamp(l_9_0 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * tweak_data.player.camera.cover.EDGE_FOV
+	else
+		local l_9_6, l_9_8 = 0
+		l_9_8 = 0
+		local l_9_7, l_9_9 = nil
+	end
+	local l_9_10 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return {x_offset = l_9_10, fov = l_9_8}
+end
+
+PlayerCamera._update_cover_edge_modifiers = function(l_10_0, l_10_1, l_10_2)
+	local l_10_3 = l_10_0:find_parent(l_10_1, "cover_edge_offset")
+	if l_10_3 then
+		l_10_3:set_local_position(Vector3(l_10_2.x_offset, 0, 0))
+	end
+	local l_10_4 = l_10_0:find_parent(l_10_1, "cover_edge_fov")
+	if l_10_4 then
+		l_10_4:set_fov(l_10_2.fov)
+	end
+end
+
+PlayerCamera._blend_time = function(l_11_0, l_11_1)
+	local l_11_2 = (l_11_0:active_camera())
+	local l_11_3 = nil
+	if l_11_2 then
+		local l_11_4 = PlayerCameraBlendTimes.blend_times
+		local l_11_5 = l_11_2:name()
+		local l_11_6 = l_11_4[l_11_5]
+		if l_11_6 then
+			l_11_3 = l_11_6[l_11_1]
+			if not l_11_3 then
+				l_11_3 = l_11_6.DEFAULT_BLEND_TIME
+			if not l_11_3 then
+				end
+				l_11_3 = l_11_4.DEFAULT_BLEND_TIME
 			end
-		end
-	end
-end
-function PlayerCamera._update_look_at_fov(A0_46, A1_47)
-	local L2_48, L3_49, L4_50, L5_51
-	L3_49 = A0_46._unit_camera_data
-	L4_50 = L3_49.look_at_relative_fov_override
-	if L4_50 then
-		L4_50 = L3_49.look_at_relative_fov_override
-		if L4_50 then
-			L2_48 = L3_49.look_at_relative_fov_override
-		end
-	else
-		L2_48 = 0
-	end
-	L4_50 = A0_46._look_at_fov
-	L5_51 = L4_50
-	L4_50 = L4_50.set_target
-	L4_50(L5_51, L2_48)
-	L4_50 = A0_46._look_at_fov
-	L5_51 = L4_50
-	L4_50 = L4_50.update
-	L4_50(L5_51, A1_47)
-	L4_50 = A0_46._look_at_fov
-	L5_51 = L4_50
-	L4_50 = L4_50.value
-	L4_50 = L4_50(L5_51)
-	L5_51 = A0_46.active_camera
-	L5_51 = L5_51(A0_46)
-	if L5_51 and A0_46:find_parent(L5_51, "look_at_fov") then
-		A0_46:find_parent(L5_51, "look_at_fov"):set_fov(L4_50)
-	end
-end
-function PlayerCamera._near_edge_modifiers(A0_52, A1_53)
-	local L2_54, L3_55
-	if A0_52 then
-		L2_54 = (1 - math.clamp(A0_52 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * (1 - math.clamp(A0_52 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * tweak_data.player.camera.cover.EDGE_OFFSET
-		if not A1_53 then
-			L2_54 = -L2_54
-		end
-		L3_55 = (1 - math.clamp(A0_52 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * (1 - math.clamp(A0_52 / tweak_data.player.camera.cover.EDGE_OFFSET_START_DISTANCE, 0, 1)) * tweak_data.player.camera.cover.EDGE_FOV
-	else
-		L2_54 = 0
-		L3_55 = 0
-	end
-	return {x_offset = L2_54, fov = L3_55}
-end
-function PlayerCamera._update_cover_edge_modifiers(A0_56, A1_57, A2_58)
-	if A0_56:find_parent(A1_57, "cover_edge_offset") then
-		A0_56:find_parent(A1_57, "cover_edge_offset"):set_local_position(Vector3(A2_58.x_offset, 0, 0))
-	end
-	if A0_56:find_parent(A1_57, "cover_edge_fov") then
-		A0_56:find_parent(A1_57, "cover_edge_fov"):set_fov(A2_58.fov)
-	end
-end
-function PlayerCamera._blend_time(A0_59, A1_60)
-	local L2_61, L3_62, L4_63, L5_64
-	L3_62 = A0_59
-	L2_61 = A0_59.active_camera
-	L2_61 = L2_61(L3_62)
-	L3_62 = nil
-	if L2_61 then
-		L4_63 = PlayerCameraBlendTimes
-		L4_63 = L4_63.blend_times
-		L5_64 = L2_61.name
-		L5_64 = L5_64(L2_61)
-		if L4_63[L5_64] then
-			L3_62 = L4_63[L5_64][A1_60]
-			if not L3_62 then
-				L3_62 = L4_63[L5_64].DEFAULT_BLEND_TIME
-				L3_62 = L3_62 or L4_63.DEFAULT_BLEND_TIME
-			end
 		else
-			L3_62 = L4_63.DEFAULT_BLEND_TIME
-			assert(L3_62, "No default blend time set for cameras")
+			l_11_3 = l_11_4.DEFAULT_BLEND_TIME
+			assert(l_11_3, "No default blend time set for cameras")
 		end
-		if L5_64 ~= A1_60 then
-			cat_debug("camera", "Switching camera from " .. L5_64 .. " to " .. A1_60 .. ", blend time: " .. L3_62)
+		if l_11_5 ~= l_11_1 then
+			cat_debug("camera", "Switching camera from " .. l_11_5 .. " to " .. l_11_1 .. ", blend time: " .. l_11_3)
 		end
 	else
-		L3_62 = 0
+		l_11_3 = 0
 	end
-	return L3_62
+	return l_11_3
 end
-function PlayerCamera._update_quickmove_cover_edge_modifiers(A0_65, A1_66)
-	local L2_67, L3_68
-	L3_68 = A0_65._player_data
-	if L3_68.quick_moving_to_facing_right then
-		L2_67 = PlayerCamera._near_edge_modifiers(L3_68.quick_move_target_distance_to_right_cover_edge, true)
+
+PlayerCamera._update_quickmove_cover_edge_modifiers = function(l_12_0, l_12_1)
+	local l_12_2 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_12_0._player_data.quick_moving_to_facing_right then
+		l_12_2 = PlayerCamera._near_edge_modifiers(l_12_0._player_data.quick_move_target_distance_to_right_cover_edge, true)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
 	else
-		L2_67 = PlayerCamera._near_edge_modifiers(L3_68.quick_move_target_distance_to_left_cover_edge)
+		l_12_2 = PlayerCamera._near_edge_modifiers(l_12_0._player_data.quick_move_target_distance_to_left_cover_edge)
 	end
-	A0_65:_update_cover_edge_modifiers(A1_66, L2_67)
+	l_12_0:_update_cover_edge_modifiers(l_12_1, l_12_2)
 end
-function PlayerCamera._quick_move_target_camera_name(A0_69)
-	local L1_70, L2_71, L3_72
-	L1_70 = A0_69._player_data
-	L2_71 = nil
-	L3_72 = L1_70.quick_move_target_cover
-	if L3_72 then
-		L2_71 = "incover"
-		if managers.cover_util:high_cover(L3_72) then
-			L2_71 = L2_71 .. "_stand"
+
+PlayerCamera._quick_move_target_camera_name = function(l_13_0)
+	local l_13_1 = l_13_0._player_data
+	local l_13_2 = nil
+	local l_13_3 = l_13_1.quick_move_target_cover
+	if l_13_3 then
+		l_13_2 = "incover"
+		if managers.cover_util:high_cover(l_13_3) then
+			l_13_2 = l_13_2 .. "_stand"
 		else
-			L2_71 = L2_71 .. "_crouch"
+			l_13_2 = l_13_2 .. "_crouch"
 		end
-		if L1_70.quick_moving_to_facing_right then
-			L2_71 = L2_71 .. "_right"
+		if l_13_1.quick_moving_to_facing_right then
+			l_13_2 = l_13_2 .. "_right"
 		else
-			L2_71 = L2_71 .. "_left"
+			l_13_2 = l_13_2 .. "_left"
 		end
 	else
-		L2_71 = "onground"
+		l_13_2 = "onground"
 	end
-	return L2_71
+	return l_13_2
 end
-function PlayerCamera._update_collision(A0_73, A1_74, A2_75, A3_76)
-	local L4_77, L5_78, L6_79, L7_80, L8_81
-	L4_77 = A0_73._camera_data
-	L4_77 = L4_77.position
-	L5_78 = L4_77 - A3_76
-	L7_80 = L5_78
-	L6_79 = L5_78.length
-	L6_79 = L6_79(L7_80)
-	if L6_79 > 0 then
-		L7_80 = 1 / L6_79
-		L5_78 = L5_78 * L7_80
-		L7_80 = A0_73._pop_controller
-		L8_81 = L7_80
-		L7_80 = L7_80.wanted_position
-		L7_80 = L7_80(L8_81, A3_76, L4_77)
-		L8_81 = L7_80 * L6_79
-		if L8_81 < A0_73._camera_distance then
+
+PlayerCamera._update_collision = function(l_14_0, l_14_1, l_14_2, l_14_3)
+	local l_14_4 = l_14_0._camera_data.position
+	local l_14_5 = l_14_4 - l_14_3
+	local l_14_6 = l_14_5:length()
+	if l_14_6 > 0 then
+		l_14_5 = l_14_5 * (1 / l_14_6)
+		local l_14_7 = l_14_0._pop_controller:wanted_position(l_14_3, l_14_4)
+		local l_14_8 = l_14_7 * l_14_6
+		local l_14_9 = nil
+		if l_14_8 < l_14_0._camera_distance then
+			l_14_9 = l_14_8
 		else
+			l_14_9 = l_14_0._camera_distance + math.clamp(l_14_8 - l_14_0._camera_distance, 0, l_14_0._camera_max_velocity * l_14_2)
 		end
-		A0_73._camera_distance = A0_73._camera_distance + math.clamp(L8_81 - A0_73._camera_distance, 0, A0_73._camera_max_velocity * A2_75)
-		A0_73._camera_data.position = A3_76 + (L4_77 - A3_76):normalized() * (A0_73._camera_distance + math.clamp(L8_81 - A0_73._camera_distance, 0, A0_73._camera_max_velocity * A2_75))
+		local l_14_10 = l_14_3 + l_14_4 - l_14_3:normalized() * (l_14_9)
+		l_14_0._camera_distance = l_14_9
+		l_14_0._camera_data.position = l_14_10
 	end
 end
-function PlayerCamera.debug_render(A0_82, A1_83, A2_84, A3_85)
-	CameraRoot.debug_render(A0_82, A1_83, A2_84, A3_85)
-	Draw:brush(Color(0.3, 1, 1, 1)):sphere(A0_82:_safe_position(), 5)
-	Draw:brush(Color(0.3, 1, 0, 0)):sphere(A0_82._camera_data.position, 15)
+
+PlayerCamera.debug_render = function(l_15_0, l_15_1, l_15_2, l_15_3)
+	CameraRoot.debug_render(l_15_0, l_15_1, l_15_2, l_15_3)
+	local l_15_4 = Draw:brush(Color(0.3, 1, 1, 1))
+	l_15_4:sphere(l_15_0:_safe_position(), 5)
+	local l_15_5 = Draw:brush(Color(0.3, 1, 0, 0))
+	l_15_5:sphere(l_15_0._camera_data.position, 15)
 end
-function PlayerCamera._safe_position(A0_86)
-	local L1_87, L2_88, L3_89
-	L2_88 = A0_86._player_data
-	L3_89 = A0_86._unit
-	if L2_88.on_ground and L3_89:mover() or L2_88.is_down then
-		L1_87 = L3_89:position() + 190 * math.UP
+
+PlayerCamera._safe_position = function(l_16_0)
+	local l_16_1 = nil
+	local l_16_2 = l_16_0._player_data
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if (l_16_2.on_ground and l_16_0._unit:mover()) or l_16_2.is_down then
+		l_16_1 = l_16_0._unit:position() + 190 * math.UP
 	else
-		L1_87 = A0_86._head:position() + 30 * math.UP
+		l_16_1 = l_16_0._head:position() + 30 * math.UP
 	end
-	return L1_87
+	return l_16_1
 end
-function PlayerCamera._update_player_collision(A0_90, A1_91, A2_92)
-	local L3_93
-	L3_93 = A0_90._safe_position
-	L3_93 = L3_93(A0_90)
-	A0_90:_update_collision(A1_91, A2_92, L3_93)
+
+PlayerCamera._update_player_collision = function(l_17_0, l_17_1, l_17_2)
+	local l_17_3 = l_17_0:_safe_position()
+	l_17_0:_update_collision(l_17_1, l_17_2, l_17_3)
 end
-function PlayerCamera._update_vehicle_collision(A0_94, A1_95, A2_96)
-	local L3_97
-	L3_97 = A0_94._player_data
-	L3_97 = L3_97.named_camera_targets
-	L3_97 = L3_97.vehicle
-	L3_97 = L3_97.position
-	L3_97 = L3_97(L3_97)
-	L3_97 = L3_97 + 250 * math.UP
-	A0_94:_update_collision(L3_97)
+
+PlayerCamera._update_vehicle_collision = function(l_18_0, l_18_1, l_18_2)
+	local l_18_3 = l_18_0._player_data.named_camera_targets.vehicle:position() + 250 * math.UP
+	l_18_0:_update_collision(l_18_3)
 end
-function PlayerCamera._update_no_collision(A0_98, A1_99, A2_100)
+
+PlayerCamera._update_no_collision = function(l_19_0, l_19_1, l_19_2)
 end
-function PlayerCamera._state_class(A0_101)
-	local L1_102
-	L1_102 = A0_101._player_data
-	if L1_102.on_rail_vehicle or L1_102.on_destroyed_rail_vehicle then
+
+PlayerCamera._state_class = function(l_20_0)
+	local l_20_1 = l_20_0._player_data
+	local l_20_2 = l_20_0._unit:camera_data()
+	local l_20_3 = l_20_0._damage_data
+	if l_20_1.on_rail_vehicle or l_20_1.on_destroyed_rail_vehicle then
 		return PlayerCameraOnRailVehicle
-	elseif L1_102._in_stationary_weapon then
+	elseif l_20_1._in_stationary_weapon then
 		return PlayerCameraInStationaryWeapon
-	elseif A0_101._damage_data and A0_101._damage_data:is_fully_damaged() then
-		if L1_102.is_down then
+	elseif l_20_3 and l_20_3:is_fully_damaged() then
+		if l_20_1.is_down then
 			return PlayerCameraWounded
 		else
 			return PlayerCameraEnterDead
 		end
-	elseif L1_102.quick_moving then
-		if L1_102.quick_moving_from_onground then
+	elseif l_20_1.quick_moving then
+		if l_20_1.quick_moving_from_onground then
 			return PlayerCameraEnteringCover
-		elseif L1_102.quick_moving_over_cover then
+		elseif l_20_1.quick_moving_over_cover then
 			return PlayerCameraQuickMovingOverCover
 		else
 			return PlayerCameraQuickMoving
 		end
-	elseif L1_102.in_cover then
-		if L1_102.peeking_up then
+	elseif l_20_1.in_cover then
+		if l_20_1.peeking_up then
 			return PlayerCameraPeekingUpInCover
-		elseif L1_102.peeking_side then
-			if L1_102.facing_right_in_cover then
+		elseif l_20_1.peeking_side then
+			if l_20_1.facing_right_in_cover then
 				return PlayerCameraPeekingRightInCover
 			else
 				return PlayerCameraPeekingLeftInCover
 			end
-		elseif L1_102.leaving_cover then
+		elseif l_20_1.leaving_cover then
 			return PlayerCameraLeavingCover
 		else
 			return PlayerCameraInCover
 		end
-	elseif L1_102.on_ground then
+	elseif l_20_1.on_ground then
 		return PlayerCameraOnGround
-	elseif L1_102.strangul then
+	elseif l_20_1.strangul then
 		return PlayerCameraStrangul
 	end
 	return PlayerCameraUnknownState
 end
-function PlayerCamera._cover_camera_index(A0_103)
-	local L1_104
-	L1_104 = A0_103.__cover_camera_index
-	return L1_104
+
+PlayerCamera._cover_camera_index = function(l_21_0)
+	return l_21_0.__cover_camera_index
 end
-function PlayerCamera._switch_cover_camera_index(A0_105)
-	A0_105.__cover_camera_index = A0_105:_available_cover_camera_index()
+
+PlayerCamera._switch_cover_camera_index = function(l_22_0)
+	l_22_0.__cover_camera_index = l_22_0:_available_cover_camera_index()
 end
-function PlayerCamera._available_cover_camera_index(A0_106)
-	return (iff(A0_106.__cover_camera_index == 1, 2, 1))
+
+PlayerCamera._available_cover_camera_index = function(l_23_0)
+	local l_23_1 = iff
+	l_23_1 = l_23_1(l_23_0.__cover_camera_index == 1, 2, 1)
+	return l_23_1
 end
+
+

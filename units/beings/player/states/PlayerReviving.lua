@@ -1,21 +1,30 @@
 require("units/beings/player/states/PlayerMovementState")
 require("units/beings/player/states/PlayerOnGround")
-PlayerReviving = PlayerReviving or class(PlayerMovementState)
-function PlayerReviving.init(A0_0, A1_1, A2_2)
-	PlayerMovementState.init(A0_0, A1_1, "PlayerReviving")
-	A0_0._player_to_revive = A2_2
+if not PlayerReviving then
+	PlayerReviving = class(PlayerMovementState)
 end
-function PlayerReviving.enter(A0_3)
-	PlayerMovementState.enter(A0_3)
-	if alive(A0_3._player_to_revive) then
-		A0_3._player_to_revive:base():revive()
+PlayerReviving.init = function(l_1_0, l_1_1, l_1_2)
+	PlayerMovementState.init(l_1_0, l_1_1, "PlayerReviving")
+	l_1_0._player_to_revive = l_1_2
+end
+
+PlayerReviving.enter = function(l_2_0)
+	PlayerMovementState.enter(l_2_0)
+	if alive(l_2_0._player_to_revive) then
+		l_2_0._player_to_revive:base():revive()
 	end
 end
-function PlayerReviving.update(A0_4, A1_5, A2_6)
-	if A0_4._base:check_fully_damaged() then
-		return (A0_4._base:check_fully_damaged())
+
+PlayerReviving.update = function(l_3_0, l_3_1, l_3_2)
+	local l_3_3 = l_3_0._base:check_fully_damaged()
+	if l_3_3 then
+		return l_3_3
 	end
-	if not A0_4._player_data.reviving then
-		return PlayerOnGround:new(A0_4._unit)
+	if not l_3_0._player_data.reviving then
+		local l_3_4, l_3_5 = PlayerOnGround:new, PlayerOnGround
+		local l_3_6 = l_3_0._unit
+		return l_3_4(l_3_5, l_3_6)
 	end
 end
+
+

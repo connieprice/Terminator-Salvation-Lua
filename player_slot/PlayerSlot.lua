@@ -1,105 +1,128 @@
-PlayerSlot = PlayerSlot or class()
-function PlayerSlot.init(A0_0, A1_1)
-	if A1_1.user_index then
-		A0_0._user = managers.local_user:user_from_user_index(A1_1.user_index)
+if not PlayerSlot then
+	PlayerSlot = class()
+end
+PlayerSlot.init = function(l_1_0, l_1_1)
+	if l_1_1.user_index then
+		l_1_0._user = managers.local_user:user_from_user_index(l_1_1.user_index)
 	end
 end
-function PlayerSlot.default_data(A0_2)
-	local L1_3
-	A0_2.user_index = nil
+
+PlayerSlot.default_data = function(l_2_0)
+	l_2_0.user_index = nil
 end
-function PlayerSlot.save(A0_4, A1_5)
-	if not A0_4._user then
-		return
+
+PlayerSlot.save = function(l_3_0, l_3_1)
+	if not l_3_0._user then
+		return 
 	end
-	A1_5.user_index = A0_4._user:user_index()
+	l_3_1.user_index = l_3_0._user:user_index()
 end
-function PlayerSlot.set_user(A0_6, A1_7, A2_8)
-	assert(A1_7)
-	assert(not A0_6._user)
-	A0_6._user = A1_7
-	A0_6._is_primary_user = A2_8
-	if not A0_6._is_primary_user then
-		A0_6._user:profile().difficulty_level = managers.save:profile().difficulty_level
+
+PlayerSlot.set_user = function(l_4_0, l_4_1, l_4_2)
+	assert(l_4_1)
+	assert(not l_4_0._user)
+	l_4_0._user = l_4_1
+	l_4_0._is_primary_user = l_4_2
+	if not l_4_0._is_primary_user then
+		l_4_0._user:profile().difficulty_level = managers.save:profile().difficulty_level
 	end
-	A0_6:update_control()
+	l_4_0:update_control()
 end
-function PlayerSlot.release_user(A0_9)
-	assert(A0_9._user)
-	A0_9._user = nil
-	A0_9._is_primary_user = false
-	A0_9:update_control()
+
+PlayerSlot.release_user = function(l_5_0)
+	assert(l_5_0._user)
+	l_5_0._user = nil
+	l_5_0._is_primary_user = false
+	l_5_0:update_control()
 end
-function PlayerSlot.is_occupied(A0_10)
-	return A0_10._user ~= nil
+
+PlayerSlot.is_occupied = function(l_6_0)
+	return l_6_0._user ~= nil
 end
-function PlayerSlot.user(A0_11)
-	local L1_12
-	L1_12 = A0_11._user
-	return L1_12
+
+PlayerSlot.user = function(l_7_0)
+	return l_7_0._user
 end
-function PlayerSlot.set_unit(A0_13, A1_14, A2_15, A3_16, A4_17, A5_18, A6_19)
-	assert(A1_14)
-	assert(not A0_13._unit)
-	A0_13._ai_controllable = A5_18
-	A0_13._human_controllable = A6_19
-	A0_13._unit = A1_14
-	A0_13:update_control()
+
+PlayerSlot.set_unit = function(l_8_0, l_8_1, l_8_2, l_8_3, l_8_4, l_8_5, l_8_6)
+	assert(l_8_1)
+	assert(not l_8_0._unit)
+	l_8_0._ai_controllable = l_8_5
+	l_8_0._human_controllable = l_8_6
+	l_8_0._unit = l_8_1
+	l_8_0:update_control()
 end
-function PlayerSlot.set_spawn_point(A0_20, A1_21, A2_22, A3_23, A4_24, A5_25, A6_26, A7_27, A8_28)
-	A0_20._ai_controllable = A4_24
-	A0_20._human_controllable = A5_25
-	if not alive(A0_20._unit) then
-		A0_20._unit = nil
+
+PlayerSlot.set_spawn_point = function(l_9_0, l_9_1, l_9_2, l_9_3, l_9_4, l_9_5, l_9_6, l_9_7, l_9_8)
+	l_9_0._ai_controllable = l_9_4
+	l_9_0._human_controllable = l_9_5
+	if not alive(l_9_0._unit) then
+		l_9_0._unit = nil
 	end
-	if not A0_20._unit or A0_20._unit:name() ~= A1_21 then
-		if A0_20._unit then
-			if A0_20._user then
-				A0_20._user:release_assigned_unit()
+	if not l_9_0._unit or l_9_0._unit:name() ~= l_9_1 then
+		if l_9_0._unit then
+			if l_9_0._user then
+				l_9_0._user:release_assigned_unit()
 			end
-			A0_20._unit:set_slot(0)
+			l_9_0._unit:set_slot(0)
 		end
-		A0_20._unit = World:spawn_unit(A1_21, A2_22, A3_23)
-		if A0_20._ai_controllable then
-			A0_20._unit:ai_nerve_system():setup(A6_26)
+		l_9_0._unit = World:spawn_unit(l_9_1, l_9_2, l_9_3)
+		if l_9_0._ai_controllable then
+			l_9_0._unit:ai_nerve_system():setup(l_9_6)
 		end
-		A0_20:update_control()
+		l_9_0:update_control()
 	end
-	if A7_27 and A8_28 < (A2_22 - A0_20._unit:position()):length() then
-		UnitSpawnUtility.warp_to(A0_20._unit, A3_23, A2_22)
+	if l_9_7 then
+		local l_9_9 = l_9_2 - l_9_0._unit:position():length()
+	if l_9_8 < l_9_9 then
+		end
+		UnitSpawnUtility.warp_to(l_9_0._unit, l_9_3, l_9_2)
 	end
 end
-function PlayerSlot.update(A0_29)
-	if not alive(A0_29._unit) then
-		A0_29._unit = nil
+
+PlayerSlot.update = function(l_10_0)
+	if not alive(l_10_0._unit) then
+		l_10_0._unit = nil
 	end
 end
-function PlayerSlot.update_control(A0_30)
-	if not alive(A0_30._unit) then
-		A0_30._unit = nil
+
+PlayerSlot.update_control = function(l_11_0)
+	if not alive(l_11_0._unit) then
+		l_11_0._unit = nil
 	end
-	if not A0_30._unit then
-		return
+	if not l_11_0._unit then
+		return 
 	end
-	if A0_30._human_controllable and A0_30._user then
-		assert(A0_30._unit)
-		if A0_30._user:assigned_unit() ~= A0_30._unit then
-			A0_30._user:set_assigned_unit(A0_30._unit)
-			if A0_30._user:profile().levels[managers.save:profile().current_level_id] and managers.save:profile().current_checkpoint_id <= A0_30._user:profile().levels[managers.save:profile().current_level_id].maximum_checkpoint_id and A0_30._user:profile().levels[managers.save:profile().current_level_id].checkpoints[managers.save:profile().current_checkpoint_id].inventory.items[1].name ~= "" then
-				A0_30._unit:base():spawn_weapon_state(A0_30._user:profile().levels[managers.save:profile().current_level_id].checkpoints[managers.save:profile().current_checkpoint_id].inventory.items)
+	if l_11_0._human_controllable and l_11_0._user then
+		assert(l_11_0._unit)
+		if l_11_0._user:assigned_unit() ~= l_11_0._unit then
+			l_11_0._user:set_assigned_unit(l_11_0._unit)
+			local l_11_1 = l_11_0._user:profile()
+			local l_11_2 = managers.save:profile()
+			local l_11_3 = l_11_2.current_checkpoint_id
+			local l_11_4 = l_11_2.current_level_id
+			local l_11_5 = l_11_1.levels[l_11_4]
+			local l_11_6 = false
+			if l_11_5 and l_11_3 <= l_11_5.maximum_checkpoint_id then
+				local l_11_7 = l_11_5.checkpoints[l_11_3]
+			if l_11_7.inventory.items[1].name ~= "" then
+				end
+				l_11_0._unit:base():spawn_weapon_state(l_11_7.inventory.items)
+				l_11_6 = true
 			end
-			if not true then
-				A0_30._unit:base():spawn_human_controllable_weapons()
+		if not l_11_6 then
 			end
+			l_11_0._unit:base():spawn_human_controllable_weapons()
 		end
-	elseif A0_30._ai_controllable then
-		A0_30._unit:control():set_ai_controlled()
+	elseif l_11_0._ai_controllable then
+		l_11_0._unit:control():set_ai_controlled()
 	else
-		A0_30._unit:control():set_no_control()
+		l_11_0._unit:control():set_no_control()
 	end
 end
-function PlayerSlot.spawned_unit(A0_31)
-	local L1_32
-	L1_32 = A0_31._unit
-	return L1_32
+
+PlayerSlot.spawned_unit = function(l_12_0)
+	return l_12_0._unit
 end
+
+

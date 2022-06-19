@@ -1,15 +1,19 @@
-OwnershipManager = OwnershipManager or class()
-function OwnershipManager.init(A0_0)
-	local L1_1
+if not OwnershipManager then
+	OwnershipManager = class()
 end
-function OwnershipManager.owner_rpc(A0_2, A1_3)
-	return (managers.network:peer():host_rpc())
+OwnershipManager.init = function(l_1_0)
 end
-function OwnershipManager.interested_rpc(A0_4, A1_5)
-	return (managers.network:peer():peers_rpc())
+
+OwnershipManager.owner_rpc = function(l_2_0, l_2_1)
+	return managers.network:peer():host_rpc()
 end
-function OwnershipManager.is_owner(A0_6, A1_7)
-	local L2_8
-	L2_8 = true
-	return L2_8
+
+OwnershipManager.interested_rpc = function(l_3_0, l_3_1)
+	return managers.network:peer():peers_rpc()
 end
+
+OwnershipManager.is_owner = function(l_4_0, l_4_1)
+	return true
+end
+
+

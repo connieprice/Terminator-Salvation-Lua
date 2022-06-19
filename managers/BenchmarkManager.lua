@@ -1,25 +1,33 @@
-BenchmarkManager = BenchmarkManager or class(CoreBenchmarkManager)
-function BenchmarkManager.init(A0_0)
-	CoreBenchmarkManager.init(A0_0, 1500)
-	A0_0._t = 0
-	A0_0._fps = 0
-	A0_0._ticks = 0
-	A0_0:set_callbacks(nil, callback(A0_0, A0_0, "benchmark_values"))
+if not BenchmarkManager then
+	BenchmarkManager = class(CoreBenchmarkManager)
 end
-function BenchmarkManager.paused_update(A0_1, A1_2, A2_3)
-	A0_1:update(A1_2, A2_3)
+BenchmarkManager.init = function(l_1_0)
+	CoreBenchmarkManager.init(l_1_0, 1500)
+	l_1_0._t = 0
+	l_1_0._fps = 0
+	l_1_0._ticks = 0
+	l_1_0:set_callbacks(nil, callback(l_1_0, l_1_0, "benchmark_values"))
 end
-function BenchmarkManager.update(A0_4, A1_5, A2_6)
-	CoreBenchmarkManager.update(A0_4, A1_5, A2_6)
-	A0_4._ticks = A0_4._ticks + 1
-	A0_4._t = A0_4._t + A2_6
-	if 1 <= A0_4._t then
-		A0_4._t = A0_4._t - 1
-		A0_4._fps = A0_4._ticks
-		A0_4._ticks = 0
+
+BenchmarkManager.paused_update = function(l_2_0, l_2_1, l_2_2)
+	l_2_0:update(l_2_1, l_2_2)
+end
+
+BenchmarkManager.update = function(l_3_0, l_3_1, l_3_2)
+	CoreBenchmarkManager.update(l_3_0, l_3_1, l_3_2)
+	l_3_0._ticks = l_3_0._ticks + 1
+	l_3_0._t = l_3_0._t + l_3_2
+	if l_3_0._t >= 1 then
+		l_3_0._t = l_3_0._t - 1
+		l_3_0._fps = l_3_0._ticks
+		l_3_0._ticks = 0
 	end
 end
-function BenchmarkManager.benchmark_values(A0_7)
-	({}).fps = A0_7._fps
-	return {}
+
+BenchmarkManager.benchmark_values = function(l_4_0)
+	local l_4_1 = {}
+	l_4_1.fps = l_4_0._fps
+	return l_4_1
 end
+
+

@@ -1,15 +1,20 @@
 require("units/beings/player/camera/PlayerCameraState")
-PlayerCameraStrangul = PlayerCameraStrangul or class(PlayerCameraState)
-function PlayerCameraStrangul.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraStrangul)
-	A0_0:_set_camera_name("strangul")
+if not PlayerCameraStrangul then
+	PlayerCameraStrangul = class(PlayerCameraState)
 end
-function PlayerCameraStrangul.transition(A0_1)
-	local L1_2
-	L1_2 = A0_1._camera
-	L1_2 = L1_2._damage_data
-	if L1_2:is_fully_damaged() then
+PlayerCameraStrangul.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraStrangul)
+	l_1_0:_set_camera_name("strangul")
+end
+
+PlayerCameraStrangul.transition = function(l_2_0)
+	local l_2_1 = l_2_0._camera._damage_data
+	if l_2_1:is_fully_damaged() then
 		return PlayerCameraLookAtDeadPlayer
 	end
-	return PlayerCameraState.transition(A0_1)
+	local l_2_2 = PlayerCameraState.transition
+	local l_2_3 = l_2_0
+	return l_2_2(l_2_3)
 end
+
+

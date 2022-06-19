@@ -1,125 +1,189 @@
 require("units/beings/player/new_gui/HudPanel")
 require("units/beings/player/new_gui/ContextItem")
 require("units/beings/player/new_gui/HudUtility")
-ContextPanel = ContextPanel or class(HudPanel)
-function ContextPanel.init(A0_0, A1_1, A2_2)
-	HudPanel.init(A0_0, false)
-	A0_0._parent_panel = A1_1
-	A0_0._player_unit = A2_2
-	A0_0._player_data = A2_2:player_data()
+if not ContextPanel then
+	ContextPanel = class(HudPanel)
+end
+ContextPanel.init = function(l_1_0, l_1_1, l_1_2)
+	HudPanel.init(l_1_0, false)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._player_unit = l_1_2
+	l_1_0._player_data = l_1_2:player_data()
 	Localizer:load("data/strings/context_actions.xml")
-	A0_0._width = tweak_data.player.new_hud.context_panel.WIDTH
-	A0_0._height = tweak_data.player.new_hud.context_panel.HEIGHT
-	A0_0._x = A0_0._parent_panel:width() / 2
-	if HudUtility.is_split_screen() and A0_0._parent_panel:height() <= 720 then
-		A0_0._y = A0_0._parent_panel:height() / 2 + tweak_data.player.new_hud.context_panel.PANEL_COOP_OFFSET_Y
+	l_1_0._width = tweak_data.player.new_hud.context_panel.WIDTH
+	l_1_0._height = tweak_data.player.new_hud.context_panel.HEIGHT
+	l_1_0._x = l_1_0._parent_panel:width() / 2
+	if HudUtility.is_split_screen() and l_1_0._parent_panel:height() <= 720 then
+		l_1_0._y = l_1_0._parent_panel:height() / 2 + tweak_data.player.new_hud.context_panel.PANEL_COOP_OFFSET_Y
 	else
-		A0_0._y = A0_0._parent_panel:height() / 2 + tweak_data.player.new_hud.context_panel.PANEL_OFFSET_Y
+		l_1_0._y = l_1_0._parent_panel:height() / 2 + tweak_data.player.new_hud.context_panel.PANEL_OFFSET_Y
 	end
-	A0_0._panel = A0_0._parent_panel:panel({
-		name = "context_panel",
-		width = A0_0._width,
-		height = A0_0._height,
-		valign = "bottom",
-		halign = "left"
-	})
-	A0_0._panel:set_center(A0_0._x, A0_0._y)
-	A0_0._context_items = {}
-	A0_0._context_items.action = ContextItem:new(A0_0._panel)
-	A0_0._context_items.cover = ContextItem:new(A0_0._panel)
-	A0_0._context_items.message = ContextItem:new(A0_0._panel)
-	A0_0._context_list = {}
-	A0_0:set_alpha(0)
+	local l_1_3, l_1_4 = l_1_0._parent_panel:panel, l_1_0._parent_panel
+	local l_1_5 = {}
+	l_1_5.name = "context_panel"
+	l_1_5.width = l_1_0._width
+	l_1_5.height = l_1_0._height
+	l_1_5.valign = "bottom"
+	l_1_5.halign = "left"
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_0._panel = l_1_3
+	l_1_3 = l_1_0._panel
+	l_1_3, l_1_4 = l_1_3:set_center, l_1_3
+	l_1_5 = l_1_0._x
+	l_1_3(l_1_4, l_1_5, l_1_0._y)
+	l_1_0._context_items, l_1_3 = l_1_3, {}
+	l_1_3 = l_1_0._context_items
+	l_1_4 = ContextItem
+	l_1_4, l_1_5 = l_1_4:new, l_1_4
+	l_1_4 = l_1_4(l_1_5, l_1_0._panel)
+	l_1_3.action = l_1_4
+	l_1_3 = l_1_0._context_items
+	l_1_4 = ContextItem
+	l_1_4, l_1_5 = l_1_4:new, l_1_4
+	l_1_4 = l_1_4(l_1_5, l_1_0._panel)
+	l_1_3.cover = l_1_4
+	l_1_3 = l_1_0._context_items
+	l_1_4 = ContextItem
+	l_1_4, l_1_5 = l_1_4:new, l_1_4
+	l_1_4 = l_1_4(l_1_5, l_1_0._panel)
+	l_1_3.message = l_1_4
+	l_1_0._context_list, l_1_3 = l_1_3, {}
+	l_1_3, l_1_4 = l_1_0:set_alpha, l_1_0
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
 end
-function ContextPanel.hide(A0_3, A1_4)
-	A0_3._context_items[A1_4]:fade_out()
+
+ContextPanel.hide = function(l_2_0, l_2_1)
+	l_2_0._context_items[l_2_1]:fade_out()
 end
-function ContextPanel.instant_hide(A0_5, A1_6)
-	A0_5._context_items[A1_6]:instant_hide()
+
+ContextPanel.instant_hide = function(l_3_0, l_3_1)
+	l_3_0._context_items[l_3_1]:instant_hide()
 end
-function ContextPanel.is_visible(A0_7, A1_8)
-	return A0_7._context_items[A1_8]:visible()
+
+ContextPanel.is_visible = function(l_4_0, l_4_1)
+	local l_4_2, l_4_3 = l_4_0._context_items[l_4_1]:visible, l_4_0._context_items[l_4_1]
+	return l_4_2(l_4_3)
 end
-function ContextPanel.timed_out(A0_9, A1_10)
-	return A0_9._context_items[A1_10]:timed_out()
+
+ContextPanel.timed_out = function(l_5_0, l_5_1)
+	local l_5_2, l_5_3 = l_5_0._context_items[l_5_1]:timed_out, l_5_0._context_items[l_5_1]
+	return l_5_2(l_5_3)
 end
-function ContextPanel.set_minimum_display_time(A0_11, A1_12, A2_13, A3_14)
-	A0_11._context_items[A1_12]:set_minimum_display_time(A2_13, A3_14)
+
+ContextPanel.set_minimum_display_time = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	l_6_0._context_items[l_6_1]:set_minimum_display_time(l_6_2, l_6_3)
 end
-function ContextPanel.display(A0_15, A1_16, A2_17, ...)
-	local L4_19, L5_20
-	L4_19 = A0_15._context_items
-	L4_19 = L4_19[A1_16]
-	L5_20 = A0_15._get_first_free_display_index
-	L5_20 = L5_20(A0_15)
-	if A0_15:is_displayed(L4_19) then
-		L4_19:update_item(A2_17, ...)
-		if L5_20 == 1 and A0_15._context_list[2] == L4_19 then
-			L4_19:move_down()
-			A0_15._context_list[1] = L4_19
-			A0_15._context_list[2] = nil
+
+ContextPanel.display = function(l_7_0, l_7_1, l_7_2, ...)
+	local l_7_4 = l_7_0._context_items[l_7_1]
+	if l_7_0:is_displayed(l_7_4) then
+		l_7_4:update_item(l_7_2, ...)
+		if l_7_0:_get_first_free_display_index() == 1 and l_7_0._context_list[2] == l_7_4 then
+			l_7_4:move_down()
+			l_7_0._context_list[1] = l_7_4
+			l_7_0._context_list[2] = nil
 		end
-	elseif L5_20 then
-		if A0_15:is_displayed(L4_19) then
-			Application:debug("displayed already displayed target", L5_20, A2_17)
-			return
+	elseif l_7_0:_get_first_free_display_index() then
+		if l_7_0:is_displayed(l_7_4) then
+			Application:debug("displayed already displayed target", l_7_0:_get_first_free_display_index(), l_7_2)
+			return 
 		end
-		A0_15._context_list[L5_20] = L4_19
-		A0_15._context_list[L5_20]:display(A2_17, L5_20, ...)
-		A0_15:use_high_frequency_update()
+		l_7_0._context_list[l_7_0:_get_first_free_display_index()] = l_7_4
+		l_7_0._context_list[l_7_0:_get_first_free_display_index()]:display(l_7_2, l_7_0:_get_first_free_display_index(), ...)
+		l_7_0:use_high_frequency_update()
 	end
-	A0_15:update_positions()
+	l_7_0:update_positions()
 end
-function ContextPanel.is_displayed(A0_21, A1_22)
-	local L2_23
-	L2_23 = A0_21._context_list
-	L2_23 = L2_23[1]
-	if L2_23 ~= A1_22 then
-		L2_23 = A0_21._context_list
-		L2_23 = L2_23[2]
-	elseif L2_23 == A1_22 then
-		L2_23 = true
-		return L2_23
+
+ContextPanel.is_displayed = function(l_8_0, l_8_1)
+	if l_8_0._context_list[1] == l_8_1 or l_8_0._context_list[2] == l_8_1 then
+		return true
 	end
-	L2_23 = false
-	return L2_23
+	return false
 end
-function ContextPanel._get_first_free_display_index(A0_24)
-	local L1_25
-	L1_25 = A0_24._context_list
-	L1_25 = L1_25[1]
-	if not L1_25 then
-		L1_25 = 1
-		return L1_25
+
+ContextPanel._get_first_free_display_index = function(l_9_0)
+	if not l_9_0._context_list[1] then
+		return 1
 	else
-		L1_25 = A0_24._context_list
-		L1_25 = L1_25[2]
-		if not L1_25 then
-			L1_25 = 2
-			return L1_25
-		else
-			L1_25 = nil
-			return L1_25
+		if not l_9_0._context_list[2] then
+			return 2
 		end
+	else
+		return nil
 	end
 end
-function ContextPanel.panel(A0_26)
-	local L1_27
-	L1_27 = A0_26._panel
-	return L1_27
+
+ContextPanel.panel = function(l_10_0)
+	return l_10_0._panel
 end
-function ContextPanel.visible(A0_28)
-	local L1_29
+
+ContextPanel.visible = function(l_11_0)
 end
-function ContextPanel.active_context(A0_30)
-	local L1_31
-	L1_31 = A0_30._context_list
-	L1_31 = #L1_31
-	L1_31 = L1_31 > 0
-	return L1_31
+
+ContextPanel.active_context = function(l_12_0)
+	return #l_12_0._context_list > 0
 end
-function ContextPanel.update(A0_32, A1_33, A2_34)
-	local L3_35, L4_36
-	L3_35 = false
-	L4_36(A0_32)
-	for 
+
+ContextPanel.update = function(l_13_0, l_13_1, l_13_2)
+	local l_13_7, l_13_8, l_13_9, l_13_10, l_13_11, l_13_12, l_13_13, l_13_14, l_13_15, l_13_16, l_13_18, l_13_20, l_13_22 = nil
+	local l_13_3 = false
+	l_13_0:update_positions()
+	for i_0,i_1 in pairs(l_13_0._context_list) do
+		if not i_1:visible() and not i_1:wants_to_fade_in() then
+			l_13_0._context_list[i_0] = nil
+		end
+		if i_1:wants_to_idle() then
+			local l_13_23 = i_1:moving_down()
+		if l_13_23 then
+			end
+		end
+		l_13_3 = true
+	end
+	if l_13_3 then
+		l_13_0:use_high_frequency_update()
+	else
+		l_13_0:use_low_frequency_update()
+	end
+	for i_0,l_13_23 in pairs(l_13_0._context_items) do
+		do
+			local l_13_17 = nil
+			l_13_17(l_13_23, l_13_1, l_13_2)
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+		end
+		l_13_0:set_alpha(l_13_17)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+ContextPanel.set_alpha = function(l_14_0, l_14_1)
+	HudPanel.set_alpha(l_14_0, l_14_1)
+end
+
+ContextPanel.update_positions = function(l_15_0)
+	if l_15_0._context_list[1] == nil or l_15_0._context_list[2] == nil then
+		return 
+	end
+	if l_15_0._context_list[1]._panel:y() == l_15_0._context_list[2]._panel:y() then
+		l_15_0._context_list[2]:_set_position(2)
+		l_15_0._context_list[2]._move_down_interpolator = nil
+		l_15_0._context_list[1]:_set_position(1)
+		l_15_0._context_list[1]._move_down_interpolator = nil
+	end
+end
+
+ContextPanel.set_localizer_mapping = function(l_16_0, l_16_1)
+	local l_16_5, l_16_6, l_16_7, l_16_8 = nil
+	for i_0,i_1 in pairs(l_16_0._context_items) do
+		i_1:set_localizer_mapping(l_16_1)
+	end
+end
+
+

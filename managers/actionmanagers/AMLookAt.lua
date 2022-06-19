@@ -1,35 +1,33 @@
 require("shared/TableAlgorithms")
-AMLookAt = AMLookAt or class(CoreActionElement)
-function AMLookAt.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMLookAt then
+	AMLookAt = class(CoreActionElement)
 end
-function AMLookAt.activate_now(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8, L6_9, L7_10, L8_11, L9_12, L10_13, L11_14, L12_15
-	L1_4 = managers
-	L1_4 = L1_4.player
-	L1_4 = L1_4.players
-	L1_4 = L1_4(L2_5)
-	A0_3.relative_fov = L2_5
-	for L5_8, L6_9 in L2_5(L3_6) do
-		if L7_10 then
-			if L7_10 then
-				if L7_10 > 0 then
-					for L10_13, L11_14 in L7_10(L8_11) do
-						L12_15 = managers
-						L12_15 = L12_15.unit_scripting
-						L12_15 = L12_15.get_unit_by_name
-						L12_15 = L12_15(L12_15, L11_14.script_name)
-						if alive(L12_15) then
-							L6_9:drama():set_next_look_at_unit(L12_15, A0_3.timer, A0_3.relative_fov)
-						end
+AMLookAt.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+end
+
+AMLookAt.activate_now = function(l_2_0)
+	local l_2_5, l_2_6, l_2_7, l_2_8, l_2_12, l_2_13, l_2_14, l_2_15, l_2_17, l_2_18, l_2_19, l_2_20 = nil
+	local l_2_1 = managers.player:players()
+	l_2_0.relative_fov = l_2_0.relative_fov or -20
+	for i_0,i_1 in pairs(l_2_1) do
+		if alive(i_1) then
+			if l_2_0.units and TableAlgorithms.count(l_2_0.units) > 0 then
+				for i_0,i_1 in pairs(l_2_0.units) do
+					if alive(managers.unit_scripting:get_unit_by_name(i_1.script_name)) then
+						l_2_10:drama():set_next_look_at_unit(managers.unit_scripting:get_unit_by_name(i_1.script_name), l_2_0.timer, l_2_0.relative_fov)
 					end
 				end
-			else
-				L10_13 = A0_3.timer
-				L11_14 = A0_3.relative_fov
-				L7_10(L8_11, L9_12, L10_13, L11_14)
 			end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		else
+			l_2_10:drama():set_next_look_at_position(l_2_0.position, l_2_0.timer, l_2_0.relative_fov)
 		end
 	end
-	L2_5(L3_6)
+	l_2_0:deactivate_now()
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

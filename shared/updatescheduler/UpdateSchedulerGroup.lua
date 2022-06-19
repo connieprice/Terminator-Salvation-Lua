@@ -1,27 +1,79 @@
 require("shared/updatescheduler/UpdateSchedulerNode")
-UpdateSchedulerGroup = UpdateSchedulerGroup or class()
-function UpdateSchedulerGroup.init(A0_0, A1_1, A2_2)
-	A0_0._name = A1_1
-	A0_0._nodes = {}
-	A0_0._num_nodes = 0
-	A0_0._node_index = 1
-	A0_0._updates_per_frame = A2_2
-	A0_0._enabled = true
+if not UpdateSchedulerGroup then
+	UpdateSchedulerGroup = class()
 end
-function UpdateSchedulerGroup.disable(A0_3)
-	A0_3:enable_all_nodes()
-	A0_3._enabled = false
+UpdateSchedulerGroup.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._name = l_1_1
+	l_1_0._nodes = {}
+	l_1_0._num_nodes = 0
+	l_1_0._node_index = 1
+	l_1_0._updates_per_frame = l_1_2
+	l_1_0._enabled = true
 end
-function UpdateSchedulerGroup.enable(A0_4)
-	local L1_5
-	A0_4._enabled = true
+
+UpdateSchedulerGroup.disable = function(l_2_0)
+	l_2_0:enable_all_nodes()
+	l_2_0._enabled = false
 end
-function UpdateSchedulerGroup.set_updates_per_frame(A0_6, A1_7)
-	A0_6._updates_per_frame = A1_7
+
+UpdateSchedulerGroup.enable = function(l_3_0)
+	l_3_0._enabled = true
 end
-function UpdateSchedulerGroup.add_node(A0_8, A1_9)
-	table.insert(A0_8._nodes, A1_9)
-	A0_8._num_nodes = A0_8._num_nodes + 1
+
+UpdateSchedulerGroup.set_updates_per_frame = function(l_4_0, l_4_1)
+	l_4_0._updates_per_frame = l_4_1
 end
-function UpdateSchedulerGroup.enable_all_nodes(A0_10)
-	for 
+
+UpdateSchedulerGroup.add_node = function(l_5_0, l_5_1)
+	table.insert(l_5_0._nodes, l_5_1)
+	l_5_0._num_nodes = l_5_0._num_nodes + 1
+end
+
+UpdateSchedulerGroup.enable_all_nodes = function(l_6_0)
+	local l_6_4, l_6_5, l_6_6, l_6_7 = nil
+	for i_0,i_1 in ipairs(l_6_0._nodes) do
+		i_1:enable_update()
+	end
+	l_6_0._enabled_nodes = l_6_0._nodes
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+UpdateSchedulerGroup.update = function(l_7_0)
+	local l_7_1 = l_7_0._updates_per_frame
+	local l_7_2 = l_7_0._num_nodes
+	local l_7_3 = math.min(l_7_1, l_7_2)
+	local l_7_4 = l_7_0._nodes
+	local l_7_5 = l_7_0._node_index
+	for l_7_9 = 1, l_7_3 do
+		local l_7_10 = l_7_4[l_7_5]
+		if l_7_10:alive() then
+			l_7_10:disable_update()
+			l_7_5 = l_7_5 + 1
+			if l_7_2 < l_7_5 then
+				l_7_5 = 1
+			end
+		else
+			table.remove(l_7_4, l_7_5)
+			l_7_2 = l_7_2 - 1
+			if l_7_2 < l_7_5 then
+				l_7_5 = 1
+			end
+			l_7_3 = math.min(l_7_1, l_7_2)
+		end
+	end
+	l_7_0._node_index = l_7_5
+	for l_7_14 = 1, l_7_3 do
+		local l_7_15 = l_7_4[l_7_5]
+		if l_7_15:alive() then
+			l_7_15:enable_update()
+		end
+		l_7_5 = l_7_5 + 1
+		if l_7_2 < l_7_5 then
+			l_7_5 = 1
+		end
+	end
+	l_7_0._num_nodes = l_7_2
+end
+
+

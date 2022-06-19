@@ -1,5 +1,9 @@
 require("local_user/storage/LocalUserStorage")
-PcLocalUserStorage = PcLocalUserStorage or class(LocalUserStorage)
-function PcLocalUserStorage.open_storage_select(A0_0)
-	A0_0:set_is_storage_selected()
+if not PcLocalUserStorage then
+	PcLocalUserStorage = class(LocalUserStorage)
 end
+PcLocalUserStorage.open_storage_select = function(l_1_0)
+	l_1_0:set_is_storage_selected()
+end
+
+

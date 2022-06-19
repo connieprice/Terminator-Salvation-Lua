@@ -1,8 +1,13 @@
-AMDynamicDialog = AMDynamicDialog or class(CoreActionElement)
-function AMDynamicDialog.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMDynamicDialog then
+	AMDynamicDialog = class(CoreActionElement)
 end
-function AMDynamicDialog.activate_now(A0_3)
-	managers.dynamic_dialog:say(A0_3.position, A0_3.dialog_name)
-	A0_3:deactivate_now()
+AMDynamicDialog.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
+
+AMDynamicDialog.activate_now = function(l_2_0)
+	managers.dynamic_dialog:say(l_2_0.position, l_2_0.dialog_name)
+	l_2_0:deactivate_now()
+end
+
+

@@ -1,12 +1,17 @@
-MenuStateIngamePausedGameOver = MenuStateIngamePausedGameOver or class(FiniteStateMachineState)
-function MenuStateIngamePausedGameOver.init(A0_0)
-	A0_0._menu:gui_interface():set_state("game_over")
+if not MenuStateIngamePausedGameOver then
+	MenuStateIngamePausedGameOver = class(FiniteStateMachineState)
 end
-function MenuStateIngamePausedGameOver.update(A0_1, A1_2)
+MenuStateIngamePausedGameOver.init = function(l_1_0)
+	l_1_0._menu:gui_interface():set_state("game_over")
 end
-function MenuStateIngamePausedGameOver.exit(A0_3)
-	local L1_4
+
+MenuStateIngamePausedGameOver.update = function(l_2_0, l_2_1)
 end
-function MenuStateIngamePausedGameOver.transition(A0_5)
-	local L1_6
+
+MenuStateIngamePausedGameOver.exit = function(l_3_0)
 end
+
+MenuStateIngamePausedGameOver.transition = function(l_4_0)
+end
+
+

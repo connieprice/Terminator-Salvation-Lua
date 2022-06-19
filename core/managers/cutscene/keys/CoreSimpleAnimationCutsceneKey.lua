@@ -1,78 +1,90 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreSimpleAnimationCutsceneKey = CoreSimpleAnimationCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreSimpleAnimationCutsceneKey then
+	CoreSimpleAnimationCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreSimpleAnimationCutsceneKey.ELEMENT_NAME = "simple_animation"
 CoreSimpleAnimationCutsceneKey.NAME = "Simple Animation"
 CoreSimpleAnimationCutsceneKey:register_serialized_attribute("unit_name", "")
 CoreSimpleAnimationCutsceneKey:register_serialized_attribute("group", "")
 CoreSimpleAnimationCutsceneKey:attribute_affects("unit_name", "group")
 CoreSimpleAnimationCutsceneKey.control_for_group = CoreCutsceneKeyBase.standard_combo_box_control
-function CoreSimpleAnimationCutsceneKey.__tostring(A0_0)
-	return "Trigger simple animation \"" .. A0_0:group() .. "\" on \"" .. A0_0:unit_name() .. "\"."
+CoreSimpleAnimationCutsceneKey.__tostring = function(l_1_0)
+	return "Trigger simple animation \"" .. l_1_0:group() .. "\" on \"" .. l_1_0:unit_name() .. "\"."
 end
-function CoreSimpleAnimationCutsceneKey.skip(A0_1, A1_2)
-	local L2_3, L3_4
-	L3_4 = A0_1
-	L2_3 = A0_1._unit
-	L2_3 = L2_3(L3_4, A0_1:unit_name())
-	L3_4 = A0_1.group
-	L3_4 = L3_4(A0_1)
-	L2_3:anim_play(L3_4, 0)
-	L2_3:anim_set_time(L3_4, L2_3:anim_length(L3_4))
+
+CoreSimpleAnimationCutsceneKey.skip = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0:_unit(l_2_0:unit_name())
+	local l_2_3 = l_2_0:group()
+	l_2_2:anim_play(l_2_3, 0)
+	l_2_2:anim_set_time(l_2_3, l_2_2:anim_length(l_2_3))
 end
-function CoreSimpleAnimationCutsceneKey.evaluate(A0_5, A1_6, A2_7)
-	A0_5:_unit(A0_5:unit_name()):anim_play(A0_5:group(), 0)
+
+CoreSimpleAnimationCutsceneKey.evaluate = function(l_3_0, l_3_1, l_3_2)
+	l_3_0:_unit(l_3_0:unit_name()):anim_play(l_3_0:group(), 0)
 end
-function CoreSimpleAnimationCutsceneKey.revert(A0_8, A1_9)
-	local L2_10, L3_11
-	L3_11 = A0_8
-	L2_10 = A0_8._unit
-	L2_10 = L2_10(L3_11, A0_8:unit_name())
-	L3_11 = A0_8.group
-	L3_11 = L3_11(A0_8)
-	if L2_10:anim_is_playing(L3_11) then
-		L2_10:anim_set_time(L3_11, 0)
-		L2_10:anim_stop(L3_11)
+
+CoreSimpleAnimationCutsceneKey.revert = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0:_unit(l_4_0:unit_name())
+	local l_4_3 = l_4_0:group()
+	if l_4_2:anim_is_playing(l_4_3) then
+		l_4_2:anim_set_time(l_4_3, 0)
+		l_4_2:anim_stop(l_4_3)
 	end
 end
-function CoreSimpleAnimationCutsceneKey.update(A0_12, A1_13, A2_14)
-	A0_12:_unit(A0_12:unit_name()):anim_set_time(A0_12:group(), A2_14)
+
+CoreSimpleAnimationCutsceneKey.update = function(l_5_0, l_5_1, l_5_2)
+	l_5_0:_unit(l_5_0:unit_name()):anim_set_time(l_5_0:group(), l_5_2)
 end
-function CoreSimpleAnimationCutsceneKey.is_valid_unit_name(A0_15, A1_16)
-	return A0_15.super.is_valid_unit_name(A0_15, A1_16) and #A0_15:_unit_animation_groups(A1_16) > 0
+
+CoreSimpleAnimationCutsceneKey.is_valid_unit_name = function(l_6_0, l_6_1)
+	return not l_6_0.super.is_valid_unit_name(l_6_0, l_6_1) or #l_6_0:_unit_animation_groups(l_6_1) > 0
 end
-function CoreSimpleAnimationCutsceneKey.is_valid_group(A0_17, A1_18)
-	return table.contains(A0_17:_unit_animation_groups(A0_17:unit_name()), A1_18)
+
+CoreSimpleAnimationCutsceneKey.is_valid_group = function(l_7_0, l_7_1)
+	local l_7_2 = table.contains
+	local l_7_5, l_7_6 = l_7_0:_unit_animation_groups, l_7_0
+	l_7_5 = l_7_5(l_7_6, l_7_0:unit_name())
+	local l_7_3 = nil
+	l_7_6 = l_7_1
+	local l_7_4 = nil
+	return l_7_2(l_7_5, l_7_6)
 end
-function CoreSimpleAnimationCutsceneKey.refresh_control_for_group(A0_19, A1_20)
-	local L2_21, L3_22, L4_23, L5_24, L6_25, L7_26, L8_27
-	L3_22 = A1_20
-	L2_21 = A1_20.freeze
-	L2_21(L3_22)
-	L3_22 = A1_20
-	L2_21 = A1_20.clear
-	L2_21(L3_22)
-	L3_22 = A0_19
-	L2_21 = A0_19._unit_animation_groups
-	L8_27 = L4_23(L5_24)
-	L2_21 = L2_21(L3_22, L4_23, L5_24, L6_25, L7_26, L8_27, L4_23(L5_24))
-	L3_22 = table
-	L3_22 = L3_22.empty
-	L3_22 = L3_22(L4_23)
-	if not L3_22 then
-		L3_22 = A1_20.set_enabled
-		L3_22(L4_23, L5_24)
-		L3_22 = A0_19.group
-		L3_22 = L3_22(L4_23)
-		for L7_26, L8_27 in L4_23(L5_24) do
-			A1_20:append(L8_27)
-			if L8_27 == L3_22 then
-				A1_20:set_value(L8_27)
+
+CoreSimpleAnimationCutsceneKey.refresh_control_for_group = function(l_8_0, l_8_1)
+	l_8_1:freeze()
+	l_8_1:clear()
+	local l_8_7, l_8_8 = l_8_0:_unit_animation_groups, l_8_0
+	l_8_7 = l_8_7(l_8_8, l_8_0:unit_name())
+	local l_8_2 = nil
+	l_8_8 = table
+	l_8_8 = l_8_8.empty
+	l_8_2 = l_8_7
+	l_8_8 = l_8_8(l_8_2)
+	if not l_8_8 then
+		l_8_8, l_8_2 = l_8_1:set_enabled, l_8_1
+		l_8_8(l_8_2, true)
+		l_8_8, l_8_2 = l_8_0:group, l_8_0
+		l_8_8 = l_8_8(l_8_2)
+		local l_8_3 = nil
+		l_8_2 = ipairs
+		l_8_3 = l_8_7
+		l_8_2 = l_8_2(l_8_3)
+		for i_0,i_1 in l_8_2 do
+			l_8_1:append(l_8_6)
+			if l_8_6 == l_8_8 then
+				l_8_1:set_value(l_8_6)
 			end
 		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	else
-		L3_22 = A1_20.set_enabled
-		L3_22(L4_23, L5_24)
+		l_8_8(l_8_1, false)
 	end
-	L3_22 = A1_20.thaw
-	L3_22(L4_23)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_8_8(l_8_1)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

@@ -1,80 +1,112 @@
-PlayerDamage = PlayerDamage or class(UnitDamage)
-function PlayerDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	A3_3 = A3_3 or {}
-	A3_3.Afro = PlayerAfroDamage
-	UnitDamage.init(A0_0, A1_1, PlayerBodyDamage, A3_3, true, true, A6_6)
-	A0_0._player_data = A0_0._unit:player_data()
-	A0_0._brush = Draw:brush(Color(1, 0, 0))
-	A0_0._brush:set_font("editor_font", 5)
-	A0_0._health_regen_per_second = 0
-	A0_0._health_regen_delay = 0
-	A0_0._health_regen_multiplier = 1
-	A0_0._emitter = managers.action_event:create_emitter(A1_1)
+if not PlayerDamage then
+	PlayerDamage = class(UnitDamage)
 end
-function PlayerDamage.destroy(A0_7)
-	A0_7._emitter:destroy()
-end
-function PlayerDamage.save(A0_8, A1_9)
-	UnitDamage.save(A0_8, A1_9)
-end
-function PlayerDamage.load(A0_10, A1_11)
-	UnitDamage.load(A0_10, A1_11)
-end
-function PlayerDamage.fully_damaged(A0_12, A1_13)
-end
-function PlayerDamage.add_damage(A0_14, A1_15, A2_16, A3_17, A4_18, A5_19, A6_20, A7_21, A8_22)
-	if alive(A2_16) and A2_16:slot() == A0_14._unit:slot() then
-		return
+PlayerDamage.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	if not l_1_3 then
+		l_1_3 = {}
 	end
-	UnitDamage.add_damage(A0_14, A1_15, A2_16, A3_17, A4_18, A5_19, A6_20, A7_21, A8_22)
-	A0_14._player_data.time_since_damage = 0
-	A0_14._player_data.last_hit_direction = A6_20
-	A0_14._emitter:unit_player_damage(A0_14._unit, A4_18, A5_19, A6_20, A7_21, A8_22)
+	l_1_3.Afro = PlayerAfroDamage
+	UnitDamage.init(l_1_0, l_1_1, PlayerBodyDamage, l_1_3, true, true, l_1_6)
+	l_1_0._player_data = l_1_0._unit:player_data()
+	l_1_0._brush = Draw:brush(Color(1, 0, 0))
+	l_1_0._brush:set_font("editor_font", 5)
+	l_1_0._health_regen_per_second = 0
+	l_1_0._health_regen_delay = 0
+	l_1_0._health_regen_multiplier = 1
+	l_1_0._emitter = managers.action_event:create_emitter(l_1_1)
 end
-function PlayerDamage.update_player_damage(A0_23, A1_24, A2_25, A3_26)
-	A0_23._player_data.time_since_damage = A0_23._player_data.time_since_damage + A3_26
-	A0_23._damage_data = A0_23._damage_data or A1_24:damage_data()
-	if A0_23._damage_data:is_fully_damaged() then
-		return
+
+PlayerDamage.destroy = function(l_2_0)
+	l_2_0._emitter:destroy()
+end
+
+PlayerDamage.save = function(l_3_0, l_3_1)
+	UnitDamage.save(l_3_0, l_3_1)
+end
+
+PlayerDamage.load = function(l_4_0, l_4_1)
+	UnitDamage.load(l_4_0, l_4_1)
+end
+
+PlayerDamage.fully_damaged = function(l_5_0, l_5_1)
+end
+
+PlayerDamage.add_damage = function(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4, l_6_5, l_6_6, l_6_7, l_6_8)
+	if alive(l_6_2) and l_6_2:slot() == l_6_0._unit:slot() then
+		return 
+	end
+	UnitDamage.add_damage(l_6_0, l_6_1, l_6_2, l_6_3, l_6_4, l_6_5, l_6_6, l_6_7, l_6_8)
+	l_6_0._player_data.time_since_damage = 0
+	l_6_0._player_data.last_hit_direction = l_6_6
+	l_6_0._emitter:unit_player_damage(l_6_0._unit, l_6_4, l_6_5, l_6_6, l_6_7, l_6_8)
+end
+
+PlayerDamage.update_player_damage = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	l_7_0._player_data.time_since_damage = l_7_0._player_data.time_since_damage + l_7_3
+	if not l_7_0._damage_data then
+		l_7_0._damage_data = l_7_1:damage_data()
+	end
+	if l_7_0._damage_data:is_fully_damaged() then
+		return 
 	end
 	if managers.dynamic_dialog:is_in_combat() then
-		return
+		return 
 	end
-	if A0_23._player_data.time_since_damage > A0_23._health_regen_delay and A0_23._damage_data.damage > 0 then
-		A0_23._damage_data.damage = math.max(0, A0_23._damage_data.damage - A3_26 * A0_23._health_regen_per_second * A0_23._health_regen_multiplier)
+	if l_7_0._health_regen_delay < l_7_0._player_data.time_since_damage and l_7_0._damage_data.damage > 0 then
+		l_7_0._damage_data.damage = math.max(0, l_7_0._damage_data.damage - l_7_3 * l_7_0._health_regen_per_second * l_7_0._health_regen_multiplier)
 	end
 end
-function PlayerDamage.set_health_regen(A0_27, A1_28, A2_29)
-	A0_27._health_regen_per_second = A1_28
-	A0_27._health_regen_delay = A2_29
+
+PlayerDamage.set_health_regen = function(l_8_0, l_8_1, l_8_2)
+	l_8_0._health_regen_per_second = l_8_1
+	l_8_0._health_regen_delay = l_8_2
 end
-function PlayerDamage.set_health_regen_multiplier(A0_30, A1_31)
-	A0_30._health_regen_multiplier = A1_31
+
+PlayerDamage.set_health_regen_multiplier = function(l_9_0, l_9_1)
+	l_9_0._health_regen_multiplier = l_9_1
 end
-PlayerBodyDamage = PlayerBodyDamage or class(BodyDamage)
-function PlayerBodyDamage.init(A0_32, A1_33, A2_34, A3_35, A4_36)
-	BodyDamage.init(A0_32, A1_33, A2_34, A3_35, A4_36, "human_flesh")
-	A0_32._unit = A1_33
-	A0_32._player_data = A1_33:player_data()
+
+if not PlayerBodyDamage then
+	PlayerBodyDamage = class(BodyDamage)
 end
-function PlayerBodyDamage.faith_damage(A0_37, A1_38, A2_39, A3_40, A4_41, A5_42)
-	if A0_37._player_data.on_rail_vehicle or alive(A1_38) and A0_37._unit:visibility_query() and not A0_37._unit:visibility_query():hittable_from_position(A1_38:position()) then
+PlayerBodyDamage.init = function(l_10_0, l_10_1, l_10_2, l_10_3, l_10_4)
+	BodyDamage.init(l_10_0, l_10_1, l_10_2, l_10_3, l_10_4, "human_flesh")
+	l_10_0._unit = l_10_1
+	l_10_0._player_data = l_10_1:player_data()
+end
+
+PlayerBodyDamage.faith_damage = function(l_11_0, l_11_1, l_11_2, l_11_3, l_11_4, l_11_5)
+	if l_11_0._player_data.on_rail_vehicle or alive(l_11_1) and l_11_0._unit:visibility_query() and not l_11_0._unit:visibility_query():hittable_from_position(l_11_1:position()) then
 		return "soft", 0
 	end
-	return BodyDamage.faith_damage(A0_37, A1_38, A2_39, A3_40, A4_41, A5_42)
+	local l_11_6 = BodyDamage.faith_damage
+	local l_11_7 = l_11_0
+	local l_11_8 = l_11_1
+	local l_11_9 = l_11_2
+	local l_11_10 = l_11_3
+	local l_11_11 = l_11_4
+	local l_11_12 = l_11_5
+	return l_11_6(l_11_7, l_11_8, l_11_9, l_11_10, l_11_11, l_11_12)
 end
-PlayerAfroDamage = PlayerAfroDamage or class(AfroBodyDamage)
-function PlayerAfroDamage.init(A0_43, A1_44, A2_45, A3_46, A4_47)
-	AfroBodyDamage.init(A0_43, A1_44, A2_45, A3_46, A4_47)
-	A0_43._action_event_emitter = managers.action_event:create_emitter(A1_44)
-	A0_43._unit = A1_44
+
+if not PlayerAfroDamage then
+	PlayerAfroDamage = class(AfroBodyDamage)
 end
-function PlayerAfroDamage.destroy(A0_48)
-	AfroBodyDamage.destroy(A0_48)
-	A0_48._action_event_emitter:destroy()
+PlayerAfroDamage.init = function(l_12_0, l_12_1, l_12_2, l_12_3, l_12_4)
+	AfroBodyDamage.init(l_12_0, l_12_1, l_12_2, l_12_3, l_12_4)
+	l_12_0._action_event_emitter = managers.action_event:create_emitter(l_12_1)
+	l_12_0._unit = l_12_1
 end
-function PlayerAfroDamage.faith_damage(A0_49, A1_50, A2_51, A3_52, A4_53, A5_54)
-	A0_49._unit:player_data().time_since_incoming_fire = 0
-	A0_49._action_event_emitter:unit_afro_hit(A0_49._unit, A1_50, A2_51, A3_52, A4_53)
+
+PlayerAfroDamage.destroy = function(l_13_0)
+	AfroBodyDamage.destroy(l_13_0)
+	l_13_0._action_event_emitter:destroy()
+end
+
+PlayerAfroDamage.faith_damage = function(l_14_0, l_14_1, l_14_2, l_14_3, l_14_4, l_14_5)
+	l_14_0._unit:player_data().time_since_incoming_fire = 0
+	l_14_0._action_event_emitter:unit_afro_hit(l_14_0._unit, l_14_1, l_14_2, l_14_3, l_14_4)
 	return "soft", 0
 end
+
+

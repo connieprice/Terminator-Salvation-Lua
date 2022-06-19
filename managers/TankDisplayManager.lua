@@ -1,41 +1,40 @@
-TankDisplayManager = TankDisplayManager or class()
-function TankDisplayManager.init(A0_0)
-	local L1_1
-	A0_0._startup = false
-	A0_0._shutdown = false
-	A0_0._startup_done = false
-	A0_0._tank_active = false
+if not TankDisplayManager then
+	TankDisplayManager = class()
 end
-function TankDisplayManager.startup(A0_2)
-	local L1_3
-	A0_2._tank_active = true
-	A0_2._startup = true
+TankDisplayManager.init = function(l_1_0)
+	l_1_0._startup = false
+	l_1_0._shutdown = false
+	l_1_0._startup_done = false
+	l_1_0._tank_active = false
 end
-function TankDisplayManager.is_active(A0_4)
-	local L1_5
-	L1_5 = A0_4._tank_active
-	return L1_5
+
+TankDisplayManager.startup = function(l_2_0)
+	l_2_0._tank_active = true
+	l_2_0._startup = true
 end
-function TankDisplayManager.wants_to_startup(A0_6)
-	local L1_7
-	L1_7 = A0_6._startup
-	return L1_7
+
+TankDisplayManager.is_active = function(l_3_0)
+	return l_3_0._tank_active
 end
-function TankDisplayManager.shutdown(A0_8)
-	local L1_9
-	A0_8._shutdown = true
+
+TankDisplayManager.wants_to_startup = function(l_4_0)
+	return l_4_0._startup
 end
-function TankDisplayManager.wants_to_shutdown(A0_10)
-	local L1_11
-	L1_11 = A0_10._shutdown
-	return L1_11
+
+TankDisplayManager.shutdown = function(l_5_0)
+	l_5_0._shutdown = true
 end
-function TankDisplayManager.set_startup_done(A0_12)
-	local L1_13
-	A0_12._startup_done = true
+
+TankDisplayManager.wants_to_shutdown = function(l_6_0)
+	return l_6_0._shutdown
 end
-function TankDisplayManager.startup_done(A0_14)
-	local L1_15
-	L1_15 = A0_14._startup_done
-	return L1_15
+
+TankDisplayManager.set_startup_done = function(l_7_0)
+	l_7_0._startup_done = true
 end
+
+TankDisplayManager.startup_done = function(l_8_0)
+	return l_8_0._startup_done
+end
+
+

@@ -1,23 +1,30 @@
 require("effects/EffectsLoader")
 base_require("utils/dev/FreeFlight", nil, "RELEASE")
-WorldLoader = WorldLoader or class()
-function WorldLoader.init(A0_0, A1_1, A2_2)
-	A0_0._is_done = false
-	A0_0:_load(A1_1, A2_2)
+if not WorldLoader then
+	WorldLoader = class()
 end
-function WorldLoader._load(A0_3, A1_4, A2_5)
-	assert(A1_4)
-	A2_5 = A2_5 or "stage1"
-	A0_3._world = WorldHolder:new("\\data\\levels\\" .. A1_4 .. "\\world.level")
-	A0_3._world:create_world("world", "all", Vector3(0, 0, 0))
-	managers.world:parse("data\\levels\\" .. A1_4 .. "\\mission.xml", A2_5)
-	managers.ai_graph:load("data\\levels\\" .. A1_4 .. "\\")
-	A0_3._is_done = true
+WorldLoader.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._is_done = false
+	l_1_0:_load(l_1_1, l_1_2)
 end
-function WorldLoader.update(A0_6, A1_7)
+
+WorldLoader._load = function(l_2_0, l_2_1, l_2_2)
+	assert(l_2_1)
+	if not l_2_2 then
+		l_2_2 = "stage1"
+	end
+	l_2_0._world = WorldHolder:new("\\data\\levels\\" .. l_2_1 .. "\\world.level")
+	l_2_0._world:create_world("world", "all", Vector3(0, 0, 0))
+	managers.world:parse("data\\levels\\" .. l_2_1 .. "\\mission.xml", l_2_2)
+	managers.ai_graph:load("data\\levels\\" .. l_2_1 .. "\\")
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function WorldLoader.is_done(A0_8)
-	local L1_9
-	L1_9 = A0_8._is_done
-	return L1_9
+
+WorldLoader.update = function(l_3_0, l_3_1)
 end
+
+WorldLoader.is_done = function(l_4_0)
+	return l_4_0._is_done
+end
+
+

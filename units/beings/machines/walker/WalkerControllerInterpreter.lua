@@ -1,174 +1,238 @@
-local L0_0
-L0_0 = require
-L0_0("units/beings/CharacterControllerInterpreter/DebugBasicAimStateCI")
-L0_0 = require
-L0_0("units/beings/CharacterControllerInterpreter/DebugPrecisionAimableAimSM")
-L0_0 = require
-L0_0("shared/aimer/BallisticProjectileAimer")
-L0_0 = WalkerControllerInterpreter
-if not L0_0 then
-	L0_0 = class
-	L0_0 = L0_0(DebugBasicAimStateControllerInterpreter)
+require("units/beings/CharacterControllerInterpreter/DebugBasicAimStateCI")
+require("units/beings/CharacterControllerInterpreter/DebugPrecisionAimableAimSM")
+require("shared/aimer/BallisticProjectileAimer")
+if not WalkerControllerInterpreter then
+	WalkerControllerInterpreter = class(DebugBasicAimStateControllerInterpreter)
 end
-WalkerControllerInterpreter = L0_0
-L0_0 = WalkerControllerInterpreter
-function L0_0.init(A0_1, A1_2)
-	DebugBasicAimStateControllerInterpreter.init(A0_1, A1_2)
-	A0_1._unit = A1_2
-	A0_1._input = A1_2:input()
-	assert(A0_1._input)
-	A0_1._secondary_aimer = BallisticProjectileAimer:new({initial_speed = 2000})
-	A0_1._secondary_fire_object = A1_2:get_object("a_weapon_left_back")
+WalkerControllerInterpreter.init = function(l_1_0, l_1_1)
+	DebugBasicAimStateControllerInterpreter.init(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._input = l_1_1:input()
+	assert(l_1_0._input)
+	local l_1_2, l_1_3 = BallisticProjectileAimer:new, BallisticProjectileAimer
+	local l_1_4 = {}
+	l_1_4.initial_speed = 2000
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._secondary_aimer = l_1_2
+	l_1_2, l_1_3 = l_1_1:get_object, l_1_1
+	l_1_4 = "a_weapon_left_back"
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._secondary_fire_object = l_1_2
 end
-L0_0 = WalkerControllerInterpreter
-function L0_0.enable(A0_3, A1_4)
-	A0_3._controller_wrapper = A1_4
-	DebugPrecisionAimableAimSettingsModifier.update(A0_3, false)
+
+WalkerControllerInterpreter.enable = function(l_2_0, l_2_1)
+	l_2_0._controller_wrapper = l_2_1
+	DebugPrecisionAimableAimSettingsModifier.update(l_2_0, false)
 end
-L0_0 = WalkerControllerInterpreter
-function L0_0.disable(A0_5)
-	local L1_6
-	A0_5._controller_wrapper = nil
+
+WalkerControllerInterpreter.disable = function(l_3_0)
+	l_3_0._controller_wrapper = nil
 end
-function L0_0(A0_7, A1_8, A2_9, A3_10)
-	local L4_11, L5_12, L6_13
-	L4_11 = managers
-	L4_11 = L4_11.slot
-	L5_12 = L4_11
-	L4_11 = L4_11.get_mask
-	L6_13 = "shootable_wo_adr_shield"
-	L4_11 = L4_11(L5_12, L6_13)
-	L6_13 = A0_7
-	L5_12 = A0_7.raycast
-	L5_12 = L5_12(L6_13, "ray", A2_9, A3_10, "slot_mask", L4_11)
-	L6_13 = nil
-	if L5_12 then
-		L6_13 = L5_12.position
+
+local l_0_0 = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	local l_4_4 = managers.slot:get_mask("shootable_wo_adr_shield")
+	local l_4_5 = (l_4_0:raycast("ray", l_4_2, l_4_3, "slot_mask", l_4_4))
+	local l_4_6 = nil
+	if l_4_5 then
+		l_4_6 = l_4_5.position
 	else
-		L6_13 = A3_10
+		l_4_6 = l_4_3
 	end
-	A1_8:set_primary_aim_target_position(L6_13)
+	l_4_1:set_primary_aim_target_position(l_4_6)
 end
-function WalkerControllerInterpreter._update_world_space_controller(A0_14, A1_15, A2_16, A3_17)
-	local L4_18, L5_19, L6_20
-	L5_19 = A2_16
-	L4_18 = A2_16.get_input_axis
-	L6_20 = "move"
-	L4_18 = L4_18(L5_19, L6_20)
-	L6_20 = A3_17
-	L5_19 = A3_17.set_movement
-	L5_19(L6_20, L4_18)
-	L6_20 = A2_16
-	L5_19 = A2_16.get_input_axis
-	L5_19 = L5_19(L6_20, "look")
-	L6_20 = nil
-	if L5_19:length() < 0.1 then
-		L6_20 = A1_15:position() + A1_15:rotation():y() * 10000
+
+WalkerControllerInterpreter._update_world_space_controller = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	local l_5_4 = l_5_2:get_input_axis("move")
+	l_5_3:set_movement(l_5_4)
+	local l_5_5 = (l_5_2:get_input_axis("look"))
+	local l_5_6 = nil
+	if l_5_5:length() < 0.1 then
+		l_5_6 = l_5_1:position() + l_5_1:rotation():y() * 10000
 	else
-		L6_20 = A1_15:position() + L5_19:normalized() * 10000
+		l_5_6 = l_5_1:position() + l_5_5:normalized() * 10000
 	end
-	A3_17:set_eye_target_position(L6_20)
-	A3_17:set_primary_aim_target_position(L6_20)
-	A3_17:set_secondary_aim_target_position(L6_20)
-	if A2_16:get_input_bool("fire") then
-		A3_17:set_primary_fire()
-		A3_17:set_secondary_fire()
+	l_5_3:set_eye_target_position(l_5_6)
+	l_5_3:set_primary_aim_target_position(l_5_6)
+	l_5_3:set_secondary_aim_target_position(l_5_6)
+	if l_5_2:get_input_bool("fire") then
+		l_5_3:set_primary_fire()
+		l_5_3:set_secondary_fire()
 	end
-	if A2_16:get_input_bool("zoom") then
-		A3_17:set_prepare_primary_fire()
-		A3_17:set_prepare_secondary_fire()
+	if l_5_2:get_input_bool("zoom") then
+		l_5_3:set_prepare_primary_fire()
+		l_5_3:set_prepare_secondary_fire()
 	end
 end
-function WalkerControllerInterpreter.update(A0_21, A1_22, A2_23, A3_24)
-	local L4_25, L5_26, L6_27, L7_28, L8_29, L9_30, L10_31, L11_32, L12_33, L13_34, L14_35, L15_36, L16_37, L17_38, L18_39, L19_40, L20_41, L21_42
-	L4_25 = DebugPrecisionAimableAimSettingsModifier
-	L4_25 = L4_25.update
-	L5_26 = A0_21
-	L6_27 = false
-	L4_25(L5_26, L6_27)
-	L4_25 = A0_21._controller_wrapper
-	L5_26 = assert
-	L6_27 = L4_25
-	L5_26(L6_27)
-	L5_26 = A0_21._input
-	L7_28 = A1_22
-	L6_27 = A1_22.camera_data
-	L6_27 = L6_27(L7_28)
-	L7_28 = assert
-	L8_29 = L6_27
-	L7_28(L8_29)
-	L8_29 = L5_26
-	L7_28 = L5_26.clear
-	L7_28(L8_29)
-	do break end
-	L8_29 = A0_21
-	L7_28 = A0_21._update_world_space_controller
-	L9_30 = A1_22
-	L10_31 = L4_25
-	L11_32 = L5_26
-	L7_28(L8_29, L9_30, L10_31, L11_32)
+
+WalkerControllerInterpreter.update = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	-- upvalues: l_0_0
+	DebugPrecisionAimableAimSettingsModifier.update(l_6_0, false)
+	local l_6_4 = l_6_0._controller_wrapper
+	assert(l_6_4)
+	local l_6_5 = l_6_0._input
+	local l_6_6 = l_6_1:camera_data()
+	assert(l_6_6)
+	l_6_5:clear()
 	do return end
-	L7_28 = DebugBasicAimStateControllerInterpreter
-	L7_28 = L7_28.update
-	L8_29 = A0_21
-	L9_30 = L4_25
-	L10_31 = A3_24
-	L7_28(L8_29, L9_30, L10_31)
-	L8_29 = L5_26
-	L7_28 = L5_26.eye_target_position
-	L7_28 = L7_28(L8_29)
-	L9_30 = L4_25
-	L8_29 = L4_25.get_input_axis
-	L10_31 = "move"
-	L8_29 = L8_29(L9_30, L10_31)
-	L9_30 = L6_27.camera_rotation
-	L10_31 = L9_30
-	L9_30 = L9_30.x
-	L9_30 = L9_30(L10_31)
-	L10_31 = L6_27.camera_rotation
-	L11_32 = L10_31
-	L10_31 = L10_31.y
-	L10_31 = L10_31(L11_32)
-	L12_33 = L9_30
-	L11_32 = L9_30.flat
-	L13_34 = math
-	L13_34 = L13_34.UP
-	L11_32 = L11_32(L12_33, L13_34)
-	L12_33 = L11_32
-	L11_32 = L11_32.normalized
-	L11_32 = L11_32(L12_33)
-	L13_34 = L10_31
-	L12_33 = L10_31.flat
-	L14_35 = math
-	L14_35 = L14_35.UP
-	L12_33 = L12_33(L13_34, L14_35)
-	L13_34 = L12_33
-	L12_33 = L12_33.normalized
-	L12_33 = L12_33(L13_34)
-	L13_34 = L8_29.x
-	L13_34 = L13_34 * L11_32
-	L14_35 = L8_29.y
-	L14_35 = L14_35 * L12_33
-	L15_36 = L13_34 + L14_35
-	L17_38 = L5_26
-	L16_37 = L5_26.set_movement
-	L18_39 = L15_36
-	L16_37(L17_38, L18_39)
-	L16_37 = L6_27.camera_position
-	L17_38 = _UPVALUE0_
-	L18_39 = A1_22
-	L19_40 = L5_26
-	L20_41 = L16_37
-	L17_38(L18_39, L19_40, L20_41, L21_42)
-	L17_38 = World
-	L18_39 = L17_38
-	L17_38 = L17_38.find_units
-	L19_40 = "sphere"
-	L20_41 = A1_22.position
-	L20_41 = L20_41(L21_42)
-	L17_38 = L17_38(L18_39, L19_40, L20_41, L21_42, managers.slot:get_mask("players"))
-	L18_39, L19_40 = nil, nil
-	L20_41 = #L17_38
-	if L20_41 > 0 then
-		L20_41 = nil
-		for 
+	l_6_0:_update_world_space_controller(l_6_1, l_6_4, l_6_5)
+	return 
+	DebugBasicAimStateControllerInterpreter.update(l_6_0, l_6_4, l_6_3)
+	local l_6_7 = l_6_5:eye_target_position()
+	local l_6_8 = l_6_4:get_input_axis("move")
+	local l_6_9 = l_6_6.camera_rotation:x()
+	local l_6_10 = l_6_6.camera_rotation:y()
+	local l_6_11 = l_6_9:flat(math.UP):normalized()
+	local l_6_12 = l_6_10:flat(math.UP):normalized()
+	local l_6_13 = l_6_8.x * l_6_11
+	local l_6_14 = l_6_8.y * l_6_12
+	local l_6_15 = l_6_13 + l_6_14
+	l_6_5:set_movement(l_6_15)
+	local l_6_16 = l_6_6.camera_position
+	l_0_0(l_6_1, l_6_5, l_6_16, l_6_16 + l_6_10 * 1000)
+	local l_6_24, l_6_25 = World:find_units, World
+	l_6_24 = (l_6_24(l_6_25, "sphere", l_6_1:position(), 1000, managers.slot:get_mask("players")))
+	local l_6_17 = nil
+	l_6_17, l_6_25 = nil
+	local l_6_18, l_6_19 = nil
+	l_6_18 = #l_6_24
+	if l_6_18 > 0 then
+		l_6_18 = nil
+		local l_6_20 = nil
+		l_6_19 = pairs
+		l_6_20 = l_6_24
+		l_6_19 = l_6_19(l_6_20)
+		for i_0,i_1 in l_6_19 do
+			local l_6_26 = l_6_1:position() - l_6_23:position():length()
+			if not l_6_18 or l_6_26 < l_6_18 then
+				l_6_17 = l_6_23
+				l_6_18 = l_6_26
+			end
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_17 then
+		l_6_25 = l_6_18
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_6_18 then
+			assert(R23_PC126)
+			l_6_5:set_special_kill(l_6_17, l_6_0._unit:enemy_data().special_kill_setups.id)
+		end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	else
+		if l_6_1:raycast("ray", l_6_16, l_6_7 - l_6_16:normalized() * 10000, "slot_mask", l_6_18) then
+			l_6_25 = l_6_1:raycast("ray", l_6_16, l_6_7 - l_6_16:normalized() * 10000, "slot_mask", l_6_18).position
+		end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	else
+		l_6_25 = l_6_7 - l_6_16:normalized() * 10000
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_25 then
+		l_6_25 = l_6_18
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_6_18(l_6_5, l_6_25)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_18 then
+		l_6_18(l_6_5)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_6_18(l_6_5)
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_18 and l_6_4:get_input_pressed(R23_PC126) then
+		l_6_5:set_remove_magcharge(R23_PC126)
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_4:get_input_bool(R23_PC126) then
+		l_6_5:set_prepare_primary_fire()
+		l_6_5:set_prepare_secondary_fire()
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_6_4:get_input_pressed(R23_PC126) then
+		if l_6_4:get_input_axis(R23_PC126):length() > 0 then
+			do return end
+		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		R23_PC126(l_6_5, l_6_4:get_input_axis(R23_PC126) / l_6_4:get_input_axis(R23_PC126):length().x * l_6_11 + l_6_4:get_input_axis(R23_PC126) / l_6_4:get_input_axis(R23_PC126):length().y * l_6_12)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+WalkerControllerInterpreter._magcharge_attachment_point_name = function(l_7_0)
+	local l_7_6, l_7_7, l_7_8, l_7_9 = nil
+	local l_7_1 = l_7_0._unit:attachment()
+	assert(l_7_1)
+	local l_7_2 = l_7_1:attachment_points()
+	for i_0,i_1 in pairs(l_7_2) do
+		if #i_1:attached_units() > 0 then
+			local l_7_12 = nil
+			local l_7_13, l_7_14 = next(i_1:attached_units(), nil)
+			return l_7_11:name()
+		end
+	end
+end
+
+

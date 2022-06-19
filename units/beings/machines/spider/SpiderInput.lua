@@ -1,121 +1,122 @@
-SpiderInput = SpiderInput or class()
-function SpiderInput.init(A0_0, A1_1)
-	A0_0:clear()
+if not SpiderInput then
+	SpiderInput = class()
 end
-function SpiderInput.clear(A0_2)
-	A0_2._movement = Vector3(0, 0, 0)
-	A0_2._aim_target_position = nil
-	A0_2._eye_target_position = nil
-	A0_2._aim_target_unit = nil
-	A0_2._track = false
-	A0_2._attack_mode = false
-	A0_2._fire = false
-	A0_2._is_scanning = false
-	A0_2._charge_direction = nil
-	A0_2._miss_dispersion = 0
-	A0_2._wants_to_look_at = false
+SpiderInput.init = function(l_1_0, l_1_1)
+	l_1_0:clear()
 end
-function SpiderInput.wants_to_look_at(A0_3)
-	local L1_4
-	L1_4 = A0_3._wants_to_look_at
-	return L1_4
+
+SpiderInput.clear = function(l_2_0)
+	l_2_0._movement = Vector3(0, 0, 0)
+	l_2_0._aim_target_position = nil
+	l_2_0._eye_target_position = nil
+	l_2_0._aim_target_unit = nil
+	l_2_0._track = false
+	l_2_0._attack_mode = false
+	l_2_0._fire = false
+	l_2_0._is_scanning = false
+	l_2_0._charge_direction = nil
+	l_2_0._miss_dispersion = 0
+	l_2_0._wants_to_look_at = false
 end
-function SpiderInput.set_wants_to_look_at(A0_5, A1_6)
-	A0_5._wants_to_look_at = A1_6
+
+SpiderInput.wants_to_look_at = function(l_3_0)
+	return l_3_0._wants_to_look_at
 end
-function SpiderInput.movement(A0_7)
-	local L1_8
-	L1_8 = A0_7._movement
-	return L1_8
+
+SpiderInput.set_wants_to_look_at = function(l_4_0, l_4_1)
+	l_4_0._wants_to_look_at = l_4_1
 end
-function SpiderInput.set_movement(A0_9, A1_10)
-	A0_9._movement = A1_10
+
+SpiderInput.movement = function(l_5_0)
+	return l_5_0._movement
 end
-function SpiderInput.set_eye_target_position(A0_11, A1_12)
-	A0_11._eye_target_position = A1_12
+
+SpiderInput.set_movement = function(l_6_0, l_6_1)
+	l_6_0._movement = l_6_1
 end
-function SpiderInput.eye_target_position(A0_13, A1_14)
-	local L2_15
-	L2_15 = A0_13._eye_target_position
-	return L2_15
+
+SpiderInput.set_eye_target_position = function(l_7_0, l_7_1)
+	l_7_0._eye_target_position = l_7_1
 end
-function SpiderInput.aim_target_position(A0_16)
-	local L1_17
-	L1_17 = A0_16._aim_target_position
-	return L1_17
+
+SpiderInput.eye_target_position = function(l_8_0, l_8_1)
+	return l_8_0._eye_target_position
 end
-function SpiderInput.set_aim_target_position(A0_18, A1_19)
-	A0_18._aim_target_position = A1_19
+
+SpiderInput.aim_target_position = function(l_9_0)
+	return l_9_0._aim_target_position
 end
-function SpiderInput.aim_target_unit(A0_20)
-	local L1_21
-	L1_21 = A0_20._aim_target_unit
-	return L1_21
+
+SpiderInput.set_aim_target_position = function(l_10_0, l_10_1)
+	l_10_0._aim_target_position = l_10_1
 end
-function SpiderInput.set_aim_target_unit(A0_22, A1_23)
-	A0_22._aim_target_unit = A1_23
+
+SpiderInput.aim_target_unit = function(l_11_0)
+	return l_11_0._aim_target_unit
 end
-function SpiderInput.attack_mode(A0_24)
-	local L1_25
-	L1_25 = A0_24._attack_mode
-	return L1_25
+
+SpiderInput.set_aim_target_unit = function(l_12_0, l_12_1)
+	l_12_0._aim_target_unit = l_12_1
 end
-function SpiderInput.set_attack_mode(A0_26, A1_27)
-	if A1_27 == nil then
-		A0_26._attack_mode = true
+
+SpiderInput.attack_mode = function(l_13_0)
+	return l_13_0._attack_mode
+end
+
+SpiderInput.set_attack_mode = function(l_14_0, l_14_1)
+	if l_14_1 == nil then
+		l_14_0._attack_mode = true
 	else
-		A0_26._attack_mode = A1_27
+		l_14_0._attack_mode = l_14_1
 	end
 end
-function SpiderInput.track(A0_28)
-	local L1_29
-	L1_29 = A0_28._track
-	return L1_29
+
+SpiderInput.track = function(l_15_0)
+	return l_15_0._track
 end
-function SpiderInput.set_track(A0_30)
-	local L1_31
-	A0_30._track = true
+
+SpiderInput.set_track = function(l_16_0)
+	l_16_0._track = true
 end
-function SpiderInput.fire(A0_32)
-	local L1_33
-	L1_33 = A0_32._fire
-	return L1_33
+
+SpiderInput.fire = function(l_17_0)
+	return l_17_0._fire
 end
-function SpiderInput.set_fire(A0_34)
-	local L1_35
-	A0_34._fire = true
+
+SpiderInput.set_fire = function(l_18_0)
+	l_18_0._fire = true
 end
-function SpiderInput.is_scanning(A0_36)
-	local L1_37
-	L1_37 = A0_36._is_scanning
-	return L1_37
+
+SpiderInput.is_scanning = function(l_19_0)
+	return l_19_0._is_scanning
 end
-function SpiderInput.set_is_scanning(A0_38, A1_39)
-	A0_38._is_scanning = A1_39
+
+SpiderInput.set_is_scanning = function(l_20_0, l_20_1)
+	l_20_0._is_scanning = l_20_1
 end
-function SpiderInput.scan_started(A0_40)
-	local L1_41
-	L1_41 = A0_40._scan_negative_flank
-	return L1_41
+
+SpiderInput.scan_started = function(l_21_0)
+	return l_21_0._scan_negative_flank
 end
-function SpiderInput.scan_stopped(A0_42)
-	local L1_43
-	L1_43 = A0_42._scan_positive_flank
-	return L1_43
+
+SpiderInput.scan_stopped = function(l_22_0)
+	return l_22_0._scan_positive_flank
 end
-function SpiderInput.charge_direction(A0_44)
-	local L1_45
-	L1_45 = A0_44._charge_direction
-	return L1_45
+
+SpiderInput.charge_direction = function(l_23_0)
+	return l_23_0._charge_direction
 end
-function SpiderInput.set_charge_direction(A0_46, A1_47)
-	A0_46._charge_direction = A1_47
+
+SpiderInput.set_charge_direction = function(l_24_0, l_24_1)
+	l_24_0._charge_direction = l_24_1
 end
-function SpiderInput.miss_dispersion(A0_48)
-	local L1_49
-	L1_49 = A0_48._miss_dispersion
-	return L1_49
+
+SpiderInput.miss_dispersion = function(l_25_0)
+	return l_25_0._miss_dispersion
 end
-function SpiderInput.set_miss_dispersion(A0_50, A1_51)
-	A0_50._miss_dispersion = A1_51
+
+SpiderInput.set_miss_dispersion = function(l_26_0, l_26_1)
+	l_26_0._miss_dispersion = l_26_1
 end
+
+

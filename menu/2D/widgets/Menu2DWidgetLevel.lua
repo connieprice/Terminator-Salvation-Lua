@@ -1,114 +1,129 @@
 require("menu/2D/widgets/Menu2DWidgetBase.lua")
-Menu2DWidgetLevel = Menu2DWidgetLevel or class(Menu2DWidgetBase)
+if not Menu2DWidgetLevel then
+	Menu2DWidgetLevel = class(Menu2DWidgetBase)
+end
 Menu2DWidgetLevel._bmp_inactive_alpha = 0.3
 Menu2DWidgetLevel._text_inactive_alpha = 0.6
-function Menu2DWidgetLevel.init(A0_0, A1_1)
-	Menu2DWidgetBase.init(A0_0, A1_1)
+Menu2DWidgetLevel.init = function(l_1_0, l_1_1)
+	Menu2DWidgetBase.init(l_1_0, l_1_1)
 end
-function Menu2DWidgetLevel.parse(A0_2, A1_3)
-	local L2_4
-	L2_4 = A0_2._params
-	L2_4.x = tonumber(A1_3.x)
-	L2_4 = A0_2._params
-	L2_4.y = tonumber(A1_3.y)
+
+Menu2DWidgetLevel.parse = function(l_2_0, l_2_1)
+	l_2_0._params.x = tonumber(l_2_1.x)
+	l_2_0._params.y = tonumber(l_2_1.y)
 end
-function Menu2DWidgetLevel.update(A0_5, A1_6)
-	if A0_5._level_text_animation then
-		A0_5._level_text_animation:update(A1_6)
+
+Menu2DWidgetLevel.update = function(l_3_0, l_3_1)
+	if l_3_0._level_text_animation then
+		l_3_0._level_text_animation:update(l_3_1)
 	end
-	if A0_5._bmp_animation then
-		A0_5._bmp_animation:update(A1_6)
-	end
-end
-function Menu2DWidgetLevel.texture(A0_7)
-	local L1_8
-	L1_8 = A0_7._bmp
-	return L1_8
-end
-function Menu2DWidgetLevel.create_gui(A0_9)
-	Menu2DWidgetBase.create_gui(A0_9)
-	A0_9._panel = A0_9._params.panel:panel({
-		height = A0_9._params.panel:height() * tweak_data.menu2d.widgets.level_spacing,
-		layer = tweak_data.menu2d.layer_normal
-	})
-	A0_9._level = A0_9._panel:text({
-		color = tweak_data.menu2d.widgets.level_text_color,
-		font = "faith_font_22",
-		font_scale = 0.6,
-		x = 6,
-		y = A0_9._panel:h() - tweak_data.menu2d.resume_level_font_size * 3 + 10,
-		height = tweak_data.menu2d.resume_level_font_size + 2,
-		align = "left",
-		text = A0_9._params.level,
-		layer = tweak_data.menu2d.layer_normal + 3
-	})
-	A0_9._bmp = A0_9._panel:bitmap({
-		texture = A0_9._params.texture,
-		x = 0,
-		width = 256,
-		height = 256,
-		layer = tweak_data.menu2d.layer_normal + 1
-	})
-	A0_9._gradient = A0_9._panel:rect({
-		x = 0,
-		y = A0_9._panel:h() - tweak_data.menu2d.resume_level_font_size * 3 + 6,
-		height = tweak_data.menu2d.resume_level_font_size + 3,
-		width = 256,
-		color = Color(0.6, 0, 0, 0),
-		layer = tweak_data.menu2d.layer_normal + 2
-	})
-	if A0_9._bmp:texture_width() == 0 then
-		A0_9._bmp:set_image("gui_resumegame_level_1")
+	if l_3_0._bmp_animation then
+		l_3_0._bmp_animation:update(l_3_1)
 	end
 end
-function Menu2DWidgetLevel.set_active(A0_10, A1_11)
-	A0_10._active = true
-	A0_10._level:set_color(tweak_data.menu2d.normal_menu.choice_text_color_active)
-	A0_10._level_text_animation = Menu2DFadeInAnimation:new(A0_10._level, 0, 0.25, 1)
-	A0_10._bmp_animation = Menu2DFadeInAnimation:new(A0_10._bmp, 0, 0.25, 1)
+
+Menu2DWidgetLevel.texture = function(l_4_0)
+	return l_4_0._bmp
 end
-function Menu2DWidgetLevel.set_inactive(A0_12, A1_13)
-	A0_12._active = false
-	A0_12._level:set_color(tweak_data.menu2d.widgets.level_text_color)
-	A0_12._level_text_animation = Menu2DFadeOutAnimation:new(A0_12._level, 0, 0.25, 0.3)
-	A0_12._bmp_animation = Menu2DFadeOutAnimation:new(A0_12._bmp, 0, 0.25, A0_12._bmp_inactive_alpha)
+
+Menu2DWidgetLevel.create_gui = function(l_5_0)
+	Menu2DWidgetBase.create_gui(l_5_0)
+	local l_5_1, l_5_2 = l_5_0._params.panel:panel, l_5_0._params.panel
+	local l_5_3 = {}
+	l_5_3.height = l_5_0._params.panel:height() * tweak_data.menu2d.widgets.level_spacing
+	l_5_3.layer = tweak_data.menu2d.layer_normal
+	l_5_1 = l_5_1(l_5_2, l_5_3)
+	l_5_0._panel = l_5_1
+	l_5_1 = tweak_data
+	l_5_1 = l_5_1.menu2d
+	l_5_1 = l_5_1.resume_level_font_size
+	l_5_2 = l_5_0._panel
+	l_5_2, l_5_3 = l_5_2:text, l_5_2
+	local l_5_4 = {}
+	l_5_4.color = tweak_data.menu2d.widgets.level_text_color
+	l_5_4.font = "faith_font_22"
+	l_5_4.font_scale = 0.6
+	l_5_4.x = 6
+	l_5_4.y = l_5_0._panel:h() - l_5_1 * 3 + 10
+	l_5_4.height = l_5_1 + 2
+	l_5_4.align = "left"
+	l_5_4.text = l_5_0._params.level
+	l_5_4.layer = tweak_data.menu2d.layer_normal + 3
+	l_5_2 = l_5_2(l_5_3, l_5_4)
+	l_5_0._level = l_5_2
+	l_5_2 = l_5_0._panel
+	l_5_2, l_5_3 = l_5_2:bitmap, l_5_2
+	l_5_2, l_5_4 = l_5_2(l_5_3, l_5_4), {texture = l_5_0._params.texture, x = 0, width = 256, height = 256, layer = tweak_data.menu2d.layer_normal + 1}
+	l_5_0._bmp = l_5_2
+	l_5_2 = l_5_0._panel
+	l_5_2, l_5_3 = l_5_2:rect, l_5_2
+	l_5_2, l_5_4 = l_5_2(l_5_3, l_5_4), {x = 0, y = l_5_0._panel:h() - l_5_1 * 3 + 6, height = l_5_1 + 3, width = 256, color = Color(0.6, 0, 0, 0), layer = tweak_data.menu2d.layer_normal + 2}
+	l_5_0._gradient = l_5_2
+	l_5_2 = l_5_0._bmp
+	l_5_2, l_5_3 = l_5_2:texture_width, l_5_2
+	l_5_2 = l_5_2(l_5_3)
+	if l_5_2 == 0 then
+		l_5_2 = l_5_0._bmp
+		l_5_2, l_5_3 = l_5_2:set_image, l_5_2
+		l_5_4 = "gui_resumegame_level_1"
+		l_5_2(l_5_3, l_5_4)
+	end
+	l_5_2 = l_5_0._panel
+	l_5_2, l_5_3 = l_5_2:height, l_5_2
+	l_5_2 = l_5_2(l_5_3)
+	l_5_3 = l_5_0._bmp
+	l_5_3, l_5_4 = l_5_3:texture_height, l_5_3
+	l_5_3 = l_5_3(l_5_4)
+	l_5_2 = l_5_2 / l_5_3
 end
-function Menu2DWidgetLevel.destroy(A0_14)
-	local L1_15
+
+Menu2DWidgetLevel.set_active = function(l_6_0, l_6_1)
+	l_6_0._active = true
+	l_6_0._level:set_color(tweak_data.menu2d.normal_menu.choice_text_color_active)
+	l_6_0._level_text_animation = Menu2DFadeInAnimation:new(l_6_0._level, 0, 0.25, 1)
+	l_6_0._bmp_animation = Menu2DFadeInAnimation:new(l_6_0._bmp, 0, 0.25, 1)
 end
-function Menu2DWidgetLevel.height(A0_16)
-	local L1_17, L2_18
-	L1_17 = tweak_data
-	L1_17 = L1_17.menu2d
-	L2_18 = L1_17.resume_level_font_size
-	L2_18 = L2_18 * 2
-	L2_18 = L2_18 + L1_17.resume_level_bmp_height
-	return L2_18
+
+Menu2DWidgetLevel.set_inactive = function(l_7_0, l_7_1)
+	l_7_0._active = false
+	l_7_0._level:set_color(tweak_data.menu2d.widgets.level_text_color)
+	l_7_0._level_text_animation = Menu2DFadeOutAnimation:new(l_7_0._level, 0, 0.25, 0.3)
+	l_7_0._bmp_animation = Menu2DFadeOutAnimation:new(l_7_0._bmp, 0, 0.25, l_7_0._bmp_inactive_alpha)
 end
-function Menu2DWidgetLevel.animate(A0_19, A1_20, A2_21)
-	local L3_22, L4_23, L5_24
-	L3_22 = A2_21[1]
-	L4_23 = A2_21[2]
-	L5_24 = A2_21[3]
-	if A1_20 == "fade_in" then
-		if A0_19._active == true then
-			L5_24 = 1
+
+Menu2DWidgetLevel.destroy = function(l_8_0)
+end
+
+Menu2DWidgetLevel.height = function(l_9_0)
+	local l_9_1 = tweak_data.menu2d
+	return l_9_1.resume_level_font_size * 2 + l_9_1.resume_level_bmp_height
+end
+
+Menu2DWidgetLevel.animate = function(l_10_0, l_10_1, l_10_2)
+	local l_10_3 = l_10_2[1]
+	local l_10_4 = l_10_2[2]
+	local l_10_5 = l_10_2[3]
+	if l_10_1 == "fade_in" then
+		if l_10_0._active == true then
+			l_10_5 = 1
 		else
-			L5_24 = A0_19._bmp_inactive_alpha
+			l_10_5 = l_10_0._bmp_inactive_alpha
 		end
-		A0_19._level:set_color(A0_19._level:color():with_alpha(0))
-		A0_19._bmp:set_color(A0_19._bmp:color():with_alpha(0))
-		A0_19._level_text_animation = Menu2DFadeInAnimation:new(A0_19._level, L3_22, L4_23, L5_24)
-		A0_19._bmp_animation = Menu2DFadeInAnimation:new(A0_19._bmp, L3_22, L4_23, L5_24)
-	elseif A1_20 == "fade_out" then
-		A0_19._level_text_animation = Menu2DFadeOutAnimation:new(A0_19._level, L3_22, L4_23, L5_24)
-		A0_19._bmp_animation = Menu2DFadeOutAnimation:new(A0_19._bmp, L3_22, L4_23, L5_24)
+		l_10_0._level:set_color(l_10_0._level:color():with_alpha(0))
+		l_10_0._bmp:set_color(l_10_0._bmp:color():with_alpha(0))
+		l_10_0._level_text_animation = Menu2DFadeInAnimation:new(l_10_0._level, l_10_3, l_10_4, l_10_5)
+		l_10_0._bmp_animation = Menu2DFadeInAnimation:new(l_10_0._bmp, l_10_3, l_10_4, l_10_5)
+	elseif l_10_1 == "fade_out" then
+		l_10_0._level_text_animation = Menu2DFadeOutAnimation:new(l_10_0._level, l_10_3, l_10_4, l_10_5)
+		l_10_0._bmp_animation = Menu2DFadeOutAnimation:new(l_10_0._bmp, l_10_3, l_10_4, l_10_5)
 	end
 end
-function Menu2DWidgetLevel.confirm_mode(A0_25)
-	local L1_26
-	L1_26 = "confirm"
-	return L1_26
+
+Menu2DWidgetLevel.confirm_mode = function(l_11_0)
+	return "confirm"
 end
-function Menu2DWidgetLevel.mouse_input(A0_27, A1_28)
+
+Menu2DWidgetLevel.mouse_input = function(l_12_0, l_12_1)
 end
+
+

@@ -1,37 +1,28 @@
-MenuStatePreFrontendSyncDone = MenuStatePreFrontendSyncDone or class(FiniteStateMachineState)
-function MenuStatePreFrontendSyncDone.init(A0_0)
-	A0_0._menu:_set_frontend_ready()
+if not MenuStatePreFrontendSyncDone then
+	MenuStatePreFrontendSyncDone = class(FiniteStateMachineState)
 end
-function MenuStatePreFrontendSyncDone.exit(A0_1)
-	A0_1._menu:_clear_frontend_ready()
+MenuStatePreFrontendSyncDone.init = function(l_1_0)
+	l_1_0._menu:_set_frontend_ready()
 end
-function MenuStatePreFrontendSyncDone.transition(A0_2)
-	local L1_3
-	L1_3 = managers
-	L1_3 = L1_3.game
-	L1_3 = L1_3.show_menu_frontend_requested
-	L1_3 = L1_3(L1_3)
-	if L1_3 then
-		L1_3 = A0_2._menu
-		L1_3 = L1_3.has_shown_pre_frontend_once
-		L1_3 = L1_3(L1_3)
-		if not L1_3 then
-			L1_3 = MenuStatePreFrontendOnce
-			return L1_3
-		else
-			L1_3 = MenuStatePreFrontend
-			return L1_3
+
+MenuStatePreFrontendSyncDone.exit = function(l_2_0)
+	l_2_0._menu:_clear_frontend_ready()
+end
+
+MenuStatePreFrontendSyncDone.transition = function(l_3_0)
+	if managers.game:show_menu_frontend_requested() then
+		if not l_3_0._menu:has_shown_pre_frontend_once() then
+			return MenuStatePreFrontendOnce
 		end
+	else
+		return MenuStatePreFrontend
 	end
-	L1_3 = managers
-	L1_3 = L1_3.game
-	L1_3 = L1_3.requested_menu_sync_start
-	L1_3 = L1_3(L1_3)
-	if L1_3 then
-		L1_3 = managers
-		L1_3 = L1_3.game
-		L1_3 = L1_3.requested_menu_sync_type
-		L1_3 = L1_3(L1_3)
-		return MenuStateSyncTypes.get_sync_type_class(L1_3)
+	if managers.game:requested_menu_sync_start() then
+		local l_3_1 = managers.game:requested_menu_sync_type()
+		local l_3_2 = MenuStateSyncTypes.get_sync_type_class
+		local l_3_3 = l_3_1
+		return l_3_2(l_3_3)
 	end
 end
+
+

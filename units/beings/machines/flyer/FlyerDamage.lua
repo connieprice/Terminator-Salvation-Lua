@@ -1,70 +1,76 @@
-local L0_0
-L0_0 = require
-L0_0("units/UnitDamage")
-L0_0 = require
-L0_0("units/damage/StunDamage")
-L0_0 = require
-L0_0("units/damage/StunBodySetup")
-L0_0 = require
-L0_0("TweakData")
-L0_0 = tweak_data
-L0_0 = L0_0.enemy
-L0_0 = L0_0.flyer
-FlyerDamage = FlyerDamage or class(UnitDamage)
-function FlyerDamage.init(A0_1, A1_2)
-	UnitDamage.init(A0_1, A1_2)
-	A0_1._time_until_next_hurt = 0
-	A0_1:register_damage_callback(function(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8)
-		_UPVALUE0_:_on_damage(A0_3, A1_4, A2_5, A3_6, A5_8)
-	end)
-	A0_1._stun_damage = StunDamage:new(A1_2, A0_1, _UPVALUE0_)
-	A0_1._outline_weakspots = {}
-	A0_1._emitter = managers.action_event:create_emitter(A1_2)
-	A0_1._outline_weakspots[1] = {
-		body_name = "default_body",
-		obj = A0_1._unit:get_object("g_outline")
-	}
-	A0_1._unit:damage_data().health = tweak_data.enemy.flyer.HEALTH
+require("units/UnitDamage")
+require("units/damage/StunDamage")
+require("units/damage/StunBodySetup")
+require("TweakData")
+local l_0_0 = tweak_data.enemy.flyer
+if not FlyerDamage then
+	FlyerDamage = class(UnitDamage)
 end
-function FlyerDamage.destroy(A0_9)
-	A0_9._stun_damage:destroy()
+local l_0_1 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+StunBodySetup:new("default_body", l_0_0.STUN_MAX_HEALTH, l_0_0.STUN_HEALTH_PER_SECOND, true).init = .end
+FlyerDamage.destroy = function(l_2_0)
+	l_2_0._stun_damage:destroy()
 end
-function FlyerDamage.fully_damaged(A0_10, A1_11)
-	A0_10._unit:set_slot(6)
+
+FlyerDamage.fully_damaged = function(l_3_0, l_3_1)
+	l_3_0._unit:set_slot(6)
 end
-function FlyerDamage.update_damage(A0_12, A1_13, A2_14, A3_15)
-	A0_12._time_until_next_hurt = A0_12._time_until_next_hurt - A3_15
-	A0_12._stun_damage:update(A3_15)
+
+FlyerDamage.update_damage = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	l_4_0._time_until_next_hurt = l_4_0._time_until_next_hurt - l_4_3
+	l_4_0._stun_damage:update(l_4_3)
 end
-function FlyerDamage._on_damage(A0_16, A1_17, A2_18, A3_19, A4_20, A5_21)
-	local L6_22, L7_23
-	L6_22 = A0_16._time_until_next_hurt
-	if L6_22 <= 0 and A1_17 > 0 and A5_21 then
-		L7_23 = A3_19
-		L6_22 = A3_19.with_z
-		L6_22 = L6_22(L7_23, 0)
-		L7_23 = L6_22
-		L6_22 = L6_22.normalized
-		L6_22 = L6_22(L7_23)
-		L7_23 = L6_22.cross
-		L7_23 = L7_23(L6_22, math.UP)
-		if 0 < (A2_18 - A5_21:center_of_mass()):dot(L7_23) then
-			A2_18 = A2_18 - 0.5 * (A2_18 - A5_21:center_of_mass()) + 60 * L7_23
-			L6_22 = (L6_22 - L7_23):normalized()
+
+FlyerDamage._on_damage = function(l_5_0, l_5_1, l_5_2, l_5_3, l_5_4, l_5_5)
+	-- upvalues: l_0_0
+	if l_5_0._time_until_next_hurt <= 0 and l_5_1 > 0 and l_5_5 then
+		local l_5_6 = l_5_3:with_z(0):normalized()
+		local l_5_7 = l_5_6:cross(math.UP)
+		local l_5_8 = l_5_5:center_of_mass()
+		local l_5_9 = l_5_2 - l_5_8
+		local l_5_10 = l_5_9:dot(l_5_7)
+		if l_5_10 > 0 then
+			l_5_2 = l_5_2 - 0.5 * l_5_9 + 60 * l_5_7
+			l_5_6 = l_5_6 - l_5_7:normalized()
 		else
-			A2_18 = A2_18 - 0.5 * (A2_18 - A5_21:center_of_mass()) - 60 * L7_23
-			L6_22 = (L6_22 + L7_23):normalized()
+			l_5_2 = l_5_2 - 0.5 * l_5_9 - 60 * l_5_7
+			l_5_6 = l_5_6 + l_5_7:normalized()
 		end
-		A0_16._unit:push_at(_UPVALUE0_.IMPACT_MASS, L6_22 * _UPVALUE0_.IMPACT_VELOCITY, A2_18)
-		A0_16._time_until_next_hurt = _UPVALUE0_.TIME_BETWEEN_IMPACT_PUSHES.min + math.random() * (_UPVALUE0_.TIME_BETWEEN_IMPACT_PUSHES.max - _UPVALUE0_.TIME_BETWEEN_IMPACT_PUSHES.min)
-		A0_16._emitter:unit_hurt(A0_16._unit)
+		l_5_0._unit:push_at(l_0_0.IMPACT_MASS, l_5_6 * l_0_0.IMPACT_VELOCITY, l_5_2)
+		local l_5_11 = l_0_0.TIME_BETWEEN_IMPACT_PUSHES
+		local l_5_12 = l_5_11.min
+		local l_5_13 = l_5_11.max
+		l_5_0._time_until_next_hurt = l_5_12 + math.random() * (l_5_13 - l_5_12)
+		l_5_0._emitter:unit_hurt(l_5_0._unit)
 	end
 end
-function FlyerDamage.get_outline_weakspots(A0_24)
-	local L1_25
-	L1_25 = A0_24._outline_weakspots
-	return L1_25
+
+FlyerDamage.get_outline_weakspots = function(l_6_0)
+	return l_6_0._outline_weakspots
 end
-function FlyerDamage.check_outline_weakspot(A0_26, A1_27)
-	if A0_26._outline_weakspots then
-		for 
+
+FlyerDamage.check_outline_weakspot = function(l_7_0, l_7_1)
+	local l_7_5, l_7_6, l_7_7, l_7_8, l_7_9, l_7_10 = nil
+	if l_7_0._outline_weakspots then
+		for i_0,i_1 in pairs(l_7_0._outline_weakspots) do
+			if i_1.body_name == l_7_1 then
+				return {i_1.obj}
+			end
+		end
+	end
+end
+
+FlyerDamage.hide_all_outline_weakspots = function(l_8_0)
+	local l_8_4, l_8_5, l_8_6, l_8_7 = nil
+	for i_0,i_1 in pairs(l_8_0._outline_weakspots) do
+		i_1.obj:set_visibility(false)
+	end
+end
+
+

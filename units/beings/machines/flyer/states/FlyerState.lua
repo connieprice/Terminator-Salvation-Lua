@@ -1,6 +1,11 @@
-FlyerState = FlyerState or class()
-function FlyerState.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._base = A1_1:base()
-	A0_0._emitter = A1_1:base()._emitter
+if not FlyerState then
+	FlyerState = class()
 end
+FlyerState.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	local l_1_2 = l_1_1:base()
+	l_1_0._base = l_1_2
+	l_1_0._emitter = l_1_2._emitter
+end
+
+

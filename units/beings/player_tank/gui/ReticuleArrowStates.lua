@@ -1,151 +1,203 @@
 require("shared/FiniteStateMachine")
-ReticuleArrowIdleState = ReticuleArrowIdleState or class()
-function ReticuleArrowIdleState.transition(A0_0)
-	if A0_0._reticule_arrow:wants_to_move_in() then
+if not ReticuleArrowIdleState then
+	ReticuleArrowIdleState = class()
+end
+ReticuleArrowIdleState.transition = function(l_1_0)
+	if l_1_0._reticule_arrow:wants_to_move_in() then
 		return ReticuleArrowMoveInState
-	elseif A0_0._reticule_arrow:wants_to_move_out() then
+	else
+		if l_1_0._reticule_arrow:wants_to_move_out() then
+			return ReticuleArrowMoveOutState
+		end
+	end
+end
+
+if not ReticuleArrowMoveInState then
+	ReticuleArrowMoveInState = class()
+end
+ReticuleArrowMoveInState.init = function(l_2_0)
+	local l_2_1 = l_2_0._reticule_arrow:get_current_position()
+	l_2_0._y = l_2_0._reticule_arrow
+	l_2_0._x = l_2_1
+	l_2_1 = l_2_0._reticule_arrow
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_0._end_y = l_2_1
+	l_2_0._end_x = l_2_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_0._alpha = l_2_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_0._x_interpolator = l_2_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_0._y_interpolator = l_2_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_0._alpha_interpolator = l_2_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_0._alpha_interpolator_2 = l_2_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_1(l_2_1, l_2_0._end_x)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_1(l_2_1, l_2_0._end_y)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_1(l_2_1, 1)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_2_1(l_2_1, 0)
+end
+
+ReticuleArrowMoveInState.update = function(l_3_0, l_3_1)
+	l_3_0._x_interpolator:update(l_3_1)
+	l_3_0._y_interpolator:update(l_3_1)
+	l_3_0._alpha_interpolator:update(l_3_1)
+	local l_3_2 = l_3_0._x_interpolator:value()
+	local l_3_3 = l_3_0._y_interpolator:value()
+	local l_3_4 = l_3_0._alpha_interpolator:value()
+	if l_3_4 > 0.8 then
+		l_3_0._alpha_interpolator_2:update(l_3_1)
+		l_3_4 = l_3_0._alpha_interpolator_2:value()
+	end
+	l_3_0._reticule_arrow:set_position(l_3_2, l_3_3)
+	l_3_0._reticule_arrow:set_alpha(l_3_4)
+end
+
+ReticuleArrowMoveInState.transition = function(l_4_0)
+	if l_4_0._reticule_arrow:wants_to_move_out() then
 		return ReticuleArrowMoveOutState
 	end
 end
-ReticuleArrowMoveInState = ReticuleArrowMoveInState or class()
-function ReticuleArrowMoveInState.init(A0_1)
-	A0_1._x, A0_1._y = A0_1._reticule_arrow:get_current_position()
-	A0_1._end_x, A0_1._end_y = A0_1._reticule_arrow:get_move_in_end_position()
-	A0_1._alpha = A0_1._reticule_arrow:get_alpha()
-	A0_1._x_interpolator = Interpolator:new(A0_1._x, tweak_data.machine.hud.RETICULE_ARROW_MOVE_IN_SPEED)
-	A0_1._y_interpolator = Interpolator:new(A0_1._y, tweak_data.machine.hud.RETICULE_ARROW_MOVE_IN_SPEED)
-	A0_1._alpha_interpolator = Interpolator:new(A0_1._alpha, tweak_data.machine.hud.RETICULE_ARROW_MOVE_IN_SPEED)
-	A0_1._alpha_interpolator_2 = Interpolator:new(1, tweak_data.machine.hud.RETICULE_ARROW_MOVE_IN_SPEED)
-	A0_1._x_interpolator:set_target(A0_1._end_x)
-	A0_1._y_interpolator:set_target(A0_1._end_y)
-	A0_1._alpha_interpolator:set_target(1)
-	A0_1._alpha_interpolator_2:set_target(0)
+
+if not ReticuleArrowMoveOutState then
+	ReticuleArrowMoveOutState = class()
 end
-function ReticuleArrowMoveInState.update(A0_2, A1_3)
-	local L2_4, L3_5, L4_6
-	L2_4 = A0_2._x_interpolator
-	L3_5 = L2_4
-	L2_4 = L2_4.update
-	L4_6 = A1_3
-	L2_4(L3_5, L4_6)
-	L2_4 = A0_2._y_interpolator
-	L3_5 = L2_4
-	L2_4 = L2_4.update
-	L4_6 = A1_3
-	L2_4(L3_5, L4_6)
-	L2_4 = A0_2._alpha_interpolator
-	L3_5 = L2_4
-	L2_4 = L2_4.update
-	L4_6 = A1_3
-	L2_4(L3_5, L4_6)
-	L2_4 = A0_2._x_interpolator
-	L3_5 = L2_4
-	L2_4 = L2_4.value
-	L2_4 = L2_4(L3_5)
-	L3_5 = A0_2._y_interpolator
-	L4_6 = L3_5
-	L3_5 = L3_5.value
-	L3_5 = L3_5(L4_6)
-	L4_6 = A0_2._alpha_interpolator
-	L4_6 = L4_6.value
-	L4_6 = L4_6(L4_6)
-	if L4_6 > 0.8 then
-		A0_2._alpha_interpolator_2:update(A1_3)
-		L4_6 = A0_2._alpha_interpolator_2:value()
-	end
-	A0_2._reticule_arrow:set_position(L2_4, L3_5)
-	A0_2._reticule_arrow:set_alpha(L4_6)
+ReticuleArrowMoveOutState.init = function(l_5_0)
+	local l_5_1 = l_5_0._reticule_arrow:get_current_position()
+	l_5_0._y = l_5_0._reticule_arrow
+	l_5_0._x = l_5_1
+	l_5_1 = l_5_0._reticule_arrow
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_0._end_y = l_5_1
+	l_5_0._end_x = l_5_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_0._alpha = l_5_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_0._x_interpolator = l_5_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_0._y_interpolator = l_5_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_0._alpha_interpolator = l_5_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_0._alpha_interpolator_2 = l_5_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_1(l_5_1, l_5_0._end_x)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_1(l_5_1, l_5_0._end_y)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_1(l_5_1, 1)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_5_1(l_5_1, 0)
 end
-function ReticuleArrowMoveInState.transition(A0_7)
-	if A0_7._reticule_arrow:wants_to_move_out() then
-		return ReticuleArrowMoveOutState
+
+ReticuleArrowMoveOutState.update = function(l_6_0, l_6_1)
+	l_6_0._alpha = l_6_0._reticule_arrow:get_alpha()
+	if l_6_0._alpha == 0 and l_6_0._x == l_6_0._end_x and l_6_0._y == l_6_0._end_y then
+		return 
 	end
+	if l_6_0._alpha == 1 and l_6_0._x == l_6_0._end_x and l_6_0._y == l_6_0._end_y then
+		l_6_0._reticule_arrow:set_alpha(0)
+		return 
+	end
+	l_6_0._x_interpolator:update(l_6_1)
+	l_6_0._y_interpolator:update(l_6_1)
+	l_6_0._alpha_interpolator:update(l_6_1)
+	local l_6_2 = l_6_0._x_interpolator:value()
+	local l_6_3 = l_6_0._y_interpolator:value()
+	local l_6_4 = l_6_0._alpha_interpolator:value()
+	if l_6_4 > 0.8 then
+		l_6_0._alpha_interpolator_2:update(l_6_1)
+		l_6_4 = l_6_0._alpha_interpolator_2:value()
+	end
+	l_6_0._reticule_arrow:set_position(l_6_2, l_6_3)
+	l_6_0._reticule_arrow:set_alpha(l_6_4)
 end
-ReticuleArrowMoveOutState = ReticuleArrowMoveOutState or class()
-function ReticuleArrowMoveOutState.init(A0_8)
-	A0_8._x, A0_8._y = A0_8._reticule_arrow:get_current_position()
-	A0_8._end_x, A0_8._end_y = A0_8._reticule_arrow:get_original_position()
-	A0_8._alpha = A0_8._reticule_arrow:get_alpha()
-	A0_8._x_interpolator = Interpolator:new(A0_8._x, tweak_data.machine.hud.RETICULE_ARROW_MOVE_OUT_SPEED)
-	A0_8._y_interpolator = Interpolator:new(A0_8._y, tweak_data.machine.hud.RETICULE_ARROW_MOVE_OUT_SPEED)
-	A0_8._alpha_interpolator = Interpolator:new(A0_8._alpha, tweak_data.machine.hud.RETICULE_ARROW_MOVE_OUT_SPEED)
-	A0_8._alpha_interpolator_2 = Interpolator:new(0.8, tweak_data.machine.hud.RETICULE_ARROW_MOVE_OUT_SPEED)
-	A0_8._x_interpolator:set_target(A0_8._end_x)
-	A0_8._y_interpolator:set_target(A0_8._end_y)
-	A0_8._alpha_interpolator:set_target(1)
-	A0_8._alpha_interpolator_2:set_target(0)
-end
-function ReticuleArrowMoveOutState.update(A0_9, A1_10)
-	local L2_11, L3_12, L4_13
-	L2_11 = A0_9._reticule_arrow
-	L3_12 = L2_11
-	L2_11 = L2_11.get_alpha
-	L2_11 = L2_11(L3_12)
-	A0_9._alpha = L2_11
-	L2_11 = A0_9._alpha
-	if L2_11 == 0 then
-		L2_11 = A0_9._x
-		L3_12 = A0_9._end_x
-		if L2_11 == L3_12 then
-			L2_11 = A0_9._y
-			L3_12 = A0_9._end_y
-			if L2_11 == L3_12 then
-				return
-			end
-		end
-	end
-	L2_11 = A0_9._alpha
-	if L2_11 == 1 then
-		L2_11 = A0_9._x
-		L3_12 = A0_9._end_x
-		if L2_11 == L3_12 then
-			L2_11 = A0_9._y
-			L3_12 = A0_9._end_y
-			if L2_11 == L3_12 then
-				L2_11 = A0_9._reticule_arrow
-				L3_12 = L2_11
-				L2_11 = L2_11.set_alpha
-				L4_13 = 0
-				L2_11(L3_12, L4_13)
-				return
-			end
-		end
-	end
-	L2_11 = A0_9._x_interpolator
-	L3_12 = L2_11
-	L2_11 = L2_11.update
-	L4_13 = A1_10
-	L2_11(L3_12, L4_13)
-	L2_11 = A0_9._y_interpolator
-	L3_12 = L2_11
-	L2_11 = L2_11.update
-	L4_13 = A1_10
-	L2_11(L3_12, L4_13)
-	L2_11 = A0_9._alpha_interpolator
-	L3_12 = L2_11
-	L2_11 = L2_11.update
-	L4_13 = A1_10
-	L2_11(L3_12, L4_13)
-	L2_11 = A0_9._x_interpolator
-	L3_12 = L2_11
-	L2_11 = L2_11.value
-	L2_11 = L2_11(L3_12)
-	L3_12 = A0_9._y_interpolator
-	L4_13 = L3_12
-	L3_12 = L3_12.value
-	L3_12 = L3_12(L4_13)
-	L4_13 = A0_9._alpha_interpolator
-	L4_13 = L4_13.value
-	L4_13 = L4_13(L4_13)
-	if L4_13 > 0.8 then
-		A0_9._alpha_interpolator_2:update(A1_10)
-		L4_13 = A0_9._alpha_interpolator_2:value()
-	end
-	A0_9._reticule_arrow:set_position(L2_11, L3_12)
-	A0_9._reticule_arrow:set_alpha(L4_13)
-end
-function ReticuleArrowMoveOutState.transition(A0_14)
-	if A0_14._reticule_arrow:wants_to_move_in() then
+
+ReticuleArrowMoveOutState.transition = function(l_7_0)
+	if l_7_0._reticule_arrow:wants_to_move_in() then
 		return ReticuleArrowMoveInState
 	end
 end
+
+

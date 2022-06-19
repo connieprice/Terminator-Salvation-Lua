@@ -1,12 +1,16 @@
-AMCheckPoint = AMCheckPoint or class(CoreActionElement)
-function AMCheckPoint.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
-	managers.world:add_checkpoint(A0_0)
+if not AMCheckPoint then
+	AMCheckPoint = class(CoreActionElement)
 end
-function AMCheckPoint.activate_now(A0_3)
-	local L1_4
-	L1_4 = A0_3.checkpoint
-	assert(A0_3.checkpoint_index)
-	managers.save:save_progress(A0_3.checkpoint_index)
-	A0_3:deactivate_now()
+AMCheckPoint.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+	managers.world:add_checkpoint(l_1_0)
 end
+
+AMCheckPoint.activate_now = function(l_2_0)
+	local l_2_1 = l_2_0.checkpoint
+	assert(l_2_0.checkpoint_index)
+	managers.save:save_progress(l_2_0.checkpoint_index)
+	l_2_0:deactivate_now()
+end
+
+

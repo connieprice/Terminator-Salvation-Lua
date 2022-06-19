@@ -1,31 +1,35 @@
-Milestone0402Setup = Milestone0402Setup or class()
-function Milestone0402Setup.init(A0_0)
-	local L1_1
-	L1_1 = {}
-	L1_1.default = "high"
-	L1_1.gui = "high"
-	L1_1.character = "high"
-	L1_1.vehicle = "high"
-	L1_1.weapon = "high"
-	L1_1.cover = "high"
-	L1_1.architecture = "high"
-	L1_1.backdrop = "high"
-	L1_1.vegetation = "high"
-	L1_1.alpha = "high"
-	L1_1.rail = "high"
-	L1_1.tint = "high"
-	L1_1.nm = "high"
-	L1_1.vehicles_df = "high"
-	L1_1.vehicles_gsm = "high"
-	L1_1.vehicles_nm = "high"
-	A0_0:set_render_settings(L1_1)
+if not Milestone0402Setup then
+	Milestone0402Setup = class()
 end
-function Milestone0402Setup.set_render_settings(A0_2, A1_3)
-	local L2_4, L3_5, L4_6, L5_7, L6_8, L7_9
-	for L5_7, L6_8 in L2_4(L3_5) do
-		L7_9 = "texture_quality_"
-		L7_9 = L7_9 .. L5_7
-		RenderSettings[L7_9] = L6_8
-		cat_print("debug", "Setting render setting ", L7_9, " to ", L6_8)
+Milestone0402Setup.init = function(l_1_0)
+	local l_1_1 = {}
+	l_1_1.default = "high"
+	l_1_1.gui = "high"
+	l_1_1.character = "high"
+	l_1_1.vehicle = "high"
+	l_1_1.weapon = "high"
+	l_1_1.cover = "high"
+	l_1_1.architecture = "high"
+	l_1_1.backdrop = "high"
+	l_1_1.vegetation = "high"
+	l_1_1.alpha = "high"
+	l_1_1.rail = "high"
+	l_1_1.tint = "high"
+	l_1_1.nm = "high"
+	l_1_1.vehicles_df = "high"
+	l_1_1.vehicles_gsm = "high"
+	l_1_1.vehicles_nm = "high"
+	l_1_0:set_render_settings(l_1_1)
+end
+
+Milestone0402Setup.set_render_settings = function(l_2_0, l_2_1)
+	local l_2_5, l_2_6, l_2_7 = nil
+	for i_0,i_1 in pairs(l_2_1) do
+		RenderSettings["texture_quality_" .. i_0] = i_1
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		cat_print("debug", "Setting render setting ", "texture_quality_" .. i_0, " to ", i_1)
 	end
 end
+
+

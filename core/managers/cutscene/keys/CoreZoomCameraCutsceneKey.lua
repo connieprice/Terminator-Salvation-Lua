@@ -1,123 +1,153 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreZoomCameraCutsceneKey = CoreZoomCameraCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreZoomCameraCutsceneKey then
+	CoreZoomCameraCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreZoomCameraCutsceneKey.ELEMENT_NAME = "camera_zoom"
 CoreZoomCameraCutsceneKey.NAME = "Camera Zoom"
 CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV = 55
-CoreZoomCameraCutsceneKey.INTERPOLATION_FUNCTIONS = {
-	["Linear"] = function(A0_0, A1_1)
-		return A0_0
-	end,
-	["J curve"] = function(A0_2, A1_3)
-		local L2_4, L3_5, L4_6, L5_7
-		L2_4 = 1 - A1_3
-		L2_4 = 2 * L2_4
-		L3_5 = 1 - L2_4
-		L4_6 = A0_2 ^ 2
-		L4_6 = L3_5 * L4_6
-		L5_7 = L2_4 * A0_2
-		L4_6 = L4_6 + L5_7
-		return L4_6
-	end,
-	["S curve"] = function(A0_8, A1_9)
-		local L2_10, L3_11, L4_12, L5_13
-		L2_10 = A1_9 * 2
-		L2_10 = 1 + L2_10
-		L3_11 = L2_10 + 1
-		L4_12 = A0_8 ^ L2_10
-		L4_12 = L3_11 * L4_12
-		L5_13 = A0_8 ^ L3_11
-		L5_13 = L2_10 * L5_13
-		L4_12 = L4_12 - L5_13
-		return L4_12
-	end
-}
-CoreZoomCameraCutsceneKey:register_serialized_attribute("start_fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV, tonumber)
-CoreZoomCameraCutsceneKey:register_serialized_attribute("end_fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV, tonumber)
-CoreZoomCameraCutsceneKey:register_serialized_attribute("transition_time", 0, tonumber)
-CoreZoomCameraCutsceneKey:register_serialized_attribute("interpolation", "Linear")
-CoreZoomCameraCutsceneKey:register_serialized_attribute("interpolation_bias", 0.5, function(A0_14)
-	return (tonumber(A0_14) or 0) / 100
-end)
-function CoreZoomCameraCutsceneKey.__tostring(A0_15)
-	local L1_16
-	L1_16 = "Change camera zoom."
-	return L1_16
+local l_0_0 = CoreZoomCameraCutsceneKey
+local l_0_1 = {}
+l_0_1.Linear = function(l_1_0, l_1_1)
+	return l_1_0
 end
-function CoreZoomCameraCutsceneKey.populate_from_editor(A0_17, A1_18)
-	A0_17.super.populate_from_editor(A0_17, A1_18)
-	A0_17:set_start_fov(A1_18:camera_attributes().fov)
-	A0_17:set_end_fov(A1_18:camera_attributes().fov)
+
+l_0_1["J curve"] = function(l_2_0, l_2_1)
+	local l_2_2 = 2 * (1 - l_2_1)
+	return (1 - l_2_2) * l_2_0 ^ 2 + l_2_2 * l_2_0
 end
-function CoreZoomCameraCutsceneKey.play(A0_19, A1_20, A2_21, A3_22)
-	if A2_21 then
-		if A0_19:preceeding_key() then
-			A1_20:set_camera_attribute("fov", A0_19:preceeding_key():end_fov())
+
+l_0_1["S curve"] = function(l_3_0, l_3_1)
+	local l_3_2 = 1 + l_3_1 * 2
+	local l_3_3 = l_3_2 + 1
+	return l_3_3 * l_3_0 ^ l_3_2 - l_3_2 * l_3_0 ^ l_3_3
+end
+
+l_0_0.INTERPOLATION_FUNCTIONS = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_0, l_0_1 = l_0_0:register_serialized_attribute, l_0_0
+l_0_0(l_0_1, "start_fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV, tonumber)
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_0, l_0_1 = l_0_0:register_serialized_attribute, l_0_0
+l_0_0(l_0_1, "end_fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV, tonumber)
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_0, l_0_1 = l_0_0:register_serialized_attribute, l_0_0
+l_0_0(l_0_1, "transition_time", 0, tonumber)
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_0, l_0_1 = l_0_0:register_serialized_attribute, l_0_0
+l_0_0(l_0_1, "interpolation", "Linear")
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_0, l_0_1 = l_0_0:register_serialized_attribute, l_0_0
+l_0_0(l_0_1, "interpolation_bias", 0.5, function(l_4_0)
+	return (tonumber(l_4_0) or 0) / 100
+end
+)
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_5_0)
+	return "Change camera zoom."
+end
+
+l_0_0.__tostring = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_6_0, l_6_1)
+	l_6_0.super.populate_from_editor(l_6_0, l_6_1)
+	local l_6_2 = l_6_1:camera_attributes()
+	l_6_0:set_start_fov(l_6_2.fov)
+	l_6_0:set_end_fov(l_6_2.fov)
+end
+
+l_0_0.populate_from_editor = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_7_0, l_7_1, l_7_2, l_7_3)
+	if l_7_2 then
+		local l_7_4 = l_7_0:preceeding_key()
+		if l_7_4 then
+			l_7_1:set_camera_attribute("fov", l_7_4:end_fov())
 		else
-			A1_20:set_camera_attribute("fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV)
+			l_7_1:set_camera_attribute("fov", CoreZoomCameraCutsceneKey.DEFAULT_CAMERA_FOV)
 		end
 	else
-		A1_20:set_camera_attribute("fov", A0_19:start_fov())
+		l_7_1:set_camera_attribute("fov", l_7_0:start_fov())
 	end
 end
-function CoreZoomCameraCutsceneKey.update(A0_23, A1_24, A2_25)
-	local L3_26, L4_27, L5_28, L6_29
-	L4_27 = A0_23
-	L3_26 = A0_23.transition_time
-	L3_26 = L3_26(L4_27)
-	L4_27 = L3_26 + 0.033333335
-	if A2_25 <= L4_27 then
-		if L3_26 > 0 then
-			L4_27 = math
-			L4_27 = L4_27.min
-			L5_28 = A2_25 / L3_26
-			L6_29 = 1
-			L4_27 = L4_27(L5_28, L6_29)
-		else
-			L4_27 = L4_27 or 1
-		end
-		L6_29 = A0_23
-		L5_28 = A0_23._calc_interpolation
-		L5_28 = L5_28(L6_29, L4_27)
-		L6_29 = A0_23.start_fov
-		L6_29 = L6_29(A0_23)
-		L6_29 = L6_29 + (A0_23:end_fov() - A0_23:start_fov()) * L5_28
-		A1_24:set_camera_attribute("fov", L6_29)
+
+l_0_0.play = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_8_0, l_8_1, l_8_2)
+	local l_8_3 = l_8_0:transition_time()
+	if l_8_3 <= 0 or not math.min(l_8_2 / l_8_3, 1) then
+		local l_8_4, l_8_5 = l_8_2 > l_8_3 + 0.033333335 or 1
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	local l_8_6 = nil
+	local l_8_7 = nil
+	l_8_1:set_camera_attribute("fov", l_8_0:start_fov() + (l_8_0:end_fov() - l_8_0:start_fov()) * l_8_0:_calc_interpolation(l_8_4))
 end
-function CoreZoomCameraCutsceneKey.is_valid_start_fov(A0_30, A1_31)
-	local L2_32
-	L2_32 = A1_31 and A1_31 > 0 and A1_31 < 180
-	return L2_32
+
+l_0_0.update = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_9_0, l_9_1)
+	do
+		return not l_9_1 or (l_9_1 > 0 and l_9_1 < 180)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreZoomCameraCutsceneKey.is_valid_transition_time(A0_33, A1_34)
-	local L2_35
-	L2_35 = A1_34 and A1_34 >= 0
-	return L2_35
+
+l_0_0.is_valid_start_fov = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_10_0, l_10_1)
+	do
+		return not l_10_1 or l_10_1 >= 0
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CoreZoomCameraCutsceneKey.is_valid_interpolation(A0_36, A1_37)
-	local L2_38
-	L2_38 = A0_36.INTERPOLATION_FUNCTIONS
-	L2_38 = L2_38[A1_37]
-	L2_38 = L2_38 ~= nil
-	return L2_38
+
+l_0_0.is_valid_transition_time = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_11_0, l_11_1)
+	return l_11_0.INTERPOLATION_FUNCTIONS[l_11_1] ~= nil
 end
-function CoreZoomCameraCutsceneKey.is_valid_interpolation_bias(A0_39, A1_40)
-	local L2_41
-	L2_41 = A1_40 and A1_40 >= 0 and A1_40 <= 1
-	return L2_41
+
+l_0_0.is_valid_interpolation = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = function(l_12_0, l_12_1)
+	do
+		return not l_12_1 or (l_12_1 >= 0 and l_12_1 <= 1)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-CoreZoomCameraCutsceneKey.is_valid_end_fov = CoreZoomCameraCutsceneKey.is_valid_start_fov
-CoreZoomCameraCutsceneKey.control_for_interpolation = CoreCutsceneKeyBase.standard_combo_box_control
-CoreZoomCameraCutsceneKey.control_for_interpolation_bias = CoreCutsceneKeyBase.standard_percentage_slider_control
-CoreZoomCameraCutsceneKey.refresh_control_for_interpolation = CoreCutsceneKeyBase:standard_combo_box_control_refresh("interpolation", table.map_keys(CoreZoomCameraCutsceneKey.INTERPOLATION_FUNCTIONS, function(A0_42, A1_43)
-	local L2_44
-	L2_44 = A0_42 == "Linear" or A0_42 < A1_43
-	return L2_44
-end))
-CoreZoomCameraCutsceneKey.refresh_control_for_interpolation_bias = CoreCutsceneKeyBase:standard_percentage_slider_control_refresh("interpolation_bias")
-function CoreZoomCameraCutsceneKey._calc_interpolation(A0_45, A1_46)
-	local L2_47
-	L2_47 = A0_45.INTERPOLATION_FUNCTIONS
-	L2_47 = L2_47[A0_45:interpolation()]
-	return L2_47(A1_46, math.clamp(A0_45:interpolation_bias(), 0, 1))
-end
+
+l_0_0.is_valid_interpolation_bias = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = CoreZoomCameraCutsceneKey
+l_0_1 = l_0_1.is_valid_start_fov
+l_0_0.is_valid_end_fov = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = CoreCutsceneKeyBase
+l_0_1 = l_0_1.standard_combo_box_control
+l_0_0.control_for_interpolation = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = CoreCutsceneKeyBase
+l_0_1 = l_0_1.standard_percentage_slider_control
+l_0_0.control_for_interpolation_bias = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+l_0_1 = CoreCutsceneKeyBase
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_0.refresh_control_for_interpolation = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_0.refresh_control_for_interpolation_bias = l_0_1
+l_0_0 = CoreZoomCameraCutsceneKey
+ -- DECOMPILER ERROR: Overwrote pending register.
+
+l_0_0._calc_interpolation = l_0_1
+

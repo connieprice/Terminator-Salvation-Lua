@@ -1,42 +1,47 @@
 require("units/editor/UnitStatusCondition")
-UnitStatusTrigger = UnitStatusTrigger or class(CoreTriggerBase)
-function UnitStatusTrigger.init(A0_0, A1_1, A2_2, A3_3)
-	CoreTriggerBase.init(A0_0, A1_1, A2_2, A3_3)
-	A0_0._name = A2_2:parameter("name")
-	A0_0._status_type = A2_2:parameter("status_type")
-	A0_0._threshold = tonumber(A2_2:parameter("threshold"))
-	A0_0._hub_element_name = A2_2:parameter("hub_element_name")
-	A0_0:parse_hitzones(A2_2:parameter("hitzones_alive"), A2_2:parameter("hitzones_destroyed"))
-	managers.unit_scripting:get_unit_by_name_callback(A0_0._name, callback(A0_0, A0_0, "unit_spawned"))
+if not UnitStatusTrigger then
+	UnitStatusTrigger = class(CoreTriggerBase)
 end
-function UnitStatusTrigger.parse_hitzones(A0_4, A1_5, A2_6)
-	local L3_7, L4_8, L5_9, L6_10, L7_11, L8_12
-	L3_7 = {}
-	L4_8 = {}
-	if L3_7 then
-		for L8_12 in L5_9(L6_10, L7_11) do
-			table.insert(L3_7, tonumber(L8_12))
+UnitStatusTrigger.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	CoreTriggerBase.init(l_1_0, l_1_1, l_1_2, l_1_3)
+	l_1_0._name = l_1_2:parameter("name")
+	l_1_0._status_type = l_1_2:parameter("status_type")
+	l_1_0._threshold = tonumber(l_1_2:parameter("threshold"))
+	l_1_0._hub_element_name = l_1_2:parameter("hub_element_name")
+	l_1_0:parse_hitzones(l_1_2:parameter("hitzones_alive"), l_1_2:parameter("hitzones_destroyed"))
+	managers.unit_scripting:get_unit_by_name_callback(l_1_0._name, callback(l_1_0, l_1_0, "unit_spawned"))
+end
+
+UnitStatusTrigger.parse_hitzones = function(l_2_0, l_2_1, l_2_2)
+	local l_2_8, l_2_9, l_2_13, l_2_14 = nil
+	local l_2_3 = {}
+	local l_2_4 = {}
+	if l_2_3 then
+		for i_0 in string.gmatch(l_2_1, "(%d+)%s*[,]*") do
+			table.insert(l_2_3, tonumber(i_0))
 		end
 	end
-	if L4_8 then
-		for L8_12 in L5_9(L6_10, L7_11) do
-			table.insert(L4_8, tonumber(L8_12))
+	if l_2_4 then
+		for i_0 in string.gmatch(l_2_2, "(%d+)%s*[,]*") do
+			table.insert(l_2_4, tonumber(i_0))
 		end
 	end
-	L5_9.alive = L3_7
-	L5_9.destroyed = L4_8
-	A0_4._hitzones = L5_9
+	local l_2_15 = {}
+	l_2_15.alive = l_2_3
+	l_2_15.destroyed = l_2_4
+	l_2_0._hitzones = l_2_15
 end
-function UnitStatusTrigger.unit_spawned(A0_13, A1_14)
-	local L2_15
-	L2_15 = UnitStatusCondition
-	L2_15 = L2_15.new
-	L2_15 = L2_15(L2_15, A0_13._status_type, callback(A0_13, A0_13, "status_achieved"))
-	L2_15.threshold = A0_13._threshold
-	L2_15.hitzones = A0_13._hitzones
-	L2_15.hub_element_name = A0_13._hub_element_name
-	A1_14:base():register_status_callback(L2_15)
+
+UnitStatusTrigger.unit_spawned = function(l_3_0, l_3_1)
+	local l_3_2 = UnitStatusCondition:new(l_3_0._status_type, callback(l_3_0, l_3_0, "status_achieved"))
+	l_3_2.threshold = l_3_0._threshold
+	l_3_2.hitzones = l_3_0._hitzones
+	l_3_2.hub_element_name = l_3_0._hub_element_name
+	l_3_1:base():register_status_callback(l_3_2)
 end
-function UnitStatusTrigger.status_achieved(A0_16)
-	A0_16._user:trigger_activated(A0_16._id, 1)
+
+UnitStatusTrigger.status_achieved = function(l_4_0)
+	l_4_0._user:trigger_activated(l_4_0._id, 1)
 end
+
+

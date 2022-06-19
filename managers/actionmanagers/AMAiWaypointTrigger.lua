@@ -1,7 +1,12 @@
-AMAiWaypointTrigger = AMAiWaypointTrigger or class(CoreActionElement)
-function AMAiWaypointTrigger.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMAiWaypointTrigger then
+	AMAiWaypointTrigger = class(CoreActionElement)
 end
-function AMAiWaypointTrigger.activate_now(A0_3)
-	A0_3:deactivate_now()
+AMAiWaypointTrigger.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
+
+AMAiWaypointTrigger.activate_now = function(l_2_0)
+	l_2_0:deactivate_now()
+end
+
+

@@ -1,11 +1,17 @@
-AiWaypointTriggerReachedTrigger = AiWaypointTriggerReachedTrigger or class(CoreTriggerBase)
-function AiWaypointTriggerReachedTrigger.init(A0_0, A1_1, A2_2, A3_3)
-	CoreTriggerBase.init(A0_0, A1_1, A2_2, A3_3)
-	managers.ai.waypoint:add_reached_waypoint_trigger(A0_0)
+if not AiWaypointTriggerReachedTrigger then
+	AiWaypointTriggerReachedTrigger = class(CoreTriggerBase)
 end
-function AiWaypointTriggerReachedTrigger.destroy(A0_4)
-	managers.ai.waypoint:remove_reached_waypoint_trigger(A0_4)
+AiWaypointTriggerReachedTrigger.init = function(l_1_0, l_1_1, l_1_2, l_1_3)
+	CoreTriggerBase.init(l_1_0, l_1_1, l_1_2, l_1_3)
+	managers.ai.waypoint:add_reached_waypoint_trigger(l_1_0)
 end
-function AiWaypointTriggerReachedTrigger.reached_waypoint(A0_5)
-	A0_5._user:trigger_activated(A0_5._id, 1)
+
+AiWaypointTriggerReachedTrigger.destroy = function(l_2_0)
+	managers.ai.waypoint:remove_reached_waypoint_trigger(l_2_0)
 end
+
+AiWaypointTriggerReachedTrigger.reached_waypoint = function(l_3_0)
+	l_3_0._user:trigger_activated(l_3_0._id, 1)
+end
+
+

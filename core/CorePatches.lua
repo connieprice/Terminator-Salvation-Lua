@@ -1,173 +1,253 @@
-local L0_0
-L0_0 = getmetatable
-L0_0 = L0_0(_G)
-if L0_0 == nil then
-	L0_0 = {}
-	setmetatable(_G, L0_0)
+if getmetatable(_G) == nil then
+	local l_0_0, l_0_1, l_0_2, l_0_3, l_0_4, l_0_5, l_0_6, l_0_7, l_0_8, l_0_9, l_0_10, l_0_11, l_0_12, l_0_13 = {}
+	l_0_1 = setmetatable
+	l_0_2 = _G
+	l_0_3 = l_0_0
+	l_0_1(l_0_2, l_0_3)
 end
-L0_0.__declared = {}
-function L0_0.__newindex(A0_1, A1_2, A2_3)
-	if not _UPVALUE0_.__declared[A1_2] then
-		if debug.getinfo(2, "S") and debug.getinfo(2, "S").what ~= "main" and debug.getinfo(2, "S").what ~= "C" then
-			error("cannot assign undeclared global '" .. tostring(A1_2) .. "'", 2)
+ -- DECOMPILER ERROR: Confused about usage of registers!
+
+l_0_0.__declared = {}
+ -- DECOMPILER ERROR: Confused about usage of registers!
+
+l_0_0.__newindex = function(l_1_0, l_1_1, l_1_2)
+	-- upvalues: l_0_0
+	if not l_0_0.__declared[l_1_1] then
+		local l_1_3 = debug.getinfo(2, "S")
+		if l_1_3 and l_1_3.what ~= "main" and l_1_3.what ~= "C" then
+			error("cannot assign undeclared global '" .. tostring(l_1_1) .. "'", 2)
 		end
-		_UPVALUE0_.__declared[A1_2] = true
+		l_0_0.__declared[l_1_1] = true
 	end
-	rawset(A0_1, A1_2, A2_3)
+	rawset(l_1_0, l_1_1, l_1_2)
 end
-function L0_0.__index(A0_4, A1_5)
-	if not _UPVALUE0_.__declared[A1_5] and debug.getinfo(2, "S") and debug.getinfo(2, "S").what ~= "main" and debug.getinfo(2, "S").what ~= "C" then
-		error("cannot use undeclared global '" .. tostring(A1_5) .. "'", 2)
-	end
-end
-managers = managers or {}
-core_setup = core_setup or {}
-script_debug = script_debug or {}
-function toboolean(A0_6)
-	if type(A0_6) == "string" then
-		return A0_6 == "true"
-	elseif type(A0_6) == "number" then
-		return A0_6 == 1
-	end
-end
-function iff(A0_7, A1_8, A2_9)
-	if A0_7 then
-		return A1_8
-	else
-		return A2_9
+
+ -- DECOMPILER ERROR: Confused about usage of registers!
+
+l_0_0.__index = function(l_2_0, l_2_1)
+	-- upvalues: l_0_0
+	if not l_0_0.__declared[l_2_1] then
+		local l_2_2 = debug.getinfo(2, "S")
+	if l_2_2 then
+		end
+	if l_2_2.what ~= "main" then
+		end
+	if l_2_2.what ~= "C" then
+		end
+		error("cannot use undeclared global '" .. tostring(l_2_1) .. "'", 2)
 	end
 end
-function Vector3.__concat(A0_10, A1_11)
-	return tostring(A0_10) .. tostring(A1_11)
+
+if not managers then
+	managers = {}
 end
-function Vector3.flat(A0_12, A1_13)
-	return math.cross(math.cross(A1_13, A0_12), A1_13)
+if not core_setup then
+	core_setup = {}
 end
-function Vector3.orthogonal(A0_14, A1_15)
-	return A0_14:orthogonal_func()(A1_15)
+if not script_debug then
+	script_debug = {}
 end
-function Vector3.orthogonal_func(A0_16, A1_17)
-	return function(A0_18)
-		return (-_UPVALUE0_:z() * math.cos(180 + 360 * A0_18) + _UPVALUE0_:x() * math.cos(90 + 360 * A0_18)):normalized()
+toboolean = function(l_3_0)
+		if l_3_0 ~= "true" then
+			return type(l_3_0) ~= "string"
+		end
+		do return end
+		if l_3_0 ~= 1 then
+			return type(l_3_0) ~= "number"
+		end
+  end
+iff = function(l_4_0, l_4_1, l_4_2)
+	if l_4_0 then
+		return l_4_1
 	end
+	do return end
+	return l_4_2
 end
-function Vector3.unpack(A0_19)
-	local L1_20, L2_21, L3_22
-	L1_20 = A0_19.x
-	L2_21 = A0_19.y
-	L3_22 = A0_19.z
-	return L1_20, L2_21, L3_22
+
+Vector3.__concat = function(l_5_0, l_5_1)
+	return tostring(l_5_0) .. tostring(l_5_1)
 end
-function Color.unpack(A0_23)
-	local L1_24, L2_25, L3_26
-	L1_24 = A0_23.r
-	L2_25 = A0_23.g
-	L3_26 = A0_23.b
-	return L1_24, L2_25, L3_26
+
+Vector3.flat = function(l_6_0, l_6_1)
+	local l_6_2 = math.cross
+	local l_6_5 = math.cross
+	l_6_5 = l_6_5(l_6_1, l_6_0)
+	local l_6_3 = nil
+	l_6_3 = l_6_1
+	local l_6_4 = nil
+	return l_6_2(l_6_5, l_6_3)
 end
-getmetatable(Application).draw_box = function(A0_27, A1_28, A2_29, A3_30, A4_31, A5_32)
-	Application:draw_line(A1_28, Vector3(A2_29.x, A1_28.y, A1_28.z), A3_30, A4_31, A5_32)
-	Application:draw_line(A1_28, Vector3(A1_28.x, A2_29.y, A1_28.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A2_29.x, A2_29.y, A1_28.z), Vector3(A1_28.x, A2_29.y, A1_28.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A2_29.x, A2_29.y, A1_28.z), Vector3(A2_29.x, A1_28.y, A1_28.z), A3_30, A4_31, A5_32)
-	Application:draw_line(A1_28, Vector3(A1_28.x, A1_28.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A1_28.x, A2_29.y, A1_28.z), Vector3(A1_28.x, A2_29.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A2_29.x, A1_28.y, A1_28.z), Vector3(A2_29.x, A1_28.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A2_29.x, A2_29.y, A1_28.z), Vector3(A2_29.x, A2_29.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A1_28.x, A1_28.y, A2_29.z), Vector3(A2_29.x, A1_28.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A1_28.x, A1_28.y, A2_29.z), Vector3(A1_28.x, A2_29.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A2_29.x, A2_29.y, A2_29.z), Vector3(A1_28.x, A2_29.y, A2_29.z), A3_30, A4_31, A5_32)
-	Application:draw_line(Vector3(A2_29.x, A2_29.y, A2_29.z), Vector3(A2_29.x, A1_28.y, A2_29.z), A3_30, A4_31, A5_32)
+
+Vector3.orthogonal = function(l_7_0, l_7_1)
+	local l_7_2 = l_7_0:orthogonal_func()
+	local l_7_3 = l_7_1
+	return l_7_2(l_7_3)
 end
-getmetatable(Application).draw_rotation_size = function(A0_33, A1_34, A2_35, A3_36)
+
+Vector3.orthogonal_func = function(l_8_0, l_8_1)
+	local l_8_2 = Rotation
+	local l_8_3 = l_8_0
+	do
+		if not l_8_1 then
+			l_8_2 = l_8_2(l_8_3, Vector3(0, 0, -1))
+		end
+		l_8_3 = function(l_9_0)
+			-- upvalues: l_8_2
+			local l_9_4 = -l_8_2:z() * math.cos(180 + 360 * l_9_0)
+			local l_9_3 = l_8_2:x()
+			l_9_3 = l_9_3 * math.cos(90 + 360 * l_9_0)
+			l_9_4 = l_9_4 + l_9_3
+			l_9_4, l_9_3 = l_9_4:normalized, l_9_4
+			local l_9_1, l_9_2 = nil
+			return l_9_4(l_9_3)
+    end
+		return l_8_3
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Vector3.unpack = function(l_9_0)
+	return l_9_0.x, l_9_0.y, l_9_0.z
+end
+
+Color.unpack = function(l_10_0)
+	return l_10_0.r, l_10_0.g, l_10_0.b
+end
+
+local l_0_14 = nil
+getmetatable(Application).draw_box = function(l_11_0, l_11_1, l_11_2, l_11_3, l_11_4, l_11_5)
+	Application:draw_line(l_11_1, Vector3(l_11_2.x, l_11_1.y, l_11_1.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(l_11_1, Vector3(l_11_1.x, l_11_2.y, l_11_1.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_2.x, l_11_2.y, l_11_1.z), Vector3(l_11_1.x, l_11_2.y, l_11_1.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_2.x, l_11_2.y, l_11_1.z), Vector3(l_11_2.x, l_11_1.y, l_11_1.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(l_11_1, Vector3(l_11_1.x, l_11_1.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_1.x, l_11_2.y, l_11_1.z), Vector3(l_11_1.x, l_11_2.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_2.x, l_11_1.y, l_11_1.z), Vector3(l_11_2.x, l_11_1.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_2.x, l_11_2.y, l_11_1.z), Vector3(l_11_2.x, l_11_2.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_1.x, l_11_1.y, l_11_2.z), Vector3(l_11_2.x, l_11_1.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_1.x, l_11_1.y, l_11_2.z), Vector3(l_11_1.x, l_11_2.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_2.x, l_11_2.y, l_11_2.z), Vector3(l_11_1.x, l_11_2.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+	Application:draw_line(Vector3(l_11_2.x, l_11_2.y, l_11_2.z), Vector3(l_11_2.x, l_11_1.y, l_11_2.z), l_11_3, l_11_4, l_11_5)
+end
+
+getmetatable(Application).draw_rotation_size = function(l_12_0, l_12_1, l_12_2, l_12_3)
 	if script_debug.draw_enabled then
-		Application:draw_line(A1_34, A1_34 + A2_35:x() * A3_36, 1, 0, 0)
-		Application:draw_line(A1_34, A1_34 + A2_35:y() * A3_36, 0, 1, 0)
-		Application:draw_line(A1_34, A1_34 + A2_35:z() * A3_36, 0, 0, 1)
+		Application:draw_line(l_12_1, l_12_1 + l_12_2:x() * l_12_3, 1, 0, 0)
+		Application:draw_line(l_12_1, l_12_1 + l_12_2:y() * l_12_3, 0, 1, 0)
+		Application:draw_line(l_12_1, l_12_1 + l_12_2:z() * l_12_3, 0, 0, 1)
 	end
 end
-getmetatable(Application).draw_arrow = function(A0_37, A1_38, A2_39, A3_40, A4_41, A5_42, A6_43)
-	local L7_44, L8_45, L9_46
-	L7_44 = script_debug
-	L7_44 = L7_44.draw_enabled
-	if L7_44 then
-		A6_43 = A6_43 or 1
-		L7_44 = A2_39 - A1_38
-		L8_45 = L7_44
-		L7_44 = L7_44.length
-		L7_44 = L7_44(L8_45)
-		L8_45 = A2_39 - A1_38
-		L9_46 = L8_45
-		L8_45 = L8_45.normalized
-		L8_45 = L8_45(L9_46)
-		L9_46 = 100 * A6_43
-		L9_46 = L7_44 - L9_46
-		L9_46 = L8_45 * L9_46
-		L9_46 = A1_38 + L9_46
-		Application:draw_cylinder(A1_38, L9_46, 10 * A6_43, A3_40, A4_41, A5_42)
-		Application:draw_cone(A2_39, L9_46, 40 * A6_43, A3_40, A4_41, A5_42)
+
+getmetatable(Application).draw_arrow = function(l_13_0, l_13_1, l_13_2, l_13_3, l_13_4, l_13_5, l_13_6)
+	if script_debug.draw_enabled then
+		if not l_13_6 then
+			l_13_6 = 1
+		end
+		local l_13_7 = l_13_2 - l_13_1:length()
+		local l_13_8 = l_13_2 - l_13_1:normalized()
+		local l_13_9 = l_13_1 + l_13_8 * (l_13_7 - 100 * l_13_6)
+		Application:draw_cylinder(l_13_1, l_13_9, 10 * l_13_6, l_13_3, l_13_4, l_13_5)
+		Application:draw_cone(l_13_2, l_13_9, 40 * l_13_6, l_13_3, l_13_4, l_13_5)
 	end
 end
-getmetatable(Application).toggle_safe_rect = function(A0_47)
+
+getmetatable(Application).toggle_safe_rect = function(l_14_0)
 	if managers.viewport then
 		managers.viewport:toggle_safe_rect()
 	end
 end
-getmetatable(Application).stack_dump_error = function(A0_48, ...)
+
+getmetatable(Application).stack_dump_error = function(l_15_0, ...)
 	Application:error(...)
 	cat_stack_dump("debug")
 end
+
 Draw:pen()
-function Pen.arrow(A0_50, A1_51, A2_52, A3_53)
-	local L4_54, L5_55, L6_56
-	L4_54 = script_debug
-	L4_54 = L4_54.draw_enabled
-	if L4_54 then
-		A3_53 = A3_53 or 1
-		L4_54 = A2_52 - A1_51
-		L5_55 = L4_54
-		L4_54 = L4_54.length
-		L4_54 = L4_54(L5_55)
-		L5_55 = A2_52 - A1_51
-		L6_56 = L5_55
-		L5_55 = L5_55.normalized
-		L5_55 = L5_55(L6_56)
-		L6_56 = 100 * A3_53
-		L6_56 = L4_54 - L6_56
-		L6_56 = L5_55 * L6_56
-		L6_56 = A1_51 + L6_56
-		A0_50:cylinder(A1_51, L6_56, 10 * A3_53)
-		A0_50:cone(A2_52, L6_56, 40 * A3_53)
+Pen.arrow = function(l_16_0, l_16_1, l_16_2, l_16_3)
+	if script_debug.draw_enabled then
+		if not l_16_3 then
+			l_16_3 = 1
+		end
+		local l_16_4 = l_16_2 - l_16_1:length()
+		local l_16_5 = l_16_2 - l_16_1:normalized()
+		local l_16_6 = l_16_1 + l_16_5 * (l_16_4 - 100 * l_16_3)
+		l_16_0:cylinder(l_16_1, l_16_6, 10 * l_16_3)
+		l_16_0:cone(l_16_2, l_16_6, 40 * l_16_3)
 	end
 end
-function Rotation.__add(A0_57, A1_58)
-	return Rotation(A0_57:yaw() + A1_58:yaw(), A0_57:pitch() + A1_58:pitch(), A0_57:roll() + A1_58:roll())
+
+Rotation.__add = function(l_17_0, l_17_1)
+	local l_17_2 = Rotation
+	local l_17_3 = l_17_0:yaw() + l_17_1:yaw()
+	local l_17_4 = l_17_0:pitch() + l_17_1:pitch()
+	local l_17_7 = l_17_0:roll()
+	local l_17_6 = l_17_1:roll()
+	l_17_7 = l_17_7 + l_17_6
+	local l_17_5 = nil
+	return l_17_2(l_17_3, l_17_4, l_17_7)
 end
-function Rotation.__sub(A0_59, A1_60)
-	return Rotation(A0_59:yaw() - A1_60:yaw(), A0_59:pitch() - A1_60:pitch(), A0_59:roll() - A1_60:roll())
+
+Rotation.__sub = function(l_18_0, l_18_1)
+	local l_18_2 = Rotation
+	local l_18_3 = l_18_0:yaw() - l_18_1:yaw()
+	local l_18_4 = l_18_0:pitch() - l_18_1:pitch()
+	local l_18_7 = l_18_0:roll()
+	local l_18_6 = l_18_1:roll()
+	l_18_7 = l_18_7 - l_18_6
+	local l_18_5 = nil
+	return l_18_2(l_18_3, l_18_4, l_18_7)
 end
-function Rotation.__div(A0_61, A1_62)
-	return Rotation(A0_61:yaw() / A1_62:yaw(), A0_61:pitch() / A1_62:pitch(), A0_61:roll() / A1_62:roll())
+
+Rotation.__div = function(l_19_0, l_19_1)
+	local l_19_2 = Rotation
+	local l_19_3 = l_19_0:yaw() / l_19_1:yaw()
+	local l_19_4 = l_19_0:pitch() / l_19_1:pitch()
+	local l_19_7 = l_19_0:roll()
+	local l_19_6 = l_19_1:roll()
+	l_19_7 = l_19_7 / l_19_6
+	local l_19_5 = nil
+	return l_19_2(l_19_3, l_19_4, l_19_7)
 end
-function Rotation.__mod(A0_63, A1_64)
-	return Rotation(A0_63:yaw() % A1_64:yaw(), A0_63:pitch() % A1_64:pitch(), A0_63:roll() % A1_64:roll())
+
+Rotation.__mod = function(l_20_0, l_20_1)
+	local l_20_2 = Rotation
+	local l_20_3 = l_20_0:yaw() % l_20_1:yaw()
+	local l_20_4 = l_20_0:pitch() % l_20_1:pitch()
+	local l_20_7 = l_20_0:roll()
+	local l_20_6 = l_20_1:roll()
+	l_20_7 = l_20_7 % l_20_6
+	local l_20_5 = nil
+	return l_20_2(l_20_3, l_20_4, l_20_7)
 end
-function Rotation.__unm(A0_65)
-	return Rotation(-A0_65:yaw(), -A0_65:pitch(), -A0_65:roll())
+
+Rotation.__unm = function(l_21_0)
+	local l_21_1 = Rotation
+	local l_21_2 = -l_21_0:yaw()
+	local l_21_3 = -l_21_0:pitch()
+	local l_21_5 = l_21_0:roll
+	l_21_5 = l_21_5(l_21_0)
+	l_21_5 = -l_21_5
+	local l_21_4 = nil
+	return l_21_1(l_21_2, l_21_3, l_21_5)
 end
-function Rotation.__concat(A0_66, A1_67)
-	return tostring(A0_66) .. tostring(A1_67)
+
+Rotation.__concat = function(l_22_0, l_22_1)
+	return tostring(l_22_0) .. tostring(l_22_1)
 end
-function Rotation.rotate_with(A0_68, A1_69)
-	local L2_70
-	L2_70 = Rotation
-	return L2_70(A0_68:y():rotate_with(A1_69), A0_68:z():rotate_with(A1_69))
+
+Rotation.rotate_with = function(l_23_0, l_23_1)
+	local l_23_2 = Rotation
+	local l_23_3 = l_23_0:y():rotate_with(l_23_1)
+	local l_23_4, l_23_5, l_23_6 = l_23_0:z():rotate_with(l_23_1), .end
+	return l_23_2(l_23_3, l_23_4, l_23_5, l_23_6)
 end
-function app_func(A0_71, A1_72)
-	getmetatable(Application)[A0_71] = function(...)
-		local L1_74, L2_75
-		L1_74 = _UPVALUE0_
-		L2_75 = ...
-		L1_74(L2_75)
-	end
+
+app_func = function(l_24_0, l_24_1)
+	getmetatable(Application)[l_24_0] = function(...)
+		-- upvalues: l_24_1
+		l_24_1(...)
+  end
 end
+
+

@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMXiaoLinStart = AMXiaoLinStart or class(AMNpcStart)
-AMXiaoLinStart.unit_type = "xiao_lin"
-function AMXiaoLinStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMXiaoLinStart.unit_type)
+if not AMXiaoLinStart then
+	AMXiaoLinStart = class(AMNpcStart)
 end
+AMXiaoLinStart.unit_type = "xiao_lin"
+AMXiaoLinStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMXiaoLinStart.unit_type)
+end
+
+

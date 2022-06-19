@@ -1,57 +1,118 @@
 require("units/beings/player_tank/gui/MachineText")
-ActionPanel = ActionPanel or class()
-function ActionPanel.init(A0_0, A1_1)
-	A0_0._safe_panel = A1_1
-	A0_0._x = tweak_data.machine.hud.RADAR_PANEL_WIDTH
-	A0_0._y = A0_0._safe_panel:height()
-	A0_0._width = A0_0._safe_panel:width() - tweak_data.machine.hud.TURRET_PANEL_WIDTH - tweak_data.machine.hud.RADAR_PANEL_WIDTH
-	A0_0._height = tweak_data.machine.hud.ACTION_PANEL_HEIGHT
-	A0_0._action_panel = A0_0._safe_panel:panel({
-		name = "action_panel",
-		width = A0_0._width,
-		height = A0_0._height
-	})
-	A0_0._action_panel:set_leftbottom(A0_0._x, A0_0._y)
-	A0_0:_set_up_lines()
-	A0_0._action_text = MachineText:new(A0_0._action_panel)
-	A0_0._action_text:set_static_text(Localizer:lookup("machine_hud_action_caption"))
-	A0_0._action_text:set_alignment("center", "bottom")
-	A0_0._action_text:set_text_main_alpha(tweak_data.machine.hud.MAIN_ALPHA)
+if not ActionPanel then
+	ActionPanel = class()
 end
-function ActionPanel.panel(A0_2)
-	local L1_3
-	L1_3 = A0_2._action_panel
-	return L1_3
+ActionPanel.init = function(l_1_0, l_1_1)
+	l_1_0._safe_panel = l_1_1
+	l_1_0._x = tweak_data.machine.hud.RADAR_PANEL_WIDTH
+	l_1_0._y = l_1_0._safe_panel:height()
+	l_1_0._width = l_1_0._safe_panel:width() - tweak_data.machine.hud.TURRET_PANEL_WIDTH - tweak_data.machine.hud.RADAR_PANEL_WIDTH
+	l_1_0._height = tweak_data.machine.hud.ACTION_PANEL_HEIGHT
+	local l_1_2, l_1_3 = l_1_0._safe_panel:panel, l_1_0._safe_panel
+	local l_1_4 = {}
+	l_1_4.name = "action_panel"
+	l_1_4.width = l_1_0._width
+	l_1_4.height = l_1_0._height
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._action_panel = l_1_2
+	l_1_2 = l_1_0._action_panel
+	l_1_2, l_1_3 = l_1_2:set_leftbottom, l_1_2
+	l_1_4 = l_1_0._x
+	l_1_2(l_1_3, l_1_4, l_1_0._y)
+	l_1_2, l_1_3 = l_1_0:_set_up_lines, l_1_0
+	l_1_2(l_1_3)
+	l_1_2 = MachineText
+	l_1_2, l_1_3 = l_1_2:new, l_1_2
+	l_1_4 = l_1_0._action_panel
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._action_text = l_1_2
+	l_1_2 = l_1_0._action_text
+	l_1_2, l_1_3 = l_1_2:set_static_text, l_1_2
+	l_1_4 = Localizer
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_2(l_1_3, l_1_4)
+	l_1_2 = l_1_0._action_text
+	l_1_2, l_1_3 = l_1_2:set_alignment, l_1_2
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_2(l_1_3, l_1_4, "bottom")
+	l_1_2 = l_1_0._action_text
+	l_1_2, l_1_3 = l_1_2:set_text_main_alpha, l_1_2
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_2(l_1_3, l_1_4)
 end
-function ActionPanel._set_up_lines(A0_4)
-	local L1_5, L2_6
-	L1_5 = {}
-	L2_6 = table
-	L2_6 = L2_6.insert
-	L2_6(L1_5, Vector3(0, A0_4._action_panel:height() * 0.8, 0))
-	L2_6 = table
-	L2_6 = L2_6.insert
-	L2_6(L1_5, Vector3(A0_4._action_panel:width() * 0.45, A0_4._action_panel:height() * 0.8, 0))
-	L2_6 = table
-	L2_6 = L2_6.insert
-	L2_6(L1_5, Vector3(A0_4._action_panel:width() * 0.45, A0_4._action_panel:height() * 0.85, 0))
-	L2_6 = A0_4._action_panel
-	L2_6 = L2_6.polyline
-	L2_6 = L2_6(L2_6, {name = "left_line"})
-	A0_4.left_line = L2_6
-	L2_6 = A0_4.left_line
-	L2_6 = L2_6.set_color
-	L2_6(L2_6, Color(1, 1, 1))
-	L2_6 = A0_4.left_line
-	L2_6 = L2_6.set_points
-	L2_6(L2_6, L1_5)
-	L2_6 = {}
-	table.insert(L2_6, Vector3(A0_4._action_panel:width(), A0_4._action_panel:height() * 0.8, 0))
-	table.insert(L2_6, Vector3(A0_4._action_panel:width() * 0.55, A0_4._action_panel:height() * 0.8, 0))
-	table.insert(L2_6, Vector3(A0_4._action_panel:width() * 0.55, A0_4._action_panel:height() * 0.85, 0))
-	A0_4.right_line = A0_4._action_panel:polyline({name = "right_line"})
-	A0_4.right_line:set_color(Color(1, 1, 1))
-	A0_4.right_line:set_points(L2_6)
+
+ActionPanel.panel = function(l_2_0)
+	return l_2_0._action_panel
 end
-function ActionPanel.update(A0_7, A1_8, A2_9)
+
+ActionPanel._set_up_lines = function(l_3_0)
+	local l_3_1 = {}
+	table.insert(l_3_1, Vector3(0, l_3_0._action_panel:height() * 0.8, 0))
+	table.insert(l_3_1, Vector3(l_3_0._action_panel:width() * 0.45, l_3_0._action_panel:height() * 0.8, 0))
+	table.insert(l_3_1, Vector3(l_3_0._action_panel:width() * 0.45, l_3_0._action_panel:height() * 0.85, 0))
+	local l_3_2, l_3_3 = l_3_0._action_panel:polyline, l_3_0._action_panel
+	local l_3_4 = {}
+	l_3_4.name = "left_line"
+	l_3_2 = l_3_2(l_3_3, l_3_4)
+	l_3_0.left_line = l_3_2
+	l_3_2 = l_3_0.left_line
+	l_3_2, l_3_3 = l_3_2:set_color, l_3_2
+	l_3_4 = Color
+	l_3_2(l_3_3, l_3_4)
+	l_3_2 = l_3_0.left_line
+	l_3_2, l_3_3 = l_3_2:set_points, l_3_2
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2(l_3_3, l_3_4)
+	l_3_3 = table
+	l_3_3 = l_3_3.insert
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_2 = {}
+	l_3_3(l_3_4, Vector3(l_3_0._action_panel:width(), l_3_0._action_panel:height() * 0.8, 0))
+	l_3_3 = table
+	l_3_3 = l_3_3.insert
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_3(l_3_4, Vector3(l_3_0._action_panel:width() * 0.55, l_3_0._action_panel:height() * 0.8, 0))
+	l_3_3 = table
+	l_3_3 = l_3_3.insert
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_3(l_3_4, Vector3(l_3_0._action_panel:width() * 0.55, l_3_0._action_panel:height() * 0.85, 0))
+	l_3_3 = l_3_0._action_panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_3 = l_3_3:polyline
+	local l_3_5 = {}
+	l_3_5.name = "right_line"
+	l_3_3 = l_3_3(l_3_4, l_3_5)
+	l_3_0.right_line = l_3_3
+	l_3_3 = l_3_0.right_line
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_3 = l_3_3:set_color
+	l_3_5 = Color
+	l_3_3(l_3_4, l_3_5)
+	l_3_3 = l_3_0.right_line
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_3 = l_3_3:set_points
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_3(l_3_4, l_3_5)
 end
+
+ActionPanel.update = function(l_4_0, l_4_1, l_4_2)
+end
+
+

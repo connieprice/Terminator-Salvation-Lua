@@ -1,55 +1,57 @@
-HunterKillerInput = HunterKillerInput or class()
-function HunterKillerInput.init(A0_0, A1_1)
-	A0_0:clear()
+if not HunterKillerInput then
+	HunterKillerInput = class()
 end
-function HunterKillerInput.clear(A0_2)
-	local L1_3
-	A0_2._primary_aim_target_position = nil
-	A0_2._secondary_aim_target_position = nil
-	A0_2._primary_fire = false
-	A0_2._secondary_fire = false
-	A0_2._miss_dispersion = 0
-	A0_2._flare = false
+HunterKillerInput.init = function(l_1_0, l_1_1)
+	l_1_0:clear()
 end
-function HunterKillerInput.primary_fire(A0_4)
-	local L1_5
-	L1_5 = A0_4._primary_fire
-	return L1_5
+
+HunterKillerInput.clear = function(l_2_0)
+	l_2_0._primary_aim_target_position = nil
+	l_2_0._secondary_aim_target_position = nil
+	l_2_0._primary_fire = false
+	l_2_0._secondary_fire = false
+	l_2_0._miss_dispersion = 0
+	l_2_0._flare = false
 end
-function HunterKillerInput.secondary_fire(A0_6)
-	local L1_7
-	L1_7 = A0_6._secondary_fire
-	return L1_7
+
+HunterKillerInput.primary_fire = function(l_3_0)
+	return l_3_0._primary_fire
 end
-function HunterKillerInput.set_primary_fire(A0_8)
-	local L1_9
-	A0_8._primary_fire = true
+
+HunterKillerInput.secondary_fire = function(l_4_0)
+	return l_4_0._secondary_fire
 end
-function HunterKillerInput.set_secondary_fire(A0_10)
-	local L1_11
-	A0_10._secondary_fire = true
+
+HunterKillerInput.set_primary_fire = function(l_5_0)
+	l_5_0._primary_fire = true
 end
-function HunterKillerInput.primary_aim_target_position(A0_12)
-	local L1_13
-	L1_13 = A0_12._primary_aim_target_position
-	return L1_13
+
+HunterKillerInput.set_secondary_fire = function(l_6_0)
+	l_6_0._secondary_fire = true
 end
-function HunterKillerInput.secondary_aim_target_position(A0_14)
-	local L1_15
-	L1_15 = A0_14._secondary_aim_target_position
-	return L1_15
+
+HunterKillerInput.primary_aim_target_position = function(l_7_0)
+	return l_7_0._primary_aim_target_position
 end
-function HunterKillerInput.set_primary_aim_target_position(A0_16, A1_17)
-	A0_16._primary_aim_target_position = A1_17
+
+HunterKillerInput.secondary_aim_target_position = function(l_8_0)
+	return l_8_0._secondary_aim_target_position
 end
-function HunterKillerInput.set_secondary_aim_target_position(A0_18, A1_19)
-	A0_18._secondary_aim_target_position = A1_19
+
+HunterKillerInput.set_primary_aim_target_position = function(l_9_0, l_9_1)
+	l_9_0._primary_aim_target_position = l_9_1
 end
-function HunterKillerInput.set_flare(A0_20, A1_21)
-	A0_20._flare = A1_21
+
+HunterKillerInput.set_secondary_aim_target_position = function(l_10_0, l_10_1)
+	l_10_0._secondary_aim_target_position = l_10_1
 end
-function HunterKillerInput.flare(A0_22)
-	local L1_23
-	L1_23 = A0_22._flare
-	return L1_23
+
+HunterKillerInput.set_flare = function(l_11_0, l_11_1)
+	l_11_0._flare = l_11_1
 end
+
+HunterKillerInput.flare = function(l_12_0)
+	return l_12_0._flare
+end
+
+

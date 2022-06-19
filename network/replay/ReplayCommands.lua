@@ -1,20 +1,12 @@
-local L0_0, L1_1
-L0_0 = ReplayCommands
-L0_0 = L0_0 or {}
-ReplayCommands = L0_0
-L0_0 = ReplayCommands
-L0_0.KEY_FRAME = "k"
-L0_0 = ReplayCommands
-L0_0.CONTROL_INPUT = "c"
-L0_0 = ReplayCommands
-L0_0.USER_JOINED_GAME = "u"
-L0_0 = ReplayCommands
-L0_0.USER_LEFT_GAME = "l"
-L0_0 = ReplayCommands
-L0_0.PICK_UP = "P"
-L0_0 = ReplayCommands
-L0_0.ARBITRATE_PICK_UP = "p"
-L0_0 = ReplayCommands
-L0_0.ARBITRATE_INTERACT = "i"
-L0_0 = ReplayCommands
-L0_0.INTERACT = "I"
+if not ReplayCommands then
+	ReplayCommands = {}
+end
+ReplayCommands.KEY_FRAME = "k"
+ReplayCommands.CONTROL_INPUT = "c"
+ReplayCommands.USER_JOINED_GAME = "u"
+ReplayCommands.USER_LEFT_GAME = "l"
+ReplayCommands.PICK_UP = "P"
+ReplayCommands.ARBITRATE_PICK_UP = "p"
+ReplayCommands.ARBITRATE_INTERACT = "i"
+ReplayCommands.INTERACT = "I"
+

@@ -1,244 +1,201 @@
-local L0_0
-L0_0 = require
-L0_0("units/beings/player/look/PlayerLook")
-L0_0 = DebugBasicAimStateControllerInterpreter
-if not L0_0 then
-	L0_0 = class
-	L0_0 = L0_0()
+require("units/beings/player/look/PlayerLook")
+if not DebugBasicAimStateControllerInterpreter then
+	DebugBasicAimStateControllerInterpreter = class()
 end
-DebugBasicAimStateControllerInterpreter = L0_0
-L0_0 = "look"
-function DebugBasicAimStateControllerInterpreter.init(A0_1, A1_2)
-	A0_1._unit = A1_2
-	A0_1._look = A0_1._unit:look()
-	A0_1._acc_time = 0
-	A0_1._player_data = A1_2:player_data()
-	A0_1._reset_constraints = true
+local l_0_0 = "look"
+local l_0_1 = "move"
+DebugBasicAimStateControllerInterpreter.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._look = l_1_0._unit:look()
+	l_1_0._acc_time = 0
+	l_1_0._player_data = l_1_1:player_data()
+	l_1_0._reset_constraints = true
 end
-function DebugBasicAimStateControllerInterpreter.update(A0_3, A1_4, A2_5)
-	local L3_6, L4_7, L5_8, L6_9, L7_10, L8_11
-	L3_6 = assert
-	L4_7 = A0_3._look
-	L3_6(L4_7)
-	L3_6 = A0_3._look
-	L4_7 = L3_6
-	L3_6 = L3_6.eye_position
-	L3_6 = L3_6(L4_7)
-	L4_7 = assert
-	L5_8 = A2_5
-	L4_7(L5_8)
-	L5_8 = A0_3
-	L4_7 = A0_3._update_look
-	L6_9 = A1_4
-	L7_10 = A2_5
-	L4_7(L5_8, L6_9, L7_10)
-	L4_7 = A0_3._look
-	L5_8 = L4_7
-	L4_7 = L4_7.eye_target_position
-	L4_7 = L4_7(L5_8)
-	L5_8 = A0_3._input
-	L6_9 = L5_8
-	L5_8 = L5_8.set_eye_target_position
-	L7_10 = L4_7
-	L5_8(L6_9, L7_10)
-	L5_8 = A0_3._unit
-	L6_9 = L5_8
-	L5_8 = L5_8.camera_data
-	L5_8 = L5_8(L6_9)
-	L5_8 = L5_8.camera_position
-	L6_9 = A0_3._unit
-	L7_10 = L6_9
-	L6_9 = L6_9.camera_data
-	L6_9 = L6_9(L7_10)
-	L6_9 = L6_9.camera_position
-	L7_10 = A0_3._unit
-	L8_11 = L7_10
-	L7_10 = L7_10.camera_data
-	L7_10 = L7_10(L8_11)
-	L7_10 = L7_10.camera_rotation
-	L8_11 = L7_10
-	L7_10 = L7_10.y
-	L7_10 = L7_10(L8_11)
-	L7_10 = L7_10 * 100000
-	L6_9 = L6_9 + L7_10
-	L7_10 = L3_6 - L5_8
-	L8_11 = L6_9 - L5_8
-	L5_8 = L5_8 + A0_3._unit:camera_data().camera_rotation:y() * (L7_10:dot(L8_11) / L8_11:length() + tweak_data.player.aim.CAMERA_AIM_TARGET_RAY_OFFSET)
-	A0_3:_update_aim(L5_8, L6_9)
+
+DebugBasicAimStateControllerInterpreter.update = function(l_2_0, l_2_1, l_2_2)
+	assert(l_2_0._look)
+	local l_2_3 = l_2_0._look:eye_position()
+	assert(l_2_2)
+	l_2_0:_update_look(l_2_1, l_2_2)
+	local l_2_4 = l_2_0._look:eye_target_position()
+	l_2_0._input:set_eye_target_position(l_2_4)
+	local l_2_5 = l_2_0._unit:camera_data().camera_position
+	local l_2_6 = l_2_0._unit:camera_data().camera_position + l_2_0._unit:camera_data().camera_rotation:y() * 100000
+	local l_2_7 = l_2_3 - l_2_5
+	local l_2_8 = l_2_6 - l_2_5
+	local l_2_9 = l_2_7:dot(l_2_8)
+	local l_2_10 = l_2_9 / l_2_8:length() + tweak_data.player.aim.CAMERA_AIM_TARGET_RAY_OFFSET
+	l_2_5 = l_2_5 + l_2_0._unit:camera_data().camera_rotation:y() * l_2_10
+	l_2_0:_update_aim(l_2_5, l_2_6)
 end
-function DebugBasicAimStateControllerInterpreter.disable(A0_12)
-	local L1_13
-	A0_12._controller = nil
+
+DebugBasicAimStateControllerInterpreter.disable = function(l_3_0)
+	l_3_0._controller = nil
 end
-function DebugBasicAimStateControllerInterpreter._invert_look(A0_14, A1_15)
-	if A0_14._player_data then
-		A1_15 = A1_15 * A0_14._player_data.sensitivity
-		if A0_14._player_data.invert_y then
-			A1_15 = -A1_15:with_x(-A1_15.x)
+
+DebugBasicAimStateControllerInterpreter._invert_look = function(l_4_0, l_4_1)
+	if l_4_0._player_data then
+		l_4_1 = l_4_1 * l_4_0._player_data.sensitivity
+	if l_4_0._player_data.invert_y then
 		end
+		l_4_1 = -l_4_1:with_x(-l_4_1.x)
 	end
-	return A1_15
+	return l_4_1
 end
-function DebugBasicAimStateControllerInterpreter._adjust_aiming(A0_16, A1_17)
-	local L2_18, L3_19
-	L2_18 = _UPVALUE0_
-	L3_19 = A1_17.x
-	L2_18 = L2_18(L3_19, A0_16._aiming_x_dead_zone, A0_16._aiming_x_start_value, A0_16._aiming_x_coefficient, A0_16._aiming_x_exponent)
-	L3_19 = _UPVALUE0_
-	L3_19 = L3_19(A1_17.y, A0_16._aiming_y_dead_zone, A0_16._aiming_y_start_value, A0_16._aiming_y_coefficient, A0_16._aiming_y_exponent)
-	return Vector3(L2_18, L3_19, A1_17.z)
+
+local l_0_2 = function(l_5_0, l_5_1, l_5_2, l_5_3, l_5_4)
+	if l_5_1 < l_5_0 then
+		local l_5_5 = l_5_2 + l_5_3 * l_5_0 - l_5_1 ^ l_5_4
+	elseif l_5_0 < -l_5_1 then
+		do return end
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	return -l_5_2 - l_5_3 * (-l_5_0 - l_5_1) ^ l_5_4
 end
-function DebugBasicAimStateControllerInterpreter._adjust_acceleration(A0_20, A1_21, A2_22)
-	local L3_23
-	L3_23 = A0_20._acc_time
-	L3_23 = L3_23 / A0_20._aiming_acceleration_time
-	L3_23 = L3_23 * A1_21
-	L3_23 = L3_23 * A0_20._aiming_acceleration_factor
-	return Vector3(A2_22.x + L3_23.x * A0_20._aiming_x_coefficient, A2_22.y + L3_23.y * A0_20._aiming_y_coefficient, A2_22.z)
+
+DebugBasicAimStateControllerInterpreter._adjust_aiming = function(l_6_0, l_6_1)
+	-- upvalues: l_0_2
+	local l_6_2 = l_0_2(l_6_1.x, l_6_0._aiming_x_dead_zone, l_6_0._aiming_x_start_value, l_6_0._aiming_x_coefficient, l_6_0._aiming_x_exponent)
+	local l_6_8 = l_0_2
+	l_6_8 = l_6_8(l_6_1.y, l_6_0._aiming_y_dead_zone, l_6_0._aiming_y_start_value, l_6_0._aiming_y_coefficient, l_6_0._aiming_y_exponent)
+	local l_6_3 = nil
+	l_6_3 = Vector3
+	local l_6_4 = nil
+	l_6_4 = l_6_2
+	local l_6_5 = nil
+	l_6_5 = l_6_8
+	local l_6_6 = nil
+	l_6_6 = l_6_1.z
+	local l_6_7 = nil
+	return l_6_3(l_6_4, l_6_5, l_6_6)
 end
-function DebugBasicAimStateControllerInterpreter._update_acceleration(A0_24, A1_25, A2_26)
-	if A1_25:length() >= A0_24._aiming_acceleration_threshold then
-		A0_24._acc_time = math.clamp(A0_24._acc_time + A2_26, 0, A0_24._aiming_acceleration_time)
-		A0_24._last_acc_direction = A1_25
+
+DebugBasicAimStateControllerInterpreter._adjust_acceleration = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_0._acc_time / l_7_0._aiming_acceleration_time * l_7_1 * l_7_0._aiming_acceleration_factor
+	local l_7_4 = Vector3
+	local l_7_5 = l_7_2.x + l_7_3.x * l_7_0._aiming_x_coefficient
+	local l_7_8 = l_7_2.y
+	l_7_8 = l_7_8 + l_7_3.y * l_7_0._aiming_y_coefficient
+	local l_7_6 = nil
+	l_7_6 = l_7_2.z
+	local l_7_7 = nil
+	return l_7_4(l_7_5, l_7_8, l_7_6)
+end
+
+DebugBasicAimStateControllerInterpreter._update_acceleration = function(l_8_0, l_8_1, l_8_2)
+	local l_8_3 = l_8_1:length()
+	if l_8_0._aiming_acceleration_threshold <= l_8_3 then
+		l_8_0._acc_time = math.clamp(l_8_0._acc_time + l_8_2, 0, l_8_0._aiming_acceleration_time)
+		l_8_0._last_acc_direction = l_8_1
 	else
-		A0_24._acc_time = math.clamp(A0_24._acc_time - A2_26, 0, A0_24._aiming_acceleration_time)
+		l_8_0._acc_time = math.clamp(l_8_0._acc_time - l_8_2, 0, l_8_0._aiming_acceleration_time)
 	end
-	if A1_25:length() > 0 and A0_24._last_acc_direction and A0_24._last_acc_direction:angle(A1_25) > 90 then
-		A0_24._acc_time = 0
+	if l_8_3 > 0 and l_8_0._last_acc_direction and l_8_0._last_acc_direction:angle(l_8_1) > 90 then
+		l_8_0._acc_time = 0
 	end
 end
-function DebugBasicAimStateControllerInterpreter._adjust_look(A0_27, A1_28, A2_29, A3_30)
-	local L4_31
-	L4_31 = A0_27._adjust_aiming
-	L4_31 = L4_31(A0_27, A1_28)
-	if A3_30 then
-		A0_27:_update_acceleration(A1_28, A2_29)
-		L4_31 = A0_27:_adjust_acceleration(A1_28, L4_31)
+
+DebugBasicAimStateControllerInterpreter._adjust_look = function(l_9_0, l_9_1, l_9_2, l_9_3)
+	local l_9_4 = l_9_0:_adjust_aiming(l_9_1)
+	if l_9_3 then
+		l_9_0:_update_acceleration(l_9_1, l_9_2)
+		local l_9_8 = l_9_0:_adjust_acceleration
+		l_9_8 = l_9_8(l_9_0, l_9_1, l_9_4)
+		l_9_4 = l_9_8
 	else
-		A0_27._acc_time = 0
+		l_9_0._acc_time = 0
 	end
-	return A0_27:_invert_look(L4_31)
+	local l_9_5, l_9_6 = l_9_0:_invert_look, l_9_0
+	local l_9_7 = l_9_4
+	return l_9_5(l_9_6, l_9_7)
 end
-function DebugBasicAimStateControllerInterpreter._update_look(A0_32, A1_33, A2_34)
-	local L3_35, L4_36, L5_37
-	L4_36 = A1_33
-	L3_35 = A1_33.get_input_axis
-	L5_37 = _UPVALUE0_
-	L3_35 = L3_35(L4_36, L5_37)
-	L5_37 = A1_33
-	L4_36 = A1_33.get_connection_settings
-	L4_36 = L4_36(L5_37, _UPVALUE0_)
-	L5_37 = L4_36
-	L4_36 = L4_36.get_no_limit
-	L4_36 = L4_36(L5_37)
-	L4_36 = not L4_36
-	L5_37 = A0_32._adjust_look
-	L5_37 = L5_37(A0_32, L3_35, A2_34, L4_36)
-	A0_32:update_constraints(A2_34)
-	A0_32._look:set_look_input(L5_37)
+
+DebugBasicAimStateControllerInterpreter._update_look = function(l_10_0, l_10_1, l_10_2)
+	-- upvalues: l_0_0
+	local l_10_3 = l_10_1:get_input_axis(l_0_0)
+	local l_10_4 = not l_10_1:get_connection_settings(l_0_0):get_no_limit()
+	local l_10_5 = (l_10_0:_adjust_look(l_10_3, l_10_2, l_10_4))
+	local l_10_6, l_10_7, l_10_8 = nil, nil, nil
+	l_10_0:update_constraints(l_10_2)
+	l_10_0._look:set_look_input(l_10_5)
 end
-function DebugBasicAimStateControllerInterpreter.update_constraints(A0_38, A1_39)
-	local L2_40, L3_41, L4_42, L5_43
-	L5_43 = A0_38._unit
-	L5_43 = L5_43.camera
-	L5_43 = L5_43(L5_43)
-	L5_43 = L5_43.active_camera
-	L5_43 = L5_43(L5_43)
-	if L5_43 then
-		L5_43 = A0_38._unit
-		L5_43 = L5_43.camera
-		L5_43 = L5_43(L5_43)
-		L5_43 = L5_43.camera_constraints
-		L3_41, L4_42, L5_43 = L5_43, nil, L5_43(L5_43)
-		L2_40 = L5_43
+
+DebugBasicAimStateControllerInterpreter.update_constraints = function(l_11_0, l_11_1)
+	local l_11_2, l_11_3, l_11_4 = nil, nil, nil
+	if l_11_0._unit:camera():active_camera() then
+		l_11_2 = l_11_0._unit:camera():camera_constraints()
 	end
-	if L2_40 and L3_41 and L4_42 then
-		L5_43 = L2_40.roll
-		L5_43 = L5_43(L2_40)
-		A0_38._look:set_pitch_constraints(L2_40:yaw() - L4_42, L2_40:yaw() + L4_42)
-		A0_38._look:set_yaw_constraints(L5_43, L3_41, L3_41)
+	if l_11_2 and l_11_3 and l_11_4 then
+		l_11_0._look:set_pitch_constraints(l_11_2:yaw() - l_11_4, l_11_2:yaw() + l_11_4)
+		l_11_0._look:set_yaw_constraints(l_11_2:roll(), l_11_3, l_11_3)
+	elseif l_11_0._reset_constraints then
+		l_11_0._look:reset_constraints()
+	end
+end
+
+DebugBasicAimStateControllerInterpreter.input = function(l_12_0)
+	return l_12_0._input
+end
+
+DebugBasicAimStateControllerInterpreter._debug_render_eye_target = function(l_13_0, l_13_1, l_13_2, l_13_3)
+	local l_13_4 = Draw:brush()
+	local l_13_5 = 5
+	local l_13_6 = Color(0, 0, 1)
+	local l_13_7 = Color(1, 0, 0)
+	local l_13_8 = Color(1, 1, 1)
+	l_13_4:set_color(l_13_6)
+	l_13_4:sphere(l_13_0._input:eye_target_position(), l_13_5)
+	l_13_4:set_color(l_13_8)
+	l_13_4:line(l_13_1, l_13_0._input:eye_target_position())
+	l_13_4:set_color(l_13_8)
+	l_13_4:set_color(l_13_7)
+	l_13_4:sphere(l_13_0._input:aim_target_position(), l_13_5)
+	l_13_4:set_color(Color(1, 1, 0))
+	l_13_4:sphere(l_13_2, l_13_5)
+	l_13_4:set_color(Color(0, 1, 1))
+	l_13_4:sphere(l_13_3, l_13_5)
+end
+
+DebugBasicAimStateControllerInterpreter._update_aim = function(l_14_0, l_14_1, l_14_2)
+	local l_14_3 = managers.slot:get_mask("shootable_wo_adr_shield")
+	local l_14_4 = (l_14_0._unit:raycast("ray", l_14_1, l_14_2, "slot_mask", l_14_3))
+	local l_14_5, l_14_6, l_14_7 = nil, nil, nil
+	if l_14_4 then
+		l_14_5 = l_14_4.position
+		l_14_6 = l_14_4.unit
+		l_14_7 = l_14_4.body
 	else
-		L5_43 = A0_38._reset_constraints
-		if L5_43 then
-			L5_43 = A0_38._look
-			L5_43 = L5_43.reset_constraints
-			L5_43(L5_43)
-		end
+		l_14_5 = l_14_2
+		l_14_7, l_14_6 = nil
+	end
+	l_14_0._input:set_aim_target_position(l_14_5)
+	if l_14_0._unit:player_data() then
+		l_14_0._unit:player_data().aim_target_position = l_14_5
+		l_14_0._unit:player_data().aim_target_unit = l_14_6
+		l_14_0._unit:player_data().aim_target_body = l_14_7
 	end
 end
-function DebugBasicAimStateControllerInterpreter.input(A0_44)
-	local L1_45
-	L1_45 = A0_44._input
-	return L1_45
+
+DebugBasicAimStateControllerInterpreter._set_aiming_values = function(l_15_0, l_15_1, l_15_2, l_15_3, l_15_4, l_15_5, l_15_6, l_15_7, l_15_8)
+	l_15_0._aiming_x_coefficient = l_15_1
+	l_15_0._aiming_x_exponent = l_15_2
+	l_15_0._aiming_x_dead_zone = l_15_3
+	l_15_0._aiming_x_start_value = l_15_4
+	l_15_0._aiming_y_coefficient = l_15_5
+	l_15_0._aiming_y_exponent = l_15_6
+	l_15_0._aiming_y_dead_zone = l_15_7
+	l_15_0._aiming_y_start_value = l_15_8
 end
-function DebugBasicAimStateControllerInterpreter._debug_render_eye_target(A0_46, A1_47, A2_48, A3_49)
-	local L4_50, L5_51, L6_52, L7_53, L8_54
-	L4_50 = Draw
-	L5_51 = L4_50
-	L4_50 = L4_50.brush
-	L4_50 = L4_50(L5_51)
-	L5_51 = 5
-	L6_52 = Color
-	L7_53 = 0
-	L8_54 = 0
-	L6_52 = L6_52(L7_53, L8_54, 1)
-	L7_53 = Color
-	L8_54 = 1
-	L7_53 = L7_53(L8_54, 0, 0)
-	L8_54 = Color
-	L8_54 = L8_54(1, 1, 1)
-	L4_50:set_color(L6_52)
-	L4_50:sphere(A0_46._input:eye_target_position(), L5_51)
-	L4_50:set_color(L8_54)
-	L4_50:line(A1_47, A0_46._input:eye_target_position())
-	L4_50:set_color(L8_54)
-	L4_50:set_color(L7_53)
-	L4_50:sphere(A0_46._input:aim_target_position(), L5_51)
-	L4_50:set_color(Color(1, 1, 0))
-	L4_50:sphere(A2_48, L5_51)
-	L4_50:set_color(Color(0, 1, 1))
-	L4_50:sphere(A3_49, L5_51)
+
+DebugBasicAimStateControllerInterpreter._set_aiming_acceleration_enabled = function(l_16_0, l_16_1)
+	l_16_0._aiming_acceleration_enabled = l_16_1
 end
-function DebugBasicAimStateControllerInterpreter._update_aim(A0_55, A1_56, A2_57)
-	local L3_58, L4_59, L5_60
-	L3_58 = managers
-	L3_58 = L3_58.slot
-	L4_59 = L3_58
-	L3_58 = L3_58.get_mask
-	L5_60 = "shootable_wo_adr_shield"
-	L3_58 = L3_58(L4_59, L5_60)
-	L4_59 = A0_55._unit
-	L5_60 = L4_59
-	L4_59 = L4_59.raycast
-	L4_59 = L4_59(L5_60, "ray", A1_56, A2_57, "slot_mask", L3_58)
-	L5_60 = nil
-	if L4_59 then
-		L5_60 = L4_59.position
-	else
-		L5_60 = A2_57
-	end
-	A0_55._input:set_aim_target_position(L5_60)
-	if A0_55._unit:player_data() then
-		A0_55._unit:player_data().aim_target_position = L5_60
-		A0_55._unit:player_data().aim_target_unit = nil
-		A0_55._unit:player_data().aim_target_body = nil
-	end
+
+DebugBasicAimStateControllerInterpreter._set_aiming_acceleration_values = function(l_17_0, l_17_1, l_17_2, l_17_3)
+	l_17_0._aiming_acceleration_threshold = l_17_1
+	l_17_0._aiming_acceleration_time = l_17_2
+	l_17_0._aiming_acceleration_factor = l_17_3
 end
-function DebugBasicAimStateControllerInterpreter._set_aiming_values(A0_61, A1_62, A2_63, A3_64, A4_65, A5_66, A6_67, A7_68, A8_69)
-	A0_61._aiming_x_coefficient = A1_62
-	A0_61._aiming_x_exponent = A2_63
-	A0_61._aiming_x_dead_zone = A3_64
-	A0_61._aiming_x_start_value = A4_65
-	A0_61._aiming_y_coefficient = A5_66
-	A0_61._aiming_y_exponent = A6_67
-	A0_61._aiming_y_dead_zone = A7_68
-	A0_61._aiming_y_start_value = A8_69
-end
-function DebugBasicAimStateControllerInterpreter._set_aiming_acceleration_enabled(A0_70, A1_71)
-	A0_70._aiming_acceleration_enabled = A1_71
-end
-function DebugBasicAimStateControllerInterpreter._set_aiming_acceleration_values(A0_72, A1_73, A2_74, A3_75)
-	A0_72._aiming_acceleration_threshold = A1_73
-	A0_72._aiming_acceleration_time = A2_74
-	A0_72._aiming_acceleration_factor = A3_75
-end
+
+

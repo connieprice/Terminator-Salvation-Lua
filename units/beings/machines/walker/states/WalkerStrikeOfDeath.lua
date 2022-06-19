@@ -1,10 +1,15 @@
-WalkerStrikeOfDeath = WalkerStrikeOfDeath or class(WalkerState)
-function WalkerStrikeOfDeath.init(A0_0)
-	WalkerState.init(A0_0)
-	A0_0._enemy_data = A0_0._base._enemy_data
+if not WalkerStrikeOfDeath then
+	WalkerStrikeOfDeath = class(WalkerState)
 end
-function WalkerStrikeOfDeath.transition(A0_1)
-	if not A0_1._enemy_data.strike_of_death then
+WalkerStrikeOfDeath.init = function(l_1_0)
+	WalkerState.init(l_1_0)
+	l_1_0._enemy_data = l_1_0._base._enemy_data
+end
+
+WalkerStrikeOfDeath.transition = function(l_2_0)
+	if not l_2_0._enemy_data.strike_of_death then
 		return WalkerOnGround
 	end
 end
+
+

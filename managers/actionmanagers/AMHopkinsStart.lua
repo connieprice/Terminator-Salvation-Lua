@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMHopkinsStart = AMHopkinsStart or class(AMNpcStart)
-AMHopkinsStart.unit_type = "hopkins"
-function AMHopkinsStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMHopkinsStart.unit_type)
+if not AMHopkinsStart then
+	AMHopkinsStart = class(AMNpcStart)
 end
+AMHopkinsStart.unit_type = "hopkins"
+AMHopkinsStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMHopkinsStart.unit_type)
+end
+
+

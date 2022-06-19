@@ -1,64 +1,55 @@
 require("shared/camera/SharedCamera")
 require("shared/Interpolator")
-CoverSideCamera = CoverSideCamera or class(SharedCamera)
-function CoverSideCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0.interpolation_speed = 1
+if not CoverSideCamera then
+	CoverSideCamera = class(SharedCamera)
 end
-function CoverSideCamera.activate(A0_2)
-	if not A0_2._target_offset then
-		A0_2._target_offset = Interpolator:new(0, A0_2.interpolation_speed)
+CoverSideCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0.interpolation_speed = 1
+end
+
+CoverSideCamera.activate = function(l_2_0)
+	if not l_2_0._target_offset then
+		l_2_0._target_offset = Interpolator:new(0, l_2_0.interpolation_speed)
 	end
-	A0_2._player_data = A0_2._root_unit:player_data()
-	A0_2._peek_offset = 0
-	A0_2:switch_to_right()
+	l_2_0._player_data = l_2_0._root_unit:player_data()
+	l_2_0._peek_offset = 0
+	l_2_0:switch_to_right()
 end
-function CoverSideCamera.update(A0_3, A1_4, A2_5, A3_6)
-	local L4_7, L5_8, L6_9, L7_10
-	L4_7 = SharedCamera
-	L4_7 = L4_7.update
-	L5_8 = A0_3
-	L6_9 = A1_4
-	L7_10 = A2_5
-	L4_7(L5_8, L6_9, L7_10, A3_6)
-	L4_7 = A0_3._player_data
-	L5_8 = L4_7.in_cover
-	if L5_8 then
-		L5_8 = L4_7.facing_right_in_cover
-	L5_8 = not L5_8 or L4_7.entering_cover_from_slide_facing_left
-	L6_9 = L4_7.peeking_left
-	if not L6_9 then
-		L6_9 = L4_7.peeking_right
+
+CoverSideCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_4 = l_3_0._player_data
+	if (((((l_3_4.in_cover and not l_3_4.facing_right_in_cover) or (not l_3_4.entering_cover or not l_3_4.entering_cover_facing_left) and (not l_3_4.moving_to_cover or not l_3_4.moving_to_cover_facing_left) and (not l_3_4.diving_to_cover or not l_3_4.diving_to_cover_facing_left) and (not l_3_4.sliding_to_cover or not l_3_4.sliding_to_cover_facing_left) and l_3_4.entering_cover_from_slide)))) then
+		local l_3_5 = l_3_4.entering_cover_from_slide_facing_left
+	end
+	l_3_5 = l_3_5
+	do
+		local l_3_6, l_3_7, l_3_8 = nil
+	end
+	if l_3_4.peeking_left or l_3_4.peeking_right then
+		l_3_0._peek_offset = 50
 	else
-		if L6_9 then
-			A0_3._peek_offset = 50
+		l_3_0._peek_offset = 0
 	end
+	if l_3_5 then
+		l_3_0:switch_to_left()
 	else
-		A0_3._peek_offset = 0
+		l_3_0:switch_to_right()
 	end
-	if L5_8 then
-		L7_10 = A0_3
-		L6_9 = A0_3.switch_to_left
-		L6_9(L7_10)
-	else
-		L7_10 = A0_3
-		L6_9 = A0_3.switch_to_right
-		L6_9(L7_10)
-	end
-	L6_9 = L4_7.peekin
-	L7_10 = A0_3._target_offset
-	L7_10 = L7_10.update
-	L7_10(L7_10, A3_6)
-	L7_10 = A0_3._target_offset
-	L7_10 = L7_10.set_speed
-	L7_10(L7_10, 2)
-	L7_10 = Vector3
-	L7_10 = L7_10(A0_3._target_offset:value(), 0, 0)
-	A0_3._unit:set_local_position(L7_10)
+	local l_3_9 = l_3_4.peekin
+	l_3_0._target_offset:update(l_3_3)
+	l_3_0._target_offset:set_speed(2)
+	local l_3_10 = Vector3(l_3_0._target_offset:value(), 0, 0)
+	l_3_0._unit:set_local_position(l_3_10)
 end
-function CoverSideCamera.switch_to_right(A0_11)
-	A0_11._target_offset:set_target(A0_11.right_offset + A0_11._peek_offset)
+
+CoverSideCamera.switch_to_right = function(l_4_0)
+	l_4_0._target_offset:set_target(l_4_0.right_offset + l_4_0._peek_offset)
 end
-function CoverSideCamera.switch_to_left(A0_12)
-	A0_12._target_offset:set_target(-A0_12.left_offset - A0_12._peek_offset)
+
+CoverSideCamera.switch_to_left = function(l_5_0)
+	l_5_0._target_offset:set_target(-l_5_0.left_offset - l_5_0._peek_offset)
 end
+
+

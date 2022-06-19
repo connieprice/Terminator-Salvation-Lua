@@ -9,3 +9,4 @@ OnRailStateControllerInterpreter = cpp_extension_wrapper(CppOnRailStateControlle
 OnRailTurretStateControllerInterpreter = cpp_extension_wrapper(CppOnRailTurretStateControllerInterpreter)
 StationaryWeaponControllerInterpreter = cpp_extension_wrapper(CppStationaryWeaponControllerInterpreter)
 WoundedControllerInterpreter = cpp_extension_wrapper(CppWoundedControllerInterpreter)
+

@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMDobkinStart = AMDobkinStart or class(AMNpcStart)
-AMDobkinStart.unit_type = "dobkin"
-function AMDobkinStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMDobkinStart.unit_type)
+if not AMDobkinStart then
+	AMDobkinStart = class(AMNpcStart)
 end
+AMDobkinStart.unit_type = "dobkin"
+AMDobkinStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMDobkinStart.unit_type)
+end
+
+

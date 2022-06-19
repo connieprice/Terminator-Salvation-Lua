@@ -1,223 +1,201 @@
 require("shared/FiniteStateMachine")
-CompassIdleState = CompassIdleState or class()
-function CompassIdleState.transition(A0_0)
-	if A0_0._compass_panel:wants_to_spin_right() then
+if not CompassIdleState then
+	CompassIdleState = class()
+end
+CompassIdleState.transition = function(l_1_0)
+	if l_1_0._compass_panel:wants_to_spin_right() then
 		return CompassSpinRightState
-	elseif A0_0._compass_panel:wants_to_spin_left() then
-		return CompassSpinLeftState
-	end
-end
-CompassSpinRightState = CompassSpinRightState or class()
-function CompassSpinRightState.init(A0_1)
-	A0_1._speed_interpolator = Interpolator:new(0, 0.5)
-	A0_1._speed_interpolator:set_target(tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED)
-end
-function CompassSpinRightState.update(A0_2, A1_3)
-	local L2_4, L3_5
-	L2_4 = A0_2._speed_interpolator
-	L3_5 = L2_4
-	L2_4 = L2_4.update
-	L2_4(L3_5, A1_3)
-	L2_4 = A0_2._compass_panel
-	L3_5 = L2_4
-	L2_4 = L2_4.get_current_bearing
-	L2_4 = L2_4(L3_5)
-	A0_2._current_bearing = L2_4
-	L2_4 = A0_2._compass_panel
-	L3_5 = L2_4
-	L2_4 = L2_4.get_target_bearing
-	L2_4 = L2_4(L3_5)
-	A0_2._target_bearing = L2_4
-	L2_4 = A0_2._speed_interpolator
-	L3_5 = L2_4
-	L2_4 = L2_4.value
-	L2_4 = L2_4(L3_5)
-	L3_5 = A0_2._current_bearing
-	L3_5 = L3_5 + L2_4
-	if A0_2._target_bearing < A0_2._current_bearing then
-		A0_2._target_bearing = A0_2._target_bearing + 3600
-	end
-	if L3_5 > A0_2._target_bearing then
-		L3_5 = A0_2._target_bearing
-		A0_2._compass_panel:idle()
-	end
-	A0_2._compass_panel:set_bearing(L3_5)
-	A0_2._compass_panel:set_current_spin_speed(L2_4)
-end
-function CompassSpinRightState.transition(A0_6)
-	if A0_6._compass_panel:wants_to_idle() then
-		return CompassIdleState
-	elseif A0_6._compass_panel:wants_to_slowdown_spin_right() then
-		return CompassSpinRightSlowDownState
-	elseif A0_6._compass_panel:wants_to_spin_left() then
-		return CompassSpinLeftState
-	end
-end
-CompassSpinRightSlowDownState = CompassSpinRightSlowDownState or class()
-function CompassSpinRightSlowDownState.init(A0_7)
-	local L1_8
-	L1_8 = A0_7._compass_panel
-	L1_8 = L1_8.get_current_spin_speed
-	L1_8 = L1_8(L1_8)
-	if not L1_8 then
-		L1_8 = tweak_data
-		L1_8 = L1_8.machine
-		L1_8 = L1_8.hud
-		L1_8 = L1_8.COMPASS_SPIN_MAX_SPEED
-	end
-	A0_7._speed_interpolator = Interpolator:new(L1_8, 2)
-	A0_7._speed_interpolator:set_target(5)
-end
-function CompassSpinRightSlowDownState.update(A0_9, A1_10)
-	local L2_11, L3_12
-	L2_11 = A0_9._speed_interpolator
-	L3_12 = L2_11
-	L2_11 = L2_11.update
-	L2_11(L3_12, A1_10)
-	L2_11 = A0_9._compass_panel
-	L3_12 = L2_11
-	L2_11 = L2_11.get_current_bearing
-	L2_11 = L2_11(L3_12)
-	A0_9._current_bearing = L2_11
-	L2_11 = A0_9._compass_panel
-	L3_12 = L2_11
-	L2_11 = L2_11.get_target_bearing
-	L2_11 = L2_11(L3_12)
-	A0_9._target_bearing = L2_11
-	L2_11 = A0_9._speed_interpolator
-	L3_12 = L2_11
-	L2_11 = L2_11.value
-	L2_11 = L2_11(L3_12)
-	L3_12 = A0_9._current_bearing
-	L3_12 = L3_12 + L2_11
-	if A0_9._target_bearing < A0_9._current_bearing then
-		A0_9._target_bearing = A0_9._target_bearing + 3600
-	end
-	if L3_12 > A0_9._target_bearing then
-		L3_12 = A0_9._target_bearing
-		A0_9._compass_panel:idle()
-	end
-	A0_9._compass_panel:set_bearing(L3_12)
-	A0_9._compass_panel:set_current_spin_speed(L2_11)
-end
-function CompassSpinRightSlowDownState.transition(A0_13)
-	if A0_13._compass_panel:wants_to_idle() then
-		return CompassIdleState
-	elseif A0_13._compass_panel:wants_to_spin_right() then
-		return CompassSpinRightState
-	elseif A0_13._compass_panel:wants_to_spin_left() then
-		return CompassSpinLeftState
-	end
-end
-CompassSpinLeftState = CompassSpinLeftState or class()
-function CompassSpinLeftState.init(A0_14)
-	A0_14._speed_interpolator = Interpolator:new(0, 0.5)
-	A0_14._speed_interpolator:set_target(tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED)
-end
-function CompassSpinLeftState.update(A0_15, A1_16)
-	local L2_17, L3_18
-	L2_17 = A0_15._speed_interpolator
-	L3_18 = L2_17
-	L2_17 = L2_17.update
-	L2_17(L3_18, A1_16)
-	L2_17 = A0_15._compass_panel
-	L3_18 = L2_17
-	L2_17 = L2_17.get_current_bearing
-	L2_17 = L2_17(L3_18)
-	A0_15._current_bearing = L2_17
-	L2_17 = A0_15._compass_panel
-	L3_18 = L2_17
-	L2_17 = L2_17.get_target_bearing
-	L2_17 = L2_17(L3_18)
-	A0_15._target_bearing = L2_17
-	L2_17 = A0_15._speed_interpolator
-	L3_18 = L2_17
-	L2_17 = L2_17.value
-	L2_17 = L2_17(L3_18)
-	L3_18 = A0_15._current_bearing
-	L3_18 = L3_18 - L2_17
-	if A0_15._target_bearing > A0_15._current_bearing then
-		A0_15._target_bearing = A0_15._target_bearing - 3600
-	end
-	if L3_18 < A0_15._target_bearing then
-		L3_18 = A0_15._target_bearing
-		A0_15._compass_panel:idle()
-	end
-	A0_15._compass_panel:set_bearing(L3_18)
-	A0_15._compass_panel:set_current_spin_speed(L2_17)
-end
-function CompassSpinLeftState.transition(A0_19)
-	if A0_19._compass_panel:wants_to_idle() then
-		return CompassIdleState
-	elseif A0_19._compass_panel:wants_to_slowdown_spin_left() then
-		return CompassSpinLeftSlowDownState
-	elseif A0_19._compass_panel:wants_to_spin_right() then
-		return CompassSpinRightSlowDownState
-	end
-end
-CompassSpinLeftSlowDownState = CompassSpinLeftSlowDownState or class()
-function CompassSpinLeftSlowDownState.init(A0_20)
-	A0_20._target_bearing = A0_20._compass_panel:get_target_bearing()
-	A0_20._current_bearing = A0_20._compass_panel:get_current_bearing()
-	if A0_20._target_bearing > A0_20._current_bearing then
-		A0_20._target_bearing = A0_20._target_bearing - 3600
-	end
-	A0_20._bearings_left = A0_20._current_bearing - A0_20._target_bearing
-	Application:debug("bearings left:", A0_20._bearings_left, "current", A0_20._compass_panel:get_current_bearing(), "target", A0_20._compass_panel:get_target_bearing())
-	A0_20.inital_spin_speed = A0_20._compass_panel:get_current_spin_speed() or tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED
-	if A0_20._target_bearing > 200 then
-		A0_20._speed_interpolator = Interpolator:new(A0_20.inital_spin_speed, 7)
 	else
-		A0_20._speed_interpolator = Interpolator:new(A0_20.inital_spin_speed, 30)
+		if l_1_0._compass_panel:wants_to_spin_left() then
+			return CompassSpinLeftState
+		end
 	end
-	A0_20._speed_interpolator:set_target(1)
 end
-function CompassSpinLeftSlowDownState.update(A0_21, A1_22)
-	local L2_23, L3_24
-	L2_23 = A0_21._temp_total_time
-	if not L2_23 then
-		A0_21._temp_total_time = 0
-	end
-	L2_23 = A0_21._temp_total_time
-	L2_23 = L2_23 + A1_22
-	A0_21._temp_total_time = L2_23
-	L2_23 = A0_21._speed_interpolator
-	L3_24 = L2_23
-	L2_23 = L2_23.update
-	L2_23(L3_24, A1_22)
-	L2_23 = A0_21._compass_panel
-	L3_24 = L2_23
-	L2_23 = L2_23.get_current_bearing
-	L2_23 = L2_23(L3_24)
-	A0_21._current_bearing = L2_23
-	L2_23 = A0_21._compass_panel
-	L3_24 = L2_23
-	L2_23 = L2_23.get_target_bearing
-	L2_23 = L2_23(L3_24)
-	A0_21._target_bearing = L2_23
-	L2_23 = A0_21._speed_interpolator
-	L3_24 = L2_23
-	L2_23 = L2_23.value
-	L2_23 = L2_23(L3_24)
-	L3_24 = A0_21._current_bearing
-	L3_24 = L3_24 - L2_23
-	Application:debug("current:", A0_21._current_bearing, "next", L3_24, "target", A0_21._target_bearing, "speed", L2_23, "in speed", A0_21.inital_spin_speed, "total", A0_21._temp_total_time)
-	if A0_21._target_bearing > A0_21._current_bearing then
-		A0_21._target_bearing = A0_21._target_bearing - 3600
-	end
-	if L3_24 < A0_21._target_bearing then
-		L3_24 = A0_21._target_bearing
-		A0_21._compass_panel:idle()
-	end
-	A0_21._compass_panel:set_bearing(L3_24)
-	A0_21._compass_panel:set_current_spin_speed(L2_23)
+
+if not CompassSpinRightState then
+	CompassSpinRightState = class()
 end
-function CompassSpinLeftSlowDownState.transition(A0_25)
-	if A0_25._compass_panel:wants_to_idle() then
+CompassSpinRightState.init = function(l_2_0)
+	do
+		local l_2_1, l_2_2 = l_2_0._compass_panel:get_current_spin_speed() or 0
+	end
+	l_2_0._speed_interpolator = Interpolator:new(0, 0.5)
+	l_2_0._speed_interpolator:set_target(tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED)
+end
+
+CompassSpinRightState.update = function(l_3_0, l_3_1)
+	l_3_0._speed_interpolator:update(l_3_1)
+	l_3_0._current_bearing = l_3_0._compass_panel:get_current_bearing()
+	l_3_0._target_bearing = l_3_0._compass_panel:get_target_bearing()
+	local l_3_2 = l_3_0._speed_interpolator:value()
+	local l_3_3 = l_3_0._current_bearing + l_3_2
+	if l_3_0._target_bearing < l_3_0._current_bearing then
+		l_3_0._target_bearing = l_3_0._target_bearing + 3600
+	end
+	if l_3_0._target_bearing < l_3_3 then
+		l_3_3 = l_3_0._target_bearing
+		l_3_0._compass_panel:idle()
+	end
+	l_3_0._compass_panel:set_bearing(l_3_3)
+	l_3_0._compass_panel:set_current_spin_speed(l_3_2)
+end
+
+CompassSpinRightState.transition = function(l_4_0)
+	if l_4_0._compass_panel:wants_to_idle() then
 		return CompassIdleState
-	elseif A0_25._compass_panel:wants_to_spin_left() then
-		return CompassSpinLeftState
-	elseif A0_25._compass_panel:wants_to_spin_right() then
-		return CompassSpinRightState
+	else
+		if l_4_0._compass_panel:wants_to_slowdown_spin_right() then
+			return CompassSpinRightSlowDownState
+		end
+	else
+		if l_4_0._compass_panel:wants_to_spin_left() then
+			return CompassSpinLeftState
+		end
 	end
 end
+
+if not CompassSpinRightSlowDownState then
+	CompassSpinRightSlowDownState = class()
+end
+CompassSpinRightSlowDownState.init = function(l_5_0)
+	if not l_5_0._compass_panel:get_current_spin_speed() then
+		local l_5_1, l_5_2, l_5_3 = tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_5_0._speed_interpolator = Interpolator:new(l_5_1, 2)
+	l_5_0._speed_interpolator:set_target(5)
+end
+
+CompassSpinRightSlowDownState.update = function(l_6_0, l_6_1)
+	l_6_0._speed_interpolator:update(l_6_1)
+	l_6_0._current_bearing = l_6_0._compass_panel:get_current_bearing()
+	l_6_0._target_bearing = l_6_0._compass_panel:get_target_bearing()
+	local l_6_2 = l_6_0._speed_interpolator:value()
+	local l_6_3 = l_6_0._current_bearing + l_6_2
+	if l_6_0._target_bearing < l_6_0._current_bearing then
+		l_6_0._target_bearing = l_6_0._target_bearing + 3600
+	end
+	if l_6_0._target_bearing < l_6_3 then
+		l_6_3 = l_6_0._target_bearing
+		l_6_0._compass_panel:idle()
+	end
+	l_6_0._compass_panel:set_bearing(l_6_3)
+	l_6_0._compass_panel:set_current_spin_speed(l_6_2)
+end
+
+CompassSpinRightSlowDownState.transition = function(l_7_0)
+	if l_7_0._compass_panel:wants_to_idle() then
+		return CompassIdleState
+	else
+		if l_7_0._compass_panel:wants_to_spin_right() then
+			return CompassSpinRightState
+		end
+	else
+		if l_7_0._compass_panel:wants_to_spin_left() then
+			return CompassSpinLeftState
+		end
+	end
+end
+
+if not CompassSpinLeftState then
+	CompassSpinLeftState = class()
+end
+CompassSpinLeftState.init = function(l_8_0)
+	do
+		local l_8_1, l_8_2 = l_8_0._compass_panel:get_current_spin_speed() or 0
+	end
+	l_8_0._speed_interpolator = Interpolator:new(0, 0.5)
+	l_8_0._speed_interpolator:set_target(tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED)
+end
+
+CompassSpinLeftState.update = function(l_9_0, l_9_1)
+	l_9_0._speed_interpolator:update(l_9_1)
+	l_9_0._current_bearing = l_9_0._compass_panel:get_current_bearing()
+	l_9_0._target_bearing = l_9_0._compass_panel:get_target_bearing()
+	local l_9_2 = l_9_0._speed_interpolator:value()
+	local l_9_3 = l_9_0._current_bearing - l_9_2
+	if l_9_0._current_bearing < l_9_0._target_bearing then
+		l_9_0._target_bearing = l_9_0._target_bearing - 3600
+	end
+	if l_9_3 < l_9_0._target_bearing then
+		l_9_3 = l_9_0._target_bearing
+		l_9_0._compass_panel:idle()
+	end
+	l_9_0._compass_panel:set_bearing(l_9_3)
+	l_9_0._compass_panel:set_current_spin_speed(l_9_2)
+end
+
+CompassSpinLeftState.transition = function(l_10_0)
+	if l_10_0._compass_panel:wants_to_idle() then
+		return CompassIdleState
+	else
+		if l_10_0._compass_panel:wants_to_slowdown_spin_left() then
+			return CompassSpinLeftSlowDownState
+		end
+	else
+		if l_10_0._compass_panel:wants_to_spin_right() then
+			return CompassSpinRightSlowDownState
+		end
+	end
+end
+
+if not CompassSpinLeftSlowDownState then
+	CompassSpinLeftSlowDownState = class()
+end
+CompassSpinLeftSlowDownState.init = function(l_11_0)
+	l_11_0._target_bearing = l_11_0._compass_panel:get_target_bearing()
+	l_11_0._current_bearing = l_11_0._compass_panel:get_current_bearing()
+	if l_11_0._current_bearing < l_11_0._target_bearing then
+		l_11_0._target_bearing = l_11_0._target_bearing - 3600
+	end
+	l_11_0._bearings_left = l_11_0._current_bearing - l_11_0._target_bearing
+	Application:debug("bearings left:", l_11_0._bearings_left, "current", l_11_0._compass_panel:get_current_bearing(), "target", l_11_0._compass_panel:get_target_bearing())
+	if not l_11_0._compass_panel:get_current_spin_speed() then
+		l_11_0.inital_spin_speed = tweak_data.machine.hud.COMPASS_SPIN_MAX_SPEED
+	end
+	if l_11_0._target_bearing > 200 then
+		l_11_0._speed_interpolator = Interpolator:new(l_11_0.inital_spin_speed, 7)
+	else
+		l_11_0._speed_interpolator = Interpolator:new(l_11_0.inital_spin_speed, 30)
+	end
+	l_11_0._speed_interpolator:set_target(1)
+end
+
+CompassSpinLeftSlowDownState.update = function(l_12_0, l_12_1)
+	if not l_12_0._temp_total_time then
+		l_12_0._temp_total_time = 0
+	end
+	l_12_0._temp_total_time = l_12_0._temp_total_time + l_12_1
+	l_12_0._speed_interpolator:update(l_12_1)
+	l_12_0._current_bearing = l_12_0._compass_panel:get_current_bearing()
+	l_12_0._target_bearing = l_12_0._compass_panel:get_target_bearing()
+	local l_12_2 = l_12_0._speed_interpolator:value()
+	local l_12_3 = l_12_0._current_bearing - l_12_2
+	Application:debug("current:", l_12_0._current_bearing, "next", l_12_3, "target", l_12_0._target_bearing, "speed", l_12_2, "in speed", l_12_0.inital_spin_speed, "total", l_12_0._temp_total_time)
+	if l_12_0._current_bearing < l_12_0._target_bearing then
+		l_12_0._target_bearing = l_12_0._target_bearing - 3600
+	end
+	if l_12_3 < l_12_0._target_bearing then
+		l_12_3 = l_12_0._target_bearing
+		l_12_0._compass_panel:idle()
+	end
+	l_12_0._compass_panel:set_bearing(l_12_3)
+	l_12_0._compass_panel:set_current_spin_speed(l_12_2)
+end
+
+CompassSpinLeftSlowDownState.transition = function(l_13_0)
+	if l_13_0._compass_panel:wants_to_idle() then
+		return CompassIdleState
+	else
+		if l_13_0._compass_panel:wants_to_spin_left() then
+			return CompassSpinLeftState
+		end
+	else
+		if l_13_0._compass_panel:wants_to_spin_right() then
+			return CompassSpinRightState
+		end
+	end
+end
+
+

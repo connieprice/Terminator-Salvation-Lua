@@ -1,10 +1,15 @@
-UnitCameraControllerInterpreter = UnitCameraControllerInterpreter or class()
-function UnitCameraControllerInterpreter.init(A0_0, A1_1)
+if not UnitCameraControllerInterpreter then
+	UnitCameraControllerInterpreter = class()
 end
-function UnitCameraControllerInterpreter.enable(A0_2, A1_3)
-	A0_2._controller = A1_3
+UnitCameraControllerInterpreter.init = function(l_1_0, l_1_1)
 end
-function UnitCameraControllerInterpreter.disable(A0_4)
-	local L1_5
-	A0_4._controller = nil
+
+UnitCameraControllerInterpreter.enable = function(l_2_0, l_2_1)
+	l_2_0._controller = l_2_1
 end
+
+UnitCameraControllerInterpreter.disable = function(l_3_0)
+	l_3_0._controller = nil
+end
+
+

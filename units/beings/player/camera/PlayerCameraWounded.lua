@@ -1,6 +1,10 @@
 require("units/beings/player/camera/PlayerCameraState")
-PlayerCameraWounded = PlayerCameraWounded or class(PlayerCameraState)
-function PlayerCameraWounded.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraWounded)
-	A0_0:_set_camera_name("wounded")
+if not PlayerCameraWounded then
+	PlayerCameraWounded = class(PlayerCameraState)
 end
+PlayerCameraWounded.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraWounded)
+	l_1_0:_set_camera_name("wounded")
+end
+
+

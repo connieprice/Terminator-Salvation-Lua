@@ -1,188 +1,159 @@
 require("projectile/InstantBulletSpawner")
 require("units/weapons/GenericWeapon")
-M2MachineGun = M2MachineGun or class(GenericWeapon)
-function M2MachineGun.init(A0_0, A1_1)
-	GenericWeapon.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._firing = false
-	A0_0._enabled = false
-	A0_0._wdata = A0_0._unit:weapon_data()
-	A0_0._wdata._max_dispersion = A0_0._max_dispersion
-	A0_0._wdata._min_dispersion = A0_0._min_dispersion
-	A0_0._obj_fire = A0_0._unit:get_object("fire")
-	A0_0._obj_sound = A0_0._unit:get_object("sound")
-	A0_0._bullets_fired = 0
-	A0_0._is_rotating = false
-	A0_0:_init_sounds()
-	A0_0._muzzleflash_rate = 2
-	A0_0._bullet_trails = {}
+if not M2MachineGun then
+	M2MachineGun = class(GenericWeapon)
 end
-function M2MachineGun.fire(A0_2, A1_3)
-	local L2_4, L3_5, L4_6, L5_7, L6_8, L7_9, L8_10, L9_11
-	L2_4 = A0_2._unit
-	L3_5 = L2_4
-	L2_4 = L2_4.anim_set_time
-	L4_6 = "fire"
-	L5_7 = 0
-	L2_4(L3_5, L4_6, L5_7)
-	L2_4 = A0_2._unit
-	L3_5 = L2_4
-	L2_4 = L2_4.anim_play
-	L4_6 = "fire"
-	L2_4(L3_5, L4_6)
-	L2_4 = A0_2._fire_effect
-	if L2_4 then
-		L2_4 = A0_2._bullets_fired
-		L3_5 = A0_2._muzzleflash_rate
-		L2_4 = L2_4 % L3_5
-		if L2_4 == 0 then
-			L3_5 = World
-			L4_6 = L3_5
-			L3_5 = L3_5.effect_manager
-			L3_5 = L3_5(L4_6)
-			L4_6 = L3_5
-			L3_5 = L3_5.spawn
-			L5_7 = {}
-			L6_8 = A0_2._fire_effect
-			L5_7.effect = L6_8
-			L6_8 = A0_2._obj_sound
-			L5_7.parent = L6_8
-			L6_8 = Vector3
-			L7_9 = 0
-			L8_10 = 1
-			L9_11 = 0
-			L6_8 = L6_8(L7_9, L8_10, L9_11)
-			L5_7.normal = L6_8
-			L5_7.force_synch = true
-			L3_5(L4_6, L5_7)
+M2MachineGun.init = function(l_1_0, l_1_1)
+	GenericWeapon.init(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._firing = false
+	l_1_0._enabled = false
+	l_1_0._wdata = l_1_0._unit:weapon_data()
+	l_1_0._wdata._max_dispersion = l_1_0._max_dispersion
+	l_1_0._wdata._min_dispersion = l_1_0._min_dispersion
+	l_1_0._obj_fire = l_1_0._unit:get_object("fire")
+	l_1_0._obj_sound = l_1_0._unit:get_object("sound")
+	l_1_0._bullets_fired = 0
+	l_1_0._is_rotating = false
+	l_1_0:_init_sounds()
+	l_1_0._muzzleflash_rate = 2
+	l_1_0._bullet_trails = {}
+end
+
+M2MachineGun.fire = function(l_2_0, l_2_1)
+	l_2_0._unit:anim_set_time("fire", 0)
+	l_2_0._unit:anim_play("fire")
+	if l_2_0._fire_effect then
+		local l_2_2 = l_2_0._bullets_fired % l_2_0._muzzleflash_rate
+	if l_2_2 == 0 then
 		end
+		local l_2_3, l_2_4 = World:effect_manager():spawn, World:effect_manager()
+		local l_2_5 = {}
+		l_2_5.effect = l_2_0._fire_effect
+		l_2_5.parent = l_2_0._obj_sound
+		l_2_5.normal = Vector3(0, 1, 0)
+		l_2_5.force_synch = true
+		l_2_3(l_2_4, l_2_5)
 	end
-	A0_2._fire_time = A1_3
-	L2_4 = A0_2._wdata
-	L3_5 = L2_4.aim_target_position
-	L4_6 = A0_2._obj_fire
-	L6_8 = L4_6
-	L5_7 = L4_6.position
-	L5_7 = L5_7(L6_8)
-	L7_9 = L4_6
-	L6_8 = L4_6.rotation
-	L6_8 = L6_8(L7_9)
-	L7_9 = L3_5 - L5_7
-	L8_10 = L7_9
-	L7_9 = L7_9.normalized
-	L7_9 = L7_9(L8_10)
-	L8_10 = VectorUtilities
-	L8_10 = L8_10.angle_constraint_direction
-	L9_11 = L7_9
-	L8_10 = L8_10(L9_11, L6_8:y(), A0_2._max_fire_object_and_aim_angle_diff)
-	L7_9 = L8_10
-	L9_11 = A0_2
-	L8_10 = A0_2.get_target_dir
-	L8_10 = L8_10(L9_11, L5_7, L7_9, L2_4)
-	L9_11 = Global
-	L9_11 = L9_11.category_debug_render
-	L9_11 = L9_11["player.dispersion"]
-	if L9_11 then
-		L9_11 = Draw
-		L9_11 = L9_11.pen
-		L9_11 = L9_11(L9_11, "permanent", "green")
-		L9_11:sphere(L3_5, 50)
-		Draw:pen("permanent", "blue"):sphere(L5_7, 10)
-		L9_11:line(L5_7, L5_7 + L7_9 * 3000)
-		Draw:pen("permanent", "red"):line(L5_7, L5_7 + L8_10 * 3000)
+	l_2_0._fire_time = l_2_1
+	local l_2_6 = l_2_0._wdata
+	local l_2_7 = l_2_6.aim_target_position
+	local l_2_8 = l_2_0._obj_fire
+	local l_2_9 = l_2_8:position()
+	local l_2_10 = l_2_8:rotation()
+	local l_2_11 = l_2_7 - l_2_9:normalized()
+	l_2_11 = VectorUtilities.angle_constraint_direction(l_2_11, l_2_10:y(), l_2_0._max_fire_object_and_aim_angle_diff)
+	local l_2_12 = l_2_0:get_target_dir(l_2_9, l_2_11, l_2_6)
+	if Global.category_debug_render["player.dispersion"] then
+		local l_2_13 = Draw:pen("permanent", "green")
+		local l_2_14 = Draw:pen("permanent", "red")
+		local l_2_15 = Draw:pen("permanent", "blue")
+		l_2_13:sphere(l_2_7, 50)
+		l_2_15:sphere(l_2_9, 10)
+		l_2_13:line(l_2_9, l_2_9 + l_2_11 * 3000)
+		l_2_14:line(l_2_9, l_2_9 + l_2_12 * 3000)
 	end
-	L9_11 = L8_10 * 10
-	L5_7 = L5_7 + L9_11
-	L9_11 = Rotation
-	L9_11 = L9_11(L8_10, L6_8:y())
-	A0_2._event_emitter:unit_weapon_fire_change(A0_2._unit, L5_7, L9_11, A0_2._projectile_spawner)
-	if A0_2._projectile_spawner then
-		A0_2._projectile_spawner:base():spawn_projectile(A0_2._user_unit, L5_7, L9_11)
+	l_2_9 = l_2_9 + l_2_12 * 10
+	local l_2_16 = Rotation(l_2_12, l_2_10:y())
+	l_2_0._event_emitter:unit_weapon_fire_change(l_2_0._unit, l_2_9, l_2_16, l_2_0._projectile_spawner)
+	if l_2_0._projectile_spawner then
+		l_2_0._projectile_spawner:base():spawn_projectile(l_2_0._user_unit, l_2_9, l_2_16)
 	end
-	A0_2._bullets_fired = A0_2._bullets_fired + 1
+	l_2_0._bullets_fired = l_2_0._bullets_fired + 1
 end
-function M2MachineGun.get_target_dir(A0_12, A1_13, A2_14, A3_15)
-	local L4_16, L5_17, L6_18, L7_19, L8_20, L9_21, L10_22, L11_23
-	L4_16 = tweak_data
-	L4_16 = L4_16.rail
-	L4_16 = L4_16.AUTO_AIM
-	if not L4_16 then
-		L4_16 = GenericWeapon
-		L4_16 = L4_16.get_target_dir
-		L5_17 = A0_12
-		L6_18 = A1_13
-		L7_19 = A2_14
-		return L4_16(L5_17, L6_18, L7_19)
+
+M2MachineGun.get_target_dir = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_8, l_3_9, l_3_10, l_3_11, l_3_12, l_3_13, l_3_14, l_3_15, l_3_16, l_3_17 = nil
+	if not tweak_data.rail.AUTO_AIM then
+		local l_3_4 = GenericWeapon.get_target_dir
+		local l_3_5 = l_3_0
+		local l_3_6 = l_3_1
+		local l_3_7 = l_3_2
+		return l_3_4(l_3_5, l_3_6, l_3_7)
 	end
-	L4_16 = 15000
-	L5_17 = managers
-	L5_17 = L5_17.slot
-	L6_18 = L5_17
-	L5_17 = L5_17.get_mask
-	L7_19 = "target_world"
-	L5_17 = L5_17(L6_18, L7_19)
-	L6_18 = A2_14 * L4_16
-	L6_18 = A1_13 + L6_18
-	L7_19 = World
-	L8_20 = L7_19
-	L7_19 = L7_19.raycast
-	L9_21 = "ray"
-	L10_22 = A1_13
-	L11_23 = L6_18
-	L7_19 = L7_19(L8_20, L9_21, L10_22, L11_23, "ray_type", "auto_aim", "slot_mask", L5_17, "ignore_unit", A0_12._unit)
-	if L7_19 then
-		L8_20 = L7_19.body
-		L9_21 = L8_20
-		L8_20 = L8_20.position
-		L8_20 = L8_20(L9_21)
-		L9_21 = L7_19.position
-		L8_20 = L8_20 - L9_21
-		L10_22 = L8_20
-		L9_21 = L8_20.length
-		L9_21 = L9_21(L10_22)
-		L11_23 = L8_20
-		L10_22 = L8_20.normalized
-		L10_22 = L10_22(L11_23)
-		L11_23 = L7_19.distance
-		L11_23 = L11_23 / 15000
-		L11_23 = L11_23 * tweak_data.rail.AUTO_AIM_CORRECTION_150M
-		L11_23 = math.min(L11_23, L9_21)
-		A2_14 = (L7_19.position + L10_22 * L11_23 - A1_13):normalized()
-		return WeaponUtilities.dispersion(A2_14, A3_15.miss_dispersion, A3_15._dispersion)
+	local l_3_18 = 15000
+	local l_3_19 = managers.slot:get_mask("target_world")
+	local l_3_20 = l_3_1 + l_3_2 * l_3_18
+	local l_3_31 = World:raycast
+	l_3_31 = l_3_31(World, "ray", l_3_1, l_3_20, "ray_type", "auto_aim", "slot_mask", l_3_19, "ignore_unit", l_3_0._unit)
+	local l_3_21 = nil
+	if l_3_31 then
+		l_3_21 = l_3_31.body
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_3_22 = nil
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_3_23 = nil
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_3_24 = nil
+		l_3_24 = l_3_31.distance
+		l_3_24 = l_3_24 / 15000
+		l_3_24 = l_3_24 * tweak_data.rail.AUTO_AIM_CORRECTION_150M
+		local l_3_25 = nil
+		l_3_25 = math
+		l_3_25 = l_3_25.min
+		l_3_25 = l_3_25(l_3_24, l_3_22)
+		l_3_24 = l_3_25
+		l_3_25 = l_3_31.position
+		l_3_25 = l_3_25 + l_3_23 * l_3_24
+		local l_3_26 = nil
+		l_3_26 = l_3_25 - l_3_1
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_3_2 = l_3_26
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_3_27 = nil
+		l_3_27 = l_3_2
+		local l_3_28 = nil
+		l_3_28 = l_3_3.miss_dispersion
+		local l_3_29 = nil
+		l_3_29 = l_3_3._dispersion
+		local l_3_30 = nil
+		return l_3_26(l_3_27, l_3_28, l_3_29)
 	end
-	L8_20 = GenericWeapon
-	L8_20 = L8_20.get_target_dir
-	L9_21 = A0_12
-	L10_22 = A1_13
-	L11_23 = A2_14
-	return L8_20(L9_21, L10_22, L11_23, A3_15)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	return l_3_21(l_3_22, l_3_23, l_3_2, l_3_3)
 end
-function M2MachineGun._init_sounds(A0_24)
-	local L1_25
+
+M2MachineGun._init_sounds = function(l_4_0)
 end
-function M2MachineGun._start_sounds(A0_26)
-	if not A0_26._sounds.rotation:is_playing() then
-		A0_26._sounds.rotation:set_control("gain_abs", 0)
-		A0_26._sounds.rotation:play()
-	end
-end
-function M2MachineGun.start_rotation(A0_27)
-	local L1_28
-end
-function M2MachineGun.end_rotation(A0_29)
-	local L1_30
-end
-function M2MachineGun.report_damage(A0_31, A1_32, A2_33)
-	local L3_34
-	L3_34 = A0_31._unit
-	L3_34 = L3_34.turret
-	L3_34 = L3_34(L3_34)
-	L3_34 = L3_34.get_vehicle
-	L3_34 = L3_34(L3_34)
-	if alive(L3_34) then
-		L3_34:damage():damage_from_part(A1_32, A2_33)
+
+M2MachineGun._start_sounds = function(l_5_0)
+	if not l_5_0._sounds.rotation:is_playing() then
+		l_5_0._sounds.rotation:set_control("gain_abs", 0)
+		l_5_0._sounds.rotation:play()
 	end
 end
-function M2MachineGun.destroy(A0_35)
-	GenericWeapon.destroy(A0_35)
+
+M2MachineGun.start_rotation = function(l_6_0)
 end
+
+M2MachineGun.end_rotation = function(l_7_0)
+end
+
+M2MachineGun.report_damage = function(l_8_0, l_8_1, l_8_2)
+	local l_8_3 = l_8_0._unit:turret():get_vehicle()
+	if alive(l_8_3) then
+		l_8_3:damage():damage_from_part(l_8_1, l_8_2)
+	end
+end
+
+M2MachineGun.destroy = function(l_9_0)
+	GenericWeapon.destroy(l_9_0)
+end
+
+

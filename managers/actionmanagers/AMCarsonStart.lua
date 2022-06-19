@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMCarsonStart = AMCarsonStart or class(AMNpcStart)
-AMCarsonStart.unit_type = "carson"
-function AMCarsonStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMCarsonStart.unit_type)
+if not AMCarsonStart then
+	AMCarsonStart = class(AMNpcStart)
 end
+AMCarsonStart.unit_type = "carson"
+AMCarsonStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMCarsonStart.unit_type)
+end
+
+

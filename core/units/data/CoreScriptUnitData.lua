@@ -1,4 +1,6 @@
-CoreScriptUnitData = CoreScriptUnitData or class()
+if not CoreScriptUnitData then
+	CoreScriptUnitData = class()
+end
 CoreScriptUnitData.world_pos = Vector3(0, 0, 0)
 CoreScriptUnitData.local_pos = Vector3(0, 0, 0)
 CoreScriptUnitData.local_rot = Rotation(0, 0, 0)
@@ -12,16 +14,11 @@ CoreScriptUnitData.only_visible_in_editor = false
 CoreScriptUnitData.editable_gui = false
 CoreScriptUnitData.editable_gui_text = "Default"
 CoreScriptUnitData.portal_visible_inverse = false
-CoreScriptUnitData.exists_in_stages = {
-	true,
-	true,
-	true,
-	true,
-	true,
-	true
-}
-function CoreScriptUnitData.init(A0_0)
-	if Application:editor() then
-		A0_0.unit_groups = {}
-	end
+local l_0_0 = CoreScriptUnitData
+do
+	local l_0_1 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
 end
+ -- WARNING: undefined locals caused missing assignments!
+

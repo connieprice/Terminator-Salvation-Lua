@@ -1,79 +1,79 @@
 require("shared/FiniteStateMachine")
 require("local_user/signin/LocalUserSignInStates")
-LocalUserSignIn = LocalUserSignIn or class()
-function LocalUserSignIn.init(A0_0, A1_1, A2_2)
-	local L3_3
-	L3_3 = A2_2.user_index
-	L3_3 = L3_3(A2_2)
-	A0_0._user_index = L3_3
-	A0_0._user_callback = A2_2
-	A0_0._signin_triggered = false
-	L3_3 = _G
-	L3_3 = L3_3[A1_1.start_state]
-	A0_0._state = FiniteStateMachine:new(A0_0, "signin", L3_3)
-	A0_0._state:set_debug(true)
-	A0_0._is_signed_in = A1_1.is_signed_in
+if not LocalUserSignIn then
+	LocalUserSignIn = class()
 end
-function LocalUserSignIn.default_data(A0_4)
-	local L1_5
-	A0_4.start_state = "LocalUserSignInIdle"
+LocalUserSignIn.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._user_index = l_1_2:user_index()
+	l_1_0._user_callback = l_1_2
+	l_1_0._signin_triggered = false
+	local l_1_3 = _G[l_1_1.start_state]
+	l_1_0._state = FiniteStateMachine:new(l_1_0, "signin", l_1_3)
+	l_1_0._state:set_debug(true)
+	l_1_0._is_signed_in = l_1_1.is_signed_in
 end
-function LocalUserSignIn.save(A0_6, A1_7)
-	A1_7.start_state = A0_6._state:_debug_state_name()
-	A1_7.is_signed_in = A0_6._is_signed_in
+
+LocalUserSignIn.default_data = function(l_2_0)
+	l_2_0.start_state = "LocalUserSignInIdle"
 end
-function LocalUserSignIn.update(A0_8, A1_9)
-	A0_8._state:update(A1_9)
+
+LocalUserSignIn.save = function(l_3_0, l_3_1)
+	l_3_1.start_state = l_3_0._state:_debug_state_name()
+	l_3_1.is_signed_in = l_3_0._is_signed_in
 end
-function LocalUserSignIn.wants_to_show_sign_in_ui(A0_10)
-	local L1_11
-	L1_11 = A0_10._wants_to_show_sign_in_ui
-	return L1_11
+
+LocalUserSignIn.update = function(l_4_0, l_4_1)
+	l_4_0._state:update(l_4_1)
 end
-function LocalUserSignIn.show_sign_in_ui(A0_12)
+
+LocalUserSignIn.wants_to_show_sign_in_ui = function(l_5_0)
+	return l_5_0._wants_to_show_sign_in_ui
+end
+
+LocalUserSignIn.show_sign_in_ui = function(l_6_0)
 	cat_print("debug", "show_sign_in_ui")
-	A0_12._wants_to_show_sign_in_ui = true
+	l_6_0._wants_to_show_sign_in_ui = true
 end
-function LocalUserSignIn.clear_show_sign_in_ui(A0_13)
+
+LocalUserSignIn.clear_show_sign_in_ui = function(l_7_0)
 	cat_print("debug", "~show_sign_in_ui")
-	A0_13._wants_to_show_sign_in_ui = nil
+	l_7_0._wants_to_show_sign_in_ui = nil
 end
-function LocalUserSignIn.release(A0_14)
-	local L1_15
-	A0_14._signin_triggered = false
+
+LocalUserSignIn.release = function(l_8_0)
+	l_8_0._signin_triggered = false
 end
-function LocalUserSignIn.is_signed_in(A0_16)
-	local L1_17
-	L1_17 = A0_16._is_signed_in
-	return L1_17
+
+LocalUserSignIn.is_signed_in = function(l_9_0)
+	return l_9_0._is_signed_in
 end
-function LocalUserSignIn.has_signed_out(A0_18)
-	local L1_19
-	L1_19 = A0_18._has_signed_out
-	return L1_19
+
+LocalUserSignIn.has_signed_out = function(l_10_0)
+	return l_10_0._has_signed_out
 end
-function LocalUserSignIn._set_has_signed_out(A0_20)
-	local L1_21
-	A0_20._has_signed_out = true
+
+LocalUserSignIn._set_has_signed_out = function(l_11_0)
+	l_11_0._has_signed_out = true
 end
-function LocalUserSignIn._clear_has_signed_out(A0_22)
-	local L1_23
-	A0_22._has_signed_out = nil
+
+LocalUserSignIn._clear_has_signed_out = function(l_12_0)
+	l_12_0._has_signed_out = nil
 end
-function LocalUserSignIn._set_is_signed_in(A0_24, A1_25)
-	A0_24._is_signed_in = A1_25
+
+LocalUserSignIn._set_is_signed_in = function(l_13_0, l_13_1)
+	l_13_0._is_signed_in = l_13_1
 end
-function LocalUserSignIn.query_is_signed_in(A0_26)
-	local L1_27
-	L1_27 = A0_26._is_signed_in
-	return L1_27
+
+LocalUserSignIn.query_is_signed_in = function(l_14_0)
+	return l_14_0._is_signed_in
 end
-function LocalUserSignIn.set_ignore_sign_in_ui(A0_28)
-	local L1_29
-	A0_28._ignore_sign_in_ui = true
+
+LocalUserSignIn.set_ignore_sign_in_ui = function(l_15_0)
+	l_15_0._ignore_sign_in_ui = true
 end
-function LocalUserSignIn.should_ignore_sign_in_ui(A0_30)
-	local L1_31
-	L1_31 = A0_30._ignore_sign_in_ui
-	return L1_31
+
+LocalUserSignIn.should_ignore_sign_in_ui = function(l_16_0)
+	return l_16_0._ignore_sign_in_ui
 end
+
+

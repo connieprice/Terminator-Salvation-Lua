@@ -1,143 +1,150 @@
 core:require_module("CoreLocalizationManager")
-LocalizationManager = LocalizationManager or {}
-function LocalizationManager.add_default_macros()
-	local L0_0, L1_1, L2_2, L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11, L12_12, L13_13, L14_14, L15_15, L16_16, L17_17
-	L0_0 = utf8
-	L0_0 = L0_0.char
-	L1_1 = 57344
-	L0_0 = L0_0(L1_1)
-	L1_1 = utf8
-	L1_1 = L1_1.char
-	L2_2 = 57345
-	L1_1 = L1_1(L2_2)
-	L2_2 = utf8
-	L2_2 = L2_2.char
-	L3_3 = 57346
-	L2_2 = L2_2(L3_3)
-	L3_3 = utf8
-	L3_3 = L3_3.char
-	L4_4 = 57347
-	L3_3 = L3_3(L4_4)
-	L4_4 = utf8
-	L4_4 = L4_4.char
-	L5_5 = 57348
-	L4_4 = L4_4(L5_5)
-	L5_5 = utf8
-	L5_5 = L5_5.char
-	L6_6 = 57349
-	L5_5 = L5_5(L6_6)
-	L6_6 = utf8
-	L6_6 = L6_6.char
-	L7_7 = 57350
-	L6_6 = L6_6(L7_7)
-	L7_7 = utf8
-	L7_7 = L7_7.char
-	L8_8 = 57351
-	L7_7 = L7_7(L8_8)
-	L8_8 = utf8
-	L8_8 = L8_8.char
-	L9_9 = 57352
-	L8_8 = L8_8(L9_9)
-	L9_9 = utf8
-	L9_9 = L9_9.char
-	L10_10 = 57353
-	L9_9 = L9_9(L10_10)
-	L10_10 = utf8
-	L10_10 = L10_10.char
-	L11_11 = 57354
-	L10_10 = L10_10(L11_11)
-	L11_11 = utf8
-	L11_11 = L11_11.char
-	L12_12 = 57355
-	L11_11 = L11_11(L12_12)
-	L12_12 = utf8
-	L12_12 = L12_12.char
-	L13_13 = 57356
-	L12_12 = L12_12(L13_13)
-	L13_13 = utf8
-	L13_13 = L13_13.char
-	L14_14 = 57357
-	L13_13 = L13_13(L14_14)
-	L14_14 = SystemInfo
-	L15_15 = L14_14
-	L14_14 = L14_14.platform
-	L14_14 = L14_14(L15_15)
-	if L14_14 == "WIN32" then
-		L14_14 = "[YOUR BUTTON HERE]"
-		L0_0 = L14_14
-		L1_1 = L14_14
-		L2_2 = L14_14
-		L3_3 = L14_14
-		L4_4 = L14_14
-		L5_5 = L14_14
-		L6_6 = L14_14
-		L7_7 = L14_14
-		L8_8 = L14_14
-		L9_9 = L14_14
-		L10_10 = L14_14
-		L11_11 = L14_14
-		L12_12 = L14_14
-		L13_13 = L14_14
+if not LocalizationManager then
+	LocalizationManager = {}
+end
+LocalizationManager.add_default_macros = function()
+	local l_1_0 = utf8.char(57344)
+	local l_1_1 = utf8.char(57345)
+	local l_1_2 = utf8.char(57346)
+	local l_1_3 = utf8.char(57347)
+	local l_1_4 = utf8.char(57348)
+	local l_1_5 = utf8.char(57349)
+	local l_1_6 = utf8.char(57350)
+	local l_1_7 = utf8.char(57351)
+	local l_1_8 = utf8.char(57352)
+	local l_1_9 = utf8.char(57353)
+	local l_1_10 = utf8.char(57354)
+	local l_1_11 = utf8.char(57355)
+	local l_1_12 = utf8.char(57356)
+	local l_1_13 = utf8.char(57357)
+	if SystemInfo:platform() == "WIN32" then
+		local l_1_14 = "[YOUR BUTTON HERE]"
+		l_1_0 = l_1_14
+		l_1_1 = l_1_14
+		l_1_2 = l_1_14
+		l_1_3 = l_1_14
+		l_1_4 = l_1_14
+		l_1_5 = l_1_14
+		l_1_6 = l_1_14
+		l_1_7 = l_1_14
+		l_1_8 = l_1_14
+		l_1_9 = l_1_14
+		l_1_10 = l_1_14
+		l_1_11 = l_1_14
+		l_1_12 = l_1_14
+		l_1_13 = l_1_14
 	end
-	L14_14 = L0_0
-	L15_15 = L1_1
-	L16_16 = false
-	L17_17 = SystemInfo
-	L17_17 = L17_17.platform
-	L17_17 = L17_17(L17_17)
-	if L17_17 == "PS3" then
-		L17_17 = PS3
-		L17_17 = L17_17.pad_cross_circle_inverted
-		L17_17 = L17_17(L17_17)
-		if L17_17 then
-			L16_16 = true
+	local l_1_15 = l_1_0
+	local l_1_16 = l_1_1
+	local l_1_17 = false
+	if SystemInfo:platform() == "PS3" and PS3:pad_cross_circle_inverted() then
+		l_1_17 = true
+	end
+	if l_1_17 then
+		l_1_15 = l_1_1
+		l_1_16 = l_1_0
+	end
+	if SystemInfo:platform() ~= "PS3" then
+		l_1_13 = l_1_7
+		l_1_12 = l_1_6
+		managers.localization.btn_zoom = l_1_13
+		managers.localization.btn_center_camera = l_1_12
+	end
+	local l_1_18 = {}
+	local l_1_19 = {}
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_20 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_21 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_22 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_23 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_24 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_25 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_26 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_27 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_28 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_29 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_30 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_31 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_32 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	local l_1_33 = {}
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+	do
+		local l_1_34 = {}
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		for l_1_22,l_1_23 in l_1_19 do
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			l_1_24(l_1_25, l_1_26, l_1_27)
 		end
 	end
-	if L16_16 then
-		L14_14 = L1_1
-		L15_15 = L0_0
-	end
-	L17_17 = SystemInfo
-	L17_17 = L17_17.platform
-	L17_17 = L17_17(L17_17)
-	if L17_17 ~= "PS3" then
-		L13_13 = L7_7
-		L12_12 = L6_6
-		L17_17 = managers
-		L17_17 = L17_17.localization
-		L17_17.btn_zoom = L13_13
-		L17_17 = managers
-		L17_17 = L17_17.localization
-		L17_17.btn_center_camera = L12_12
-	end
-	L17_17 = {
-		{"BTN_BACK", L4_4},
-		{"BTN_START", L5_5},
-		{"BTN_A", L0_0},
-		{"BTN_B", L1_1},
-		{"BTN_X", L2_2},
-		{"BTN_Y", L3_3},
-		{"BTN_TOP_L", L8_8},
-		{"BTN_TOP_R", L9_9},
-		{
-			"BTN_BOTTOM_L",
-			L10_10
-		},
-		{
-			"BTN_BOTTOM_R",
-			L11_11
-		},
-		{
-			"BTN_STICK_L",
-			L12_12
-		},
-		{
-			"BTN_STICK_R",
-			L13_13
-		},
-		{"STICK_L", L6_6},
-		{"STICK_R", L7_7},
-		{"BTN_ACCEPT", L14_14},
-		{"BTN_CANCEL", L15_15}
-	}
-	for 
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	 -- WARNING: undefined locals caused missing assignments!
+end
+
+

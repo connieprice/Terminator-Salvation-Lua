@@ -1,9 +1,14 @@
 require("units/beings/machines/effects/MachineSound")
-WalkerSound = WalkerSound or class(MachineSound)
-function WalkerSound.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	managers.action_event:register_listener(A0_0, A1_1, A1_1)
+if not WalkerSound then
+	WalkerSound = class(MachineSound)
 end
-function WalkerSound.destroy(A0_2, A1_3)
-	managers.action_event:unregister_listener(A0_2)
+WalkerSound.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	managers.action_event:register_listener(l_1_0, l_1_1, l_1_1)
 end
+
+WalkerSound.destroy = function(l_2_0, l_2_1)
+	managers.action_event:unregister_listener(l_2_0)
+end
+
+

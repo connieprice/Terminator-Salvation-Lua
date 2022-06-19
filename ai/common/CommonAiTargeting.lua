@@ -1,282 +1,288 @@
-CommonAiTargeting = CommonAiTargeting or class()
-function CommonAiTargeting.init_data(A0_0, A1_1)
-	local L2_2
-	L2_2 = {}
-	A1_1._targeting = L2_2
-	L2_2 = A1_1._targeting
-	L2_2.currently_targeted_threat = nil
-	L2_2 = A1_1._targeting
-	L2_2.current_secondary_threats = nil
+if not CommonAiTargeting then
+	CommonAiTargeting = class()
 end
-function CommonAiTargeting.logic_common_targeting_main(A0_3, A1_4, A2_5, A3_6, A4_7, A5_8, A6_9, A7_10)
-	local L8_11
-	L8_11 = A2_5.ai_data
-	L8_11 = L8_11(A2_5)
-	A0_3:_set_targets(A2_5)
+CommonAiTargeting.init_data = function(l_1_0, l_1_1)
+	l_1_1._targeting = {}
+	l_1_1._targeting.currently_targeted_threat = nil
+	l_1_1._targeting.current_secondary_threats = nil
+end
+
+CommonAiTargeting.logic_common_targeting_main = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	local l_2_8 = l_2_2:ai_data()
+	l_2_0:_set_targets(l_2_2)
 	if Global.category_debug_render["ai.target"] then
-		A0_3:_debug_render(A2_5, L8_11)
+		l_2_0:_debug_render(l_2_2, l_2_8)
 	end
 	return nil
 end
-function CommonAiTargeting._debug_render(A0_12, A1_13, A2_14)
-	local L3_15, L4_16, L5_17, L6_18, L7_19, L8_20, L9_21, L10_22, L11_23, L12_24, L13_25
-	L3_15 = Global
-	L3_15 = L3_15.category_debug_render
-	L3_15 = L3_15["ai.target"]
-	L5_17 = A1_13
-	L4_16 = A1_13.position
-	L4_16 = L4_16(L5_17)
-	L5_17 = true
-	if L3_15 ~= true then
-		L6_18 = A1_13.name
-		L6_18 = L6_18(L7_19)
-		if L6_18 ~= L3_15 then
-			L5_17 = false
-		end
+
+CommonAiTargeting._debug_render = function(l_3_0, l_3_1, l_3_2)
+	local l_3_3 = Global.category_debug_render["ai.target"]
+	local l_3_4 = l_3_1:position()
+	local l_3_5 = true
+	if l_3_3 ~= true and l_3_1:name() ~= l_3_3 then
+		l_3_5 = false
 	end
-	if L5_17 then
-		L6_18 = Draw
-		L6_18 = L6_18.brush
-		L6_18 = L6_18(L7_19)
-		L7_19(L8_20, L9_21)
-		if L7_19 then
-			L10_22 = L7_19
-			L13_25 = L9_21(L10_22)
-			L8_20(L9_21, L10_22, L11_23, L12_24, L13_25, L9_21(L10_22))
-			if not L8_20 then
-				L11_23 = L7_19
-				L10_22 = L7_19.last_known_direction
-				L13_25 = L10_22(L11_23)
-				L9_21(L10_22, L11_23, L12_24, L13_25, L10_22(L11_23))
-				L10_22 = L7_19
+	if l_3_5 then
+		local l_3_6 = Draw:brush()
+		l_3_6:set_persistance(0.5)
+		if l_3_2._targeting.currently_targeted_threat then
+			local l_3_7 = l_3_2._targeting.currently_targeted_threat
+			assert(l_3_7:last_known_direction())
+			local l_3_8 = l_3_7:last_known_position()
+			if not l_3_8 then
+				assert(l_3_7:last_known_direction())
+				l_3_8 = l_3_4 + l_3_7:last_known_direction() * 500
 			end
-			L10_22 = L6_18
-			L11_23 = Vector3
-			L12_24 = 0
-			L13_25 = 0
-			L11_23 = L11_23(L12_24, L13_25, 100)
-			L11_23 = L4_16 + L11_23
-			L12_24 = L8_20 - L4_16
-			L12_24 = L12_24 * 0.75
-			L12_24 = L4_16 + L12_24
-			L13_25 = 10
-			L9_21(L10_22, L11_23, L12_24, L13_25)
+			local l_3_12, l_3_13 = l_3_6:line, l_3_6
+			local l_3_14 = l_3_4 + Vector3(0, 0, 100)
+			l_3_12(l_3_13, l_3_14, l_3_4 + (l_3_8 - l_3_4) * 0.75, 10)
 		end
-		if L7_19 then
-			for L10_22, L11_23 in L7_19(L8_20) do
-				L12_24, L13_25 = nil, nil
-				if L10_22 == 1 then
-					L12_24 = Color(0, 1, 1)
-					L13_25 = 20
-				else
-					L12_24 = Color(1, 0, 1)
-					L13_25 = 10
-				end
-				if not L11_23:last_known_position() then
-					assert(L11_23:last_known_direction())
-				end
-				L6_18:set_color(L12_24)
-				L6_18:line(L4_16 + Vector3(0, 0, 100), L4_16 + (L4_16 + L11_23:last_known_direction() * 500 - L4_16) * 0.75, L13_25)
+	if l_3_2._targeting.current_secondary_threats then
+		end
+		for i_0,i_1 in pairs(l_3_2._targeting.current_secondary_threats) do
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_3_15 == 1 then
+				do return end
 			end
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			local l_3_17 = nil
+			if not l_3_16:last_known_position() then
+				assert(l_3_16:last_known_direction())
+			end
+			l_3_6:set_color(l_3_17)
+			l_3_6:line(l_3_4 + Vector3(0, 0, 100), l_3_4 + (l_3_4 + l_3_16:last_known_direction() * 500 - l_3_4) * 0.75, nil)
 		end
 	end
 end
-function CommonAiTargeting._set_targets(A0_26, A1_27)
-	A0_26:_set_primary_target(A1_27)
-	if A1_27:ai_data().NUMBER_OF_SECONDARY_TARGETS and A1_27:ai_data().NUMBER_OF_SECONDARY_TARGETS > 0 then
-		A0_26:_set_secondary_targets(A1_27)
+
+CommonAiTargeting._set_targets = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_1:ai_data()
+	l_4_0:_set_primary_target(l_4_1)
+	if l_4_2.NUMBER_OF_SECONDARY_TARGETS and l_4_2.NUMBER_OF_SECONDARY_TARGETS > 0 then
+		l_4_0:_set_secondary_targets(l_4_1)
 	else
-		A1_27:ai_data()._targeting.current_secondary_threats = nil
+		l_4_2._targeting.current_secondary_threats = nil
 	end
 end
-function CommonAiTargeting._set_primary_target(A0_28, A1_29)
-	local L2_30, L3_31, L4_32, L5_33, L6_34, L7_35, L8_36, L9_37, L10_38, L11_39
-	L3_31 = A1_29
-	L2_30 = A1_29.ai_data
-	L2_30 = L2_30(L3_31)
-	L3_31 = L2_30._threat_tracking
-	L3_31 = L3_31._threats
-	L4_32 = TableAlgorithms
-	L4_32 = L4_32.is_empty
-	L5_33 = L3_31
-	L4_32 = L4_32(L5_33)
-	if L4_32 then
-		L4_32 = L2_30._targeting
-		L4_32.currently_targeted_threat = nil
-		return
+
+CommonAiTargeting._set_primary_target = function(l_5_0, l_5_1)
+	local l_5_2 = l_5_1:ai_data()
+	local l_5_3 = l_5_2._threat_tracking._threats
+	if TableAlgorithms.is_empty(l_5_3) then
+		l_5_2._targeting.currently_targeted_threat = nil
+		return 
 	end
-	L4_32 = L2_30._targeting
-	L4_32 = L4_32.currently_targeted_threat
-	if L4_32 then
-		L4_32 = L2_30._targeting
-		L4_32 = L4_32.currently_targeted_threat
-		L5_33 = L4_32
-		L4_32 = L4_32.is_valid
-		L4_32 = L4_32(L5_33)
-		if not L4_32 then
-			L4_32 = L2_30._targeting
-			L4_32.currently_targeted_threat = nil
+	if l_5_2._targeting.currently_targeted_threat and not l_5_2._targeting.currently_targeted_threat:is_valid() then
+		l_5_2._targeting.currently_targeted_threat = nil
+	end
+	local l_5_4 = nil
+	local l_5_5 = l_5_2.threat_constants.primary_weights
+	local l_5_6 = function(l_6_0)
+		local l_6_1, l_6_2 = l_6_0:primary_target_priority, l_6_0
+		return l_6_1(l_6_2)
+  end
+	local l_5_10 = l_5_0:_is_targetable
+	local l_5_11 = l_5_0
+	l_5_10 = l_5_10(l_5_11, l_5_2._targeting.currently_targeted_threat, l_5_1, l_5_5, l_5_6)
+	if l_5_10 then
+		l_5_10 = l_5_2._targeting
+		l_5_4 = l_5_10.currently_targeted_threat
+	end
+	l_5_10 = pairs
+	l_5_11 = l_5_3
+	l_5_10 = l_5_10(l_5_11)
+	for i_0,i_1 in l_5_10 do
+		if l_5_0:_is_targetable(l_5_9, l_5_1, l_5_5, l_5_6, nil, l_5_4) and l_5_9 ~= l_5_4 and (not l_5_4 or l_5_0:_compare_primary(l_5_9, l_5_4, l_5_2)) then
+			l_5_4 = l_5_9
 		end
 	end
-	L4_32 = nil
-	L5_33 = L2_30.threat_constants
-	L5_33 = L5_33.primary_weights
-	function L6_34(A0_40)
-		return A0_40:primary_target_priority()
-	end
-	L10_38 = A1_29
-	L11_39 = L5_33
-	if L7_35 then
-		L4_32 = L7_35.currently_targeted_threat
-	end
-	for L10_38, L11_39 in L7_35(L8_36) do
-		if A0_28:_is_targetable(L11_39, A1_29, L5_33, L6_34, nil, L4_32) and L11_39 ~= L4_32 and (not L4_32 or A0_28:_compare_primary(L11_39, L4_32, L2_30)) then
-			L4_32 = L11_39
-		end
-	end
-	L7_35.currently_targeted_threat = L4_32
+	l_5_2._targeting.currently_targeted_threat = l_5_4
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CommonAiTargeting._set_secondary_targets(A0_41, A1_42)
-	local L2_43, L3_44, L4_45, L5_46, L6_47, L7_48, L8_49, L9_50, L10_51, L11_52, L12_53, L13_54, L14_55
-	L3_44 = A1_42
-	L2_43 = A1_42.ai_data
-	L2_43 = L2_43(L3_44)
-	L3_44 = {}
-	L4_45 = L2_43.threat_constants
-	L4_45 = L4_45.secondary_weights
-	function L5_46(A0_56)
-		return A0_56:secondary_target_priority()
+
+CommonAiTargeting._set_secondary_targets = function(l_6_0, l_6_1)
+	local l_6_9, l_6_10, l_6_11, l_6_12, l_6_13, l_6_14, l_6_15, l_6_16 = nil
+	local l_6_2 = l_6_1:ai_data()
+	local l_6_3 = {}
+	local l_6_4 = l_6_2.threat_constants.secondary_weights
+	local l_6_5 = function(l_7_0)
+		local l_7_1, l_7_2 = l_7_0:secondary_target_priority, l_7_0
+		return l_7_1(l_7_2)
+  end
+	for i_0,i_1 in pairs(l_6_2._threat_tracking._threats) do
+		if l_6_0:_is_targetable(i_1, l_6_1, l_6_4, l_6_5, nil, l_6_2._targeting.currently_targeted_threat) and l_6_24 ~= l_6_2._targeting.currently_targeted_threat then
+			local l_6_21, l_6_23 = table.insert, l_6_3
+			l_6_21(l_6_23, l_6_24)
+		end
 	end
-	for L9_50, L10_51 in L6_47(L7_48) do
-		L13_54 = L10_51
-		L14_55 = A1_42
-		if L11_52 then
-			if L10_51 ~= L11_52 then
-				L13_54 = L10_51
-				L11_52(L12_53, L13_54)
+	table.sort(l_6_3, function(l_8_0, l_8_1)
+		-- upvalues: l_6_2
+		return CommonAiTargeting._secondary_threat_priority(l_8_1, l_6_2) < CommonAiTargeting._secondary_threat_priority(l_8_0, l_6_2)
+  end)
+	l_6_2._targeting.current_secondary_threats = {}
+	for i = 1, l_6_2.NUMBER_OF_SECONDARY_TARGETS do
+		for i_0,i_1 in ipairs(l_6_3) do
+			if l_6_0:_is_targetable(i_1, l_6_1, l_6_4, l_6_5, l_6_17, l_6_2._targeting.currently_targeted_threat) then
+				l_6_2._targeting.current_secondary_threats[l_6_17] = i_1
+				l_6_17 = l_6_17 + 1
+		else
 			end
 		end
 	end
-	L6_47(L7_48, L8_49)
-	L6_47.current_secondary_threats = L7_48
-	for L9_50 = 1, L2_43.NUMBER_OF_SECONDARY_TARGETS do
-		for L13_54, L14_55 in L10_51(L11_52) do
-			if A0_41:_is_targetable(L14_55, A1_42, L4_45, L5_46, L9_50, L2_43._targeting.currently_targeted_threat) then
-				L2_43._targeting.current_secondary_threats[L9_50] = L14_55
-				L9_50 = L9_50 + 1
-			else
-			end
-		end
-	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CommonAiTargeting._is_targetable(A0_57, A1_58, A2_59, A3_60, A4_61, A5_62, A6_63)
-	local L7_64, L8_65, L9_66, L10_67, L11_68, L12_69, L13_70, L14_71, L15_72
-	if not A1_58 then
-		L7_64 = false
-		return L7_64
+
+CommonAiTargeting._is_targetable = function(l_7_0, l_7_1, l_7_2, l_7_3, l_7_4, l_7_5, l_7_6)
+	if not l_7_1 then
+		return false
 	end
-	L7_64 = alive
-	L9_66 = A1_58
-	L8_65 = A1_58.unit
-	L15_72 = L8_65(L9_66)
-	L7_64 = L7_64(L8_65, L9_66, L10_67, L11_68, L12_69, L13_70, L14_71, L15_72, L8_65(L9_66))
-	if L7_64 then
-		L8_65 = A1_58
-		L7_64 = A1_58.unit_dead
-		L7_64 = L7_64(L8_65)
-		L7_64 = not L7_64
-		if not L7_64 then
-			L8_65 = false
-			return L8_65
+	local l_7_16, l_7_17, l_7_18, l_7_19 = alive, l_7_1:unit(), .end
+	l_7_16 = l_7_16(l_7_17, l_7_18, l_7_19)
+	if l_7_16 then
+		l_7_16, l_7_17 = l_7_1:unit_dead, l_7_1
+		l_7_16 = l_7_16(l_7_17)
+		l_7_16 = not l_7_16
+	if not l_7_16 then
 		end
+		l_7_17 = false
+		return l_7_17
 	end
-	L8_65 = A1_58
-	L7_64 = A1_58.unit_associated
-	L7_64 = L7_64(L8_65)
-	if L7_64 then
-		L7_64 = A4_61
-		L8_65 = A1_58
-		L7_64 = L7_64(L8_65)
-		L8_65 = tweak_data
-		L8_65 = L8_65.ai
-		L8_65 = L8_65.UNIT_THREAT_MIN_VALUE
-		if L7_64 < L8_65 then
-			L8_65 = false
-			return L8_65
+	l_7_16, l_7_17 = l_7_1:unit_associated, l_7_1
+	l_7_16 = l_7_16(l_7_17)
+	if l_7_16 then
+		l_7_16 = l_7_4
+		l_7_17 = l_7_1
+		l_7_16 = l_7_16(l_7_17)
+		l_7_17 = tweak_data
+		l_7_17 = l_7_17.ai
+		l_7_17 = l_7_17.UNIT_THREAT_MIN_VALUE
+		if l_7_16 < l_7_17 then
+			l_7_17 = false
+			return l_7_17
 		end
-	elseif not A6_63 then
-		L7_64 = A4_61
-		L8_65 = A1_58
-		L7_64 = L7_64(L8_65)
-		L8_65 = tweak_data
-		L8_65 = L8_65.ai
-		L8_65 = L8_65.NON_UNIT_THREAT_MIN_VALUE
-		if L7_64 < L8_65 then
-			L8_65 = false
-			return L8_65
+	elseif not l_7_6 then
+		l_7_16 = l_7_4
+		l_7_17 = l_7_1
+		l_7_16 = l_7_16(l_7_17)
+		l_7_17 = tweak_data
+		l_7_17 = l_7_17.ai
+		l_7_17 = l_7_17.NON_UNIT_THREAT_MIN_VALUE
+	if l_7_16 < l_7_17 then
 		end
+		l_7_17 = false
+		return l_7_17
 	end
-	L7_64 = A3_60.FIRING_ARC_INFO
-	if L7_64 then
-		L7_64 = nil
-		L9_66 = A1_58
-		L8_65 = A1_58.last_known_position
-		L8_65 = L8_65(L9_66)
-		if L8_65 then
-			L9_66 = A1_58
-			L8_65 = A1_58.last_known_position
-			L8_65 = L8_65(L9_66)
-			L10_67 = A2_59
-			L9_66 = A2_59.position
-			L9_66 = L9_66(L10_67)
-			L7_64 = L8_65 - L9_66
+	l_7_16 = l_7_3.FIRING_ARC_INFO
+	if l_7_16 then
+		l_7_16 = nil
+		local l_7_7 = nil
+		l_7_17, l_7_18 = l_7_1:last_known_position, l_7_1
+		l_7_17 = l_7_17(l_7_18)
+		if l_7_17 then
+			l_7_17, l_7_18 = l_7_1:last_known_position, l_7_1
+			l_7_17 = l_7_17(l_7_18)
+			l_7_18, l_7_19 = l_7_2:position, l_7_2
+			l_7_18 = l_7_18(l_7_19)
+			l_7_16 = l_7_17 - l_7_18
 		else
-			L9_66 = A1_58
-			L8_65 = A1_58.last_known_direction
-			L8_65 = L8_65(L9_66)
-			L7_64 = L8_65
+			l_7_17, l_7_18 = l_7_1:last_known_direction, l_7_1
+			l_7_17 = l_7_17(l_7_18)
+			l_7_16 = l_7_17
 		end
-		L8_65 = IntelUtilities
-		L8_65 = L8_65.orientation_object_info
-		L10_67 = A2_59
-		L9_66 = A2_59.get_object
-		L9_66 = L9_66(L10_67, L11_68)
-		L10_67 = A3_60.FIRING_ARC_ORIENTATION_OBJECT_AXIS
-		L9_66 = L8_65(L9_66, L10_67)
-		L10_67 = L7_64.to_polar_with_reference
-		L10_67 = L10_67(L11_68, L12_69, L13_70)
-		if A5_62 then
-			L14_71 = L11_68
-			L15_72 = L10_67
-			return L12_69(L13_70, L14_71, L15_72)
+		l_7_17 = IntelUtilities
+		l_7_17 = l_7_17.orientation_object_info
+		l_7_18, l_7_19 = l_7_2:get_object, l_7_2
+		l_7_7 = l_7_3.FIRING_ARC_ORIENTATION_OBJECT
+		l_7_18 = l_7_18(l_7_19, l_7_7)
+		l_7_19 = l_7_3.FIRING_ARC_ORIENTATION_OBJECT_AXIS
+		l_7_17 = l_7_17(l_7_18, l_7_19)
+		local l_7_8, l_7_9 = nil
+		l_7_19, l_7_7 = l_7_16:to_polar_with_reference, l_7_16
+		l_7_8 = 
+		l_7_9 = math
+		l_7_9 = l_7_9.UP
+		l_7_19 = l_7_19(l_7_7, l_7_8, l_7_9)
+		local l_7_10 = nil
+		if l_7_5 then
+			l_7_7 = l_7_3.FIRING_ARC_INFO
+			l_7_7 = l_7_7[l_7_5]
+			local l_7_11 = nil
+			l_7_8, l_7_9 = l_7_0:_within_firing_arc, l_7_0
+			local l_7_12, l_7_13 = nil
+			l_7_10 = l_7_7
+			local l_7_14 = nil
+			l_7_11 = l_7_19
+			local l_7_15 = nil
+			return l_7_8(l_7_9, l_7_10, l_7_11)
 		else
-			for L14_71, L15_72 in L11_68(L12_69) do
-				if A0_57:_within_firing_arc(L15_72, L10_67) then
+			l_7_7 = ipairs
+			l_7_8 = l_7_3.FIRING_ARC_INFO
+			l_7_7 = l_7_7(l_7_8)
+			for l_7_10,i_1 in l_7_7 do
+				if l_7_0:_within_firing_arc(i_1, l_7_19) then
 					return true
 				end
 			end
-			return L11_68
+			return false
+			 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 		end
 	else
-		L7_64 = true
-		return L7_64
+		l_7_16 = true
+		return l_7_16
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function CommonAiTargeting._within_firing_arc(A0_73, A1_74, A2_75)
-	return math.abs(-A2_75.spin + A1_74.CENTER_ANGLE) < A1_74.HALF_FOV and math.abs(A2_75.pitch) < A1_74.HALF_ZFOV
+
+CommonAiTargeting._within_firing_arc = function(l_8_0, l_8_1, l_8_2)
+	return math.abs(-l_8_2.spin + l_8_1.CENTER_ANGLE) < l_8_1.HALF_FOV and math.abs(l_8_2.pitch) < l_8_1.HALF_ZFOV
 end
-function CommonAiTargeting._compare_primary(A0_76, A1_77, A2_78, A3_79)
-	if A1_77 == A3_79._targeting.currently_targeted_threat then
-	elseif A2_78 == A3_79._targeting.currently_targeted_threat then
+
+CommonAiTargeting._compare_primary = function(l_9_0, l_9_1, l_9_2, l_9_3)
+	local l_9_5 = l_9_1:primary_target_priority()
+	local l_9_6 = l_9_2:primary_target_priority()
+	if l_9_1 == l_9_3._targeting.currently_targeted_threat then
+		l_9_5 = l_9_5 * l_9_3.threat_constants.primary_weights.SAME_TARGET_FACTOR
+		do
+			local l_9_4 = nil
+			l_9_6 = l_9_6 * l_9_4.CHANGE_TARGET_FACTOR
 	end
-	return A1_77:primary_target_priority() * A3_79.threat_constants.primary_weights.SAME_TARGET_FACTOR * A3_79.threat_constants.primary_weights.CHANGE_TARGET_FACTOR > A2_78:primary_target_priority() * A3_79.threat_constants.primary_weights.CHANGE_TARGET_FACTOR * A3_79.threat_constants.primary_weights.SAME_TARGET_FACTOR
-end
-function CommonAiTargeting._secondary_threat_priority(A0_80, A1_81)
-	if not A1_81._targeting.current_secondary_threats or #A1_81._targeting.current_secondary_threats == 0 then
-		return (A0_80:primary_target_priority())
-	end
-	if A1_81._targeting.current_secondary_threats and TableAlgorithms.find_value(A0_80, A1_81._targeting.current_secondary_threats) then
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
 	else
+		if l_9_2 == l_9_3._targeting.currently_targeted_threat then
+			l_9_5 = l_9_5 * l_9_4.CHANGE_TARGET_FACTOR
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_9_6 = l_9_6 * l_9_4.SAME_TARGET_FACTOR
+		end
 	end
-	return A0_80:primary_target_priority() * A1_81.threat_constants.secondary_weights.SAME_TARGET_FACTOR * A1_81.threat_constants.secondary_weights.CHANGE_TARGET_FACTOR
+	return l_9_6 < l_9_5
 end
+
+CommonAiTargeting._secondary_threat_priority = function(l_10_0, l_10_1)
+	if not l_10_1._targeting.current_secondary_threats or #l_10_1._targeting.current_secondary_threats == 0 then
+		return l_10_0:primary_target_priority()
+	end
+	if l_10_1._targeting.current_secondary_threats and TableAlgorithms.find_value(l_10_0, l_10_1._targeting.current_secondary_threats) then
+		do return end
+	end
+	do
+		local l_10_2 = l_10_0:primary_target_priority() * l_10_1.threat_constants.secondary_weights.SAME_TARGET_FACTOR * l_10_1.threat_constants.secondary_weights.CHANGE_TARGET_FACTOR
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_10_2
+end
+
+

@@ -1,26 +1,37 @@
 require("units/beings/machines/spider/states/SpiderState")
 require("units/beings/machines/states/StunState")
-SpiderStunState = SpiderStunState or class(SpiderState)
-function SpiderStunState.init(A0_0, A1_1, A2_2)
-	SpiderState.init(A0_0, A1_1)
-	A0_0._stun_state = StunState:new(A1_1, A2_2, tweak_data.enemy.spider.STUN_TIME)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
+if not SpiderStunState then
+	SpiderStunState = class(SpiderState)
 end
-function SpiderStunState.enter(A0_3)
-	A0_3._stun_state:enter()
-	A0_3:_set_can_move(false)
-	A0_3:_set_can_rotate(false)
+SpiderStunState.init = function(l_1_0, l_1_1, l_1_2)
+	SpiderState.init(l_1_0, l_1_1)
+	l_1_0._stun_state = StunState:new(l_1_1, l_1_2, tweak_data.enemy.spider.STUN_TIME)
+	l_1_0._enemy_data = l_1_0._unit:enemy_data()
 end
-function SpiderStunState.leave(A0_4)
-	SpiderState.leave(A0_4)
-	A0_4._stun_state:leave()
-	A0_4._enemy_data.stunned_sound = nil
+
+SpiderStunState.enter = function(l_2_0)
+	l_2_0._stun_state:enter()
+	l_2_0:_set_can_move(false)
+	l_2_0:_set_can_rotate(false)
 end
-function SpiderStunState.update(A0_5, A1_6)
-	if A0_5._base:check_fully_damaged() then
-		return (A0_5._base:check_fully_damaged())
+
+SpiderStunState.leave = function(l_3_0)
+	SpiderState.leave(l_3_0)
+	l_3_0._stun_state:leave()
+	l_3_0._enemy_data.stunned_sound = nil
+end
+
+SpiderStunState.update = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._base:check_fully_damaged()
+	if l_4_2 then
+		return l_4_2
 	end
-	if not A0_5._stun_state:update(A1_6) then
-		return SpiderNormalState:new(A0_5._unit)
+	local l_4_3 = l_4_0._stun_state:update(l_4_1)
+	if not l_4_3 then
+		local l_4_4, l_4_5 = SpiderNormalState:new, SpiderNormalState
+		local l_4_6 = l_4_0._unit
+		return l_4_4(l_4_5, l_4_6)
 	end
 end
+
+

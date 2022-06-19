@@ -1,34 +1,40 @@
-MenuStateIngamePaused = MenuStateIngamePaused or class(MenuStateFadeTransition)
-function MenuStateIngamePaused.init(A0_0)
-	local L1_1
-	L1_1 = A0_0._menu
-	L1_1 = L1_1.set_ingame_paused
-	L1_1(L1_1, true)
-	L1_1 = nil
+if not MenuStateIngamePaused then
+	MenuStateIngamePaused = class(MenuStateFadeTransition)
+end
+MenuStateIngamePaused.init = function(l_1_0)
+	l_1_0._menu:set_ingame_paused(true)
+	local l_1_1 = nil
 	if managers.game_transition:is_game_over() then
-		L1_1 = MenuStateIngamePausedGameOver
-	elseif managers.game_transition:wants_to_show_cutscene() then
-		L1_1 = MenuStateIngamePausedCutscene
+		l_1_1 = MenuStateIngamePausedGameOver
 	else
-		L1_1 = MenuStateIngamePausedNormal
-	end
-	A0_0._pause_menu = FiniteStateMachine:new(A0_0._menu, "_menu", L1_1)
-	A0_0._pause_menu:set_debug(true)
-end
-function MenuStateIngamePaused.update(A0_2, A1_3)
-	A0_2._pause_menu:update(A1_3)
-end
-function MenuStateIngamePaused.exit(A0_4)
-	A0_4._menu:set_ingame_paused(false)
-	managers.menu_input:set_bound_user(managers.save:primary_user())
-	A0_4._pause_menu:destroy()
-end
-function MenuStateIngamePaused.transition(A0_5)
-	if managers.game:is_resuming() then
-		if A0_5._menu._is_in_cutscene then
-			return MenuStateIngameResumingFromCutscene
-		else
-			return MenuStateIngameResuming
+		if managers.game_transition:wants_to_show_cutscene() then
+			l_1_1 = MenuStateIngamePausedCutscene
 		end
+	else
+		l_1_1 = MenuStateIngamePausedNormal
+	end
+	l_1_0._pause_menu = FiniteStateMachine:new(l_1_0._menu, "_menu", l_1_1)
+	l_1_0._pause_menu:set_debug(true)
+end
+
+MenuStateIngamePaused.update = function(l_2_0, l_2_1)
+	l_2_0._pause_menu:update(l_2_1)
+end
+
+MenuStateIngamePaused.exit = function(l_3_0)
+	l_3_0._menu:set_ingame_paused(false)
+	managers.menu_input:set_bound_user(managers.save:primary_user())
+	l_3_0._pause_menu:destroy()
+end
+
+MenuStateIngamePaused.transition = function(l_4_0)
+	if managers.game:is_resuming() then
+		if l_4_0._menu._is_in_cutscene then
+			return MenuStateIngameResumingFromCutscene
+		end
+	else
+		return MenuStateIngameResuming
 	end
 end
+
+

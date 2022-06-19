@@ -1,6 +1,11 @@
 require("network/control/UnitControl")
-WalkerControl = WalkerControl or class(UnitControl)
-function WalkerControl.send_input(A0_0, A1_1)
+if not WalkerControl then
+	WalkerControl = class(UnitControl)
 end
-function WalkerControl.receive_input(A0_2, A1_3)
+WalkerControl.send_input = function(l_1_0, l_1_1)
 end
+
+WalkerControl.receive_input = function(l_2_0, l_2_1)
+end
+
+

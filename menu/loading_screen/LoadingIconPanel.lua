@@ -1,51 +1,107 @@
 require("menu/loading_screen/LoadingScreenTweakData")
 require("shared/Interpolator")
-LoadingIconPanel = LoadingIconPanel or class()
-function LoadingIconPanel.init(A0_0, A1_1)
-	A0_0._parent_panel = A1_1
-	A0_0._width = loading_screen_tweak_data.ICON_WIDTH
-	A0_0._height = loading_screen_tweak_data.ICON_HEIGHT
-	A0_0._x = A1_1:width()
-	A0_0._y = A1_1:height()
-	A0_0._center_x = A0_0._width / 2
-	A0_0._center_y = A0_0._height / 2
-	A0_0._icon_offset = 8
-	A0_0._io_icon_panel = A0_0._parent_panel:panel({
-		name = "io_icon_panel",
-		width = A0_0._width,
-		height = A0_0._height,
-		valign = "bottom",
-		halign = "right",
-		layer = 90
-	})
-	A0_0._io_icon_panel:set_rightbottom(A0_0._x, A0_0._y)
-	A0_0._icons = {}
-	A0_0._icons.main = A0_0._io_icon_panel:bitmap({
-		name = "icon_main",
-		texture = "gui_disc_icon"
-	})
-	A0_0._icons.main:set_rightbottom(A0_0._io_icon_panel:width() + A0_0._icon_offset, A0_0._io_icon_panel:height() + A0_0._icon_offset)
-	A0_0._icons.main:set_render_template("OverlayVertexColorTextured")
-	A0_0._current_angle = 0
-	A0_0:set_alpha(0)
-	A0_0._showing = false
+if not LoadingIconPanel then
+	LoadingIconPanel = class()
 end
-function LoadingIconPanel.panel(A0_2)
-	local L1_3
-	L1_3 = A0_2._io_icon_panel
-	return L1_3
+LoadingIconPanel.init = function(l_1_0, l_1_1)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._width = loading_screen_tweak_data.ICON_WIDTH
+	l_1_0._height = loading_screen_tweak_data.ICON_HEIGHT
+	l_1_0._x = l_1_1:width()
+	l_1_0._y = l_1_1:height()
+	l_1_0._center_x = l_1_0._width / 2
+	l_1_0._center_y = l_1_0._height / 2
+	l_1_0._icon_offset = 8
+	local l_1_2, l_1_3 = l_1_0._parent_panel:panel, l_1_0._parent_panel
+	local l_1_4 = {}
+	l_1_4.name = "io_icon_panel"
+	l_1_4.width = l_1_0._width
+	l_1_4.height = l_1_0._height
+	l_1_4.valign = "bottom"
+	l_1_4.halign = "right"
+	l_1_4.layer = 90
+	l_1_2 = l_1_2(l_1_3, l_1_4)
+	l_1_0._io_icon_panel = l_1_2
+	l_1_2 = l_1_0._io_icon_panel
+	l_1_2, l_1_3 = l_1_2:set_rightbottom, l_1_2
+	l_1_4 = l_1_0._x
+	l_1_2(l_1_3, l_1_4, l_1_0._y)
+	l_1_0._icons, l_1_2 = l_1_2, {}
+	l_1_2 = l_1_0._icons
+	l_1_3 = l_1_0._io_icon_panel
+	l_1_3, l_1_4 = l_1_3:bitmap, l_1_3
+	local l_1_5 = {}
+	l_1_5.name = "icon_main"
+	l_1_5.texture = "gui_disc_icon"
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_2.main = l_1_3
+	l_1_2 = l_1_0._icons
+	l_1_2 = l_1_2.main
+	l_1_2, l_1_3 = l_1_2:set_rightbottom, l_1_2
+	l_1_4 = l_1_0._io_icon_panel
+	l_1_4, l_1_5 = l_1_4:width, l_1_4
+	l_1_4 = l_1_4(l_1_5)
+	l_1_5 = l_1_0._icon_offset
+	l_1_4 = l_1_4 + l_1_5
+	l_1_5 = l_1_0._io_icon_panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_2(l_1_3, l_1_4, l_1_5)
+	l_1_2 = l_1_0._icons
+	l_1_2 = l_1_2.main
+	l_1_2, l_1_3 = l_1_2:set_render_template, l_1_2
+	l_1_4 = "OverlayVertexColorTextured"
+	l_1_2(l_1_3, l_1_4)
+	l_1_0._current_angle = 0
+	l_1_2, l_1_3 = l_1_0:set_alpha, l_1_0
+	l_1_4 = 0
+	l_1_2(l_1_3, l_1_4)
+	l_1_0._showing = false
 end
-function LoadingIconPanel.show(A0_4)
-	A0_4:set_alpha(1)
-	A0_4._showing = true
+
+LoadingIconPanel.panel = function(l_2_0)
+	return l_2_0._io_icon_panel
 end
-function LoadingIconPanel.hide(A0_5)
-	A0_5:set_alpha(0)
-	A0_5._showing = false
+
+LoadingIconPanel.show = function(l_3_0)
+	l_3_0:set_alpha(1)
+	l_3_0._showing = true
 end
-function LoadingIconPanel.visible(A0_6)
-	return A0_6._alpha > 0 or A0_6._showing
+
+LoadingIconPanel.hide = function(l_4_0)
+	l_4_0:set_alpha(0)
+	l_4_0._showing = false
 end
-function LoadingIconPanel.set_alpha(A0_7, A1_8)
-	A0_7._alpha = A1_8
-	for 
+
+LoadingIconPanel.visible = function(l_5_0)
+	if l_5_0._alpha <= 0 then
+		local l_5_1 = l_5_0._showing
+		l_5_1 = l_5_1
+		return l_5_1
+	end
+end
+
+LoadingIconPanel.set_alpha = function(l_6_0, l_6_1)
+	local l_6_5, l_6_6, l_6_7, l_6_8, l_6_9, l_6_10 = nil
+	l_6_0._alpha = l_6_1
+	for i_0,i_1 in pairs(l_6_0._icons) do
+		i_1:set_color(i_1:color():with_alpha(l_6_0._alpha))
+	end
+end
+
+LoadingIconPanel.update = function(l_7_0, l_7_1)
+	l_7_0:_update_spin(l_7_1)
+end
+
+LoadingIconPanel._update_spin = function(l_8_0, l_8_1)
+	local l_8_2 = 360 / loading_screen_tweak_data.ICON_SPIN_SPEED * l_8_1
+	l_8_0._current_angle = l_8_0._current_angle + l_8_2
+	if l_8_0._current_angle > 360 then
+		l_8_0._current_angle = l_8_0._current_angle - 360
+	end
+	l_8_0._icons.main:set_rotation(l_8_0._current_angle)
+end
+
+

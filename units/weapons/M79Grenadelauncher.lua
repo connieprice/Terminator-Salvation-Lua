@@ -1,33 +1,42 @@
 require("units/weapons/WeaponUtilities")
 require("units/weapons/GenericWeapon")
-M79Grenadelauncher = M79Grenadelauncher or class(GenericWeapon)
-function M79Grenadelauncher.init(A0_0, A1_1)
-	GenericWeapon.init(A0_0, A1_1)
-	assert(A0_0._reload_unit)
-	A0_0._reload = World:spawn_unit(A0_0._reload_unit, A1_1:position(), A1_1:rotation())
-	A0_0:reload_attach()
+if not M79Grenadelauncher then
+	M79Grenadelauncher = class(GenericWeapon)
 end
-function M79Grenadelauncher.destroy(A0_2)
-	GenericWeapon.destroy(A0_2)
-	if alive(A0_2._reload) then
-		A0_2._reload:set_slot(0)
+M79Grenadelauncher.init = function(l_1_0, l_1_1)
+	GenericWeapon.init(l_1_0, l_1_1)
+	assert(l_1_0._reload_unit)
+	l_1_0._reload = World:spawn_unit(l_1_0._reload_unit, l_1_1:position(), l_1_1:rotation())
+	l_1_0:reload_attach()
+end
+
+M79Grenadelauncher.destroy = function(l_2_0)
+	GenericWeapon.destroy(l_2_0)
+	if alive(l_2_0._reload) then
+		l_2_0._reload:set_slot(0)
 	end
-	A0_2._reload = nil
+	l_2_0._reload = nil
 end
-function M79Grenadelauncher.setup(A0_3, A1_4)
-	GenericWeapon.setup(A0_3, A1_4)
+
+M79Grenadelauncher.setup = function(l_3_0, l_3_1)
+	GenericWeapon.setup(l_3_0, l_3_1)
 end
-function M79Grenadelauncher.fire(A0_5, A1_6)
-	A0_5._reload:set_visible(false)
-	GenericWeapon.fire(A0_5, A1_6)
+
+M79Grenadelauncher.fire = function(l_4_0, l_4_1)
+	l_4_0._reload:set_visible(false)
+	GenericWeapon.fire(l_4_0, l_4_1)
 end
-function M79Grenadelauncher.reload_release(A0_7)
-	assert(A0_7._user_unit)
-	A0_7._user_unit:link("a_weapon_left_front", A0_7._reload, A0_7._reload:orientation_object():name())
-	A0_7._reload:set_visible(true)
+
+M79Grenadelauncher.reload_release = function(l_5_0)
+	assert(l_5_0._user_unit)
+	l_5_0._user_unit:link("a_weapon_left_front", l_5_0._reload, l_5_0._reload:orientation_object():name())
+	l_5_0._reload:set_visible(true)
 end
-function M79Grenadelauncher.reload_attach(A0_8)
-	A0_8._unit:link(A0_8._reload_attachment, A0_8._reload, A0_8._reload:orientation_object():name())
-	A0_8._reload:set_local_rotation(Rotation(0, 0, 0))
-	A0_8._reload:set_visible(true)
+
+M79Grenadelauncher.reload_attach = function(l_6_0)
+	l_6_0._unit:link(l_6_0._reload_attachment, l_6_0._reload, l_6_0._reload:orientation_object():name())
+	l_6_0._reload:set_local_rotation(Rotation(0, 0, 0))
+	l_6_0._reload:set_visible(true)
 end
+
+

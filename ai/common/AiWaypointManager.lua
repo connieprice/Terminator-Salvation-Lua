@@ -1,19 +1,24 @@
-AiWaypointManager = AiWaypointManager or class()
-function AiWaypointManager.init(A0_0)
-	A0_0._triggers = {}
+if not AiWaypointManager then
+	AiWaypointManager = class()
 end
-function AiWaypointManager.add_reached_waypoint_trigger(A0_1, A1_2)
-	A0_1._triggers[A1_2.chosen_waypoint_id] = A1_2
+AiWaypointManager.init = function(l_1_0)
+	l_1_0._triggers = {}
 end
-function AiWaypointManager.remove_reached_waypoint_trigger(A0_3, A1_4)
-	A0_3._triggers[A1_4.chosen_waypoint_id] = nil
+
+AiWaypointManager.add_reached_waypoint_trigger = function(l_2_0, l_2_1)
+	l_2_0._triggers[l_2_1.chosen_waypoint_id] = l_2_1
 end
-function AiWaypointManager.waypoint_passed(A0_5, A1_6)
-	local L2_7
-	L2_7 = A0_5._triggers
-	L2_7 = L2_7[A1_6]
-	if not L2_7 then
-		return
+
+AiWaypointManager.remove_reached_waypoint_trigger = function(l_3_0, l_3_1)
+	l_3_0._triggers[l_3_1.chosen_waypoint_id] = nil
+end
+
+AiWaypointManager.waypoint_passed = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._triggers[l_4_1]
+	if not l_4_2 then
+		return 
 	end
-	L2_7:reached_waypoint()
+	l_4_2:reached_waypoint()
 end
+
+

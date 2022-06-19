@@ -1,46 +1,54 @@
 require("local_user/signin/LocalUserSignIn")
-PcLocalUserSignIn = PcLocalUserSignIn or class(LocalUserSignIn)
-function PcLocalUserSignIn.init(A0_0, A1_1, A2_2)
-	LocalUserSignIn.init(A0_0, A1_1, A2_2)
-	A0_0._signin_accepted = A1_1.signin_accepted
-	A0_0._automatic_sign_in = true
+if not PcLocalUserSignIn then
+	PcLocalUserSignIn = class(LocalUserSignIn)
 end
-function PcLocalUserSignIn.default_data(A0_3)
-	LocalUserSignIn.default_data(A0_3)
-	A0_3.signin_accepted = nil
+PcLocalUserSignIn.init = function(l_1_0, l_1_1, l_1_2)
+	LocalUserSignIn.init(l_1_0, l_1_1, l_1_2)
+	l_1_0._signin_accepted = l_1_1.signin_accepted
+	l_1_0._automatic_sign_in = true
 end
-function PcLocalUserSignIn.save(A0_4, A1_5)
-	LocalUserSignIn.save(A0_4, A1_5)
-	A1_5.signin_accepted = A0_4._signin_accepted
+
+PcLocalUserSignIn.default_data = function(l_2_0)
+	LocalUserSignIn.default_data(l_2_0)
+	l_2_0.signin_accepted = nil
 end
-function PcLocalUserSignIn.show_sign_in_ui(A0_6)
+
+PcLocalUserSignIn.save = function(l_3_0, l_3_1)
+	LocalUserSignIn.save(l_3_0, l_3_1)
+	l_3_1.signin_accepted = l_3_0._signin_accepted
+end
+
+PcLocalUserSignIn.show_sign_in_ui = function(l_4_0)
 	cat_print("debug", "PcLocalUserSignIn:try_to_signin")
-	if A0_6._automatic_sign_in then
-		A0_6:_set_is_signed_in(true)
-		A0_6._user_callback:user_signed_in()
+	if l_4_0._automatic_sign_in then
+		l_4_0:_set_is_signed_in(true)
+		l_4_0._user_callback:user_signed_in()
 	end
 end
-function PcLocalUserSignIn.sign_in(A0_7)
+
+PcLocalUserSignIn.sign_in = function(l_5_0)
 	cat_print("debug", "sign_in")
-	A0_7._signin_accepted = true
+	l_5_0._signin_accepted = true
 end
-function PcLocalUserSignIn.sign_out(A0_8)
+
+PcLocalUserSignIn.sign_out = function(l_6_0)
 	cat_print("debug", "sign_out")
-	A0_8._signin_accepted = false
+	l_6_0._signin_accepted = false
 end
-function PcLocalUserSignIn.signin_ui_active(A0_9)
-	local L1_10
-	L1_10 = false
-	return L1_10
+
+PcLocalUserSignIn.signin_ui_active = function(l_7_0)
+	return false
 end
-function PcLocalUserSignIn.set_automatic_sign_in(A0_11, A1_12)
-	A0_11._automatic_sign_in = A1_12
+
+PcLocalUserSignIn.set_automatic_sign_in = function(l_8_0, l_8_1)
+	l_8_0._automatic_sign_in = l_8_1
 end
-function PcLocalUserSignIn.user_signed_in(A0_13)
-	local L1_14
+
+PcLocalUserSignIn.user_signed_in = function(l_9_0)
 end
-function PcLocalUserSignIn.is_in_signed_in_state(A0_15)
-	local L1_16
-	L1_16 = true
-	return L1_16
+
+PcLocalUserSignIn.is_in_signed_in_state = function(l_10_0)
+	return true
 end
+
+

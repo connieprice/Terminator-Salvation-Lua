@@ -1,217 +1,283 @@
-Biker = Biker or class(Rail2WheeledVehicle)
+if not Biker then
+	Biker = class(Rail2WheeledVehicle)
+end
 Biker._AIM_OBJECT = "a_fire_plasma_upper_left"
 Biker._ROOT_OBJECT = "rp_biker"
 Biker._ENGINE_SOUNDBANK_NAME = "rs2_sound"
 Biker._ENGINE_SOUND_NAME = "rs2_motoloop"
 Biker._ENGINE_SOUND_OUTPUT_OBJECT_NAME = "rp_biker"
-function Biker.init(A0_0, A1_1)
-	local L2_2
-	L2_2 = Rail2WheeledVehicle
-	L2_2 = L2_2.init
-	L2_2(A0_0, A1_1)
-	L2_2 = A0_0._unit
-	L2_2 = L2_2.enemy_data
-	L2_2 = L2_2(L2_2)
-	A0_0._enemy_data = L2_2
-	L2_2 = A0_0._unit
-	L2_2 = L2_2.input
-	L2_2 = L2_2(L2_2)
-	A0_0._input = L2_2
-	A0_0._unit = A1_1
-	L2_2 = A0_0._unit
-	L2_2 = L2_2.get_object
-	L2_2 = L2_2(L2_2, Biker._AIM_OBJECT)
-	A0_0._aim_object = L2_2
-	L2_2 = A0_0._unit
-	L2_2 = L2_2.get_object
-	L2_2 = L2_2(L2_2, Biker._ROOT_OBJECT)
-	A0_0._root_object = L2_2
-	L2_2 = Sound
-	L2_2 = L2_2.make_bank
-	L2_2 = L2_2(L2_2, Biker._ENGINE_SOUNDBANK_NAME, Biker._ENGINE_SOUND_NAME)
-	A0_0._engine_sound = L2_2
-	L2_2 = A1_1.get_object
-	L2_2 = L2_2(A1_1, Biker._ENGINE_SOUND_OUTPUT_OBJECT_NAME)
-	A0_0._engine_sound:set_output(L2_2)
-	A0_0._engine_sound:set_ambient(true)
-	A0_0._collidable_units = World:find_units_quick("all", World:make_slot_mask(39))
-	A0_0._gatling_l = A0_0._unit:get_object("a_gatling_gyro_l")
-	A0_0._gatling_r = A0_0._unit:get_object("a_gatling_gyro_r")
-	A0_0._hip_l = A0_0._unit:get_object("a_hip_l_target_02")
-	A0_0._hip_r = A0_0._unit:get_object("a_hip_r_target_02")
-	A0_0._collision_distance = tweak_data.rail.biker.COLLISION_DISTANCE
-	A0_0._collision_detection_delay = 0.1
-	A0_0._collision_detection_time = 0
-	A0_0._collision_detection_radius = A0_0._collision_distance + 1000
-	A0_0:_setup_weapons()
+Biker.init = function(l_1_0, l_1_1)
+	Rail2WheeledVehicle.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_0._unit:enemy_data()
+	l_1_0._input = l_1_0._unit:input()
+	l_1_0._unit = l_1_1
+	l_1_0._aim_object = l_1_0._unit:get_object(Biker._AIM_OBJECT)
+	l_1_0._root_object = l_1_0._unit:get_object(Biker._ROOT_OBJECT)
+	l_1_0._engine_sound = Sound:make_bank(Biker._ENGINE_SOUNDBANK_NAME, Biker._ENGINE_SOUND_NAME)
+	local l_1_2 = l_1_1:get_object(Biker._ENGINE_SOUND_OUTPUT_OBJECT_NAME)
+	l_1_0._engine_sound:set_output(l_1_2)
+	l_1_0._engine_sound:set_ambient(true)
+	l_1_0._collidable_units = World:find_units_quick("all", World:make_slot_mask(39))
+	l_1_0._gatling_l = l_1_0._unit:get_object("a_gatling_gyro_l")
+	l_1_0._gatling_r = l_1_0._unit:get_object("a_gatling_gyro_r")
+	l_1_0._hip_l = l_1_0._unit:get_object("a_hip_l_target_02")
+	l_1_0._hip_r = l_1_0._unit:get_object("a_hip_r_target_02")
+	l_1_0._collision_distance = tweak_data.rail.biker.COLLISION_DISTANCE
+	l_1_0._collision_detection_delay = 0.1
+	l_1_0._collision_detection_time = 0
+	l_1_0._collision_detection_radius = l_1_0._collision_distance + 1000
+	l_1_0:_setup_weapons()
 end
-function Biker._setup_weapons(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8, L6_9
-	L4_7 = A0_3._unit
-	L5_8 = L4_7
-	L4_7 = L4_7.position
-	L4_7 = L4_7(L5_8)
-	L5_8 = A0_3._unit
-	L6_9 = L5_8
-	L5_8 = L5_8.rotation
-	L6_9 = L5_8(L6_9)
-	A0_3._primary_weapon_l = L1_4
-	L1_4(L2_5, L3_6)
-	L1_4(L2_5, L3_6)
-	L4_7 = A0_3._primary_weapon_l
-	L5_8 = "at_gatling_barrel"
-	L1_4(L2_5, L3_6, L4_7, L5_8)
-	L4_7 = A0_3._unit
-	L5_8 = L4_7
-	L4_7 = L4_7.position
-	L4_7 = L4_7(L5_8)
-	L5_8 = A0_3._unit
-	L6_9 = L5_8
-	L5_8 = L5_8.rotation
-	L6_9 = L5_8(L6_9)
-	A0_3._primary_weapon_r = L1_4
-	L1_4(L2_5, L3_6)
-	L1_4(L2_5, L3_6)
-	L4_7 = A0_3._primary_weapon_r
-	L5_8 = "at_gatling_barrel"
-	L1_4(L2_5, L3_6, L4_7, L5_8)
-	A0_3._secondary_weapons = L1_4
-	for L4_7, L5_8 in L1_4(L2_5) do
-		L6_9 = World
-		L6_9 = L6_9.spawn_unit
-		L6_9 = L6_9(L6_9, A0_3._secondary_weapon_class, A0_3._unit:position(), A0_3._unit:rotation())
-		L6_9:base():setup(A0_3._unit, {L5_8})
-		L6_9:base():set_equiped(true)
-		table.insert(A0_3._secondary_weapons, L6_9)
+
+Biker._setup_weapons = function(l_2_0)
+	l_2_0._primary_weapon_l = World:spawn_unit(l_2_0._primary_weapon_class, l_2_0._unit:position(), l_2_0._unit:rotation())
+	l_2_0._primary_weapon_l:base():setup(l_2_0._unit)
+	l_2_0._primary_weapon_l:base():set_equiped(true)
+	l_2_0._unit:link("a_gatling_barrel_left", l_2_0._primary_weapon_l, "at_gatling_barrel")
+	l_2_0._primary_weapon_r = World:spawn_unit(l_2_0._primary_weapon_class, l_2_0._unit:position(), l_2_0._unit:rotation())
+	l_2_0._primary_weapon_r:base():setup(l_2_0._unit)
+	l_2_0._primary_weapon_r:base():set_equiped(true)
+	local l_2_4 = l_2_0._unit:link
+	local l_2_5 = l_2_0._unit
+	l_2_4(l_2_5, "a_gatling_barrel_right", l_2_0._primary_weapon_r, "at_gatling_barrel")
+	l_2_0._secondary_weapons, l_2_4 = l_2_4, {}
+	l_2_4 = pairs
+	l_2_5 = l_2_0._secondary_weapon_parent_object_names
+	l_2_4 = l_2_4(l_2_5)
+	for i_0,i_1 in l_2_4 do
+		local l_2_6 = World:spawn_unit(l_2_0._secondary_weapon_class, l_2_0._unit:position(), l_2_0._unit:rotation())
+		local l_2_7, l_2_8 = l_2_6:base():setup, l_2_6:base()
+		local l_2_9 = l_2_0._unit
+		local l_2_10 = {}
+		 -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+		l_2_7(l_2_8, l_2_9, l_2_10)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_2_7(l_2_8, l_2_9)
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		l_2_7(l_2_8, l_2_9)
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	 -- WARNING: undefined locals caused missing assignments!
 end
-function Biker.update(A0_10, A1_11, A2_12, A3_13)
-	local L4_14, L5_15, L6_16, L7_17, L8_18, L9_19, L10_20, L11_21
-	L4_14 = Rail2WheeledVehicle
-	L4_14 = L4_14.update
-	L5_15 = A0_10
-	L6_16 = A1_11
-	L4_14(L5_15, L6_16, L7_17, L8_18)
-	L4_14 = A0_10._engine_sound
-	L5_15 = L4_14
-	L4_14 = L4_14.is_playing
-	L4_14 = L4_14(L5_15)
-	if not L4_14 then
-		L4_14 = A0_10._engine_sound
-		L5_15 = L4_14
-		L4_14 = L4_14.play
-		L4_14(L5_15)
+
+Biker.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_11, l_3_12 = nil
+	Rail2WheeledVehicle.update(l_3_0, l_3_1, l_3_2, l_3_3)
+	if not l_3_0._engine_sound:is_playing() then
+		l_3_0._engine_sound:play()
 	end
-	L5_15 = A0_10
-	L4_14 = A0_10._update_collision_detection
-	L6_16 = A1_11
-	L4_14(L5_15, L6_16, L7_17, L8_18)
-	L5_15 = A0_10
-	L4_14 = A0_10._update_animation_speed
-	L4_14(L5_15)
-	L4_14 = A0_10._input
-	L5_15 = L4_14
-	L4_14 = L4_14.primary_fire
-	L4_14 = L4_14(L5_15)
-	L5_15 = A0_10._input
-	L6_16 = L5_15
-	L5_15 = L5_15.secondary_fire
-	L5_15 = L5_15(L6_16)
-	L6_16 = A0_10._aim_object
-	L6_16 = L6_16.position
-	L6_16 = L6_16(L7_17)
-	L6_16 = L6_16 + L7_17
-	L10_20 = L6_16
-	L7_17(L8_18, L9_19, L10_20)
-	L10_20 = L6_16
-	L7_17(L8_18, L9_19, L10_20)
-	for L10_20, L11_21 in L7_17(L8_18) do
-		A0_10:_update_secondary_weapon(L11_21, L6_16)
+	l_3_0:_update_collision_detection(l_3_1, l_3_2, l_3_3)
+	l_3_0:_update_animation_speed()
+	local l_3_4 = l_3_0._input:primary_fire()
+	local l_3_5 = l_3_0._input:secondary_fire()
+	local l_3_6 = l_3_0._aim_object:position() + l_3_0._aim_object:rotation():y() * 100000
+	l_3_0:_update_primary_weapon(l_3_0._primary_weapon_l, l_3_6)
+	local l_3_10 = l_3_0:_update_primary_weapon
+	l_3_10(l_3_0, l_3_0._primary_weapon_r, l_3_6)
+	l_3_10 = pairs
+	l_3_10 = l_3_10(l_3_0._secondary_weapons)
+	for i_0,i_1 in l_3_10 do
+		l_3_0:_update_secondary_weapon(i_1, l_3_6)
 	end
-	L7_17(L8_18)
-	L7_17(L8_18)
-	if L7_17 then
-		L10_20 = 1
-		L11_21 = 0
-		L11_21 = L9_19(L10_20, L11_21, 1, 0)
-		L10_20 = A0_10._unit
-		L11_21 = L10_20
-		L10_20 = L10_20.position
-		L10_20 = L10_20(L11_21)
-		L11_21 = Vector3
-		L11_21 = L11_21(0, 0, 100)
-		L10_20 = L10_20 + L11_21
-		L11_21 = 100
-		L8_18(L9_19, L10_20, L11_21)
+	l_3_0:_update_gatling_gyro()
+	l_3_0:_update_effects()
+	if Global.category_debug_render["rail_biker.position"] then
+		Draw:pen(Color(1, 0, 1, 0)):sphere(l_3_0._unit:position() + Vector3(0, 0, 100), 100)
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
-function Biker._update_collision_detection(A0_22, A1_23, A2_24, A3_25)
-	local L4_26, L5_27, L6_28, L7_29, L8_30, L9_31, L10_32, L11_33
-	if A2_24 >= L4_26 then
-		if not L4_26 then
-			for L7_29, L8_30 in L4_26(L5_27) do
-				L9_31 = alive
-				L10_32 = L8_30
-				L9_31 = L9_31(L10_32)
-				if L9_31 then
-					L9_31 = A0_22._unit
-					L10_32 = L9_31
-					L9_31 = L9_31.position
-					L9_31 = L9_31(L10_32)
-					L11_33 = L8_30
-					L10_32 = L8_30.position
-					L10_32 = L10_32(L11_33)
-					L9_31 = L9_31 - L10_32
-					L10_32 = L9_31
-					L9_31 = L9_31.length
-					L9_31 = L9_31(L10_32)
-					L10_32 = A0_22._collision_detection_radius
-					if L9_31 <= L10_32 then
-						L9_31 = A0_22._unit
-						L10_32 = L9_31
-						L9_31 = L9_31.rotation
-						L9_31 = L9_31(L10_32)
-						L10_32 = L9_31
-						L9_31 = L9_31.y
-						L9_31 = L9_31(L10_32)
-						L10_32 = A0_22._collision_distance
-						L9_31 = L9_31 * L10_32
-						L10_32 = A0_22._unit
-						L11_33 = L10_32
-						L10_32 = L10_32.rotation
-						L10_32 = L10_32(L11_33)
-						L11_33 = L10_32
-						L10_32 = L10_32.z
-						L10_32 = L10_32(L11_33)
-						L10_32 = L10_32 * 50
-						L11_33 = A0_22._unit
-						L11_33 = L11_33.position
-						L11_33 = L11_33(L11_33)
-						L11_33 = L11_33 + L9_31
-						L11_33 = L11_33 + L10_32
-						if L8_30:oobb():point_inside(L11_33) then
-							Application:debug("BIKER COLLISION WITH", L8_30:name())
-							A0_22._unit:damage():set_fully_damaged()
-							A0_22._collided = true
-						end
+
+Biker._update_collision_detection = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	local l_4_7, l_4_8, l_4_9, l_4_10, l_4_11, l_4_12, l_4_13, l_4_14 = nil
+	if l_4_0._collision_detection_time <= l_4_2 then
+		if not l_4_0._collided then
+			for i_0,i_1 in ipairs(l_4_0._collidable_units) do
+				if alive(i_1) and l_4_0._unit:position() - i_1:position():length() <= l_4_0._collision_detection_radius then
+					local l_4_17 = nil
+					local l_4_18 = nil
+				if l_4_16:oobb():point_inside(l_4_0._unit:position() + l_4_0._unit:rotation():y() * l_4_0._collision_distance + l_4_0._unit:rotation():z() * 50) then
 					end
+					Application:debug("BIKER COLLISION WITH", l_4_16:name())
+					l_4_0._unit:damage():set_fully_damaged()
+					l_4_0._collided = true
 				end
 			end
 		end
-		A0_22._collision_detection_time = L4_26
+		l_4_0._collision_detection_time = l_4_2 + l_4_0._collision_detection_delay
 	end
 end
-function Biker._update_gatling_gyro(A0_34)
-	A0_34._biker_roll_prev = A0_34._root_object:rotation():pitch()
-	A0_34._gatling_l:set_local_rotation(Rotation(A0_34._gatling_l:local_rotation():yaw(), A0_34._gatling_l:local_rotation():pitch() + (A0_34._root_object:rotation():pitch() - A0_34._biker_roll_prev), A0_34._gatling_l:local_rotation():roll()))
-	A0_34._gatling_r:set_local_rotation(Rotation(A0_34._gatling_r:local_rotation():yaw(), A0_34._gatling_r:local_rotation():pitch() + (A0_34._root_object:rotation():pitch() - A0_34._biker_roll_prev), A0_34._gatling_r:local_rotation():roll()))
-	if A0_34._root_object:rotation():pitch() > 0 then
-		A0_34._hip_l:set_local_position(A0_34._hip_l:local_position() + Vector3(0, 0, -(A0_34._root_object:rotation():pitch() - A0_34._biker_roll_prev) * 1))
-		A0_34._hip_r:set_local_position(A0_34._hip_r:local_position() + Vector3(0, 0, (A0_34._root_object:rotation():pitch() - A0_34._biker_roll_prev) * 1))
-	elseif A0_34._root_object:rotation():pitch() < 0 then
-		A0_34._hip_l:set_local_position(A0_34._hip_l:local_position() + Vector3(0, 0, -(A0_34._root_object:rotation():pitch() - A0_34._biker_roll_prev) * 1))
-		A0_34._hip_r:set_local_position(A0_34._hip_r:local_position() + Vector3(0, 0, (A0_34._root_object:rotation():pitch() - A0_34._biker_roll_prev) * 1))
+
+Biker._update_gatling_gyro = function(l_5_0)
+	local l_5_1 = l_5_0._root_object:rotation():pitch()
+	local l_5_2 = 0
+	if l_5_0._biker_roll_prev then
+		l_5_2 = l_5_1 - l_5_0._biker_roll_prev
+	end
+	l_5_0._biker_roll_prev = l_5_1
+	l_5_0._gatling_l:set_local_rotation(Rotation(l_5_0._gatling_l:local_rotation():yaw(), l_5_0._gatling_l:local_rotation():pitch() + (l_5_2), l_5_0._gatling_l:local_rotation():roll()))
+	l_5_0._gatling_r:set_local_rotation(Rotation(l_5_0._gatling_r:local_rotation():yaw(), l_5_0._gatling_r:local_rotation():pitch() + (l_5_2), l_5_0._gatling_r:local_rotation():roll()))
+	if l_5_1 > 0 then
+		l_5_0._hip_l:set_local_position(l_5_0._hip_l:local_position() + Vector3(0, 0, -(l_5_2) * 1))
+		l_5_0._hip_r:set_local_position(l_5_0._hip_r:local_position() + Vector3(0, 0, (l_5_2) * 1))
+	elseif l_5_1 < 0 then
+		l_5_0._hip_l:set_local_position(l_5_0._hip_l:local_position() + Vector3(0, 0, -(l_5_2) * 1))
+		l_5_0._hip_r:set_local_position(l_5_0._hip_r:local_position() + Vector3(0, 0, (l_5_2) * 1))
 	end
 end
-function Biker._update_effects(A0_35)
-	for 
+
+Biker._update_effects = function(l_6_0)
+	local l_6_6, l_6_7 = nil
+	local l_6_1 = l_6_0._unit:get_object("lo_charge_light")
+	local l_6_2 = 0
+	for i_0,i_1 in pairs(l_6_0._secondary_weapons) do
+		l_6_2 = l_6_2 + i_1:logic():get_power_up_percent()
+	end
+	l_6_2 = (l_6_2) / #l_6_0._secondary_weapons
+	l_6_1:set_multiplier(l_6_2 * 10000)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Biker._update_primary_weapon = function(l_7_0, l_7_1, l_7_2)
+	local l_7_3 = l_7_1:weapon_data()
+	local l_7_4 = l_7_1:base()
+	local l_7_5 = l_7_0._input:primary_fire()
+	local l_7_6 = l_7_0._input:primary_damage()
+	if l_7_5 and not l_7_3._bullets_in_clip == 0 then
+		l_7_3.fire_input = 1
+	else
+		l_7_3.fire_input = 0
+	end
+	if l_7_6 then
+		l_7_4:set_bullet_damage(l_7_6)
+	end
+	l_7_3.aim_target_position = l_7_2
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_7_3._bullets_in_clip == 0 then
+		l_7_1:base():reload()
+	end
+end
+
+Biker._update_secondary_weapon = function(l_8_0, l_8_1, l_8_2)
+	local l_8_3 = l_8_1:weapon_data()
+	local l_8_4 = l_8_1:base()
+	local l_8_5 = l_8_0._input:secondary_fire()
+	local l_8_6 = l_8_0._input:secondary_damage()
+	if l_8_5 and not l_8_3._bullets_in_clip == 0 then
+		l_8_3.fire_input = 1
+	else
+		l_8_3.fire_input = 0
+	end
+	if l_8_6 then
+		local l_8_10, l_8_11 = , l_8_4:set_explosion_damage_at_center
+		local l_8_12 = l_8_4
+		l_8_11(l_8_12, {hard = l_8_6, soft = l_8_6})
+	end
+	l_8_3.aim_target_position = l_8_2
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_8_10 then
+		l_8_1:base():reload()
+	end
+end
+
+Biker.destroy = function(l_9_0)
+	Rail2WheeledVehicle.destroy(l_9_0)
+	l_9_0._engine_sound:stop()
+	l_9_0:_destroy_weapons()
+end
+
+Biker._destroy_weapons = function(l_10_0)
+	local l_10_4, l_10_5, l_10_6, l_10_7, l_10_8, l_10_9 = nil
+	if alive(l_10_0._primary_weapon_l) then
+		World:delete_unit(l_10_0._primary_weapon_l)
+		l_10_0._primary_weapon_l = nil
+	end
+	if alive(l_10_0._primary_weapon_r) then
+		World:delete_unit(l_10_0._primary_weapon_r)
+		l_10_0._primary_weapon_r = nil
+	end
+	for i_0,i_1 in pairs(l_10_0._secondary_weapons) do
+		if alive(i_1) then
+			World:delete_unit(i_1)
+		end
+	end
+	l_10_0._secondary_weapons = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Biker._update_animation_speed = function(l_11_0)
+	local l_11_1 = l_11_0._input:warp()
+	if l_11_1 then
+		local l_11_2 = l_11_0._input:target_unit():position()
+		local l_11_3 = l_11_0._input:warp_distance()
+		l_11_0._warp_time = l_11_0:get_animation_time_to_be_within(l_11_2, l_11_3)
+	else
+		local l_11_4 = l_11_0._input:speed()
+		local l_11_5 = 1
+		if l_11_4 then
+			l_11_5 = l_11_4 / tweak_data.rail.biker.BIKER_SPEED_IN_ANIMATION
+		end
+		l_11_0:set_animation_speed(l_11_5)
+	end
+end
+
+Biker._update_animation = function(l_12_0, l_12_1)
+	l_12_0._unit:set_driving("animation")
+	if l_12_0._warp_time then
+		l_12_0._current_anim_time = l_12_0._warp_time
+		l_12_0._state_machine:set_global("g_time", l_12_0._warp_time / l_12_0._total_animation_time)
+		l_12_0._warp_time = nil
+	elseif l_12_0._total_animation_time > 0 then
+		l_12_0._current_anim_time = l_12_0._current_anim_time + l_12_1 * l_12_0._animation_speed_mult
+		l_12_0._state_machine:set_global("g_time", l_12_0._current_anim_time / l_12_0._total_animation_time)
+	end
+end
+
+Biker.get_animation_time_to_be_within = function(l_13_0, l_13_1, l_13_2)
+	local l_13_3 = AnimationManager:animation_set(l_13_0._unit:name())
+	local l_13_4 = l_13_3:animation_total_duration(l_13_0._current_animation)
+	local l_13_5 = l_13_0._unit:position()
+	local l_13_6 = l_13_0._unit:rotation()
+	local l_13_7 = l_13_0._unit:orientation_object():name()
+	local l_13_8 = 0
+	local l_13_9 = l_13_3:animation_rotation(l_13_0._current_animation, l_13_7, l_13_8)
+	l_13_6 = l_13_6 * l_13_9:inverse()
+	do
+		while 1 do
+			local l_13_10 = l_13_5
+			while l_13_8 < l_13_4 do
+				l_13_8 = l_13_8 + 0.1
+				local l_13_11 = l_13_3:animation_position(l_13_0._current_animation, l_13_7, l_13_8)
+				local l_13_12 = l_13_11 - l_13_10
+				l_13_10 = l_13_11
+				l_13_12 = l_13_12:rotate_with(l_13_6)
+				l_13_5 = l_13_5 + l_13_12
+				if l_13_5 - l_13_1:length() < l_13_2 then
+					return l_13_8
+				end
+			end
+			return 0
+		end
+		 -- WARNING: missing end command somewhere! Added here
+	end
+end
+
+

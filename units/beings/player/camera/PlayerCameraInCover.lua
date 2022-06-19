@@ -1,61 +1,43 @@
 require("units/beings/player/camera/PlayerCameraState")
-PlayerCameraInCover = PlayerCameraInCover or class(PlayerCameraState)
-function PlayerCameraInCover.init(A0_0)
-	PlayerCameraState.init(A0_0, PlayerCameraInCover)
+if not PlayerCameraInCover then
+	PlayerCameraInCover = class(PlayerCameraState)
 end
-function PlayerCameraInCover.update(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L5_6
-	L2_3 = A0_1._player_data
-	L3_4 = L2_3.cover
-	if not L3_4 then
-		return
+PlayerCameraInCover.init = function(l_1_0)
+	PlayerCameraState.init(l_1_0, PlayerCameraInCover)
+end
+
+PlayerCameraInCover.update = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0._player_data
+	if not l_2_2.cover then
+		return 
 	end
-	L3_4 = nil
-	L4_5 = L2_3.is_precision_aiming
-	if L4_5 then
-		L4_5 = L2_3.facing_right_in_cover
-		if L4_5 then
-			L3_4 = "zoom_aim_right"
+	local l_2_3 = nil
+	if l_2_2.is_precision_aiming then
+		if l_2_2.facing_right_in_cover then
+			l_2_3 = "zoom_aim_right"
 		else
-			L3_4 = "zoom_aim_left"
+			l_2_3 = "zoom_aim_left"
 		end
 	else
-		L4_5 = managers
-		L4_5 = L4_5.cover_util
-		L5_6 = L4_5
-		L4_5 = L4_5.high_cover
-		L4_5 = L4_5(L5_6, L2_3.cover)
-		if L4_5 then
-			L3_4 = "incover_stand"
+		if managers.cover_util:high_cover(l_2_2.cover) then
+			l_2_3 = "incover_stand"
 		else
-			L3_4 = "incover_crouch"
+			l_2_3 = "incover_crouch"
 		end
-		L4_5 = nil
-		L5_6 = L2_3.facing_right_in_cover
-		if L5_6 then
-			L5_6 = L3_4
-			L3_4 = L5_6 .. "_right"
-			L5_6 = PlayerCamera
-			L5_6 = L5_6._near_edge_modifiers
-			L5_6 = L5_6(L2_3.distance_to_right_cover_edge, true)
-			L4_5 = L5_6
+		local l_2_4 = nil
+		if l_2_2.facing_right_in_cover then
+			l_2_3 = l_2_3 .. "_right"
+			l_2_4 = PlayerCamera._near_edge_modifiers(l_2_2.distance_to_right_cover_edge, true)
 		else
-			L5_6 = L3_4
-			L3_4 = L5_6 .. "_left"
-			L5_6 = PlayerCamera
-			L5_6 = L5_6._near_edge_modifiers
-			L5_6 = L5_6(L2_3.distance_to_left_cover_edge)
-			L4_5 = L5_6
+			l_2_3 = l_2_3 .. "_left"
+			l_2_4 = PlayerCamera._near_edge_modifiers(l_2_2.distance_to_left_cover_edge)
 		end
-		L5_6 = L3_4
-		L3_4 = L5_6 .. "_" .. A0_1._camera:_cover_camera_index()
-		L5_6 = A0_1._camera
-		L5_6 = L5_6.find_camera
-		L5_6 = L5_6(L5_6, L3_4)
-		assert(L5_6)
-		A0_1._camera:_update_cover_edge_modifiers(L5_6, L4_5)
+		l_2_3 = l_2_3 .. "_" .. l_2_0._camera:_cover_camera_index()
+		local l_2_5 = l_2_0._camera:find_camera(l_2_3)
+		assert(l_2_5)
+		l_2_0._camera:_update_cover_edge_modifiers(l_2_5, l_2_4)
 	end
-	L5_6 = A0_1
-	L4_5 = A0_1._set_camera_name
-	L4_5(L5_6, L3_4)
+	l_2_0:_set_camera_name(l_2_3)
 end
+
+

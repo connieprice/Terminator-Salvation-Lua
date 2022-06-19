@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMMarksSet2Start = AMMarksSet2Start or class(AMNpcStart)
-AMMarksSet2Start.unit_type = "marks_set2"
-function AMMarksSet2Start.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, "marks_set2")
+if not AMMarksSet2Start then
+	AMMarksSet2Start = class(AMNpcStart)
 end
+AMMarksSet2Start.unit_type = "marks_set2"
+AMMarksSet2Start.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, "marks_set2")
+end
+
+

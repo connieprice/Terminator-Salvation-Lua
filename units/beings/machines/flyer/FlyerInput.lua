@@ -1,82 +1,85 @@
-FlyerInput = FlyerInput or class()
-function FlyerInput.init(A0_0, A1_1)
-	A0_0._acceleration = Vector3()
-	A0_0._angular_acceleration = Vector3()
-	A0_0:clear()
+if not FlyerInput then
+	FlyerInput = class()
 end
-function FlyerInput.clear(A0_2)
-	mvector3.set_static(A0_2._acceleration, 0, 0, 0)
-	mvector3.set_static(A0_2._angular_acceleration, 0, 0, 0)
-	A0_2._aim_target_position = nil
-	A0_2._fire = false
-	A0_2._miss_dispersion = 0
-	A0_2._self_destroy = false
+FlyerInput.init = function(l_1_0, l_1_1)
+	l_1_0._acceleration = Vector3()
+	l_1_0._angular_acceleration = Vector3()
+	l_1_0:clear()
 end
-function FlyerInput.acceleration(A0_3)
-	local L1_4
-	L1_4 = A0_3._acceleration
-	return L1_4
+
+FlyerInput.clear = function(l_2_0)
+	mvector3.set_static(l_2_0._acceleration, 0, 0, 0)
+	mvector3.set_static(l_2_0._angular_acceleration, 0, 0, 0)
+	l_2_0._aim_target_position = nil
+	l_2_0._fire = false
+	l_2_0._miss_dispersion = 0
+	l_2_0._self_destroy = false
 end
-function FlyerInput.set_acceleration(A0_5, A1_6)
-	assert(A1_6)
-	mvector3.set(A0_5._acceleration, A1_6)
+
+FlyerInput.acceleration = function(l_3_0)
+	return l_3_0._acceleration
 end
-function FlyerInput.angular_acceleration(A0_7)
-	local L1_8
-	L1_8 = A0_7._angular_acceleration
-	return L1_8
+
+FlyerInput.set_acceleration = function(l_4_0, l_4_1)
+	assert(l_4_1)
+	mvector3.set(l_4_0._acceleration, l_4_1)
 end
-function FlyerInput.set_angular_acceleration(A0_9, A1_10)
-	assert(A1_10)
-	mvector3.set(A0_9._angular_acceleration, A1_10)
+
+FlyerInput.angular_acceleration = function(l_5_0)
+	return l_5_0._angular_acceleration
 end
-function FlyerInput.fire(A0_11)
-	local L1_12
-	L1_12 = A0_11._fire
-	return L1_12
+
+FlyerInput.set_angular_acceleration = function(l_6_0, l_6_1)
+	assert(l_6_1)
+	mvector3.set(l_6_0._angular_acceleration, l_6_1)
 end
-function FlyerInput.set_fire(A0_13)
-	local L1_14
-	A0_13._fire = true
+
+FlyerInput.fire = function(l_7_0)
+	return l_7_0._fire
 end
-function FlyerInput.aim_target_position(A0_15)
-	local L1_16
-	L1_16 = A0_15._aim_target_position
-	return L1_16
+
+FlyerInput.set_fire = function(l_8_0)
+	l_8_0._fire = true
 end
-function FlyerInput.set_aim_target_position(A0_17, A1_18)
-	A0_17._aim_target_position = A1_18
+
+FlyerInput.aim_target_position = function(l_9_0)
+	return l_9_0._aim_target_position
 end
-function FlyerInput.eye_target_position(A0_19)
-	local L1_20
-	L1_20 = A0_19._eye_target_position
-	return L1_20
+
+FlyerInput.set_aim_target_position = function(l_10_0, l_10_1)
+	l_10_0._aim_target_position = l_10_1
 end
-function FlyerInput.set_eye_target_position(A0_21, A1_22)
-	A0_21._eye_target_position = A1_22
+
+FlyerInput.eye_target_position = function(l_11_0)
+	return l_11_0._eye_target_position
 end
-function FlyerInput.miss_dispersion(A0_23)
-	local L1_24
-	L1_24 = A0_23._miss_dispersion
-	return L1_24
+
+FlyerInput.set_eye_target_position = function(l_12_0, l_12_1)
+	l_12_0._eye_target_position = l_12_1
 end
-function FlyerInput.set_miss_dispersion(A0_25, A1_26)
-	A0_25._miss_dispersion = A1_26
+
+FlyerInput.miss_dispersion = function(l_13_0)
+	return l_13_0._miss_dispersion
 end
-function FlyerInput.set_defensive(A0_27, A1_28)
-	A0_27._defensive = A1_28
+
+FlyerInput.set_miss_dispersion = function(l_14_0, l_14_1)
+	l_14_0._miss_dispersion = l_14_1
 end
-function FlyerInput.is_defensive(A0_29)
-	local L1_30
-	L1_30 = A0_29._defensive
-	return L1_30
+
+FlyerInput.set_defensive = function(l_15_0, l_15_1)
+	l_15_0._defensive = l_15_1
 end
-function FlyerInput.set_self_destroy(A0_31)
-	local L1_32
-	A0_31._self_destroy = true
+
+FlyerInput.is_defensive = function(l_16_0)
+	return l_16_0._defensive
 end
-function FlyerInput.self_destroy(A0_33)
-	local L1_34
-	L1_34 = A0_33._self_destroy
-	return L1_34
+
+FlyerInput.set_self_destroy = function(l_17_0)
+	l_17_0._self_destroy = true
 end
+
+FlyerInput.self_destroy = function(l_18_0)
+	return l_18_0._self_destroy
+end
+
+

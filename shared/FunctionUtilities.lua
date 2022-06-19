@@ -1,30 +1,35 @@
-local L0_0
-L0_0 = FunctionUtilities
-L0_0 = L0_0 or {}
-FunctionUtilities = L0_0
-L0_0 = FunctionUtilities
-function L0_0.make_segmented_linear_function(A0_1)
-	local L1_2
-	function L1_2(A0_3)
-		local L1_4, L2_5, L3_6, L4_7, L5_8, L6_9, L7_10, L8_11, L9_12, L10_13, L11_14
-		L1_4 = _UPVALUE0_
-		L2_5, L3_6 = nil, nil
-		L5_8 = A0_3 >= L5_8
-		L4_7(L5_8, L6_9)
-		for L7_10, L8_11 in L4_7(L5_8) do
-			L9_12 = L8_11[1]
-			L10_13 = L8_11[2]
-			L11_14 = assert
-			L11_14(not L3_6 or L2_5 < L9_12)
-			if L3_6 and A0_3 <= L9_12 then
-				L11_14 = A0_3 - L2_5
-				L11_14 = L11_14 / (L9_12 - L2_5)
-				return math.lerp(L3_6, L10_13, L11_14)
-			end
-			L2_5 = L9_12
-			L3_6 = L10_13
-		end
-		L4_7(L5_8, L6_9)
-	end
-	return L1_2
+if not FunctionUtilities then
+	FunctionUtilities = {}
 end
+FunctionUtilities.make_segmented_linear_function = function(l_1_0)
+	return function(l_2_0)
+		-- upvalues: l_1_0
+		local l_2_9, l_2_10, l_2_11, l_2_12, l_2_13, l_2_14 = nil
+		local l_2_1 = l_1_0
+		local l_2_2, l_2_3 = nil, nil
+		local l_2_4 = assert
+		l_2_4(l_2_1[1][1] <= l_2_0, "x out of range!")
+		l_2_4 = ipairs
+		l_2_4 = l_2_4(l_2_1)
+		for i_0,i_1 in l_2_4 do
+			local l_2_17 = i_1[1]
+			assert(not l_2_3 or l_2_2 < l_2_17)
+			if l_2_3 and l_2_0 <= l_2_17 then
+				local l_2_20 = i_1[2]
+				local l_2_21 = (l_2_0 - l_2_2) / (l_2_17 - l_2_2)
+				local l_2_22 = math.lerp
+				local l_2_23 = l_2_3
+				return l_2_22(l_2_23, l_2_20, l_2_21)
+			end
+			l_2_2 = l_2_17
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_2_3 = l_2_20
+		end
+		assert(false, "x out of range!")
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+  end
+end
+
+

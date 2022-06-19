@@ -1,10 +1,13 @@
-MenuStateSponsorMovie1 = MenuStateSponsorMovie1 or class(MenuStateMovie)
-function MenuStateSponsorMovie1.init(A0_0)
-	MenuStateMovie.init(A0_0)
-	A0_0:play("alienware")
+if not MenuStateSponsorMovie1 then
+	MenuStateSponsorMovie1 = class(MenuStateMovie)
 end
-function MenuStateSponsorMovie1.next_state(A0_1)
-	local L1_2
-	L1_2 = MenuStateIntroMoviesDone
-	return L1_2
+MenuStateSponsorMovie1.init = function(l_1_0)
+	MenuStateMovie.init(l_1_0)
+	l_1_0:play("alienware")
 end
+
+MenuStateSponsorMovie1.next_state = function(l_2_0)
+	return MenuStateIntroMoviesDone
+end
+
+

@@ -1,292 +1,96 @@
 require("units/beings/player/look/PlayerLook")
 require("units/beings/CharacterControllerInterpreter/DebugBasicAimStateCI")
-FlyerControllerInterpreter = FlyerControllerInterpreter or class(DebugBasicAimStateControllerInterpreter)
-function FlyerControllerInterpreter.init(A0_0, A1_1)
-	DebugBasicAimStateControllerInterpreter.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._input = A0_0._unit:input()
-	A0_0._chassi_body = A1_1:body("default_body")
-	A0_0._prev_xy_acceleration = Vector3(0, 0, 0)
+if not FlyerControllerInterpreter then
+	FlyerControllerInterpreter = class(DebugBasicAimStateControllerInterpreter)
 end
-function FlyerControllerInterpreter.enable(A0_2, A1_3)
-	A0_2._controller = A1_3
+FlyerControllerInterpreter.init = function(l_1_0, l_1_1)
+	DebugBasicAimStateControllerInterpreter.init(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._input = l_1_0._unit:input()
+	l_1_0._chassi_body = l_1_1:body("default_body")
+	l_1_0._prev_xy_acceleration = Vector3(0, 0, 0)
 end
-function FlyerControllerInterpreter.disable(A0_4)
-	local L1_5
-	A0_4._controller = nil
+
+FlyerControllerInterpreter.enable = function(l_2_0, l_2_1)
+	l_2_0._controller = l_2_1
 end
-function FlyerControllerInterpreter.update(A0_6, A1_7, A2_8, A3_9)
-	local L4_10, L5_11, L6_12, L7_13, L8_14, L9_15, L10_16, L11_17, L12_18
-	L4_10 = assert
-	L5_11 = A0_6._controller
-	L4_10(L5_11)
-	L4_10 = A0_6._input
-	L5_11 = L4_10
-	L4_10 = L4_10.clear
-	L4_10(L5_11)
-	L4_10 = DebugBasicAimStateControllerInterpreter
-	L4_10 = L4_10.update
-	L5_11 = A0_6
-	L6_12 = A0_6._controller
-	L7_13 = A3_9
-	L4_10(L5_11, L6_12, L7_13)
-	L5_11 = A1_7
-	L4_10 = A1_7.camera_data
-	L4_10 = L4_10(L5_11)
-	L5_11 = A0_6._controller
-	L6_12 = L5_11
-	L5_11 = L5_11.get_input_axis
-	L7_13 = "move"
-	L5_11 = L5_11(L6_12, L7_13)
-	L6_12 = L5_11.x
-	L7_13 = L4_10.camera_rotation
-	L8_14 = L7_13
-	L7_13 = L7_13.x
-	L7_13 = L7_13(L8_14)
-	L6_12 = L6_12 * L7_13
-	L7_13 = L5_11.y
-	L8_14 = L4_10.camera_rotation
-	L9_15 = L8_14
-	L8_14 = L8_14.y
-	L8_14 = L8_14(L9_15)
-	L7_13 = L7_13 * L8_14
-	L6_12 = L6_12 + L7_13
-	L8_14 = L6_12
-	L7_13 = L6_12.with_z
-	L9_15 = math
-	L9_15 = L9_15.min
-	L10_16 = L6_12.z
-	L10_16 = 4 * L10_16
-	L11_17 = 1
-	L12_18 = L9_15(L10_16, L11_17)
-	L7_13(L8_14, L9_15, L10_16, L11_17, L12_18, L9_15(L10_16, L11_17))
-	L7_13, L8_14 = nil, nil
-	L10_16 = A0_6
-	L9_15 = A0_6._update_movement
-	L11_17 = L6_12
-	L12_18 = A3_9
-	L10_16 = L9_15(L10_16, L11_17, L12_18)
-	L8_14 = L10_16
-	L7_13 = L9_15
-	L9_15 = A0_6._input
-	L10_16 = L9_15
-	L9_15 = L9_15.set_acceleration
-	L11_17 = L7_13
-	L9_15(L10_16, L11_17)
-	L9_15 = A0_6._input
-	L10_16 = L9_15
-	L9_15 = L9_15.set_angular_acceleration
-	L11_17 = L8_14
-	L9_15(L10_16, L11_17)
-	L9_15 = A0_6._unit
-	L10_16 = L9_15
-	L9_15 = L9_15.camera_data
-	L9_15 = L9_15(L10_16)
-	L9_15 = L9_15.camera_position
-	L10_16 = A0_6._unit
-	L11_17 = L10_16
-	L10_16 = L10_16.camera_data
-	L10_16 = L10_16(L11_17)
-	L10_16 = L10_16.camera_rotation
-	L11_17 = L10_16
-	L10_16 = L10_16.y
-	L10_16 = L10_16(L11_17)
-	L11_17 = A0_6._look
-	L12_18 = L11_17
-	L11_17 = L11_17.eye_target_position
-	L11_17 = L11_17(L12_18)
-	L12_18 = A0_6._input
-	L12_18 = L12_18.set_eye_target_position
-	L12_18(L12_18, L11_17)
-	L12_18 = A0_6._look
-	L12_18 = L12_18.eye_target_position
-	L12_18 = L12_18(L12_18)
-	A0_6._input:set_aim_target_position(L12_18)
-	if A0_6._controller:get_input_bool("fire") then
-		A0_6._input:set_fire()
+
+FlyerControllerInterpreter.disable = function(l_3_0)
+	l_3_0._controller = nil
+end
+
+FlyerControllerInterpreter.update = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	assert(l_4_0._controller)
+	l_4_0._input:clear()
+	DebugBasicAimStateControllerInterpreter.update(l_4_0, l_4_0._controller, l_4_3)
+	local l_4_4 = l_4_1:camera_data()
+	local l_4_5 = l_4_0._controller:get_input_axis("move")
+	local l_4_6 = l_4_5.x * l_4_4.camera_rotation:x() + l_4_5.y * l_4_4.camera_rotation:y()
+	l_4_6:with_z(math.min(4 * l_4_6.z, 1))
+	local l_4_7, l_4_8 = nil, nil
+	l_4_7 = l_4_0:_update_movement(l_4_6, l_4_3)
+	l_4_0._input:set_acceleration(l_4_7)
+	l_4_0._input:set_angular_acceleration(l_4_8)
+	local l_4_9 = l_4_0._unit:camera_data().camera_position
+	local l_4_10 = l_4_0._unit:camera_data().camera_rotation:y()
+	local l_4_11 = l_4_0._look:eye_target_position()
+	l_4_0._input:set_eye_target_position(l_4_11)
+	local l_4_12 = l_4_0._look:eye_target_position()
+	l_4_0._input:set_aim_target_position(l_4_12)
+	local l_4_13 = l_4_0._unit:position()
+	if l_4_0._controller:get_input_bool("fire") then
+		l_4_0._input:set_fire()
 	end
-	A0_6._input:set_defensive(A0_6._controller:get_input_bool("zoom"))
-	if A0_6._controller:get_input_pressed("enter_cover") then
-		A0_6._input:set_self_destroy()
+	l_4_0._input:set_defensive(l_4_0._controller:get_input_bool("zoom"))
+	if l_4_0._controller:get_input_pressed("enter_cover") then
+		l_4_0._input:set_self_destroy()
 	end
 end
-function FlyerControllerInterpreter._update_movement(A0_19, A1_20, A2_21)
-	local L3_22, L4_23, L5_24, L6_25, L7_26, L8_27, L9_28, L10_29, L11_30, L12_31, L13_32, L14_33, L15_34, L16_35, L17_36, L18_37, L19_38, L20_39, L21_40, L22_41, L23_42, L24_43, L25_44, L26_45, L27_46, L28_47, L29_48, L30_49, L31_50, L32_51, L33_52, L34_53, L35_54, L36_55, L37_56, L38_57, L39_58
-	L3_22 = A0_19._chassi_body
-	L4_23 = L3_22
-	L3_22 = L3_22.center_of_mass
-	L3_22 = L3_22(L4_23)
-	L4_23 = math
-	L4_23 = L4_23.UP
-	L5_24 = A0_19._chassi_body
-	L6_25 = L5_24
-	L5_24 = L5_24.rotation
-	L5_24 = L5_24(L6_25)
-	L6_25 = L5_24
-	L5_24 = L5_24.y
-	L5_24 = L5_24(L6_25)
-	L6_25 = A0_19._chassi_body
-	L7_26 = L6_25
-	L6_25 = L6_25.rotation
-	L6_25 = L6_25(L7_26)
-	L7_26 = L6_25
-	L6_25 = L6_25.z
-	L6_25 = L6_25(L7_26)
-	L7_26 = A0_19._chassi_body
-	L8_27 = L7_26
-	L7_26 = L7_26.velocity
-	L7_26 = L7_26(L8_27)
-	L8_27 = A0_19._chassi_body
-	L9_28 = L8_27
-	L8_27 = L8_27.angular_velocity
-	L8_27 = L8_27(L9_28)
-	L9_28 = 10
-	L10_29 = 700
-	L11_30 = 70
-	L12_31 = 5
-	L13_32 = 60
-	L14_33 = 2
-	L15_34 = 5
-	L16_35 = 10
-	L17_36 = A1_20
-	L19_38 = L17_36
-	L18_37 = L17_36.with_z
-	L20_39 = 0
-	L18_37 = L18_37(L19_38, L20_39)
-	L19_38 = math
-	L19_38 = L19_38.lerp
-	L20_39 = L14_33
-	L21_40 = L15_34
-	L22_41 = math
-	L22_41 = L22_41.min
-	L24_43 = L7_26
-	L23_42 = L7_26.length
-	L23_42 = L23_42(L24_43)
-	L24_43 = L10_29
-	L22_41 = L22_41(L23_42, L24_43)
-	L22_41 = L22_41 / L10_29
-	L19_38 = L19_38(L20_39, L21_40, L22_41)
-	L21_40 = L7_26
-	L20_39 = L7_26.with_z
-	L22_41 = 0
-	L20_39 = L20_39(L21_40, L22_41)
-	L21_40 = L10_29
-	L23_42 = L18_37
-	L22_41 = L18_37.normalized
-	L22_41 = L22_41(L23_42)
-	L22_41 = L22_41 * L21_40
-	L23_42 = L22_41 - L20_39
-	L25_44 = L23_42
-	L24_43 = L23_42.normalized
-	L24_43 = L24_43(L25_44)
-	L25_44 = math
-	L25_44 = L25_44.min
-	L27_46 = L23_42
-	L26_45 = L23_42.length
-	L26_45 = L26_45(L27_46)
-	L27_46 = L10_29
-	L25_44 = L25_44(L26_45, L27_46)
-	L24_43 = L24_43 * L25_44
-	L24_43 = L24_43 * L19_38
-	L25_44 = math
-	L25_44 = L25_44.lerp
-	L26_45 = A0_19._prev_xy_acceleration
-	L27_46 = L24_43
-	L28_47 = math
-	L28_47 = L28_47.min
-	L29_48 = L9_28 * A2_21
-	L30_49 = 1
-	L39_58 = L28_47(L29_48, L30_49)
-	L25_44 = L25_44(L26_45, L27_46, L28_47, L29_48, L30_49, L31_50, L32_51, L33_52, L34_53, L35_54, L36_55, L37_56, L38_57, L39_58, L28_47(L29_48, L30_49))
-	L24_43 = L25_44
-	A0_19._prev_xy_acceleration = L24_43
-	L25_44 = L17_36.z
-	L25_44 = L10_29 * L25_44
-	L26_45 = math
-	L26_45 = L26_45.UP
-	L27_46 = math
-	L27_46 = L27_46.clamp
-	L28_47 = L7_26.z
-	L29_48 = -L10_29
-	L30_49 = L10_29
-	L27_46 = L27_46(L28_47, L29_48, L30_49)
-	L27_46 = L25_44 - L27_46
-	L26_45 = L26_45 * L27_46
-	L26_45 = L26_45 * L16_35
-	L27_46 = World
-	L28_47 = L27_46
-	L27_46 = L27_46.gravity
-	L27_46 = L27_46(L28_47)
-	L27_46 = -0.5 * L27_46
-	L27_46 = L27_46 + L24_43
-	L27_46 = L27_46 + L26_45
-	L28_47 = L19_38 * L10_29
-	L30_49 = L24_43
-	L29_48 = L24_43.length
-	L29_48 = L29_48(L30_49)
-	L29_48 = L29_48 / L28_47
-	L30_49 = math
-	L30_49 = L30_49.lerp
-	L31_50 = 0
-	L32_51 = L11_30
-	L33_52 = L29_48
-	L30_49 = L30_49(L31_50, L32_51, L33_52)
-	L32_51 = L4_23
-	L31_50 = L4_23.rotate_with
-	L33_52 = Rotation
-	L35_54 = L4_23
-	L34_53 = L4_23.cross
-	L36_55 = L24_43
-	L34_53 = L34_53(L35_54, L36_55)
-	L35_54 = L30_49
-	L39_58 = L33_52(L34_53, L35_54)
-	L31_50 = L31_50(L32_51, L33_52, L34_53, L35_54, L36_55, L37_56, L38_57, L39_58, L33_52(L34_53, L35_54))
-	L4_23 = L31_50
-	A0_19._prev_wanted_up = L4_23
-	L31_50 = 5
-	L32_51 = 3
-	L33_52 = 30
-	L34_53 = A0_19._chassi_body
-	L35_54 = L34_53
-	L34_53 = L34_53.position
-	L34_53 = L34_53(L35_54)
-	L36_55 = L6_25
-	L35_54 = L6_25.dot
-	L37_56 = L4_23
-	L35_54 = L35_54(L36_55, L37_56)
-	L37_56 = L6_25
-	L36_55 = L6_25.cross
-	L38_57 = L4_23
-	L36_55 = L36_55(L37_56, L38_57)
-	L37_56 = L36_55
-	L36_55 = L36_55.normalized
-	L36_55 = L36_55(L37_56)
-	L37_56 = math
-	L37_56 = L37_56.lerp
-	L38_57 = L31_50
-	L39_58 = 0
-	L37_56 = L37_56(L38_57, L39_58, math.pow(L35_54, 20))
-	L36_55 = L36_55 * L37_56
-	L37_56 = A0_19._look
-	L38_57 = L37_56
-	L37_56 = L37_56.eye_target_position
-	L37_56 = L37_56(L38_57)
-	L38_57 = math
-	L38_57 = L38_57.clamp
-	L39_58 = L37_56 - L34_53
-	L39_58 = L39_58.to_polar_with_reference
-	L39_58 = L39_58(L39_58, L5_24, L6_25)
-	L39_58 = L39_58.spin
-	L38_57 = L38_57(L39_58, -L33_52, L33_52)
-	L39_58 = math
-	L39_58 = L39_58.lerp
-	L39_58 = L39_58(L31_50, -L31_50, (L33_52 - L38_57) / (2 * L33_52))
-	L39_58 = L6_25 * L39_58
-	L36_55 = L36_55 + L39_58
-	L39_58 = L8_27.normalized
-	L39_58 = L39_58(L8_27)
-	L39_58 = L39_58 * math.min(L8_27:length(), L31_50)
-	L39_58 = L36_55 - L39_58
-	L39_58 = L39_58 * L32_51
-	return L27_46, L39_58
+
+FlyerControllerInterpreter._update_movement = function(l_5_0, l_5_1, l_5_2)
+	local l_5_3 = l_5_0._chassi_body:center_of_mass()
+	local l_5_4 = math.UP
+	local l_5_5 = l_5_0._chassi_body:rotation():y()
+	local l_5_6 = l_5_0._chassi_body:rotation():z()
+	local l_5_7 = l_5_0._chassi_body:velocity()
+	local l_5_8 = l_5_0._chassi_body:angular_velocity()
+	local l_5_9 = 10
+	local l_5_10 = 700
+	local l_5_11 = 70
+	local l_5_12 = 5
+	local l_5_13 = 60
+	local l_5_14 = 2
+	local l_5_15 = 5
+	local l_5_16 = 10
+	local l_5_17 = l_5_1
+	local l_5_18 = l_5_17:with_z(0)
+	local l_5_19 = math.lerp(l_5_14, l_5_15, math.min(l_5_7:length(), l_5_10) / l_5_10)
+	local l_5_20 = l_5_7:with_z(0)
+	local l_5_21 = l_5_10
+	local l_5_22 = l_5_18:normalized() * l_5_21
+	local l_5_23 = l_5_22 - l_5_20
+	local l_5_24 = l_5_23:normalized() * math.min(l_5_23:length(), l_5_10) * l_5_19
+	l_5_24 = math.lerp(l_5_0._prev_xy_acceleration, l_5_24, math.min(l_5_9 * l_5_2, 1))
+	l_5_0._prev_xy_acceleration = l_5_24
+	local l_5_25 = l_5_10 * l_5_17.z
+	local l_5_26 = math.UP * (l_5_25 - math.clamp(l_5_7.z, -l_5_10, l_5_10)) * l_5_16
+	local l_5_27 = -0.5 * World:gravity() + l_5_24 + l_5_26
+	local l_5_28 = l_5_19 * l_5_10
+	local l_5_29 = l_5_24:length() / l_5_28
+	local l_5_30 = math.lerp(0, l_5_11, l_5_29)
+	l_5_4 = l_5_4:rotate_with(Rotation(l_5_4:cross(l_5_24), l_5_30))
+	l_5_0._prev_wanted_up = l_5_4
+	local l_5_31 = 5
+	local l_5_32 = 3
+	local l_5_33 = 30
+	local l_5_34 = l_5_0._chassi_body:position()
+	local l_5_35 = l_5_6:dot(l_5_4)
+	local l_5_37 = l_5_6:cross(l_5_4):normalized() * math.lerp(l_5_31, 0, math.pow(l_5_35, 20))
+	local l_5_38 = nil
+	l_5_37 = l_5_37 + l_5_6 * math.lerp(l_5_31, -l_5_31, (l_5_33 - math.clamp(l_5_0._look:eye_target_position() - l_5_34:to_polar_with_reference(l_5_5, l_5_6).spin, -l_5_33, l_5_33)) / (2 * l_5_33))
+	local l_5_36 = nil
+	local l_5_39 = (l_5_37 - l_5_8:normalized() * math.min(l_5_8:length(), l_5_31)) * l_5_32
+	return l_5_27, l_5_39
 end
+
+

@@ -1,6 +1,10 @@
 require("managers/actionmanagers/AMNpcStart")
-AMLewisStart = AMLewisStart or class(AMNpcStart)
-AMLewisStart.unit_type = "lewis"
-function AMLewisStart.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, AMLewisStart.unit_type)
+if not AMLewisStart then
+	AMLewisStart = class(AMNpcStart)
 end
+AMLewisStart.unit_type = "lewis"
+AMLewisStart.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, AMLewisStart.unit_type)
+end
+
+

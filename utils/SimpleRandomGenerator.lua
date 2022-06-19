@@ -1,15 +1,13 @@
-SimpleRandomGenerator = SimpleRandomGenerator or class()
-function SimpleRandomGenerator.init(A0_0, A1_1)
-	A0_0._rand_number = A1_1
+if not SimpleRandomGenerator then
+	SimpleRandomGenerator = class()
 end
-function SimpleRandomGenerator.rand(A0_2)
-	local L1_3
-	L1_3 = A0_2._rand_number
-	L1_3 = L1_3 + 1
-	L1_3 = L1_3 * 75
-	L1_3 = L1_3 - 1
-	L1_3 = L1_3 % 65537
-	A0_2._rand_number = L1_3
-	L1_3 = A0_2._rand_number
-	return L1_3
+SimpleRandomGenerator.init = function(l_1_0, l_1_1)
+	l_1_0._rand_number = l_1_1
 end
+
+SimpleRandomGenerator.rand = function(l_2_0)
+	l_2_0._rand_number = ((l_2_0._rand_number + 1) * 75 - 1) % 65537
+	return l_2_0._rand_number
+end
+
+

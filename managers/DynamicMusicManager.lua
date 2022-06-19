@@ -1,48 +1,58 @@
 require("shared/AverageOverTime")
-DynamicMusicManager = DynamicMusicManager or class()
-function DynamicMusicManager.init(A0_0)
-	A0_0._average_level = AverageOverTime:new(70)
-	A0_0._action_level = 0
-	A0_0.LEVEL_NONE = 0
-	A0_0.LEVEL_AMBIENCE = 1
-	A0_0.LEVEL_ACTION = 2
-	A0_0.LEVEL_INTENSE = 3
-	A0_0._level = A0_0.LEVEL_NONE
-	A0_0._use_action_level = false
+if not DynamicMusicManager then
+	DynamicMusicManager = class()
 end
-function DynamicMusicManager.update(A0_1, A1_2)
-	if not A0_1._use_action_level then
-		return
+DynamicMusicManager.init = function(l_1_0)
+	l_1_0._average_level = AverageOverTime:new(70)
+	l_1_0._action_level = 0
+	l_1_0.LEVEL_NONE = 0
+	l_1_0.LEVEL_AMBIENCE = 1
+	l_1_0.LEVEL_ACTION = 2
+	l_1_0.LEVEL_INTENSE = 3
+	l_1_0._level = l_1_0.LEVEL_NONE
+	l_1_0._use_action_level = false
+end
+
+DynamicMusicManager.update = function(l_2_0, l_2_1)
+	if not l_2_0._use_action_level then
+		return 
 	end
-	A0_1._average_level:add(A0_1._action_level * A1_2, A1_2)
-	if not A0_1._average_level:is_complete() then
-		return
+	l_2_0._average_level:add(l_2_0._action_level * l_2_1, l_2_1)
+	if not l_2_0._average_level:is_complete() then
+		return 
 	end
-	if A0_1._average_level:value() > 0.8 then
-		A0_1:select_if_stable(A0_1.LEVEL_INTENSE)
-	elseif A0_1._average_level:value() > 0.5 then
-		A0_1:select_if_stable(A0_1.LEVEL_ACTION)
+	if l_2_0._average_level:value() > 0.8 then
+		l_2_0:select_if_stable(l_2_0.LEVEL_INTENSE)
 	else
-		A0_1:select_if_stable(A0_1.LEVEL_AMBIENCE)
+		if l_2_0._average_level:value() > 0.5 then
+			l_2_0:select_if_stable(l_2_0.LEVEL_ACTION)
+		end
+	else
+		l_2_0:select_if_stable(l_2_0.LEVEL_AMBIENCE)
 	end
 end
-function DynamicMusicManager.select_if_stable(A0_3, A1_4)
-	local L2_5
-	if A1_4 == A0_3._level then
-		return
+
+DynamicMusicManager.select_if_stable = function(l_3_0, l_3_1)
+	local l_3_2 = nil
+	if l_3_1 == l_3_0._level then
+		return 
 	end
-	A0_3._level = A1_4
-	if A1_4 == A0_3.LEVEL_AMBIENCE then
-		L2_5 = "normal"
-	elseif A1_4 == A0_3.LEVEL_ACTION then
-		L2_5 = "action"
-	elseif A1_4 == A0_3.LEVEL_INTENSE then
-		L2_5 = "panic"
+	l_3_0._level = l_3_1
+	if l_3_1 == l_3_0.LEVEL_AMBIENCE then
+		l_3_2 = "normal"
+	elseif l_3_1 == l_3_0.LEVEL_ACTION then
+		l_3_2 = "action"
+	elseif l_3_1 == l_3_0.LEVEL_INTENSE then
+		l_3_2 = "panic"
 	end
-	managers.music2:set_mode(L2_5)
+	managers.music2:set_mode(l_3_2)
 end
-function DynamicMusicManager.set_action_level(A0_6, A1_7)
-	assert(A1_7 >= 0 and A1_7 <= 1)
-	A0_6._action_level = A1_7
-	A0_6._use_action_level = true
+
+DynamicMusicManager.set_action_level = function(l_4_0, l_4_1)
+	local l_4_2 = assert
+	l_4_2(l_4_1 >= 0 and l_4_1 <= 1)
+	l_4_0._action_level = l_4_1
+	l_4_0._use_action_level = true
 end
+
+

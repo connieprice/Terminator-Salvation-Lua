@@ -1,15 +1,20 @@
 require("units/beings/player/states/PlayerMovementState")
-PlayerGrabbed = PlayerGrabbed or class(PlayerMovementState)
-function PlayerGrabbed.init(A0_0, A1_1, A2_2)
-	PlayerMovementState.init(A0_0, A1_1, "PlayerGrabbed")
-	A0_0._anim_state = A2_2
+if not PlayerGrabbed then
+	PlayerGrabbed = class(PlayerMovementState)
 end
-function PlayerGrabbed.enter(A0_3)
-	PlayerMovementState.enter(A0_3)
-	A0_3._unit:kill_mover()
-	A0_3._unit:set_driving("orientation_object")
-	if A0_3._anim_state then
-		A0_3._unit:anim_state_machine():play(A0_3._anim_state)
+PlayerGrabbed.init = function(l_1_0, l_1_1, l_1_2)
+	PlayerMovementState.init(l_1_0, l_1_1, "PlayerGrabbed")
+	l_1_0._anim_state = l_1_2
+end
+
+PlayerGrabbed.enter = function(l_2_0)
+	PlayerMovementState.enter(l_2_0)
+	l_2_0._unit:kill_mover()
+	l_2_0._unit:set_driving("orientation_object")
+	if l_2_0._anim_state then
+		l_2_0._unit:anim_state_machine():play(l_2_0._anim_state)
 	end
-	managers.unit_scripting:unit_dead(A0_3._unit)
+	managers.unit_scripting:unit_dead(l_2_0._unit)
 end
+
+

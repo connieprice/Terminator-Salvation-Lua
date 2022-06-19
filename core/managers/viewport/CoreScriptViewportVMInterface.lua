@@ -1,34 +1,38 @@
 core:module("CoreScriptViewportVMInterface")
 core:require_module("CoreClass")
-ScriptViewportVMInterface = ScriptViewportVMInterface or CoreClass.class()
-function ScriptViewportVMInterface.init(A0_0, A1_1)
-	A0_0._host = A1_1
+if not ScriptViewportVMInterface then
+	ScriptViewportVMInterface = CoreClass.class()
 end
-function ScriptViewportVMInterface.render(A0_2)
-	A0_2._host:_render()
+ScriptViewportVMInterface.init = function(l_1_0, l_1_1)
+	l_1_0._host = l_1_1
 end
-function ScriptViewportVMInterface.update(A0_3, A1_4, A2_5)
-	A0_3._host:_update(A1_4, A2_5)
+
+ScriptViewportVMInterface.render = function(l_2_0)
+	l_2_0._host:_render()
 end
-function ScriptViewportVMInterface.refeed(A0_6)
-	A0_6._host:_refeed()
+
+ScriptViewportVMInterface.update = function(l_3_0, l_3_1, l_3_2)
+	l_3_0._host:_update(l_3_1, l_3_2)
 end
-function ScriptViewportVMInterface.camera_call(A0_7, A1_8, ...)
-	local L4_10, L5_11, L6_12
-	L4_10 = A0_7._host
-	L5_11 = L4_10
-	L4_10 = L4_10._camera_call
-	L6_12 = A1_8
-	L4_10(L5_11, L6_12, ...)
+
+ScriptViewportVMInterface.refeed = function(l_4_0)
+	l_4_0._host:_refeed()
 end
-function ScriptViewportVMInterface.mul_camera_far(A0_13, A1_14)
-	A0_13._host:_mul_camera_far(A1_14)
+
+ScriptViewportVMInterface.camera_call = function(l_5_0, l_5_1, ...)
+	l_5_0._host:_camera_call(l_5_1, ...)
 end
-function ScriptViewportVMInterface.vp(A0_15)
-	local L1_16
-	L1_16 = A0_15._host
-	return L1_16
+
+ScriptViewportVMInterface.mul_camera_far = function(l_6_0, l_6_1)
+	l_6_0._host:_mul_camera_far(l_6_1)
 end
-function ScriptViewportVMInterface.destroy(A0_17)
-	A0_17._host:destroy()
+
+ScriptViewportVMInterface.vp = function(l_7_0)
+	return l_7_0._host
 end
+
+ScriptViewportVMInterface.destroy = function(l_8_0)
+	l_8_0._host:destroy()
+end
+
+

@@ -1,43 +1,52 @@
 require("units/beings/rail/RailDamage")
-BikerDamage = BikerDamage or class(RailDamage)
-BikerDamage._BIKE = {
-	bodies = {
-		{
-			body_names = {
-				"b_chassi_ray"
-			},
-			name = "whole_darn_bike",
-			destroyed_sequence_name = "kill_vehicle_spin",
-			hp = 77777
-		}
-	},
-	unit_destroyed_sequence = "kill_vehicle_spin",
-	bullseye_kill_sequence = "kill_vehicle_explode",
-	damage_unit = true,
-	unit_damage_steps = {
-		{damage = 0, sequence_name = nil},
-		{
-			damage = 0.05,
-			sequence_name = "light_damage"
-		},
-		{
-			damage = 0.49,
-			sequence_name = "severe_damage"
-		}
-	}
-}
-function BikerDamage.init(A0_0, A1_1, A2_2, A3_3, A4_4, A5_5, A6_6)
-	RailDamage.init(A0_0, A1_1, BodyDamage, A3_3, A4_4, A5_5, A6_6)
-	A0_0:_setup_bodies()
-	A0_0._outline_weakspots = {}
-	A0_0._outline_weakspots[1] = {
-		body_name = "b_chassi_ray",
-		obj = A0_0._unit:get_object("g_outline_biker")
-	}
+if not BikerDamage then
+	BikerDamage = class(RailDamage)
 end
-function BikerDamage._setup_bodies(A0_7)
-	RailDamage._setup_body_group(A0_7, BikerDamage._BIKE)
+local l_0_0 = BikerDamage
+local l_0_1 = {}
+local l_0_2 = {}
+local l_0_3 = {}
+local l_0_4 = {}
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+ -- DECOMPILER ERROR: Unhandled construct in list (SETLIST)
+
+local l_0_5 = {}
+l_0_5.damage = 0.49
+l_0_5.sequence_name = "severe_damage"
+l_0_4, l_0_3 = {damage = 0.05, sequence_name = "light_damage"}, {damage = 0, sequence_name = nil}
+l_0_1.unit_damage_steps, l_0_2 = l_0_2, {l_0_3, l_0_4, l_0_5}
+l_0_0._BIKE = l_0_1
+l_0_0 = BikerDamage
+l_0_1 = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4, l_1_5, l_1_6)
+	RailDamage.init(l_1_0, l_1_1, BodyDamage, l_1_3, l_1_4, l_1_5, l_1_6)
+	l_1_0:_setup_bodies()
+	l_1_0._outline_weakspots = {}
+	local l_1_7 = l_1_0._outline_weakspots
+	local l_1_8 = {}
+	l_1_8.body_name = "b_chassi_ray"
+	l_1_8.obj = l_1_0._unit:get_object("g_outline_biker")
+	l_1_7[1] = l_1_8
 end
-function BikerDamage.check_outline_weakspot(A0_8, A1_9)
-	if A0_8._outline_weakspots then
-		for 
+
+l_0_0.init = l_0_1
+l_0_0 = BikerDamage
+l_0_1 = function(l_2_0)
+	RailDamage._setup_body_group(l_2_0, BikerDamage._BIKE)
+end
+
+l_0_0._setup_bodies = l_0_1
+l_0_0 = BikerDamage
+l_0_1 = function(l_3_0, l_3_1)
+	local l_3_5, l_3_6, l_3_7, l_3_8, l_3_9, l_3_10 = nil
+	if l_3_0._outline_weakspots then
+		for i_0,i_1 in pairs(l_3_0._outline_weakspots) do
+			if i_1.body_name == l_3_1 then
+				return {i_1.obj}
+			end
+		end
+	end
+end
+
+l_0_0.check_outline_weakspot = l_0_1
+

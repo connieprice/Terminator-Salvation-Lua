@@ -1,52 +1,44 @@
-CoreConfigManager = CoreConfigManager or class()
-function CoreConfigManager.init(A0_0, A1_1)
-	A0_0._configs = {}
-	A0_0:read_config(A1_1)
+if not CoreConfigManager then
+	CoreConfigManager = class()
 end
-function CoreConfigManager.read_config(A0_2, A1_3)
-	local L2_4, L3_5, L4_6, L5_7, L6_8, L7_9
-	L2_4 = File
-	L2_4 = L2_4.parse_xml
-	L2_4 = L2_4(L3_5, L4_6)
-	if L2_4 then
-		if L3_5 == "config_manager" then
-			for L6_8 in L3_5(L4_6) do
-				L7_9 = L6_8.name
-				L7_9 = L7_9(L6_8)
-				if L7_9 == "preload" then
-					L7_9 = L6_8.parameter
-					L7_9 = L7_9(L6_8, "file")
-					if L7_9 ~= "" then
-						L7_9 = cat_print
-						L7_9("config_manager", "[CoreConfigManager] Preload: " .. L6_8:parameter("file"))
-						L7_9 = File
-						L7_9 = L7_9.new_parse_xml
-						L7_9 = L7_9(L7_9, L6_8:parameter("file"))
-						A0_2:add_config(L6_8:parameter("file"), L7_9)
-					end
-				end
+CoreConfigManager.init = function(l_1_0, l_1_1)
+	l_1_0._configs = {}
+	l_1_0:read_config(l_1_1)
+end
+
+CoreConfigManager.read_config = function(l_2_0, l_2_1)
+	local l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_11, l_2_12 = nil
+	local l_2_2 = File:parse_xml(l_2_1)
+	if l_2_2 and l_2_2:name() == "config_manager" then
+		for i_0 in l_2_2:children() do
+			if i_0:name() == "preload" and i_0:parameter("file") ~= "" then
+				cat_print("config_manager", "[CoreConfigManager] Preload: " .. i_0:parameter("file"))
+				l_2_0:add_config(l_2_13:parameter("file"), File:new_parse_xml(i_0:parameter("file")))
 			end
 		end
 	end
 end
-function CoreConfigManager.parse_xml(A0_10, A1_11)
-	local L2_12
-	L2_12 = A0_10.get_config
-	L2_12 = L2_12(A0_10, A1_11)
-	if not L2_12 then
-		cat_print("config_manager", "[CoreConfigManager] Could not find '" .. A1_11 .. "' Loading it now!")
-		L2_12 = File:new_parse_xml(A1_11)
-		if L2_12 then
-			A0_10:add_config(A1_11, L2_12)
-		else
-			cat_print("config_manager", "[CoreConfigManager] Can not find '" .. A1_11 .. "'!")
+
+CoreConfigManager.parse_xml = function(l_3_0, l_3_1)
+	local l_3_2 = l_3_0:get_config(l_3_1)
+	if not l_3_2 then
+		cat_print("config_manager", "[CoreConfigManager] Could not find '" .. l_3_1 .. "' Loading it now!")
+		l_3_2 = File:new_parse_xml(l_3_1)
+		if l_3_2 then
+			l_3_0:add_config(l_3_1, l_3_2)
 		end
+	else
+		cat_print("config_manager", "[CoreConfigManager] Can not find '" .. l_3_1 .. "'!")
 	end
-	return L2_12
+	return l_3_2
 end
-function CoreConfigManager.add_config(A0_13, A1_14, A2_15)
-	A0_13._configs[A1_14] = A2_15
+
+CoreConfigManager.add_config = function(l_4_0, l_4_1, l_4_2)
+	l_4_0._configs[l_4_1] = l_4_2
 end
-function CoreConfigManager.get_config(A0_16, A1_17)
-	return A0_16._configs[A1_17]
+
+CoreConfigManager.get_config = function(l_5_0, l_5_1)
+	return l_5_0._configs[l_5_1]
 end
+
+

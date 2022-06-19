@@ -1,33 +1,15 @@
-local L0_0
-L0_0 = MenuUtility
-L0_0 = L0_0 or {}
-MenuUtility = L0_0
-L0_0 = MenuUtility
-function L0_0.safe_rect()
-	local L0_1, L1_2, L2_3, L3_4
-	L0_1 = 1280
-	L1_2 = core_setup
-	L1_2 = L1_2.aspect_ratio
-	L1_2 = 1.7777778 / L1_2
-	L1_2 = 720 * L1_2
-	L2_3 = {}
-	L3_4 = tweak_data
-	L3_4 = L3_4.SAFE_RECT
-	L3_4 = L3_4.x
-	L3_4 = L0_1 * L3_4
-	L2_3.w = L3_4
-	L3_4 = tweak_data
-	L3_4 = L3_4.SAFE_RECT
-	L3_4 = L3_4.y
-	L3_4 = L1_2 * L3_4
-	L2_3.h = L3_4
-	L3_4 = L2_3.w
-	L3_4 = L0_1 - L3_4
-	L3_4 = 0.5 * L3_4
-	L2_3.x = L3_4
-	L3_4 = L2_3.h
-	L3_4 = L1_2 - L3_4
-	L3_4 = 0.5 * L3_4
-	L2_3.y = L3_4
-	return L2_3
+if not MenuUtility then
+	MenuUtility = {}
 end
+MenuUtility.safe_rect = function()
+	local l_1_0 = 1280
+	local l_1_1 = 720 * (1.7777778 / core_setup.aspect_ratio)
+	local l_1_2 = {}
+	l_1_2.w = l_1_0 * tweak_data.SAFE_RECT.x
+	l_1_2.h = l_1_1 * tweak_data.SAFE_RECT.y
+	l_1_2.x = 0.5 * (l_1_0 - l_1_2.w)
+	l_1_2.y = 0.5 * (l_1_1 - l_1_2.h)
+	return l_1_2
+end
+
+

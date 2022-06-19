@@ -1,265 +1,214 @@
 require("network/session_finder/LanSessionFinder")
 require("world/WorldLoader")
-Peer = Peer or class()
-function Peer.init(A0_0)
-	Network:set_receiver("Peer", A0_0)
-	A0_0:clear()
+if not Peer then
+	Peer = class()
 end
-function Peer.destroy(A0_1)
-	local L1_2
+Peer.init = function(l_1_0)
+	Network:set_receiver("Peer", l_1_0)
+	l_1_0:clear()
 end
-function Peer.save(A0_3, A1_4)
-	local L2_5
-	L2_5 = A0_3._level_unique_id
-	A1_4.level_unique_id = L2_5
-	L2_5 = A0_3._host
-	A1_4.host = L2_5
+
+Peer.destroy = function(l_2_0)
 end
-function Peer.load(A0_6, A1_7)
-	local L2_8
-	L2_8 = A1_7.level_unique_id
-	A0_6._level_unique_id = L2_8
-	L2_8 = A1_7.host
-	A0_6._host = L2_8
-	A0_6._session_finder = nil
-	A0_6._session_infos = nil
+
+Peer.save = function(l_3_0, l_3_1)
+	l_3_1.level_unique_id = l_3_0._level_unique_id
+	l_3_1.host = l_3_0._host
 end
-function Peer.clear(A0_9)
-	A0_9._level_unique_id = 0
-	A0_9._debug_auto_spawn_position = nil
-	A0_9._debug_auto_spawn_rotation = nil
-	if A0_9._debug_unit then
-		A0_9._debug_unit:set_slot(0)
+
+Peer.load = function(l_4_0, l_4_1)
+	l_4_0._level_unique_id = l_4_1.level_unique_id
+	l_4_0._host = l_4_1.host
+	l_4_0._session_finder = nil
+	l_4_0._session_infos = nil
+end
+
+Peer.clear = function(l_5_0)
+	l_5_0._level_unique_id = 0
+	l_5_0._debug_auto_spawn_position = nil
+	l_5_0._debug_auto_spawn_rotation = nil
+	if l_5_0._debug_unit then
+		l_5_0._debug_unit:set_slot(0)
 	end
-	A0_9._debug_unit = nil
+	l_5_0._debug_unit = nil
 end
-function Peer.update(A0_10, A1_11)
+
+Peer.update = function(l_6_0, l_6_1)
 end
-function Peer.find_sessions(A0_12)
-	assert(A0_12._state == A0_12.STATE_IDLE)
-	A0_12._session_finder = LanSessionFinder:new()
-	A0_12._state = A0_12.STATE_LAN_SEARCHING_FOR_SESSIONS
+
+Peer.find_sessions = function(l_7_0)
+	local l_7_1 = assert
+	l_7_1(l_7_0._state == l_7_0.STATE_IDLE)
+	l_7_1 = LanSessionFinder
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_0._session_finder = l_7_1
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_0._state = l_7_1
 end
-function Peer.update_find_sessions(A0_13, A1_14)
-	assert(A0_13._session_finder)
-	A0_13._session_finder:update(A1_14)
-	if A0_13._session_finder:is_done() then
-		A0_13._session_infos = A0_13._session_finder:session_infos()
-		A0_13._state = A0_13.STATE_LAN_SESSIONS_FOUND
+
+Peer.update_find_sessions = function(l_8_0, l_8_1)
+	assert(l_8_0._session_finder)
+	l_8_0._session_finder:update(l_8_1)
+	if l_8_0._session_finder:is_done() then
+		l_8_0._session_infos = l_8_0._session_finder:session_infos()
+		l_8_0._state = l_8_0.STATE_LAN_SESSIONS_FOUND
 	end
 end
-function Peer.session_infos(A0_15)
-	local L1_16
-	L1_16 = A0_15._session_infos
-	return L1_16
+
+Peer.session_infos = function(l_9_0)
+	return l_9_0._session_infos
 end
-function Peer.join_session(A0_17, A1_18)
-	if A1_18 == Network:self() then
-		A0_17._host = Network:self()
+
+Peer.join_session = function(l_10_0, l_10_1)
+	if l_10_1 == Network:self() then
+		l_10_0._host = Network:self()
 	else
-		A0_17._host = Network:server()
+		l_10_0._host = Network:server()
 	end
-	A0_17._host:session_request_join(Network:hostname())
-	assert(A0_17._host)
+	l_10_0._host:session_request_join(Network:hostname())
+	assert(l_10_0._host)
 end
-function Peer.is_connected(A0_19)
-	local L1_20
-	L1_20 = true
-	return L1_20
+
+Peer.is_connected = function(l_11_0)
+	return true
 end
-function Peer.host_rpc(A0_21)
-	local L1_22
-	L1_22 = A0_21._host
-	return L1_22
+
+Peer.host_rpc = function(l_12_0)
+	return l_12_0._host
 end
-function Peer.peers_rpc(A0_23)
-	return Network:clients()
+
+Peer.peers_rpc = function(l_13_0)
+	local l_13_1, l_13_2 = Network:clients, Network
+	return l_13_1(l_13_2)
 end
-function Peer.wants_to_load_world(A0_24)
-	return A0_24._state == A0_24.STATE_WAITING_FOR_LOAD
+
+Peer.wants_to_load_world = function(l_14_0)
+	return l_14_0._state == l_14_0.STATE_WAITING_FOR_LOAD
 end
-function Peer.ack_load_world(A0_25)
-	A0_25._state = A0_25.START_LOAD
+
+Peer.ack_load_world = function(l_15_0)
+	l_15_0._state = l_15_0.START_LOAD
 end
-function Peer.game_loaded(A0_26)
-	A0_26._state = A0_26.STATE_WAITING_FOR_SYNC
-	A0_26._sync_timer = 0
-	A0_26._host:game_loaded(A0_26._level_unique_id)
+
+Peer.game_loaded = function(l_16_0)
+	l_16_0._state = l_16_0.STATE_WAITING_FOR_SYNC
+	l_16_0._sync_timer = 0
+	l_16_0._host:game_loaded(l_16_0._level_unique_id)
 end
-function Peer.game_synced(A0_27)
-	local L1_28, L2_29, L3_30
-	L1_28 = A0_27._host
-	L2_29 = L1_28
-	L1_28 = L1_28.game_synced
-	L3_30 = A0_27._level_unique_id
-	L1_28(L2_29, L3_30)
-	L1_28 = Global
-	L1_28 = L1_28.auto_spawn
-	if L1_28 then
-		L1_28 = "john_connor"
-		L2_29 = "normal"
-		L3_30 = World
-		L3_30 = L3_30.spawn_unit
-		L3_30 = L3_30(L3_30, L1_28, Global.auto_spawn.position)
-		A0_27._debug_unit = L3_30
-		L3_30 = A0_27._debug_unit
-		L3_30 = L3_30.ai_nerve_system
-		L3_30 = L3_30(L3_30)
-		L3_30 = L3_30.setup
-		L3_30(L3_30, L2_29)
-		L3_30 = 1
-		managers.player_slot:set_unit(L3_30, A0_27._debug_unit, L1_28, Global.auto_spawn.position, Global.auto_spawn.rotation, true, true)
-		managers.unit_scripting:register_unit(L1_28, A0_27._debug_unit)
-		managers.unit_scripting:register_alias(L1_28, "character_slot1")
-		managers.drama_scene:set_unit_name_to_script_name(L1_28, L1_28)
+
+Peer.game_synced = function(l_17_0)
+	l_17_0._host:game_synced(l_17_0._level_unique_id)
+	if Global.auto_spawn then
+		local l_17_1 = "john_connor"
+		local l_17_2 = "normal"
+		l_17_0._debug_unit = World:spawn_unit(l_17_1, Global.auto_spawn.position)
+		l_17_0._debug_unit:ai_nerve_system():setup(l_17_2)
+		local l_17_3 = 1
+		managers.player_slot:set_unit(l_17_3, l_17_0._debug_unit, l_17_1, Global.auto_spawn.position, Global.auto_spawn.rotation, true, true)
+		managers.unit_scripting:register_unit(l_17_1, l_17_0._debug_unit)
+		managers.unit_scripting:register_alias(l_17_1, "character_slot1")
+		managers.drama_scene:set_unit_name_to_script_name(l_17_1, l_17_1)
 		Global.auto_spawn = nil
 	end
 end
-function Peer.unit_save(A0_31, A1_32, A2_33, A3_34)
-	managers.unit_control_id:unit_from_id(A1_32):control():load_join(A2_33)
+
+Peer.unit_save = function(l_18_0, l_18_1, l_18_2, l_18_3)
+	local l_18_4 = managers.unit_control_id:unit_from_id(l_18_1)
+	l_18_4:control():load_join(l_18_2)
 end
-function Peer.save_units(A0_35)
-	local L1_36
-	L1_36 = {}
-	return L1_36
+
+Peer.save_units = function(l_19_0)
+	return {}
 end
-function Peer.load_units(A0_37, A1_38)
+
+Peer.load_units = function(l_20_0, l_20_1)
 end
-function Peer.game_load(A0_39, A1_40, A2_41, A3_42, A4_43)
-	A0_39._level_unique_id = A1_40
-	A0_39._level_info = managers.world_info:info_from_name(A2_41)
-	if not A0_39._level_info then
-		print("WARNING! level " .. A2_41 .. " has no id! Please edit levels.xml")
+
+Peer.game_load = function(l_21_0, l_21_1, l_21_2, l_21_3, l_21_4)
+	l_21_0._level_unique_id = l_21_1
+	l_21_0._level_info = managers.world_info:info_from_name(l_21_2)
+	if not l_21_0._level_info then
+		print("WARNING! level " .. l_21_2 .. " has no id! Please edit levels.xml")
 	end
-	A0_39._state = A0_39.STATE_WAITING_FOR_LOAD
-	managers.game_transition:request_load(A2_41, A3_42)
+	l_21_0._state = l_21_0.STATE_WAITING_FOR_LOAD
+	managers.game_transition:request_load(l_21_2, l_21_3)
 end
-function Peer.level_id(A0_44)
-	local L1_45
-	L1_45 = A0_44._level_info
-	if not L1_45 then
-		L1_45 = nil
-		return L1_45
+
+Peer.level_id = function(l_22_0)
+	if not l_22_0._level_info then
+		return nil
 	end
-	L1_45 = A0_44._level_info
-	L1_45 = L1_45.id
-	return L1_45
+	return l_22_0._level_info.id
 end
-function Peer.debug_level_name(A0_46)
-	assert(A0_46._level_info)
-	return A0_46._level_info.name
+
+Peer.debug_level_name = function(l_23_0)
+	assert(l_23_0._level_info)
+	return l_23_0._level_info.name
 end
-function Peer.player_input(A0_47, A1_48, A2_49, A3_50)
-	managers.replay:unit_input(A1_48, A2_49)
-	if not managers.unit_control_id:unit_from_id(A1_48) then
-		return
+
+Peer.player_input = function(l_24_0, l_24_1, l_24_2, l_24_3)
+	managers.replay:unit_input(l_24_1, l_24_2)
+	local l_24_4 = managers.unit_control_id:unit_from_id(l_24_1)
+	if not l_24_4 then
+		return 
 	end
-	managers.unit_control_id:unit_from_id(A1_48):control():player_input(A2_49)
+	l_24_4:control():player_input(l_24_2)
 end
-function Peer.join_game(A0_51, A1_52, A2_53)
-	A0_51._host:join_game(A1_52:user_index(), A2_53)
+
+Peer.join_game = function(l_25_0, l_25_1, l_25_2)
+	l_25_0._host:join_game(l_25_1:user_index(), l_25_2)
 end
-function Peer.leave_game(A0_54, A1_55)
-	local L3_56
-	L3_56 = A0_54._host
-	L3_56 = L3_56.leave_game
-	L3_56(L3_56, A1_55:user_index())
+
+Peer.leave_game = function(l_26_0, l_26_1)
+	l_26_0._host:leave_game(l_26_1:user_index())
 end
-function Peer.user_joined_game(A0_57, A1_58, A2_59, A3_60)
-	local L4_61, L5_62
-	L4_61 = managers
-	L4_61 = L4_61.local_user
-	L5_62 = L4_61
-	L4_61 = L4_61.user_from_user_index
-	L4_61 = L4_61(L5_62, A1_58)
-	L5_62 = nil
-	if L4_61 then
-		managers.local_session_user:add_user(L4_61)
-		L5_62 = L4_61
-	else
+
+Peer.user_joined_game = function(l_27_0, l_27_1, l_27_2, l_27_3)
+	local l_27_4 = (managers.local_user:user_from_user_index(l_27_1))
+	local l_27_5 = nil
+	if l_27_4 then
+		managers.local_session_user:add_user(l_27_4)
+		l_27_5 = l_27_4
 	end
-	managers.session_user:add_user(A1_58, L5_62, A2_59)
+	managers.session_user:add_user(l_27_1, l_27_5, l_27_2)
 end
-function Peer.user_left_game(A0_63, A1_64, A2_65)
-	local L3_66
-	L3_66 = managers
-	L3_66 = L3_66.session_user
-	L3_66 = L3_66.user
-	L3_66 = L3_66(L3_66, A1_64)
-	managers.session_user:remove_user(A1_64)
-	if managers.local_session_user:has_user(L3_66) then
-		managers.local_session_user:remove_user(L3_66)
+
+Peer.user_left_game = function(l_28_0, l_28_1, l_28_2)
+	local l_28_3 = managers.session_user:user(l_28_1)
+	managers.session_user:remove_user(l_28_1)
+	if managers.local_session_user:has_user(l_28_3) then
+		managers.local_session_user:remove_user(l_28_3)
 	end
 end
-function Peer.arbitrate_interact(A0_67, A1_68, A2_69, A3_70)
-	local L4_71, L5_72
-	L4_71 = managers
-	L4_71 = L4_71.replay
-	L5_72 = L4_71
-	L4_71 = L4_71.arbitrate_interact
-	L4_71(L5_72, A1_68, A2_69)
-	L4_71 = managers
-	L4_71 = L4_71.unit_control_id
-	L5_72 = L4_71
-	L4_71 = L4_71.unit_from_id
-	L4_71 = L4_71(L5_72, A1_68)
-	L5_72 = managers
-	L5_72 = L5_72.unit_control_id
-	L5_72 = L5_72.unit_from_id
-	L5_72 = L5_72(L5_72, A2_69)
-	L4_71:interact():handle_rpc_arbitrate_interact(L5_72)
+
+Peer.arbitrate_interact = function(l_29_0, l_29_1, l_29_2, l_29_3)
+	managers.replay:arbitrate_interact(l_29_1, l_29_2)
+	local l_29_4 = managers.unit_control_id:unit_from_id(l_29_1)
+	local l_29_5 = managers.unit_control_id:unit_from_id(l_29_2)
+	l_29_4:interact():handle_rpc_arbitrate_interact(l_29_5)
 end
-function Peer.interact(A0_73, A1_74, A2_75, A3_76)
-	local L4_77, L5_78
-	L4_77 = managers
-	L4_77 = L4_77.replay
-	L5_78 = L4_77
-	L4_77 = L4_77.interact
-	L4_77(L5_78, A1_74, A2_75)
-	L4_77 = managers
-	L4_77 = L4_77.unit_control_id
-	L5_78 = L4_77
-	L4_77 = L4_77.unit_from_id
-	L4_77 = L4_77(L5_78, A1_74)
-	L5_78 = managers
-	L5_78 = L5_78.unit_control_id
-	L5_78 = L5_78.unit_from_id
-	L5_78 = L5_78(L5_78, A2_75)
-	L4_77:interact():interact(L5_78)
+
+Peer.interact = function(l_30_0, l_30_1, l_30_2, l_30_3)
+	managers.replay:interact(l_30_1, l_30_2)
+	local l_30_4 = managers.unit_control_id:unit_from_id(l_30_1)
+	local l_30_5 = managers.unit_control_id:unit_from_id(l_30_2)
+	l_30_4:interact():interact(l_30_5)
 end
-function Peer.arbitrate_pick_up(A0_79, A1_80, A2_81, A3_82)
-	local L4_83, L5_84
-	L4_83 = managers
-	L4_83 = L4_83.replay
-	L5_84 = L4_83
-	L4_83 = L4_83.arbitrate_pick_up
-	L4_83(L5_84, A2_81, A1_80)
-	L4_83 = managers
-	L4_83 = L4_83.unit_control_id
-	L5_84 = L4_83
-	L4_83 = L4_83.unit_from_id
-	L4_83 = L4_83(L5_84, A1_80)
-	L5_84 = managers
-	L5_84 = L5_84.unit_control_id
-	L5_84 = L5_84.unit_from_id
-	L5_84 = L5_84(L5_84, A2_81)
-	L4_83:interact():arbitrate_interact(L5_84)
+
+Peer.arbitrate_pick_up = function(l_31_0, l_31_1, l_31_2, l_31_3)
+	managers.replay:arbitrate_pick_up(l_31_2, l_31_1)
+	local l_31_4 = managers.unit_control_id:unit_from_id(l_31_1)
+	local l_31_5 = managers.unit_control_id:unit_from_id(l_31_2)
+	l_31_4:interact():arbitrate_interact(l_31_5)
 end
-function Peer.pick_up(A0_85, A1_86, A2_87, A3_88)
-	local L4_89, L5_90
-	L4_89 = managers
-	L4_89 = L4_89.replay
-	L5_90 = L4_89
-	L4_89 = L4_89.pick_up
-	L4_89(L5_90, A1_86, A2_87)
-	L4_89 = managers
-	L4_89 = L4_89.unit_control_id
-	L5_90 = L4_89
-	L4_89 = L4_89.unit_from_id
-	L4_89 = L4_89(L5_90, A1_86)
-	L5_90 = managers
-	L5_90 = L5_90.unit_control_id
-	L5_90 = L5_90.unit_from_id
-	L5_90 = L5_90(L5_90, A2_87)
-	L4_89:pick_up_target():pick_up(L5_90)
+
+Peer.pick_up = function(l_32_0, l_32_1, l_32_2, l_32_3)
+	managers.replay:pick_up(l_32_1, l_32_2)
+	local l_32_4 = managers.unit_control_id:unit_from_id(l_32_1)
+	local l_32_5 = managers.unit_control_id:unit_from_id(l_32_2)
+	l_32_4:pick_up_target():pick_up(l_32_5)
 end
+
+

@@ -1,28 +1,23 @@
-WeaponMounting = WeaponMounting or class()
-function WeaponMounting.mount(A0_0, A1_1, A2_2)
-	local L3_3, L4_4, L5_5, L6_6, L7_7, L8_8, L9_9, L10_10, L11_11
-	for L6_6, L7_7 in L3_3(L4_4) do
-		L8_8 = L7_7.character_object_name
-		L9_9 = L7_7.weapon_object_name
-		L10_10 = L7_7.unit_link
-		if L10_10 then
-			L11_11 = A0_0
-			L10_10 = A0_0.link
-			L10_10(L11_11, L8_8, A1_1, L9_9)
+if not WeaponMounting then
+	WeaponMounting = class()
+end
+WeaponMounting.mount = function(l_1_0, l_1_1, l_1_2)
+	local l_1_6, l_1_7, l_1_8, l_1_9, l_1_10, l_1_11, l_1_12, l_1_13 = nil
+	for i_0,i_1 in pairs(l_1_2) do
+		if l_1_15.unit_link then
+			l_1_0:link(i_1.character_object_name, l_1_1, i_1.weapon_object_name)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
 		else
-			L11_11 = A1_1
-			L10_10 = A1_1.get_object
-			L10_10 = L10_10(L11_11, L9_9)
-			L11_11 = assert
-			L11_11(L10_10)
-			L11_11 = L10_10.set_local_position
-			L11_11(L10_10, Vector3())
-			L11_11 = L10_10.set_local_rotation
-			L11_11(L10_10, Rotation())
-			L11_11 = A0_0.get_object
-			L11_11 = L11_11(A0_0, L8_8)
-			assert(L11_11)
-			L10_10:link(L11_11)
+			local l_1_16 = nil
+			assert(l_1_1:get_object(i_1.weapon_object_name))
+			l_1_1:get_object(i_1.weapon_object_name):set_local_position(Vector3())
+			l_1_1:get_object(i_1.weapon_object_name):set_local_rotation(Rotation())
+			local l_1_17 = nil
+			assert(l_1_0:get_object(l_1_16))
+			l_1_1:get_object(i_1.weapon_object_name):link(l_1_0:get_object(l_1_16))
 		end
 	end
 end
+
+

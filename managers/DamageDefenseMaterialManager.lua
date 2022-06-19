@@ -1,31 +1,39 @@
 require("damage/DamageDefenseMaterial")
-DamageDefenseMaterialManager = DamageDefenseMaterialManager or class()
-function DamageDefenseMaterialManager.init(A0_0)
-	A0_0._name_to_material = {}
-	A0_0:_load_materials(File:new_parse_xml("data/settings/damage_defense_materials.xml"):children())
+if not DamageDefenseMaterialManager then
+	DamageDefenseMaterialManager = class()
 end
-function DamageDefenseMaterialManager._load_materials(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L5_6, L6_7, L7_8
-	for L5_6 in A1_2, nil, nil do
-		L7_8 = L5_6
-		L6_7 = L5_6.parameter
-		L6_7 = L6_7(L7_8, "name")
-		L7_8 = DamageDefenseMaterial
-		L7_8 = L7_8.new
-		L7_8 = L7_8(L7_8, L6_7)
-		A0_1._name_to_material[L6_7] = L7_8
-		A0_1:_setup_known_damage_types(L7_8, L5_6)
+DamageDefenseMaterialManager.init = function(l_1_0)
+	l_1_0._name_to_material = {}
+	local l_1_1 = File:new_parse_xml("data/settings/damage_defense_materials.xml")
+	l_1_0:_load_materials(l_1_1:children())
+end
+
+DamageDefenseMaterialManager._load_materials = function(l_2_0, l_2_1)
+	local l_2_5, l_2_6 = nil
+	local l_2_2 = l_2_1
+	for i_0 in l_2_2 do
+		local l_2_8 = nil
+		l_2_0._name_to_material[l_2_8] = DamageDefenseMaterial:new(i_0:parameter("name"))
+		l_2_0:_setup_known_damage_types(DamageDefenseMaterial:new(i_0:parameter("name")), l_2_7)
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function DamageDefenseMaterialManager._setup_known_damage_types(A0_9, A1_10, A2_11)
-	local L3_12, L4_13, L5_14, L6_15, L7_16
-	L7_16 = L4_13(L5_14)
-	for L6_15, L7_16 in L3_12(L4_13, L5_14, L6_15, L7_16, L4_13(L5_14)) do
-		if L7_16 ~= "name" then
-			A1_10[L7_16] = A2_11:parameter(L7_16)
+
+DamageDefenseMaterialManager._setup_known_damage_types = function(l_3_0, l_3_1, l_3_2)
+	local l_3_6, l_3_7 = ipairs, l_3_2:keys()
+	l_3_6 = l_3_6(l_3_7)
+	for i_0,i_1 in l_3_6 do
+		if l_3_5 ~= "name" then
+			l_3_1[l_3_5] = l_3_2:parameter(l_3_5)
 		end
 	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function DamageDefenseMaterialManager.material(A0_17, A1_18)
-	return A0_17._name_to_material[A1_18]
+
+DamageDefenseMaterialManager.material = function(l_4_0, l_4_1)
+	return l_4_0._name_to_material[l_4_1]
 end
+
+

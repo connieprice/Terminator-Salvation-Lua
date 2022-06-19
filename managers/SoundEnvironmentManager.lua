@@ -1,1 +1,4 @@
-SoundEnvironmentManager = SoundEnvironmentManager or class(CoreSoundEnvironmentManager)
+if not SoundEnvironmentManager then
+	SoundEnvironmentManager = class(CoreSoundEnvironmentManager)
+end
+

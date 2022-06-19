@@ -1,42 +1,43 @@
-WeaponLogicFactory = WeaponLogicFactory or class()
-function WeaponLogicFactory.create_weapon_logic(A0_0, A1_1, A2_2)
-	local L3_3, L4_4, L5_5
-	L3_3 = A0_0.class_name
-	L4_4 = assert
-	L5_5 = L3_3 and L3_3 ~= ""
-	L4_4(L5_5)
-	L4_4 = rawget
-	L5_5 = _G
-	L4_4 = L4_4(L5_5, L3_3)
-	L5_5 = assert
-	L5_5(L4_4, "Weapon logic class named '" .. L3_3 .. "' doesn't exist")
-	L5_5 = WeaponLogicFactory
-	L5_5 = L5_5._create_setup
-	L5_5 = L5_5(A0_0.setup)
-	return (L4_4:new(A1_1, A2_2, L5_5))
+if not WeaponLogicFactory then
+	WeaponLogicFactory = class()
 end
-function WeaponLogicFactory._create_setup(A0_6)
-	local L1_7, L2_8, L3_9, L4_10
-	if not A0_6 then
-		return
+WeaponLogicFactory.create_weapon_logic = function(l_1_0, l_1_1, l_1_2)
+	local l_1_3 = l_1_0.class_name
+	local l_1_4 = assert
+	do
+		l_1_4(not l_1_3 or l_1_3 ~= "")
+		l_1_4 = rawget
+		l_1_4 = l_1_4(_G, l_1_3)
+		assert(l_1_4, "Weapon logic class named '" .. l_1_3 .. "' doesn't exist")
+		return l_1_4:new(l_1_1, l_1_2, WeaponLogicFactory._create_setup(l_1_0.setup))
 	end
-	L1_7 = A0_6.class_name
-	L2_8 = assert
-	L3_9 = L1_7 and L1_7 ~= ""
-	L2_8(L3_9)
-	L2_8 = rawget
-	L3_9 = _G
-	L4_10 = L1_7
-	L2_8 = L2_8(L3_9, L4_10)
-	L3_9 = assert
-	L4_10 = L2_8
-	L3_9(L4_10, "Weapon logic setup class named '" .. L1_7 .. "' doesn't exist")
-	L3_9 = A0_6.parameters
-	L4_10 = nil
-	if L3_9 then
-		L4_10 = L2_8:new(unpack(L3_9))
-	else
-		L4_10 = L2_8:new()
-	end
-	return L4_10
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+WeaponLogicFactory._create_setup = function(l_2_0)
+	if not l_2_0 then
+		return 
+	end
+	local l_2_1 = l_2_0.class_name
+	local l_2_2 = assert
+	l_2_2(not l_2_1 or l_2_1 ~= "")
+	l_2_2 = rawget
+	l_2_2 = l_2_2(_G, l_2_1)
+	assert(l_2_2, "Weapon logic setup class named '" .. l_2_1 .. "' doesn't exist")
+	do
+		local l_2_4 = l_2_0.parameters
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_2_4 then
+			do return end
+		end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		return nil
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

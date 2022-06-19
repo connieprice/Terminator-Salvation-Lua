@@ -5,9 +5,11 @@ require("ai/machines/rail_flyer/RailFlyerAiSetup")
 require("ai/machines/hunter_killer/HunterKillerAiSetup")
 require("ai/machines/biker/BikerAiSetup")
 require("ai/machines/skynet_defence_turret/SkynetDefenceTurretAiSetup")
-MachinesAiSetup = MachinesAiSetup or class()
-function MachinesAiSetup.init(A0_0, A1_1)
-	SpiderAiSetup.init(A0_0)
+if not MachinesAiSetup then
+	MachinesAiSetup = class()
+end
+MachinesAiSetup.init = function(l_1_0, l_1_1)
+	SpiderAiSetup.init(l_1_0)
 	FlyerAiSetup:init()
 	WalkerAiSetup.init()
 	RailFlyerAiSetup:init()
@@ -15,3 +17,5 @@ function MachinesAiSetup.init(A0_0, A1_1)
 	BikerAiSetup:init()
 	SkynetDefenceTurretAiSetup:init()
 end
+
+

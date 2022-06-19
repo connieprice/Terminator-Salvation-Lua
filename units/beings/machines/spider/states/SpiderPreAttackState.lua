@@ -1,93 +1,80 @@
 require("units/beings/machines/spider/states/SpiderState")
 require("units/beings/machines/spider/states/SpiderEnteringAttackState")
-SpiderPreAttackState = SpiderPreAttackState or class(SpiderState)
-function SpiderPreAttackState.init(A0_0, A1_1)
-	SpiderState.init(A0_0, A1_1)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
+if not SpiderPreAttackState then
+	SpiderPreAttackState = class(SpiderState)
 end
-function SpiderPreAttackState.enter(A0_2)
-	A0_2._unit:base():preparing_attack()
-	A0_2:_set_can_move(false)
-	A0_2:_set_can_rotate(false)
-	A0_2._t = 0
-	A0_2._unit:play_redirect("stand_still")
+SpiderPreAttackState.init = function(l_1_0, l_1_1)
+	SpiderState.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_0._unit:enemy_data()
 end
-function SpiderPreAttackState.leave(A0_3)
-	SpiderState.leave(A0_3)
-	A0_3._unit:play_redirect("stand_still")
+
+SpiderPreAttackState.enter = function(l_2_0)
+	l_2_0._unit:base():preparing_attack()
+	l_2_0:_set_can_move(false)
+	l_2_0:_set_can_rotate(false)
+	l_2_0._t = 0
+	l_2_0._unit:play_redirect("stand_still")
 end
-function SpiderPreAttackState.update(A0_4, A1_5)
-	local L2_6, L3_7, L4_8, L5_9, L6_10
-	L2_6 = A0_4._base
-	L3_7 = L2_6
-	L2_6 = L2_6.check_fully_damaged
-	L2_6 = L2_6(L3_7)
-	if L2_6 then
-		return L2_6
+
+SpiderPreAttackState.leave = function(l_3_0)
+	SpiderState.leave(l_3_0)
+	l_3_0._unit:play_redirect("stand_still")
+end
+
+SpiderPreAttackState.update = function(l_4_0, l_4_1)
+	local l_4_7, l_4_8, l_4_9, l_4_10, l_4_11, l_4_12 = nil
+	local l_4_2 = l_4_0._base:check_fully_damaged()
+	if l_4_2 then
+		return l_4_2
 	end
-	L3_7 = A0_4._enemy_data
-	L3_7 = L3_7.is_stunned
-	if L3_7 then
-		L3_7 = SpiderStunState
-		L4_8 = L3_7
-		L3_7 = L3_7.new
-		L5_9 = A0_4._unit
-		L6_10 = "attack"
-		return L3_7(L4_8, L5_9, L6_10)
+	if l_4_0._enemy_data.is_stunned then
+		local l_4_3, l_4_4 = SpiderStunState:new, SpiderStunState
+		local l_4_5 = l_4_0._unit
+		local l_4_6 = "attack"
+		return l_4_3(l_4_4, l_4_5, l_4_6)
 	else
-		L3_7 = A0_4._unit
-		L4_8 = L3_7
-		L3_7 = L3_7.input
-		L3_7 = L3_7(L4_8)
-		L4_8 = L3_7
-		L3_7 = L3_7.aim_target_position
-		L3_7 = L3_7(L4_8)
-		if L3_7 then
-			L4_8 = A0_4._unit
-			L5_9 = L4_8
-			L4_8 = L4_8.position
-			L4_8 = L4_8(L5_9)
-			L5_9 = A0_4._unit
-			L6_10 = L5_9
-			L5_9 = L5_9.rotation
-			L5_9 = L5_9(L6_10)
-			L6_10 = math
-			L6_10 = L6_10.dot
-			L6_10 = L6_10(L5_9:y(), (L3_7 - L4_8):normalized())
-			if math.acos(L6_10) > 15 then
-				if math.dot(L5_9:x(), (L3_7 - L4_8):normalized()) < 0 then
-					if not A0_4._unit:enemy_data().rotating_left then
-						A0_4._unit:play_redirect("rotate_left")
-					end
-				elseif not A0_4._unit:enemy_data().rotating_right then
-					A0_4._unit:play_redirect("rotate_right")
-				end
-			else
-				A0_4._unit:play_redirect("stand_still")
+		local l_4_13 = l_4_0._unit:input():aim_target_position()
+	if l_4_13 then
+		end
+		local l_4_14 = l_4_0._unit:position()
+		local l_4_15 = l_4_0._unit:rotation()
+		local l_4_16, l_4_32 = math.dot(l_4_15:y(), l_4_13 - l_4_14:normalized())
+		l_4_32 = math
+		l_4_32 = l_4_32.acos
+		l_4_32 = l_4_32(l_4_16)
+		local l_4_17, l_4_33 = nil
+		l_4_17 = l_4_32 > 15
+		if l_4_17 then
+			l_4_33 = math
+			l_4_33 = l_4_33.dot
+			l_4_33 = l_4_33(l_4_15:x(), l_4_13 - l_4_14:normalized())
+			l_4_33 = l_4_33 < 0
+		if l_4_33 and not l_4_0._unit:enemy_data().rotating_left then
 			end
+			l_4_0._unit:play_redirect("rotate_left")
 		end
-	end
-	L3_7 = A0_4._t
-	L3_7 = L3_7 + A1_5
-	A0_4._t = L3_7
-	L3_7 = A0_4._enemy_data
-	L3_7 = L3_7.stun_requested
-	if L3_7 then
-		L4_8 = A0_4
-		L3_7 = A0_4._request_stun
-		L3_7(L4_8)
+		do return end
+		if not l_4_0._unit:enemy_data().rotating_right then
+			local l_4_38 = l_4_0._unit:play_redirect
+			l_4_38(l_4_0._unit, "rotate_right")
+		end
 	else
-		L3_7 = A0_4._t
-		L4_8 = tweak_data
-		L4_8 = L4_8.enemy
-		L4_8 = L4_8.spider
-		L4_8 = L4_8.PRE_ATTACK_DELAY
-		if L3_7 >= L4_8 then
-			L3_7 = SpiderEnteringAttackState
-			L4_8 = L3_7
-			L3_7 = L3_7.new
-			L5_9 = A0_4._unit
-			return L3_7(L4_8, L5_9)
+		l_4_33 = l_4_0._unit
+		local l_4_35, l_4_36 = l_4_33
+		l_4_36 = "stand_still"
+		local l_4_37 = nil
+		l_4_33(l_4_35, l_4_36)
+	end
+	l_4_0._t = l_4_0._t + l_4_1
+	if l_4_0._enemy_data.stun_requested then
+		l_4_0:_request_stun()
+	else
+		if tweak_data.enemy.spider.PRE_ATTACK_DELAY <= l_4_0._t then
+			local l_4_29, l_4_30 = SpiderEnteringAttackState:new, SpiderEnteringAttackState
+			local l_4_31 = l_4_0._unit
+			return l_4_29(l_4_30, l_4_31)
 		end
 	end
 end
+
+

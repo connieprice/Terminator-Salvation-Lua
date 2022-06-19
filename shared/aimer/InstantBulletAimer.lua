@@ -1,5 +1,9 @@
 require("shared/aimer/Aimer")
-InstantBulletAimer = InstantBulletAimer or class(Aimer)
-function InstantBulletAimer.aim_position(A0_0, A1_1, A2_2)
-	return A2_2
+if not InstantBulletAimer then
+	InstantBulletAimer = class(Aimer)
 end
+InstantBulletAimer.aim_position = function(l_1_0, l_1_1, l_1_2)
+	return l_1_2
+end
+
+

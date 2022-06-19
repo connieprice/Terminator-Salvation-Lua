@@ -1,7 +1,12 @@
-AMMenuTrigger = AMMenuTrigger or class(CoreActionElement)
-function AMMenuTrigger.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMMenuTrigger then
+	AMMenuTrigger = class(CoreActionElement)
 end
-function AMMenuTrigger.activate_now(A0_3)
-	A0_3:deactivate_now()
+AMMenuTrigger.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
+
+AMMenuTrigger.activate_now = function(l_2_0)
+	l_2_0:deactivate_now()
+end
+
+

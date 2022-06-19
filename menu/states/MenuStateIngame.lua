@@ -1,26 +1,27 @@
 require("menu/states/MenuStateSyncTypes")
-MenuStateIngame = MenuStateIngame or class(FiniteStateMachineState)
-function MenuStateIngame.init(A0_0)
-	A0_0._ingame_menu = FiniteStateMachine:new(A0_0._menu, "_menu", MenuStateIngameEndSync)
-	A0_0._ingame_menu:set_debug(true)
+if not MenuStateIngame then
+	MenuStateIngame = class(FiniteStateMachineState)
 end
-function MenuStateIngame.exit(A0_1)
-	A0_1._ingame_menu:destroy()
+MenuStateIngame.init = function(l_1_0)
+	l_1_0._ingame_menu = FiniteStateMachine:new(l_1_0._menu, "_menu", MenuStateIngameEndSync)
+	l_1_0._ingame_menu:set_debug(true)
 end
-function MenuStateIngame.update(A0_2, A1_3)
-	A0_2._ingame_menu:update(A1_3)
+
+MenuStateIngame.exit = function(l_2_0)
+	l_2_0._ingame_menu:destroy()
 end
-function MenuStateIngame.transition(A0_4)
-	local L1_5
-	L1_5 = managers
-	L1_5 = L1_5.game
-	L1_5 = L1_5.requested_menu_sync_start
-	L1_5 = L1_5(L1_5)
-	if L1_5 then
-		L1_5 = managers
-		L1_5 = L1_5.game
-		L1_5 = L1_5.requested_menu_sync_type
-		L1_5 = L1_5(L1_5)
-		return MenuStateSyncTypes.get_sync_type_class(L1_5)
+
+MenuStateIngame.update = function(l_3_0, l_3_1)
+	l_3_0._ingame_menu:update(l_3_1)
+end
+
+MenuStateIngame.transition = function(l_4_0)
+	if managers.game:requested_menu_sync_start() then
+		local l_4_1 = managers.game:requested_menu_sync_type()
+		local l_4_2 = MenuStateSyncTypes.get_sync_type_class
+		local l_4_3 = l_4_1
+		return l_4_2(l_4_3)
 	end
 end
+
+

@@ -1,28 +1,32 @@
-DamageData = DamageData or class()
-function DamageData.init(A0_0, A1_1)
-	A0_0.damage = 0
-	A0_0.health = 1
-	A0_0.is_affected_by_explosion_physics_effect = true
+if not DamageData then
+	DamageData = class()
 end
-function DamageData.save(A0_2, A1_3)
-	TableAlgorithms.merge_except_functions(A1_3, A0_2)
+DamageData.init = function(l_1_0, l_1_1)
+	l_1_0.damage = 0
+	l_1_0.health = 1
+	l_1_0.is_affected_by_explosion_physics_effect = true
 end
-function DamageData.load(A0_4, A1_5)
-	TableAlgorithms.merge_except_functions(A0_4, A1_5)
+
+DamageData.save = function(l_2_0, l_2_1)
+	TableAlgorithms.merge_except_functions(l_2_1, l_2_0)
 end
-function DamageData.revive(A0_6)
-	local L1_7
-	A0_6.damage = 0
+
+DamageData.load = function(l_3_0, l_3_1)
+	TableAlgorithms.merge_except_functions(l_3_0, l_3_1)
 end
-function DamageData.is_fully_damaged(A0_8)
-	return A0_8.damage >= A0_8.health
+
+DamageData.revive = function(l_4_0)
+	l_4_0.damage = 0
 end
-function DamageData.scale_health(A0_9, A1_10)
-	local L2_11, L3_12
-	L2_11 = A0_9.damage
-	L3_12 = A0_9.health
-	L2_11 = L2_11 / L3_12
-	A0_9.health = A1_10
-	L3_12 = L2_11 * A1_10
-	A0_9.damage = L3_12
+
+DamageData.is_fully_damaged = function(l_5_0)
+	return l_5_0.health <= l_5_0.damage
 end
+
+DamageData.scale_health = function(l_6_0, l_6_1)
+	local l_6_2 = l_6_0.damage / l_6_0.health
+	l_6_0.health = l_6_1
+	l_6_0.damage = l_6_2 * l_6_1
+end
+
+

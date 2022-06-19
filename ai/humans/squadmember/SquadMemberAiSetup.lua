@@ -1,5 +1,8 @@
 require("ai/humans/squadmember/SquadMemberAiData")
-SquadMemberAiSetup = SquadMemberAiSetup or class()
-function SquadMemberAiSetup.init(A0_0)
-	local L1_1
+if not SquadMemberAiSetup then
+	SquadMemberAiSetup = class()
 end
+SquadMemberAiSetup.init = function(l_1_0)
+end
+
+

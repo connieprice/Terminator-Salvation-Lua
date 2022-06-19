@@ -1,16 +1,20 @@
 require("shared/scheduler/Operation")
-GetQuickMoveInfosOperation = GetQuickMoveInfosOperation or class(Operation)
-function GetQuickMoveInfosOperation.init(A0_0, A1_1)
-	assert(A1_1)
-	A0_0._cover = A1_1
-	A0_0.quick_move_infos = nil
+if not GetQuickMoveInfosOperation then
+	GetQuickMoveInfosOperation = class(Operation)
 end
-function GetQuickMoveInfosOperation.start(A0_2)
-	A0_2.quick_move_infos = managers.cover_util:quick_move_infos(A0_2._cover)
-	A0_2._done = true
+GetQuickMoveInfosOperation.init = function(l_1_0, l_1_1)
+	assert(l_1_1)
+	l_1_0._cover = l_1_1
+	l_1_0.quick_move_infos = nil
 end
-function GetQuickMoveInfosOperation.done(A0_3)
-	local L1_4
-	L1_4 = A0_3._done
-	return L1_4
+
+GetQuickMoveInfosOperation.start = function(l_2_0)
+	l_2_0.quick_move_infos = managers.cover_util:quick_move_infos(l_2_0._cover)
+	l_2_0._done = true
 end
+
+GetQuickMoveInfosOperation.done = function(l_3_0)
+	return l_3_0._done
+end
+
+

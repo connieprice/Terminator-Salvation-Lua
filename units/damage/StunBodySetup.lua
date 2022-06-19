@@ -1,10 +1,14 @@
-StunBodySetup = StunBodySetup or class()
-function StunBodySetup.init(A0_0, A1_1, A2_2, A3_3, A4_4)
-	assert(A1_1)
-	assert(A2_2)
-	assert(A3_3)
-	A0_0.body_name = A1_1
-	A0_0.max_health = A2_2
-	A0_0.health_per_second = A3_3
-	A0_0.damage_unit = A4_4
+if not StunBodySetup then
+	StunBodySetup = class()
 end
+StunBodySetup.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4)
+	assert(l_1_1)
+	assert(l_1_2)
+	assert(l_1_3)
+	l_1_0.body_name = l_1_1
+	l_1_0.max_health = l_1_2
+	l_1_0.health_per_second = l_1_3
+	l_1_0.damage_unit = l_1_4
+end
+
+

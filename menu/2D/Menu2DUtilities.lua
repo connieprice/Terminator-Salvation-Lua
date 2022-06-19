@@ -1,46 +1,37 @@
-local L0_0, L1_1
-L0_0 = Menu2DUtilities
-L0_0 = L0_0 or {}
-Menu2DUtilities = L0_0
-L0_0 = Menu2DUtilities
-function L1_1(A0_2, A1_3)
-	local L2_4, L3_5, L4_6, L5_7, L6_8, L7_9, L8_10
-	L3_5 = A1_3
-	L2_4 = A1_3.world_shape
-	L5_7 = L2_4(L3_5)
-	L6_8 = Menu2DUtilities
-	L6_8 = L6_8.is_position_over_rect
-	L7_9 = A0_2
-	L8_10 = L2_4
-	return L6_8(L7_9, L8_10, L3_5, L4_6, L5_7)
+if not Menu2DUtilities then
+	Menu2DUtilities = {}
 end
-L0_0.is_position_over_gui_object = L1_1
-L0_0 = Menu2DUtilities
-function L1_1(A0_11, A1_12, A2_13, A3_14, A4_15)
-	local L5_16, L6_17
-	L5_16 = A0_11.x
-	L5_16 = A1_12 <= L5_16 and L5_16 <= L6_17 and A2_13 <= L5_16 and L5_16 <= L6_17
-	return L5_16
+Menu2DUtilities.is_position_over_gui_object = function(l_1_0, l_1_1)
+	local l_1_2, l_1_3, l_1_4, l_1_5 = l_1_1:world_shape()
+	local l_1_6 = Menu2DUtilities.is_position_over_rect
+	local l_1_7 = l_1_0
+	local l_1_8 = l_1_2
+	local l_1_9 = l_1_3
+	local l_1_10 = l_1_4
+	local l_1_11 = l_1_5
+	return l_1_6(l_1_7, l_1_8, l_1_9, l_1_10, l_1_11)
 end
-L0_0.is_position_over_rect = L1_1
-L0_0 = Menu2DUtilities
-function L1_1(A0_18, A1_19)
-	local L2_20, L3_21, L4_22, L5_23, L6_24, L7_25, L8_26
-	L3_21 = A1_19
-	L2_20 = A1_19.world_shape
-	L5_23 = L2_20(L3_21)
-	L6_24 = Menu2DUtilities
-	L6_24 = L6_24.position_over_rect
-	L7_25 = A0_18
-	L8_26 = L2_20
-	return L6_24(L7_25, L8_26, L3_21, L4_22, L5_23)
+
+Menu2DUtilities.is_position_over_rect = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4)
+	return l_2_1 <= l_2_0.x and l_2_0.x <= l_2_1 + l_2_3 and l_2_2 <= l_2_0.y and l_2_0.y <= l_2_2 + l_2_4
 end
-L0_0.position_over_gui_object = L1_1
-L0_0 = Menu2DUtilities
-function L1_1(A0_27, A1_28, A2_29, A3_30, A4_31)
-	if not Menu2DUtilities.is_position_over_rect(A0_27, A1_28, A2_29, A3_30, A4_31) then
+
+Menu2DUtilities.position_over_gui_object = function(l_3_0, l_3_1)
+	local l_3_2, l_3_3, l_3_4, l_3_5 = l_3_1:world_shape()
+	local l_3_6 = Menu2DUtilities.position_over_rect
+	local l_3_7 = l_3_0
+	local l_3_8 = l_3_2
+	local l_3_9 = l_3_3
+	local l_3_10 = l_3_4
+	local l_3_11 = l_3_5
+	return l_3_6(l_3_7, l_3_8, l_3_9, l_3_10, l_3_11)
+end
+
+Menu2DUtilities.position_over_rect = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4)
+	if not Menu2DUtilities.is_position_over_rect(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4) then
 		return nil, nil
 	end
-	return (A0_27.x - A1_28) / A3_30, (A0_27.y - A2_29) / A4_31
+	return (l_4_0.x - l_4_1) / l_4_3, (l_4_0.y - l_4_2) / l_4_4
 end
-L0_0.position_over_rect = L1_1
+
+

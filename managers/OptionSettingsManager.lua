@@ -1,44 +1,74 @@
-OptionSettingsManager = OptionSettingsManager or class({})
-OptionSettingsManager._settings_apply_functions = {
-	brightness = function(A0_0)
-		Application:set_brightness(A0_0)
-	end,
-	subtitles_enabled = function(A0_1)
-		managers.subtitle:set_enabled(A0_1)
-		managers.menu._ingame_gui:enable_subtitles(A0_1)
-	end
-}
-OptionSettingsManager._sound_settings_apply_functions = {
-	music_volume = function(A0_2)
-		managers.volume:set_master_vol("music", A0_2)
-	end,
-	sfx_volume = function(A0_3)
-		OptionSettingsManager:_set_sfx_volume(A0_3)
-	end,
-	dialogue_volume = function(A0_4)
-		managers.volume:set_master_vol("dialogue", A0_4)
-	end
-}
-function OptionSettingsManager.init(A0_5)
-	A0_5._set_values = {}
+if not OptionSettingsManager then
+	OptionSettingsManager = class({})
 end
-function OptionSettingsManager.update(A0_6, A1_7, A2_8)
-	local L3_9
-	L3_9 = managers
-	L3_9 = L3_9.save
-	L3_9 = L3_9.primary_profile_is_ready
-	L3_9 = L3_9(L3_9)
-	if not L3_9 then
-		return
+local l_0_0 = OptionSettingsManager
+local l_0_1 = {}
+l_0_1.brightness = function(l_1_0)
+	Application:set_brightness(l_1_0)
+end
+
+l_0_1.subtitles_enabled = function(l_2_0)
+	managers.subtitle:set_enabled(l_2_0)
+	managers.menu._ingame_gui:enable_subtitles(l_2_0)
+end
+
+l_0_0._settings_apply_functions = l_0_1
+l_0_0 = OptionSettingsManager
+l_0_0._sound_settings_apply_functions, l_0_1 = l_0_1, {music_volume = function(l_3_0)
+	managers.volume:set_master_vol("music", l_3_0)
+end
+, sfx_volume = function(l_4_0)
+	OptionSettingsManager:_set_sfx_volume(l_4_0)
+end
+, dialogue_volume = function(l_5_0)
+	managers.volume:set_master_vol("dialogue", l_5_0)
+end
+}
+l_0_0 = OptionSettingsManager
+l_0_1 = function(l_6_0)
+	l_6_0._set_values = {}
+end
+
+l_0_0.init = l_0_1
+l_0_0 = OptionSettingsManager
+l_0_1 = function(l_7_0, l_7_1, l_7_2)
+	if not managers.save:primary_profile_is_ready() then
+		return 
 	end
-	L3_9 = managers
-	L3_9 = L3_9.save
-	L3_9 = L3_9.profile
-	L3_9 = L3_9(L3_9)
-	if L3_9 then
-		A0_6:set_option_settings(OptionSettingsManager._settings_apply_functions, L3_9)
-		A0_6:set_option_settings(OptionSettingsManager._sound_settings_apply_functions, L3_9.sound_settings)
+	local l_7_3 = managers.save:profile()
+	if l_7_3 then
+		l_7_0:set_option_settings(OptionSettingsManager._settings_apply_functions, l_7_3)
+		l_7_0:set_option_settings(OptionSettingsManager._sound_settings_apply_functions, l_7_3.sound_settings)
 	end
 end
-function OptionSettingsManager.set_option_settings(A0_10, A1_11, A2_12)
-	for 
+
+l_0_0.update = l_0_1
+l_0_0 = OptionSettingsManager
+l_0_1 = function(l_8_0, l_8_1, l_8_2)
+	local l_8_6, l_8_7, l_8_8, l_8_9, l_8_10, l_8_11, l_8_12, l_8_13, l_8_14 = nil
+	for i_0,i_1 in pairs(l_8_1) do
+		if l_8_0._set_values[i_0] ~= l_8_2[i_0] then
+			l_8_0._set_values[i_0] = l_8_2[i_0]
+			l_8_1[i_0](l_8_2[i_0])
+		end
+	end
+end
+
+l_0_0.set_option_settings = l_0_1
+l_0_0 = OptionSettingsManager
+l_0_1 = function(l_9_0, l_9_1)
+	managers.volume:set_master_vol("foley", l_9_1)
+	managers.volume:set_master_vol("sfx", l_9_1)
+	managers.volume:set_master_vol("pfx", l_9_1)
+	managers.volume:set_master_vol("gunfire", l_9_1)
+	managers.volume:set_master_vol("ambience", l_9_1)
+	managers.volume:set_master_vol("ui", l_9_1)
+	managers.volume:set_master_vol("menu", l_9_1)
+	managers.volume:set_master_vol("cutscene", l_9_1)
+	managers.volume:set_master_vol("menu_only", l_9_1)
+	managers.volume:set_master_vol("stingers", l_9_1)
+	managers.volume:set_master_vol("bink", l_9_1)
+end
+
+l_0_0._set_sfx_volume = l_0_1
+

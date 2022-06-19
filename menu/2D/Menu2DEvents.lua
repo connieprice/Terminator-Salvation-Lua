@@ -1,273 +1,305 @@
-Menu2DEvents = Menu2DEvents or class()
-function Menu2DEvents.init(A0_0)
-	local L1_1
+if not Menu2DEvents then
+	Menu2DEvents = class()
 end
-function Menu2DEvents.raise(A0_2, A1_3, A2_4)
-	if A0_2[A1_3] and type(A0_2[A1_3]) == "function" then
-		A0_2[A1_3](A0_2, A2_4)
+Menu2DEvents.init = function(l_1_0)
+end
+
+Menu2DEvents.raise = function(l_2_0, l_2_1, l_2_2)
+	if l_2_0[l_2_1] and type(l_2_0[l_2_1]) == "function" then
+		l_2_0[l_2_1](l_2_0, l_2_2)
 	end
 end
-function Menu2DEvents.replay_set_start_level(A0_5, A1_6)
-	managers.menu2d:menu_island_instance_data().start_level_id = tonumber(A1_6.level_id)
-	managers.menu2d:menu_island_instance_data().start_level_name = A1_6.level_name
-	managers.menu2d:menu_island_instance_data().start_level_checkpoint = tonumber(A1_6.checkpoint_id)
-	managers.menu2d:menu_island_instance_data().save_progress = false
+
+Menu2DEvents.replay_set_start_level = function(l_3_0, l_3_1)
+	local l_3_2 = managers.menu2d:menu_island_instance_data()
+	l_3_2.start_level_id = tonumber(l_3_1.level_id)
+	l_3_2.start_level_name = l_3_1.level_name
+	l_3_2.start_level_checkpoint = tonumber(l_3_1.checkpoint_id)
+	l_3_2.save_progress = false
 end
-function Menu2DEvents.set_start_checkpoint(A0_7, A1_8)
-	managers.menu2d:menu_island_instance_data().start_level_checkpoint = tonumber(A1_8.checkpoint_id)
+
+Menu2DEvents.set_start_checkpoint = function(l_4_0, l_4_1)
+	managers.menu2d:menu_island_instance_data().start_level_checkpoint = tonumber(l_4_1.checkpoint_id)
 end
-function Menu2DEvents.unlock_achievements(A0_9)
-	local L1_10, L2_11, L3_12, L4_13, L5_14, L6_15, L7_16, L8_17, L9_18, L10_19, L11_20
-	if L1_10 == "PS3" then
-		L1_10(L2_11)
-		for L4_13 = 1, L2_11(L3_12) do
-			L6_15 = L5_14
-			L5_14(L6_15, L7_16, L8_17)
+
+Menu2DEvents.unlock_achievements = function(l_5_0)
+	local l_5_16 = nil
+	if SystemInfo:platform() == "PS3" then
+		print("Unlock Trophies!")
+		for l_5_4 = 1, Trophies:get_count() do
+			local l_5_10, l_5_11, l_5_12 = Trophies:unlock_id, Trophies
+			l_5_12 = l_5_4
+			l_5_10(l_5_11, l_5_12, function(l_6_0)
+				print("Trophy: " .. tostring(l_6_0))
+      end)
 		end
-	elseif L1_10 == "X360" then
-		L1_10(L2_11)
-		if L2_11 then
-			for L6_15 in L3_12(L4_13) do
-				if L7_16 == "achievements" then
-					for L10_19 in L7_16(L8_17) do
-						L11_20 = managers
-						L11_20 = L11_20.save
-						L11_20 = L11_20.primary_user
-						L11_20 = L11_20(L11_20)
-						L11_20 = L11_20.user_index
-						L11_20 = L11_20(L11_20)
-						XboxLive:award_achievement(L11_20, L10_19:parameter("name"))
+	else
+		if SystemInfo:platform() == "X360" then
+			print("Unlock achievements!")
+			local l_5_5 = Database:lookup("xbox_live", "xbox_live")
+			local l_5_6 = Database:load_node(l_5_5)
+		if l_5_6 then
+			end
+			for i_0 in l_5_6:children() do
+				if i_0:name() == "achievements" then
+					for i_0 in i_0:children() do
+						XboxLive:award_achievement(managers.save:primary_user():user_index(), i_0:parameter("name"))
 					end
 				end
 			end
 		end
 	else
-		L1_10(L2_11)
+		print("Unlock")
 	end
 end
-function Menu2DEvents.continue_set_start_level(A0_21, A1_22)
-	managers.menu2d:menu_island_instance_data().start_level_id = tonumber(A0_21:_profile().progress_level_id)
-	managers.menu2d:menu_island_instance_data().start_level_checkpoint = tonumber(A0_21:_profile().progress_checkpoint_id)
-	managers.menu2d:menu_island_instance_data().save_progress = true
+
+Menu2DEvents.continue_set_start_level = function(l_6_0, l_6_1)
+	local l_6_2 = l_6_0:_profile()
+	local l_6_3 = managers.menu2d:menu_island_instance_data()
+	l_6_3.start_level_id = tonumber(l_6_2.progress_level_id)
+	l_6_3.start_level_checkpoint = tonumber(l_6_2.progress_checkpoint_id)
+	l_6_3.save_progress = true
 end
-function Menu2DEvents.start_game(A0_23, A1_24)
-	local L2_25, L3_26, L4_27, L5_28, L6_29, L7_30, L8_31
-	L2_25 = managers
-	L2_25 = L2_25.menu_input
-	L3_26 = L2_25
-	L2_25 = L2_25.bound_user
-	L2_25 = L2_25(L3_26)
-	L3_26 = assert
-	L4_27 = L2_25
-	L3_26(L4_27)
-	L3_26 = managers
-	L3_26 = L3_26.menu2d
-	L4_27 = L3_26
-	L3_26 = L3_26.menu_island_instance_data
-	L3_26 = L3_26(L4_27)
-	L4_27 = L3_26.start_level_id
-	L5_28 = L3_26.start_level_name
-	if not L5_28 then
-		L5_28 = managers
-		L5_28 = L5_28.world_info
-		L6_29 = L5_28
-		L5_28 = L5_28.info_from_id
-		L7_30 = L4_27
-		L5_28 = L5_28(L6_29, L7_30)
-		L5_28 = L5_28.name
+
+Menu2DEvents.start_game = function(l_7_0, l_7_1)
+	local l_7_2 = managers.menu_input:bound_user()
+	assert(l_7_2)
+	local l_7_3 = managers.menu2d:menu_island_instance_data()
+	local l_7_4 = l_7_3.start_level_id
+	if not l_7_3.start_level_name then
+		local l_7_5, l_7_7, l_7_8 = managers.world_info:info_from_id(l_7_4).name
 	end
-	L6_29 = L3_26.start_level_checkpoint
-	L6_29 = L6_29 or 1
-	L7_30 = L3_26.save_progress
-	L8_31 = managers
-	L8_31 = L8_31.save
-	L8_31 = L8_31.set_level_data_to_profiles
-	L8_31(L8_31, L4_27, L6_29, L5_28, L7_30)
-	L8_31 = nil
-	if A1_24.mode == "coop" then
-		L8_31 = 2
-	else
-		L8_31 = 1
+	do
+		local l_7_6, l_7_9 = , l_7_3.start_level_checkpoint or 1
 	end
-	managers.game_transition:set_wants_to_host(L8_31)
+	local l_7_10 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	managers.save:set_level_data_to_profiles(l_7_4, l_7_9, l_7_10, l_7_3.save_progress)
+	local l_7_11 = nil
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_7_1.mode == "coop" then
+		do return end
+	end
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	managers.game_transition:set_wants_to_host(nil)
 end
-function Menu2DEvents.restart_at_last_checkpoint(A0_32, A1_33)
+
+Menu2DEvents.restart_at_last_checkpoint = function(l_8_0, l_8_1)
 	managers.game_transition:exec_game_from_game()
 end
-function Menu2DEvents.quit_to_main(A0_34)
+
+Menu2DEvents.quit_to_main = function(l_9_0)
 	managers.menu2d:remove_dialog()
 	managers.game_transition:exec_menu()
 end
-function Menu2DEvents.quit_to_desktop(A0_35)
+
+Menu2DEvents.quit_to_desktop = function(l_10_0)
 	Application:quit()
 end
-function Menu2DEvents.set_difficulty_level(A0_36, A1_37)
-	(A0_36:_profile() or managers.save:profile()).difficulty_level = tonumber(A1_37.difficulty)
+
+Menu2DEvents.set_difficulty_level = function(l_11_0, l_11_1)
+	if not l_11_0:_profile() then
+		managers.save:profile().difficulty_level = tonumber(l_11_1.difficulty)
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 9 
 end
-function Menu2DEvents.set_new_resolution(A0_38, A1_39, A2_40)
-	managers.menu2d:set_aspect(A2_40)
-	managers.menu2d:set_resolution(A1_39.x, A1_39.y, A1_39.z)
+
+Menu2DEvents.set_new_resolution = function(l_12_0, l_12_1, l_12_2)
+	managers.menu2d:set_aspect(l_12_2)
+	managers.menu2d:set_resolution(l_12_1.x, l_12_1.y, l_12_1.z)
 	managers.menu2d:callback_resolution_changed()
 	managers.menu:ingame_gui():callback_resolution_changed()
 end
-function Menu2DEvents.apply_video_settings(A0_41)
-	local L1_42, L2_43, L3_44, L4_45
-	L1_42 = managers
-	L1_42 = L1_42.menu2d
-	L1_42 = L1_42._components
-	L1_42 = L1_42.page_flipper
-	L2_43 = L1_42
-	L1_42 = L1_42.current_page
-	L1_42 = L1_42(L2_43)
-	L2_43 = L1_42
-	L1_42 = L1_42.set_island_data
-	L1_42(L2_43)
-	L1_42 = managers
-	L1_42 = L1_42.menu2d
-	L2_43 = L1_42
-	L1_42 = L1_42.menu_island_instance_data
-	L1_42 = L1_42(L2_43)
-	L2_43 = L1_42.video_mode
-	L3_44 = L1_42.auto_aspect_ratio
-	L4_45 = nil
-	if L3_44 then
-		L4_45 = L2_43.x / L2_43.y
+
+Menu2DEvents.apply_video_settings = function(l_13_0)
+	managers.menu2d._components.page_flipper:current_page():set_island_data()
+	local l_13_1 = managers.menu2d:menu_island_instance_data()
+	local l_13_2 = l_13_1.video_mode
+	local l_13_3 = l_13_1.auto_aspect_ratio
+	local l_13_4 = nil
+	local l_13_5 = managers.save:profile()
+	if l_13_3 then
+		l_13_4 = l_13_2.x / l_13_2.y
 	else
-		L4_45 = L1_42.aspect_ratio
+		l_13_4 = l_13_1.aspect_ratio
 	end
-	A0_41:try_new_resolution(L2_43, L4_45)
+	l_13_0:try_new_resolution(l_13_2, l_13_4)
 end
-function Menu2DEvents.try_new_resolution(A0_46, A1_47, A2_48)
-	managers.menu2d:menu_island_instance_data().last_resolution = RenderSettings.resolution
-	managers.menu2d:menu_island_instance_data().last_aspect_ratio = core_setup.aspect_ratio
-	if managers.menu2d:menu_island_instance_data().last_resolution ~= A1_47 or managers.menu2d:menu_island_instance_data().last_aspect_ratio ~= A2_48 then
+
+Menu2DEvents.try_new_resolution = function(l_14_0, l_14_1, l_14_2)
+	local l_14_3 = managers.menu2d:menu_island_instance_data()
+	l_14_3.last_resolution = RenderSettings.resolution
+	l_14_3.last_aspect_ratio = core_setup.aspect_ratio
+	if l_14_3.last_resolution ~= l_14_1 or l_14_3.last_aspect_ratio ~= l_14_2 then
 		managers.menu2d:change_page("confirm_new_video_settings")
-		A0_46:set_new_resolution(A1_47, A2_48)
+		l_14_0:set_new_resolution(l_14_1, l_14_2)
 	end
 end
-function Menu2DEvents.restore_resolution(A0_49)
-	A0_49:set_new_resolution(managers.menu2d:menu_island_instance_data().last_resolution, managers.menu2d:menu_island_instance_data().last_aspect_ratio)
+
+Menu2DEvents.restore_resolution = function(l_15_0)
+	local l_15_1 = managers.menu2d:menu_island_instance_data()
+	l_15_0:set_new_resolution(l_15_1.last_resolution, l_15_1.last_aspect_ratio)
 	managers.menu2d:back()
 end
-function Menu2DEvents.confirm_resolution(A0_50)
-	managers.save:primary_user():profile().video_settings.auto_aspect_ratio = managers.menu2d:menu_island_instance_data().auto_aspect_ratio
+
+Menu2DEvents.confirm_resolution = function(l_16_0)
+	local l_16_1 = managers.menu2d:menu_island_instance_data()
+	managers.save:primary_user():profile().video_settings.auto_aspect_ratio = l_16_1.auto_aspect_ratio
 	managers.save:primary_user():save_profile()
 	managers.menu2d:back()
 	managers.menu2d:back()
 end
-function Menu2DEvents._profile(A0_51)
-	return managers.menu_input:bound_user() and managers.menu_input:bound_user():is_profile_ready() and managers.menu_input:bound_user():profile()
+
+Menu2DEvents._profile = function(l_17_0)
+	local l_17_1 = managers.menu_input:bound_user()
+	do
+		if l_17_1 and l_17_1:is_profile_ready() then
+			return l_17_1:profile()
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
 end
-function Menu2DEvents.sound_volume(A0_52, A1_53)
-	if A0_52:_profile().sound_settings[A1_53.sound_category .. "_volume"] ~= nil then
-		return A0_52:_profile().sound_settings[A1_53.sound_category .. "_volume"]
-	elseif managers.save:_default_sound_settings()[A1_53.sound_category .. "_volume"] ~= nil then
-		return managers.save:_default_sound_settings()[A1_53.sound_category .. "_volume"]
+
+Menu2DEvents.sound_volume = function(l_18_0, l_18_1)
+	if l_18_0:_profile().sound_settings[l_18_1.sound_category .. "_volume"] ~= nil then
+		return l_18_0:_profile().sound_settings[l_18_1.sound_category .. "_volume"]
+	else
+		if managers.save:_default_sound_settings()[l_18_1.sound_category .. "_volume"] ~= nil then
+			return managers.save:_default_sound_settings()[l_18_1.sound_category .. "_volume"]
+		end
 	else
 		return 1
 	end
 end
-function Menu2DEvents.set_sound_volume(A0_54, A1_55, A2_56)
-	A0_54:_profile().sound_settings[A2_56.sound_category .. "_volume"] = A1_55
+
+Menu2DEvents.set_sound_volume = function(l_19_0, l_19_1, l_19_2)
+	local l_19_3 = l_19_0:_profile()
+	l_19_3.sound_settings[l_19_2.sound_category .. "_volume"] = l_19_1
 end
-function Menu2DEvents.brightness(A0_57)
-	if A0_57:_profile().brightness ~= nil then
-		return A0_57:_profile().brightness
+
+Menu2DEvents.brightness = function(l_20_0)
+	local l_20_1 = l_20_0:_profile()
+	if l_20_1.brightness ~= nil then
+		return l_20_1.brightness
 	else
-		return managers.save:_default_sound_settings()
+		local l_20_2, l_20_3 = managers.save:_default_sound_settings, managers.save
+		return l_20_2(l_20_3)
 	end
 end
-function Menu2DEvents.set_brightness(A0_58, A1_59)
-	A0_58:_profile().brightness = A1_59
+
+Menu2DEvents.set_brightness = function(l_21_0, l_21_1)
+	l_21_0:_profile().brightness = l_21_1
 end
-function Menu2DEvents.invert_camera(A0_60, A1_61, A2_62)
-	if A0_60:_profile().control_settings.invert_y ~= nil then
-		return A0_60:_profile().control_settings.invert_y
+
+Menu2DEvents.invert_camera = function(l_22_0, l_22_1, l_22_2)
+	local l_22_3 = l_22_0:_profile()
+	if l_22_3.control_settings.invert_y ~= nil then
+		return l_22_3.control_settings.invert_y
 	else
 		return managers.save:_default_control_settings().invert_y
 	end
 end
-function Menu2DEvents.set_invert_camera(A0_63, A1_64, A2_65)
-	A0_63:_profile().control_settings.invert_y = A1_64
+
+Menu2DEvents.set_invert_camera = function(l_23_0, l_23_1, l_23_2)
+	local l_23_3 = l_23_0:_profile()
+	l_23_3.control_settings.invert_y = l_23_1
 end
-function Menu2DEvents.sensitivity(A0_66)
-	if A0_66:_profile().control_settings.sensitivity ~= nil then
-		return A0_66:_profile().control_settings.sensitivity
+
+Menu2DEvents.sensitivity = function(l_24_0)
+	local l_24_1 = l_24_0:_profile()
+	if l_24_1.control_settings.sensitivity ~= nil then
+		return l_24_1.control_settings.sensitivity
 	else
 		return managers.save:_default_control_settings().sensitivity
 	end
 end
-function Menu2DEvents.set_sensitivity(A0_67, A1_68)
-	A0_67:_profile().control_settings.sensitivity = A1_68
+
+Menu2DEvents.set_sensitivity = function(l_25_0, l_25_1)
+	local l_25_2 = l_25_0:_profile()
+	l_25_2.control_settings.sensitivity = l_25_1
 end
-function Menu2DEvents.subtitles_enabled(A0_69)
-	assert(A0_69:_profile().subtitles_enabled ~= nil)
-	return A0_69:_profile().subtitles_enabled
+
+Menu2DEvents.subtitles_enabled = function(l_26_0)
+	local l_26_1 = l_26_0:_profile()
+	local l_26_2 = assert
+	l_26_2(l_26_1.subtitles_enabled ~= nil)
+	l_26_2 = l_26_1.subtitles_enabled
+	return l_26_2
 end
-function Menu2DEvents.set_subtitles_enabled(A0_70, A1_71)
-	A0_70:_profile().subtitles_enabled = A1_71
+
+Menu2DEvents.set_subtitles_enabled = function(l_27_0, l_27_1)
+	l_27_0:_profile().subtitles_enabled = l_27_1
 end
-function Menu2DEvents.debug_god_mode(A0_72)
-	local L1_73
-	L1_73 = A0_72._debug
-	L1_73 = L1_73 or {}
-	A0_72._debug = L1_73
-	L1_73 = A0_72._debug
-	L1_73 = L1_73.god_mode
-	return L1_73
+
+Menu2DEvents.debug_god_mode = function(l_28_0)
+	if not l_28_0._debug then
+		l_28_0._debug = {}
+	end
+	return l_28_0._debug.god_mode
 end
-function Menu2DEvents.debug_set_god_mode(A0_74, A1_75)
-	A0_74._debug = A0_74._debug or {}
-	if not A1_75 ~= not A0_74._debug.god_mode then
-		debug_commands:set_god_mode(A1_75)
-		A0_74._debug.god_mode = A1_75
+
+Menu2DEvents.debug_set_god_mode = function(l_29_0, l_29_1)
+	if not l_29_0._debug then
+		l_29_0._debug = {}
+	end
+	if not l_29_1 ~= not l_29_0._debug.god_mode then
+		debug_commands:set_god_mode(l_29_1)
+		l_29_0._debug.god_mode = l_29_1
 	end
 end
-function Menu2DEvents.debug_hide_hud(A0_76)
-	local L1_77
-	L1_77 = A0_76._debug
-	L1_77 = L1_77 or {}
-	A0_76._debug = L1_77
-	L1_77 = A0_76._debug
-	L1_77 = L1_77.hide_hud
-	return L1_77
+
+Menu2DEvents.debug_hide_hud = function(l_30_0)
+	if not l_30_0._debug then
+		l_30_0._debug = {}
+	end
+	return l_30_0._debug.hide_hud
 end
-function Menu2DEvents.debug_set_hide_hud(A0_78, A1_79)
-	A0_78._debug = A0_78._debug or {}
-	if not A1_79 ~= not A0_78._debug.hide_hud then
-		debug_commands:show_huds(not A1_79)
-		A0_78._debug.hide_hud = A1_79
+
+Menu2DEvents.debug_set_hide_hud = function(l_31_0, l_31_1)
+	if not l_31_0._debug then
+		l_31_0._debug = {}
+	end
+	if not l_31_1 ~= not l_31_0._debug.hide_hud then
+		debug_commands:show_huds(not l_31_1)
+		l_31_0._debug.hide_hud = l_31_1
 	end
 end
-function Menu2DEvents.debug_control_unit(A0_80)
-	local L1_81
-	L1_81 = A0_80._debug
-	L1_81 = L1_81 or {}
-	A0_80._debug = L1_81
-	L1_81 = A0_80._debug
-	L1_81 = L1_81.control_unit
-	return L1_81
+
+Menu2DEvents.debug_control_unit = function(l_32_0)
+	if not l_32_0._debug then
+		l_32_0._debug = {}
+	end
+	return l_32_0._debug.control_unit
 end
-function Menu2DEvents.debug_set_control_unit(A0_82, A1_83)
-	A0_82._debug = A0_82._debug or {}
-	if not A1_83 ~= not A0_82._debug.control_unit then
-		debug_commands:control_unit(A1_83)
-		A0_82._debug.control_unit = A1_83
+
+Menu2DEvents.debug_set_control_unit = function(l_33_0, l_33_1)
+	if not l_33_0._debug then
+		l_33_0._debug = {}
+	end
+	if not l_33_1 ~= not l_33_0._debug.control_unit then
+		debug_commands:control_unit(l_33_1)
+		l_33_0._debug.control_unit = l_33_1
 	end
 end
-function Menu2DEvents.debug_free_flight_camera(A0_84)
-	local L1_85
-	L1_85 = A0_84._debug
-	L1_85 = L1_85 or {}
-	A0_84._debug = L1_85
-	L1_85 = A0_84._debug
-	L1_85 = L1_85.free_flight_camera
-	return L1_85
+
+Menu2DEvents.debug_free_flight_camera = function(l_34_0)
+	if not l_34_0._debug then
+		l_34_0._debug = {}
+	end
+	return l_34_0._debug.free_flight_camera
 end
-function Menu2DEvents.debug_set_free_flight_camera(A0_86, A1_87)
-	A0_86._debug = A0_86._debug or {}
-	if not A1_87 ~= not A0_86._debug.free_flight_camera then
-		if A1_87 then
+
+Menu2DEvents.debug_set_free_flight_camera = function(l_35_0, l_35_1)
+	if not l_35_0._debug then
+		l_35_0._debug = {}
+	end
+	if not l_35_1 ~= not l_35_0._debug.free_flight_camera then
+		if l_35_1 then
 			assert(not script_debug._freeflight)
 			script_debug._freeflight = FreeFlight:new()
 			script_debug._freeflight:on_get_focus()
@@ -276,36 +308,110 @@ function Menu2DEvents.debug_set_free_flight_camera(A0_86, A1_87)
 			script_debug._freeflight:on_loose_focus()
 			script_debug._freeflight = nil
 		end
-		A0_86._debug.free_flight_camera = A1_87
+		l_35_0._debug.free_flight_camera = l_35_1
 	end
 end
-function Menu2DEvents.debug_infinite_ammo(A0_88)
-	return debug_commands:infinite_ammo()
+
+Menu2DEvents.debug_infinite_ammo = function(l_36_0)
+	local l_36_1, l_36_2 = debug_commands:infinite_ammo, debug_commands
+	return l_36_1(l_36_2)
 end
-function Menu2DEvents.debug_set_infinite_ammo(A0_89, A1_90)
-	if not A1_90 ~= not A0_89:debug_infinite_ammo() then
-		debug_commands:set_infinite_ammo(A1_90)
+
+Menu2DEvents.debug_set_infinite_ammo = function(l_37_0, l_37_1)
+	local l_37_2 = l_37_0:debug_infinite_ammo()
+	if not l_37_1 ~= not l_37_2 then
+		debug_commands:set_infinite_ammo(l_37_1)
 	end
 end
-function Menu2DEvents.goto_pad_mapping(A0_91)
-	local L1_92
-	L1_92 = "pad_mapping_pc"
-	return L1_92
+
+Menu2DEvents.goto_pad_mapping = function(l_38_0)
+	return "pad_mapping_pc"
 end
-function Menu2DEvents.coop(A0_93)
+
+Menu2DEvents.coop = function(l_39_0)
 	if managers.player_slot:number_of_occupied_slots() > 1 then
 		return true
 	end
 end
-function Menu2DEvents.coop_pad_mapping(A0_94)
+
+Menu2DEvents.coop_pad_mapping = function(l_40_0)
 	if managers.game:is_in_game() then
 		return false
-	elseif managers.player_slot:number_of_occupied_slots() > 1 and managers.player_slot:slot(2):user():controller_wrapper():get_default_controller_id() == "keyboard" then
-		return true
+	else
+		if managers.player_slot:number_of_occupied_slots() > 1 and managers.player_slot:slot(2):user():controller_wrapper():get_default_controller_id() == "keyboard" then
+			return true
+		end
 	end
 end
-function Menu2DEvents.continue(A0_95)
-	if not A0_95:_profile() then
+
+Menu2DEvents.continue = function(l_41_0)
+	local l_41_5, l_41_6 = nil
+	local l_41_1 = l_41_0:_profile()
+	if not l_41_1 then
 		return false
 	end
-	for 
+	for i_0,i_1 in ipairs(l_41_1.levels) do
+		if i_1.current_checkpoint_id > 0 then
+			return true
+		end
+	end
+	return false
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+Menu2DEvents.continue_last_game = function(l_42_0)
+	if not l_42_0:_profile() then
+		return false
+	end
+	return not l_42_0:_is_new_game()
+end
+
+Menu2DEvents.select_storage_device = function(l_43_0)
+	local l_43_1 = managers.menu_input:bound_user()
+	l_43_1:select_storage_device()
+end
+
+Menu2DEvents._is_new_game = function(l_44_0)
+	return not l_44_0:_profile().has_progress
+end
+
+Menu2DEvents.check_new_game = function(l_45_0)
+	local l_45_1 = l_45_0:_is_new_game()
+	if l_45_1 == true then
+		managers.menu2d:start_new_game()
+	elseif l_45_1 == false then
+		managers.menu2d:set_dialog("confirm_overwrite_save_game")
+	end
+end
+
+Menu2DEvents.user_save_enabled = function(l_46_0)
+	local l_46_1 = managers.menu_input:bound_user()
+	return not l_46_1:save_disabled()
+end
+
+Menu2DEvents.signed_in_user = function(l_47_0)
+	local l_47_1 = managers.menu_input:bound_user()
+	local l_47_2, l_47_3 = l_47_1:is_signed_in, l_47_1
+	return l_47_2(l_47_3)
+end
+
+Menu2DEvents.is_debug_mode = function(l_48_0)
+	local l_48_1, l_48_2 = managers.menu2d:_is_debug_mode, managers.menu2d
+	return l_48_1(l_48_2)
+end
+
+Menu2DEvents.back = function(l_49_0)
+	managers.menu2d:back()
+end
+
+Menu2DEvents.player_2_edit_controls_available = function(l_50_0)
+	local l_50_1 = not managers.menu2d:state_flag("frontend")
+	do
+		return not l_50_1 or (managers.menu_input:bound_user() == managers.save:primary_user() and managers.player_slot:number_of_occupied_slots() > 1)
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

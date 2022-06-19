@@ -1,181 +1,190 @@
-local L0_0
-L0_0 = require
-L0_0("shared/TableAlgorithms")
-L0_0 = mvector3
-L0_0 = L0_0.add
-CameraMixer = CameraMixer or class()
-function CameraMixer.init(A0_1)
-	A0_1._cameras = {}
+require("shared/TableAlgorithms")
+local l_0_0 = mvector3.add
+local l_0_1 = mvector3.subtract
+local l_0_2 = mvector3.multiply
+local l_0_3 = mvector3.copy
+local l_0_4 = mrotation.slerp
+if not CameraMixer then
+	CameraMixer = class()
 end
-function CameraMixer.add_camera(A0_2, A1_3, A2_4)
-	if A2_4 == nil or A2_4 == 0 or #A0_2._cameras == 0 then
-		A2_4 = 1
+CameraMixer.init = function(l_1_0)
+	l_1_0._cameras = {}
+end
+
+CameraMixer.add_camera = function(l_2_0, l_2_1, l_2_2)
+	local l_2_3 = 0
+	if l_2_2 == nil or l_2_2 == 0 or #l_2_0._cameras == 0 then
+		l_2_2 = 1
+		l_2_3 = 1
 	end
-	table.insert(A0_2._cameras, {
-		camera = A1_3,
-		blend_time = A2_4,
-		time = 1
-	})
+	local l_2_4 = table.insert
+	local l_2_5 = l_2_0._cameras
+	local l_2_6 = {}
+	l_2_6.camera = l_2_1
+	l_2_6.blend_time = l_2_2
+	l_2_6.time = l_2_3
+	l_2_4(l_2_5, l_2_6)
 end
-function CameraMixer.update(A0_5, A1_6, A2_7)
-	local L3_8, L4_9, L5_10, L6_11, L7_12, L8_13, L9_14, L10_15, L11_16, L12_17, L13_18, L14_19, L15_20, L16_21, L17_22
-	L3_8 = Vector3
-	L3_8 = L3_8(L4_9, L5_10, L6_11)
-	A1_6.position = L3_8
-	L3_8 = Rotation
-	L3_8 = L3_8()
-	A1_6.rotation = L3_8
-	A1_6.constraint_yaw = nil
-	A1_6.constraint_pitch = nil
-	A1_6.constraint_rot = nil
-	A1_6.fov = 0
-	A1_6.dof = nil
-	L3_8 = 1
-	for L7_12, L8_13 in L4_9(L5_10) do
-		L9_14 = L8_13.time
-		L9_14 = L9_14 + A2_7
-		L8_13.time = L9_14
-		L9_14 = math
-		L9_14 = L9_14.sin
-		L10_15 = math
-		L10_15 = L10_15.clamp
-		L11_16 = L8_13.time
-		L12_17 = L8_13.blend_time
-		L11_16 = L11_16 / L12_17
-		L12_17 = 0
-		L13_18 = 1
-		L10_15 = L10_15(L11_16, L12_17, L13_18)
-		L10_15 = L10_15 * 90
-		L9_14 = L9_14(L10_15)
-		L10_15 = L8_13.camera
-		L11_16 = A1_6.position
-		L12_17 = _UPVALUE0_
-		L14_19 = L10_15
-		L13_18 = L10_15.position
-		L17_22 = L13_18(L14_19)
-		L12_17 = L12_17(L13_18, L14_19, L15_20, L16_21, L17_22, L13_18(L14_19))
-		L13_18 = _UPVALUE1_
-		L14_19 = L12_17
-		L15_20 = L11_16
-		L13_18(L14_19, L15_20)
-		L13_18 = _UPVALUE2_
-		L14_19 = L12_17
-		L15_20 = L9_14
-		L13_18(L14_19, L15_20)
-		L13_18 = _UPVALUE3_
-		L14_19 = L11_16
-		L15_20 = L12_17
-		L13_18(L14_19, L15_20)
-		L13_18 = A1_6.rotation
-		L14_19 = _UPVALUE4_
-		L15_20 = L13_18
-		L16_21 = L13_18
-		L17_22 = L10_15.rotation
-		L17_22 = L17_22(L10_15)
-		L14_19(L15_20, L16_21, L17_22, L9_14)
-		L14_19 = A1_6.fov
-		L16_21 = L10_15
-		L15_20 = L10_15.camera_fov
-		L15_20 = L15_20(L16_21)
-		L15_20 = L15_20 - L14_19
-		L15_20 = L15_20 * L9_14
-		L15_20 = L14_19 + L15_20
-		A1_6.fov = L15_20
-		L16_21 = L10_15
-		L15_20 = L10_15.camera_dof
-		L15_20 = L15_20(L16_21)
-		L16_21 = A1_6.dof
-		if L16_21 then
-			if not L15_20 then
-				L17_22 = 1000000
-				L15_20 = {}
-				L15_20.amount = 0
-				L15_20.near_min = 0
-				L15_20.near_max = 0
-				L15_20.far_min = L17_22
-				L15_20.far_max = L17_22
+
+CameraMixer.update = function(l_3_0, l_3_1, l_3_2)
+	-- upvalues: l_0_3 , l_0_1 , l_0_2 , l_0_0 , l_0_4
+	local l_3_7, l_3_8, l_3_9, l_3_10, l_3_11, l_3_12, l_3_13, l_3_14, l_3_15, l_3_16, l_3_17, l_3_18 = nil
+	l_3_1.position = Vector3(0, 0, 0)
+	l_3_1.rotation = Rotation()
+	l_3_1.constraint_yaw = nil
+	l_3_1.constraint_pitch = nil
+	l_3_1.constraint_rot = nil
+	l_3_1.fov = 0
+	l_3_1.dof = nil
+	local l_3_3 = 1
+	for i_0,i_1 in ipairs(l_3_0._cameras) do
+		i_1.time = i_1.time + l_3_2
+		local l_3_21 = math.sin(math.clamp(i_1.time / i_1.blend_time, 0, 1) * 90)
+		local l_3_22 = nil
+		l_0_1(l_0_3(i_1.camera:position()), l_3_1.position)
+		l_0_2(l_0_3(i_1.camera:position()), l_3_21)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_0_0(l_3_1.position, l_0_3(i_1.camera:position()))
+		local l_3_23 = nil
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_0_4(l_3_1.rotation, l_3_1.rotation, l_3_22:rotation(), l_3_21)
+		local l_3_24 = nil
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_3_1.fov = l_3_1.fov + (l_3_22:camera_fov() - l_3_1.fov) * l_3_21
+		local l_3_26 = nil
+		if l_3_1.dof then
+			if not l_3_22:camera_dof() then
+				local l_3_27 = nil
+				local l_3_25 = {}
+				l_3_25.far_min = 1000000
+				 -- DECOMPILER ERROR: Confused about usage of registers!
+
+				l_3_25.far_max = 1000000
 			end
-			L17_22 = L16_21.amount
-			L17_22 = L17_22 + (L15_20.amount - L16_21.amount) * L9_14
-			L16_21.amount = L17_22
-			L17_22 = L16_21.near_min
-			L17_22 = L17_22 + (L15_20.near_min - L16_21.near_min) * L9_14
-			L16_21.near_min = L17_22
-			L17_22 = L16_21.near_max
-			L17_22 = L17_22 + (L15_20.near_max - L16_21.near_max) * L9_14
-			L16_21.near_max = L17_22
-			L17_22 = L16_21.far_min
-			L17_22 = L17_22 + (L15_20.far_min - L16_21.far_min) * L9_14
-			L16_21.far_min = L17_22
-			L17_22 = L16_21.far_max
-			L17_22 = L17_22 + (L15_20.far_max - L16_21.far_max) * L9_14
-			L16_21.far_max = L17_22
-		elseif L15_20 then
-			L17_22 = {}
-			A1_6.dof = L17_22
-			L16_21 = A1_6.dof
-			L17_22 = L15_20.amount
-			L16_21.amount = L17_22
-			L17_22 = L15_20.near_min
-			L16_21.near_min = L17_22
-			L17_22 = L15_20.near_max
-			L16_21.near_max = L17_22
-			L17_22 = L15_20.far_min
-			L16_21.far_min = L17_22
-			L17_22 = L15_20.far_max
-			L16_21.far_max = L17_22
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.amount = l_3_1.dof.amount + (l_3_25.amount - l_3_1.dof.amount) * l_3_21
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.near_min = l_3_1.dof.near_min + (l_3_25.near_min - l_3_1.dof.near_min) * l_3_21
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.near_max = l_3_1.dof.near_max + (l_3_25.near_max - l_3_1.dof.near_max) * l_3_21
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.far_min = l_3_1.dof.far_min + (l_3_25.far_min - l_3_1.dof.far_min) * l_3_21
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.far_max = l_3_1.dof.far_max + (l_3_25.far_max - l_3_1.dof.far_max) * l_3_21
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		elseif l_3_25 then
+			l_3_1.dof = {}
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.amount = l_3_25.amount
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.near_min = l_3_25.near_min
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.near_max = l_3_25.near_max
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.far_min = l_3_25.far_min
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			 -- DECOMPILER ERROR: Confused about usage of registers!
+
+			l_3_1.dof.far_max = l_3_25.far_max
 		end
-		L17_22 = L10_15.camera_constraints
-		L17_22 = L17_22(L10_15)
-		if L17_22 and A1_6.constraint_rot then
-			A1_6.constraint_rot = A1_6.constraint_rot:slerp(L17_22, L9_14)
+		local l_3_28, l_3_29, l_3_30 = nil
+		if l_3_22:camera_constraints() and l_3_1.constraint_rot then
+			l_3_1.constraint_rot = l_3_1.constraint_rot:slerp(l_3_22:camera_constraints(), l_3_21)
 		else
-			A1_6.constraint_rot = L17_22
+			l_3_1.constraint_rot = l_3_22:camera_constraints()
 		end
-		if L17_22(L10_15) and A1_6.constraint_yaw then
-			A1_6.constraint_yaw = A1_6.constraint_yaw + (L17_22(L10_15) - A1_6.constraint_yaw) * L9_14
+		if l_3_22 and l_3_1.constraint_yaw then
+			l_3_1.constraint_yaw = l_3_1.constraint_yaw + (l_3_22 - l_3_1.constraint_yaw) * l_3_21
 		else
-			A1_6.constraint_yaw = L17_22(L10_15)
+			l_3_1.constraint_yaw = l_3_22
 		end
-		if L17_22(L10_15) and A1_6.constraint_pitch then
-			A1_6.constraint_pitch = A1_6.constraint_pitch + (L17_22(L10_15) - A1_6.constraint_pitch) * L9_14
+		if l_3_1.dof.far_max and l_3_1.constraint_pitch then
+			l_3_1.constraint_pitch = l_3_1.constraint_pitch + (l_3_22 - l_3_1.constraint_pitch) * l_3_21
 		else
-			A1_6.constraint_pitch = L17_22(L10_15)
+			l_3_1.constraint_pitch = l_3_1.dof.far_max
 		end
-		if L9_14 >= 1 then
-			L3_8 = L7_12
+		if l_3_21 >= 1 then
+			l_3_3 = l_3_19
 		end
 	end
-	for L8_13 = 1, L3_8 - 1 do
-		L9_14 = table
-		L9_14 = L9_14.insert
-		L10_15 = L4_9
-		L11_16 = A0_5._cameras
-		L11_16 = L11_16[1]
-		L11_16 = L11_16.camera
-		L9_14(L10_15, L11_16)
-		L9_14 = table
-		L9_14 = L9_14.remove
-		L10_15 = A0_5._cameras
-		L11_16 = 1
-		L9_14(L10_15, L11_16)
+	for i = 1, l_3_3 - 1 do
+		table.insert({}, l_3_0._cameras[1].camera)
+		table.remove(l_3_0._cameras, 1)
 	end
-	return L4_9
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return {}
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function CameraMixer.active_camera(A0_23)
-	local L1_24, L2_25
-	L1_24 = A0_23._cameras
-	L1_24 = #L1_24
-	if L1_24 == 0 then
-		L2_25 = nil
-		return L2_25
+
+CameraMixer.active_camera = function(l_4_0)
+	local l_4_1 = #l_4_0._cameras
+	if l_4_1 == 0 then
+		return nil
 	end
-	L2_25 = A0_23._cameras
-	L2_25 = L2_25[L1_24]
-	L2_25 = L2_25.camera
-	return L2_25
+	return l_4_0._cameras[l_4_1].camera
 end
-function CameraMixer.cameras(A0_26)
-	local L1_27
-	L1_27 = {}
-	for 
+
+CameraMixer.cameras = function(l_5_0)
+	local l_5_5, l_5_6, l_5_7, l_5_8 = nil
+	local l_5_1 = {}
+	for i_0,i_1 in ipairs(l_5_0._cameras) do
+		table.insert(l_5_1, i_1.camera)
+	end
+	return l_5_1
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

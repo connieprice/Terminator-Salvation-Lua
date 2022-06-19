@@ -1,329 +1,319 @@
 require("cover/CoverEdgeType")
 require("shared/TableAlgorithms")
-function access_control_wrapper(A0_0)
-	class().init = function(A0_1, A1_2)
-		A0_1._unit = A1_2
-		A0_1._controlled_class_instance = _UPVALUE0_:new(A1_2)
-		function A0_1.make_read_write(A0_3)
-			setmetatable(A0_3, {
-				__index = A0_3._controlled_class_instance,
-				__newindex = A0_3._controlled_class_instance
-			})
-		end
-		function A0_1.make_read_only(A0_4)
-			setmetatable(A0_4, {
-				__index = A0_4._controlled_class_instance,
-				__newindex = function()
-					assert(false, "Trying to modify readonly table")
-				end
-			})
-			return A0_4._controlled_class_instance
-		end
-		A0_1:make_read_write()
-	end
-	return (class())
+access_control_wrapper = function(l_1_0)
+	local l_1_1 = class()
+	l_1_1.init = function(l_2_0, l_2_1)
+		-- upvalues: l_1_0
+		l_2_0._unit = l_2_1
+		l_2_0._controlled_class_instance = l_1_0:new(l_2_1)
+		l_2_0.make_read_write = function(l_3_0)
+			local l_3_1 = setmetatable
+			local l_3_2 = l_3_0
+			local l_3_3 = {}
+			l_3_3.__index = l_3_0._controlled_class_instance
+			l_3_3.__newindex = l_3_0._controlled_class_instance
+			l_3_1(l_3_2, l_3_3)
+    end
+		l_2_0.make_read_only = function(l_4_0)
+			local l_4_1 = setmetatable
+			local l_4_2 = l_4_0
+			local l_4_3 = {}
+			l_4_3.__index = l_4_0._controlled_class_instance
+			l_4_3.__newindex = function()
+				assert(false, "Trying to modify readonly table")
+      end
+			l_4_1(l_4_2, l_4_3)
+			l_4_1 = l_4_0._controlled_class_instance
+			return l_4_1
+    end
+		l_2_0:make_read_write()
+  end
+	return l_1_1
 end
-CharacterInput = CharacterInput or class()
+
+if not CharacterInput then
+	CharacterInput = class()
+end
 CharacterInputAccessControlled = access_control_wrapper(CharacterInput)
-function CharacterInput.init(A0_5, A1_6)
-	A0_5:clear()
+CharacterInput.init = function(l_2_0, l_2_1)
+	l_2_0:clear()
 end
-function CharacterInput.clear(A0_7)
-	A0_7._movement = Vector3(0, 0, 0)
-	A0_7._movement_length = 0
-	A0_7._normalized_movement = Vector3(0, 0, 0)
-	A0_7._precision_aiming = false
-	A0_7._aiming = false
-	A0_7._fire = 0
-	A0_7._fire_pressed = false
-	A0_7._fire_grenade = false
-	A0_7._reload = false
-	A0_7._enter_cover = false
-	A0_7._target_cover_id = 0
-	A0_7._target_cover_point_position = Vector3(0, 0, 0)
-	A0_7._target_cover_point_edge = CoverEdgeType.NOT_EDGE
-	A0_7._target_cover_squared_distance = 0
-	A0_7._leave_cover = false
-	A0_7._eye_target_position = nil
-	A0_7._aim_target_position = nil
-	A0_7._respawn = false
-	A0_7._enter_rail_vehicle = false
-	A0_7._revive = false
-	A0_7._interact = false
-	A0_7._weapon_slot = 0
-	A0_7._toggle_flashlight = false
-	A0_7._miss_dispersion = 0
-	A0_7._quick_move_info_index = 0
-	A0_7._quick_move_infos_id = 0
-	A0_7._leave_mounted_weapon = nil
-	A0_7._enter_inner_cover_position = false
-	A0_7._enter_outer_cover_position = false
-	A0_7._wants_to_look_at = false
+
+CharacterInput.clear = function(l_3_0)
+	l_3_0._movement = Vector3(0, 0, 0)
+	l_3_0._movement_length = 0
+	l_3_0._normalized_movement = Vector3(0, 0, 0)
+	l_3_0._precision_aiming = false
+	l_3_0._aiming = false
+	l_3_0._fire = 0
+	l_3_0._fire_pressed = false
+	l_3_0._fire_grenade = false
+	l_3_0._reload = false
+	l_3_0._enter_cover = false
+	l_3_0._target_cover_id = 0
+	l_3_0._target_cover_point_position = Vector3(0, 0, 0)
+	l_3_0._target_cover_point_edge = CoverEdgeType.NOT_EDGE
+	l_3_0._target_cover_squared_distance = 0
+	l_3_0._leave_cover = false
+	l_3_0._eye_target_position = nil
+	l_3_0._aim_target_position = nil
+	l_3_0._respawn = false
+	l_3_0._enter_rail_vehicle = false
+	l_3_0._revive = false
+	l_3_0._interact = false
+	l_3_0._weapon_slot = 0
+	l_3_0._toggle_flashlight = false
+	l_3_0._miss_dispersion = 0
+	l_3_0._quick_move_info_index = 0
+	l_3_0._quick_move_infos_id = 0
+	l_3_0._leave_mounted_weapon = nil
+	l_3_0._enter_inner_cover_position = false
+	l_3_0._enter_outer_cover_position = false
+	l_3_0._wants_to_look_at = false
 end
-function CharacterInput.set(A0_8, A1_9)
-	TableAlgorithms.merge(A0_8, A1_9)
+
+CharacterInput.set = function(l_4_0, l_4_1)
+	TableAlgorithms.merge(l_4_0, l_4_1)
 end
-function CharacterInput.movement(A0_10)
-	local L1_11
-	L1_11 = A0_10._movement
-	return L1_11
+
+CharacterInput.movement = function(l_5_0)
+	return l_5_0._movement
 end
-function CharacterInput.movement_length(A0_12)
-	local L1_13
-	L1_13 = A0_12._movement_length
-	return L1_13
+
+CharacterInput.movement_length = function(l_6_0)
+	return l_6_0._movement_length
 end
-function CharacterInput.normalized_movement(A0_14)
-	local L1_15
-	L1_15 = A0_14._normalized_movement
-	return L1_15
+
+CharacterInput.normalized_movement = function(l_7_0)
+	return l_7_0._normalized_movement
 end
-function CharacterInput.set_movement(A0_16, A1_17, A2_18)
-	A0_16._movement = A1_17
-	if A2_18 == true and A0_16._movement:length() > 0.5 then
-		A0_16._movement_length = 0.5
+
+CharacterInput.set_movement = function(l_8_0, l_8_1, l_8_2)
+	l_8_0._movement = l_8_1
+	local l_8_3 = l_8_0._movement:length()
+	if l_8_2 == true and l_8_3 > 0.5 then
+		l_8_0._movement_length = 0.5
 	else
-		A0_16._movement_length = A0_16._movement:length()
+		l_8_0._movement_length = l_8_3
 	end
-	A0_16._normalized_movement = A0_16._movement:normalized()
+	l_8_0._normalized_movement = l_8_0._movement:normalized()
 end
-function CharacterInput.eye_target_position(A0_19)
-	local L1_20
-	L1_20 = A0_19._eye_target_position
-	return L1_20
+
+CharacterInput.eye_target_position = function(l_9_0)
+	return l_9_0._eye_target_position
 end
-function CharacterInput.set_eye_target_position(A0_21, A1_22)
-	A0_21._eye_target_position = A1_22
+
+CharacterInput.set_eye_target_position = function(l_10_0, l_10_1)
+	l_10_0._eye_target_position = l_10_1
 end
-function CharacterInput.wants_to_look_at(A0_23)
-	local L1_24
-	L1_24 = A0_23._wants_to_look_at
-	return L1_24
+
+CharacterInput.wants_to_look_at = function(l_11_0)
+	return l_11_0._wants_to_look_at
 end
-function CharacterInput.set_wants_to_look_at(A0_25, A1_26)
-	A0_25._wants_to_look_at = A1_26
+
+CharacterInput.set_wants_to_look_at = function(l_12_0, l_12_1)
+	l_12_0._wants_to_look_at = l_12_1
 end
-function CharacterInput.aim_target_position(A0_27)
-	local L1_28
-	L1_28 = A0_27._aim_target_position
-	return L1_28
+
+CharacterInput.aim_target_position = function(l_13_0)
+	return l_13_0._aim_target_position
 end
-function CharacterInput.set_aim_target_position(A0_29, A1_30)
-	A0_29._aim_target_position = A1_30
+
+CharacterInput.set_aim_target_position = function(l_14_0, l_14_1)
+	l_14_0._aim_target_position = l_14_1
 end
-function CharacterInput.precision_aiming(A0_31)
-	local L1_32
-	L1_32 = A0_31._precision_aiming
-	return L1_32
+
+CharacterInput.precision_aiming = function(l_15_0)
+	return l_15_0._precision_aiming
 end
-function CharacterInput.set_precision_aiming(A0_33)
-	local L1_34
-	A0_33._precision_aiming = true
+
+CharacterInput.set_precision_aiming = function(l_16_0)
+	l_16_0._precision_aiming = true
 end
-function CharacterInput.aiming(A0_35)
-	local L1_36
-	L1_36 = A0_35._aiming
-	return L1_36
+
+CharacterInput.aiming = function(l_17_0)
+	return l_17_0._aiming
 end
-function CharacterInput.set_aiming(A0_37)
-	local L1_38
-	A0_37._aiming = true
+
+CharacterInput.set_aiming = function(l_18_0)
+	l_18_0._aiming = true
 end
-function CharacterInput.fire(A0_39)
-	local L1_40
-	L1_40 = A0_39._fire
-	return L1_40
+
+CharacterInput.fire = function(l_19_0)
+	return l_19_0._fire
 end
-function CharacterInput.fire_pressed(A0_41)
-	local L1_42
-	L1_42 = A0_41._fire_pressed
-	return L1_42
+
+CharacterInput.fire_pressed = function(l_20_0)
+	return l_20_0._fire_pressed
 end
-function CharacterInput.set_fire(A0_43, A1_44, A2_45)
-	A0_43._fire = A1_44
-	A0_43._fire_pressed = A2_45
+
+CharacterInput.set_fire = function(l_21_0, l_21_1, l_21_2)
+	l_21_0._fire = l_21_1
+	l_21_0._fire_pressed = l_21_2
 end
-function CharacterInput.fire_grenade(A0_46)
-	local L1_47
-	L1_47 = A0_46._fire_grenade
-	return L1_47
+
+CharacterInput.fire_grenade = function(l_22_0)
+	return l_22_0._fire_grenade
 end
-function CharacterInput.set_fire_grenade(A0_48)
-	local L1_49
-	A0_48._fire_grenade = true
+
+CharacterInput.set_fire_grenade = function(l_23_0)
+	l_23_0._fire_grenade = true
 end
-function CharacterInput.set_reload(A0_50, A1_51)
-	A0_50._reload = A1_51
+
+CharacterInput.set_reload = function(l_24_0, l_24_1)
+	l_24_0._reload = l_24_1
 end
-function CharacterInput.reload(A0_52)
-	local L1_53
-	L1_53 = A0_52._reload
-	return L1_53
+
+CharacterInput.reload = function(l_25_0)
+	return l_25_0._reload
 end
-function CharacterInput.enter_cover(A0_54)
-	local L1_55
-	L1_55 = A0_54._enter_cover
-	return L1_55
+
+CharacterInput.enter_cover = function(l_26_0)
+	return l_26_0._enter_cover
 end
-function CharacterInput.set_enter_cover(A0_56, A1_57, A2_58)
-	A0_56:set_target_cover_info(A1_57, A2_58)
-	A0_56._enter_cover = true
+
+CharacterInput.set_enter_cover = function(l_27_0, l_27_1, l_27_2)
+	l_27_0:set_target_cover_info(l_27_1, l_27_2)
+	l_27_0._enter_cover = true
 end
-function CharacterInput.set_target_cover_info(A0_59, A1_60, A2_61)
-	assert(A1_60)
-	A0_59._target_cover_id = managers.cover:cover_id(A1_60:cover())
-	assert(A0_59._target_cover_id)
-	A0_59._target_cover_point_position = A1_60:closest_cover_point():position()
-	A0_59._target_cover_point_edge = A1_60:closest_cover_point():edge()
-	A0_59._target_cover_point_normal = A1_60:closest_cover_point():normal()
-	A0_59._target_cover_point_height = A1_60:closest_cover_point():height()
-	A0_59._target_cover_point_cover_relative_position = A1_60:closest_cover_point():cover_relative_position()
-	A0_59._target_cover_squared_distance = A1_60:squared_distance_to_cover_position()
-	A0_59._target_cover_use_outer_position = A2_61
+
+CharacterInput.set_target_cover_info = function(l_28_0, l_28_1, l_28_2)
+	assert(l_28_1)
+	l_28_0._target_cover_id = managers.cover:cover_id(l_28_1:cover())
+	assert(l_28_0._target_cover_id)
+	l_28_0._target_cover_point_position = l_28_1:closest_cover_point():position()
+	l_28_0._target_cover_point_edge = l_28_1:closest_cover_point():edge()
+	l_28_0._target_cover_point_normal = l_28_1:closest_cover_point():normal()
+	l_28_0._target_cover_point_height = l_28_1:closest_cover_point():height()
+	l_28_0._target_cover_point_cover_relative_position = l_28_1:closest_cover_point():cover_relative_position()
+	l_28_0._target_cover_squared_distance = l_28_1:squared_distance_to_cover_position()
+	l_28_0._target_cover_use_outer_position = l_28_2
 end
-function CharacterInput.leave_cover(A0_62)
-	local L1_63
-	L1_63 = A0_62._leave_cover
-	return L1_63
+
+CharacterInput.leave_cover = function(l_29_0)
+	return l_29_0._leave_cover
 end
-function CharacterInput.set_leave_cover(A0_64)
-	local L1_65
-	A0_64._target_cover_info = nil
-	A0_64._leave_cover = true
+
+CharacterInput.set_leave_cover = function(l_30_0)
+	l_30_0._target_cover_info = nil
+	l_30_0._leave_cover = true
 end
-function CharacterInput.target_cover_info(A0_66)
-	local L1_67, L2_68
-	L1_67 = A0_66._target_cover_id
-	if L1_67 == 0 then
-		L1_67 = nil
-		return L1_67
+
+CharacterInput.target_cover_info = function(l_31_0)
+	if l_31_0._target_cover_id == 0 then
+		return nil
 	end
-	L1_67 = managers
-	L1_67 = L1_67.cover
-	L2_68 = L1_67
-	L1_67 = L1_67.cover
-	L1_67 = L1_67(L2_68, A0_66._target_cover_id)
-	L2_68 = assert
-	L2_68(L1_67)
-	L2_68 = CoverPoint
-	L2_68 = L2_68.new
-	L2_68 = L2_68(L2_68, A0_66._target_cover_point_position, A0_66._target_cover_point_edge, A0_66._target_cover_point_normal, A0_66._target_cover_point_height, A0_66._target_cover_point_cover_relative_position)
-	return (CoverInfo:new(L1_67, L2_68, A0_66._target_cover_squared_distance))
+	local l_31_1 = managers.cover:cover(l_31_0._target_cover_id)
+	assert(l_31_1)
+	local l_31_2 = CoverPoint:new(l_31_0._target_cover_point_position, l_31_0._target_cover_point_edge, l_31_0._target_cover_point_normal, l_31_0._target_cover_point_height, l_31_0._target_cover_point_cover_relative_position)
+	return CoverInfo:new(l_31_1, l_31_2, l_31_0._target_cover_squared_distance)
 end
-function CharacterInput.target_cover_use_outer_position(A0_69)
-	local L1_70
-	L1_70 = A0_69._target_cover_use_outer_position
-	return L1_70
+
+CharacterInput.target_cover_use_outer_position = function(l_32_0)
+	return l_32_0._target_cover_use_outer_position
 end
-function CharacterInput.enter_inner_cover_position(A0_71)
-	local L1_72
-	L1_72 = A0_71._enter_inner_cover_position
-	return L1_72
+
+CharacterInput.enter_inner_cover_position = function(l_33_0)
+	return l_33_0._enter_inner_cover_position
 end
-function CharacterInput.set_enter_inner_cover_position(A0_73)
-	local L1_74
-	A0_73._enter_inner_cover_position = true
+
+CharacterInput.set_enter_inner_cover_position = function(l_34_0)
+	l_34_0._enter_inner_cover_position = true
 end
-function CharacterInput.enter_outer_cover_position(A0_75)
-	local L1_76
-	L1_76 = A0_75._enter_outer_cover_position
-	return L1_76
+
+CharacterInput.enter_outer_cover_position = function(l_35_0)
+	return l_35_0._enter_outer_cover_position
 end
-function CharacterInput.set_enter_outer_cover_position(A0_77)
-	local L1_78
-	A0_77._enter_outer_cover_position = true
+
+CharacterInput.set_enter_outer_cover_position = function(l_36_0)
+	l_36_0._enter_outer_cover_position = true
 end
-function CharacterInput.respawn(A0_79)
-	local L1_80
-	L1_80 = A0_79._respawn
-	return L1_80
+
+CharacterInput.respawn = function(l_37_0)
+	return l_37_0._respawn
 end
-function CharacterInput.set_respawn(A0_81)
-	local L1_82
-	A0_81._respawn = true
+
+CharacterInput.set_respawn = function(l_38_0)
+	l_38_0._respawn = true
 end
-function CharacterInput.set_enter_rail_vehicle(A0_83)
-	local L1_84
-	A0_83._enter_rail_vehicle = true
+
+CharacterInput.set_enter_rail_vehicle = function(l_39_0)
+	l_39_0._enter_rail_vehicle = true
 end
-function CharacterInput.enter_rail_vehicle(A0_85)
-	local L1_86
-	L1_86 = A0_85._enter_rail_vehicle
-	return L1_86
+
+CharacterInput.enter_rail_vehicle = function(l_40_0)
+	return l_40_0._enter_rail_vehicle
 end
-function CharacterInput.set_revive(A0_87)
-	local L1_88
-	A0_87._revive = true
+
+CharacterInput.set_revive = function(l_41_0)
+	l_41_0._revive = true
 end
-function CharacterInput.revive(A0_89)
-	local L1_90
-	L1_90 = A0_89._revive
-	return L1_90
+
+CharacterInput.revive = function(l_42_0)
+	return l_42_0._revive
 end
-function CharacterInput.set_interact(A0_91)
-	local L1_92
-	A0_91._interact = true
+
+CharacterInput.set_interact = function(l_43_0)
+	l_43_0._interact = true
 end
-function CharacterInput.interact(A0_93)
-	local L1_94
-	L1_94 = A0_93._interact
-	return L1_94
+
+CharacterInput.interact = function(l_44_0)
+	return l_44_0._interact
 end
-function CharacterInput.set_weapon_slot(A0_95, A1_96)
-	A0_95._weapon_slot = A1_96
+
+CharacterInput.set_weapon_slot = function(l_45_0, l_45_1)
+	l_45_0._weapon_slot = l_45_1
 end
-function CharacterInput.weapon_slot(A0_97)
-	local L1_98
-	L1_98 = A0_97._weapon_slot
-	return L1_98
+
+CharacterInput.weapon_slot = function(l_46_0)
+	return l_46_0._weapon_slot
 end
-function CharacterInput.set_toggle_flashlight(A0_99)
-	local L1_100
-	A0_99._toggle_flashlight = true
+
+CharacterInput.set_toggle_flashlight = function(l_47_0)
+	l_47_0._toggle_flashlight = true
 end
-function CharacterInput.toggle_flashlight(A0_101)
-	local L1_102
-	L1_102 = A0_101._toggle_flashlight
-	return L1_102
+
+CharacterInput.toggle_flashlight = function(l_48_0)
+	return l_48_0._toggle_flashlight
 end
-function CharacterInput.miss_dispersion(A0_103)
-	local L1_104
-	L1_104 = A0_103._miss_dispersion
-	return L1_104
+
+CharacterInput.miss_dispersion = function(l_49_0)
+	return l_49_0._miss_dispersion
 end
-function CharacterInput.set_miss_dispersion(A0_105, A1_106)
-	A0_105._miss_dispersion = A1_106
+
+CharacterInput.set_miss_dispersion = function(l_50_0, l_50_1)
+	l_50_0._miss_dispersion = l_50_1
 end
-function CharacterInput.set_show_alternative_hud(A0_107, A1_108)
-	A0_107._alternative_hud = A1_108
+
+CharacterInput.set_show_alternative_hud = function(l_51_0, l_51_1)
+	l_51_0._alternative_hud = l_51_1
 end
-function CharacterInput.show_alternative_hud(A0_109)
-	local L1_110
-	L1_110 = A0_109._alternative_hud
-	return L1_110
+
+CharacterInput.show_alternative_hud = function(l_52_0)
+	return l_52_0._alternative_hud
 end
-function CharacterInput.set_quick_move_info_index(A0_111, A1_112, A2_113)
-	assert(A1_112)
-	assert(A2_113)
-	A0_111._quick_move_info_index = A1_112
-	A0_111._quick_move_infos_id = A2_113
+
+CharacterInput.set_quick_move_info_index = function(l_53_0, l_53_1, l_53_2)
+	assert(l_53_1)
+	assert(l_53_2)
+	l_53_0._quick_move_info_index = l_53_1
+	l_53_0._quick_move_infos_id = l_53_2
 end
-function CharacterInput.quick_move_info_index(A0_114)
-	local L1_115
-	L1_115 = A0_114._quick_move_info_index
-	return L1_115
+
+CharacterInput.quick_move_info_index = function(l_54_0)
+	return l_54_0._quick_move_info_index
 end
-function CharacterInput.quick_move_infos_id(A0_116)
-	local L1_117
-	L1_117 = A0_116._quick_move_infos_id
-	return L1_117
+
+CharacterInput.quick_move_infos_id = function(l_55_0)
+	return l_55_0._quick_move_infos_id
 end
-function CharacterInput.leave_mounted_weapon(A0_118)
-	local L1_119
-	L1_119 = A0_118._leave_mounted_weapon
-	return L1_119
+
+CharacterInput.leave_mounted_weapon = function(l_56_0)
+	return l_56_0._leave_mounted_weapon
 end
-function CharacterInput.set_leave_mounted_weapon(A0_120)
-	local L1_121
-	A0_120._leave_mounted_weapon = true
+
+CharacterInput.set_leave_mounted_weapon = function(l_57_0)
+	l_57_0._leave_mounted_weapon = true
 end
+
+

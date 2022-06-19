@@ -1,49 +1,58 @@
 require("shared/TableAlgorithms")
-Interpolator = Interpolator or class()
-function Interpolator.init(A0_0, A1_1, A2_2)
-	A0_0._value = A1_1
-	A0_0._target = A1_1
-	A0_0._speed = A2_2
-	A0_0._reached_target = false
+if not Interpolator then
+	Interpolator = class()
 end
-function Interpolator.save(A0_3, A1_4)
-	TableAlgorithms.merge_except_functions(A1_4, A0_3)
+Interpolator.init = function(l_1_0, l_1_1, l_1_2)
+	l_1_0._value = l_1_1
+	l_1_0._target = l_1_1
+	l_1_0._speed = l_1_2
+	l_1_0._reached_target = false
 end
-function Interpolator.load(A0_5, A1_6)
-	TableAlgorithms.merge_except_functions(A0_5, A1_6)
+
+Interpolator.save = function(l_2_0, l_2_1)
+	TableAlgorithms.merge_except_functions(l_2_1, l_2_0)
 end
-function Interpolator.update(A0_7, A1_8)
-	local L2_9
-	L2_9 = A0_7._target
-	L2_9 = L2_9 - A0_7._value
-	A0_7._value = A0_7._value + math.min(A0_7._speed * A1_8, 1) * L2_9
-	if math.abs(A0_7._value - A0_7._target) < 1.0E-4 then
-		A0_7._value = A0_7._target
+
+Interpolator.load = function(l_3_0, l_3_1)
+	TableAlgorithms.merge_except_functions(l_3_0, l_3_1)
+end
+
+Interpolator.update = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._target - l_4_0._value
+	local l_4_3 = math.min(l_4_0._speed * l_4_1, 1)
+	l_4_0._value = l_4_0._value + l_4_3 * l_4_2
+	if math.abs(l_4_0._value - l_4_0._target) < 0.0001 then
+		l_4_0._value = l_4_0._target
 	end
 end
-function Interpolator.set_target(A0_10, A1_11)
-	A0_10._target = A1_11
+
+Interpolator.set_target = function(l_5_0, l_5_1)
+	l_5_0._target = l_5_1
 end
-function Interpolator.set_speed(A0_12, A1_13)
-	A0_12._speed = A1_13
+
+Interpolator.set_speed = function(l_6_0, l_6_1)
+	l_6_0._speed = l_6_1
 end
-function Interpolator.set_value(A0_14, A1_15)
-	A0_14._value = A1_15
-	A0_14._target = A1_15
+
+Interpolator.set_value = function(l_7_0, l_7_1)
+	l_7_0._value = l_7_1
+	l_7_0._target = l_7_1
 end
-function Interpolator.value(A0_16)
-	local L1_17
-	L1_17 = A0_16._value
-	return L1_17
+
+Interpolator.value = function(l_8_0)
+	return l_8_0._value
 end
-function Interpolator.target(A0_18)
-	local L1_19
-	L1_19 = A0_18._target
-	return L1_19
+
+Interpolator.target = function(l_9_0)
+	return l_9_0._target
 end
-function Interpolator.has_reached_target(A0_20)
-	return A0_20._value == A0_20._target
+
+Interpolator.has_reached_target = function(l_10_0)
+	return l_10_0._value == l_10_0._target
 end
-function Interpolator.has_reached_target_vec(A0_21)
-	return (A0_21._target - A0_21._value):length() < 0.01
+
+Interpolator.has_reached_target_vec = function(l_11_0)
+	return l_11_0._target - l_11_0._value:length() < 0.01
 end
+
+

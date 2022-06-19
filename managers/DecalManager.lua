@@ -1,109 +1,53 @@
-local L0_0
-L0_0 = DecalManager
-if not L0_0 then
-	L0_0 = class
-	L0_0 = L0_0()
+if not DecalManager then
+	DecalManager = class()
 end
-DecalManager = L0_0
-L0_0 = mvector3
-L0_0 = L0_0.set
-function DecalManager.init(A0_1)
-	local L1_2
-	L1_2 = {}
-	A0_1._decals = L1_2
-	A0_1._cull_decals = true
-	L1_2 = {}
-	A0_1._frustums = L1_2
+local l_0_0 = mvector3.set
+local l_0_1 = mvector3.set_x
+local l_0_2 = mvector3.set_z
+local l_0_3 = mvector3.set_zero
+local l_0_4 = mvector3.normalize
+local l_0_5 = function(l_1_0, l_1_1, l_1_2)
+	local l_1_3 = l_1_0.n
+	local l_1_4 = l_1_1.n
+	local l_1_5 = l_1_2.n
+	return (l_1_0.p:dot(l_1_0.n) * l_1_1.n:cross(l_1_2.n) + l_1_1.p:dot(l_1_1.n) * l_1_2.n:cross(l_1_0.n) + l_1_2.p:dot(l_1_2.n) * l_1_0.n:cross(l_1_1.n)) / (l_1_3.x * l_1_4.y * l_1_5.z + l_1_3.y * l_1_4.z * l_1_5.x + l_1_3.z * l_1_4.x * l_1_5.y - l_1_3.z * l_1_4.y * l_1_5.x - l_1_3.y * l_1_4.x * l_1_5.z - l_1_3.x * l_1_4.z * l_1_5.y)
 end
-function DecalManager.update(A0_3, A1_4, A2_5)
-	local L3_6, L4_7, L5_8, L6_9, L7_10, L8_11, L9_12, L10_13, L11_14, L12_15, L13_16, L14_17, L15_18, L16_19, L17_20, L18_21, L19_22
-	L3_6 = {}
-	L4_7 = managers
-	L4_7 = L4_7.user_viewport
-	if L4_7 then
-		for L9_12, L10_13 in L6_9(L7_10) do
-			L11_14 = L10_13.engine_camera
-			L11_14 = L11_14(L12_15)
-			L15_18 = L13_16
-			L15_18 = {}
-			for L19_22 = 1, 6 do
-				table.insert(L15_18, {
-					p = Vector3(0, 0, 0),
-					n = Vector3(0, 0, 0)
-				})
-			end
-			L16_19.position = L12_15
-			L16_19.rotation = L13_16
-			L16_19.rotation_inv = L14_17
-			L16_19.planes = L15_18
-			L19_22 = L16_19
-			L17_20(L18_21, L19_22)
-			L19_22 = L11_14
-			L17_20(L18_21, L19_22)
-		end
-	end
-	for L8_11, L9_12 in L5_8(L6_9) do
-		L10_13 = A0_3._cull_decals
-		L10_13 = not L10_13
-		L11_14 = 1000000000
-		if not L10_13 then
-			for L15_18, L16_19 in L12_15(L13_16) do
-				L19_22 = L16_19.position
-				if L11_14 > L17_20 then
-					L11_14 = L17_20
-				end
-				L19_22 = L9_12.surface_normal
-				if L19_22 then
-					L19_22 = L16_19.rotation
-					L19_22 = L19_22.y
-					L19_22 = L19_22(L19_22)
-					L19_22 = L19_22.dot
-					L19_22 = L19_22(L19_22, L9_12.surface_normal)
-					L18_21 = L19_22 < 0
-				end
-				if L18_21 then
-					L19_22 = L9_12.position
-					L19_22 = L19_22 - L16_19.position
-					L19_22 = L19_22.rotate_with
-					L19_22 = L19_22(L19_22, L16_19.rotation_inv)
-					L10_13 = _UPVALUE1_(L19_22, L16_19.planes)
-					if L10_13 then
-					end
-				else
-				end
-			end
-		end
-		if L10_13 then
-			L15_18 = L9_12.name
-			L19_22 = L9_12.surface_normal
-		elseif L11_14 < 1000 then
-			L15_18 = L13_16
-			if L14_17 then
-				L15_18 = L14_17
-				L19_22 = L9_12.position
-				L19_22 = L19_22 + L9_12.direction * 100
-			end
-		end
-		if L12_15 and L12_15 ~= "" then
-			if L13_16 == nil then
-			end
-			L15_18 = L14_17
-			L15_18 = L14_17
-			L16_19.effect = L12_15
-			L16_19.position = L17_20
-			L16_19.normal = L13_16
-			L14_17(L15_18, L16_19)
-		end
-	end
-	A0_3._decals = L5_8
+
+do
+	local l_0_8 = function(l_2_0, l_2_1, l_2_2)
+	-- upvalues: l_0_5
+	local l_2_3 = l_0_5(l_2_0.planes[1], l_2_0.planes[2], l_2_0.planes[6]):rotate_with(l_2_2) + l_2_1
+	local l_2_4 = l_0_5(l_2_0.planes[1], l_2_0.planes[3], l_2_0.planes[6]):rotate_with(l_2_2) + l_2_1
+	local l_2_5 = l_0_5(l_2_0.planes[1], l_2_0.planes[2], l_2_0.planes[5]):rotate_with(l_2_2) + l_2_1
+	local l_2_6 = l_0_5(l_2_0.planes[1], l_2_0.planes[3], l_2_0.planes[5]):rotate_with(l_2_2) + l_2_1
+	local l_2_7 = l_0_5(l_2_0.planes[4], l_2_0.planes[2], l_2_0.planes[6]):rotate_with(l_2_2) + l_2_1
+	local l_2_8 = l_0_5(l_2_0.planes[4], l_2_0.planes[3], l_2_0.planes[6]):rotate_with(l_2_2) + l_2_1
+	local l_2_9 = l_0_5(l_2_0.planes[4], l_2_0.planes[2], l_2_0.planes[5]):rotate_with(l_2_2) + l_2_1
+	local l_2_10 = l_0_5(l_2_0.planes[4], l_2_0.planes[3], l_2_0.planes[5]):rotate_with(l_2_2) + l_2_1
+	local l_2_11 = Draw:pen(Color(1, 0, 0))
+	l_2_11:line(l_2_3, l_2_4)
+	l_2_11:line(l_2_4, l_2_6)
+	l_2_11:line(l_2_6, l_2_5)
+	l_2_11:line(l_2_5, l_2_3)
+	l_2_11:line(l_2_7, l_2_8)
+	l_2_11:line(l_2_8, l_2_10)
+	l_2_11:line(l_2_10, l_2_9)
+	l_2_11:line(l_2_9, l_2_7)
+	l_2_11:line(l_2_3, l_2_7)
+	l_2_11:line(l_2_4, l_2_8)
+	l_2_11:line(l_2_5, l_2_9)
+	l_2_11:line(l_2_6, l_2_10)
+	local l_2_12 = Draw:brush(Color(0.2, 1, 0, 0))
+	l_2_12:quad(l_2_3, l_2_4, l_2_6, l_2_5)
+	l_2_12:quad(l_2_7, l_2_9, l_2_10, l_2_8)
+	l_2_12:quad(l_2_7, l_2_3, l_2_5, l_2_9)
+	l_2_12:quad(l_2_4, l_2_8, l_2_10, l_2_6)
+	l_2_12:quad(l_2_3, l_2_4, l_2_8, l_2_7)
+	l_2_12:quad(l_2_5, l_2_6, l_2_10, l_2_9)
 end
-function DecalManager.project_decal(A0_23, A1_24, A2_25, A3_26, A4_27, A5_28, A6_29)
-	table.insert(A0_23._decals, {
-		name = A1_24,
-		position = A2_25,
-		direction = A3_26,
-		up = A4_27,
-		surface_normal = A5_28,
-		unit = A6_29
-	})
+
 end
+ -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+ -- WARNING: undefined locals caused missing assignments!
+

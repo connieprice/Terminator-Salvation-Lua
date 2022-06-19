@@ -5,18 +5,20 @@ require("managers/DynamicMusicManager")
 require("director/DirectorManager")
 require("setups/DirectorManagerSetup")
 require("managers/GameRulesManager")
-SessionManager = SessionManager or class()
-function SessionManager.init(A0_0)
-	local L1_1
-	L1_1 = {}
-	SessionUserManager.default_data(L1_1)
-	managers.session_user = SessionUserManager:new(L1_1)
+if not SessionManager then
+	SessionManager = class()
+end
+SessionManager.init = function(l_1_0)
+	local l_1_1 = {}
+	SessionUserManager.default_data(l_1_1)
+	managers.session_user = SessionUserManager:new(l_1_1)
 	managers.user_viewport = UserViewportManager:new(managers.menu:root_panel())
 	managers.splittable_viewport = SplittableViewportManager:new()
 	managers.mission_objective = MissionObjectiveManager:new()
 	managers.network = NetworkManager:new()
 end
-function SessionManager.destroy(A0_2)
+
+SessionManager.destroy = function(l_2_0)
 	managers.network:destroy()
 	managers.network = nil
 	managers.session_user:destroy()
@@ -28,17 +30,21 @@ function SessionManager.destroy(A0_2)
 	managers.mission_objective:destroy()
 	managers.mission_objective = nil
 end
-function SessionManager.update(A0_3, A1_4, A2_5)
+
+SessionManager.update = function(l_3_0, l_3_1, l_3_2)
 	managers.session_user:update()
 	managers.local_session_user:update()
-	managers.user_viewport:update(A2_5)
-	managers.splittable_viewport:update(A2_5)
+	managers.user_viewport:update(l_3_2)
+	managers.splittable_viewport:update(l_3_2)
 	if managers.network:wants_to_load_world() then
 		managers.network:ack_load_world()
 	end
-	managers.network:update(A2_5)
+	managers.network:update(l_3_2)
 end
-function SessionManager.render(A0_6)
+
+SessionManager.render = function(l_4_0)
 	managers.user_viewport:render()
 	managers.splittable_viewport:render()
 end
+
+

@@ -1,374 +1,405 @@
-local L0_0
-L0_0 = core
-L0_0 = L0_0.module
-L0_0(L0_0, "CoreModePlayHead")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "CoreSoundPlayHead")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "CoreSong")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "CoreClass")
-L0_0 = ModePlayHead
-if not L0_0 then
-	L0_0 = CoreClass
-	L0_0 = L0_0.class
-	L0_0 = L0_0()
+core:module("CoreModePlayHead")
+core:require_module("CoreSoundPlayHead")
+core:require_module("CoreSong")
+core:require_module("CoreClass")
+if not ModePlayHead then
+	ModePlayHead = CoreClass.class()
 end
-ModePlayHead = L0_0
-L0_0 = 0
-function ModePlayHead.init(A0_1, A1_2, A2_3, A3_4, A4_5)
-	local L5_6
-	A0_1._song = A1_2
-	A0_1._mode_name = A2_3
-	A0_1._time_ctrl = A3_4
-	A0_1._stopped_cb = A4_5
-	L5_6 = _UPVALUE0_
-	A0_1._state1 = L5_6
-	A0_1._rule = "default"
-	A0_1._playhead1 = nil
-	A0_1._playhead2 = nil
-	A0_1._next_node = nil
-	L5_6 = _UPVALUE1_
-	A0_1._state2 = L5_6
-	A0_1._master_volume = 1
-	A0_1._volume = 0
-	A0_1._slope = 1
+local l_0_0 = 0
+local l_0_1 = 1
+local l_0_2 = 2
+local l_0_3 = 3
+local l_0_4 = 4
+local l_0_5 = 0
+local l_0_6 = 1
+local l_0_7 = 2
+ModePlayHead.init = function(l_1_0, l_1_1, l_1_2, l_1_3, l_1_4)
+	-- upvalues: l_0_0 , l_0_5
+	l_1_0._song = l_1_1
+	l_1_0._mode_name = l_1_2
+	l_1_0._time_ctrl = l_1_3
+	l_1_0._stopped_cb = l_1_4
+	l_1_0._state1 = l_0_0
+	l_1_0._rule = "default"
+	l_1_0._playhead1 = nil
+	l_1_0._playhead2 = nil
+	l_1_0._next_node = nil
+	l_1_0._state2 = l_0_5
+	l_1_0._master_volume = 1
+	l_1_0._volume = 0
+	l_1_0._slope = 1
 end
-function ModePlayHead.update(A0_7, A1_8, A2_9)
-	local L3_10
-	L3_10 = A0_7._state1
-	if L3_10 == _UPVALUE0_ then
+
+ModePlayHead.update = function(l_2_0, l_2_1, l_2_2)
+	-- upvalues: l_0_0 , l_0_1 , l_0_3 , l_0_7 , l_0_2 , l_0_4 , l_0_5 , l_0_6
+	if l_2_0._state1 == l_0_0 then
+		do return end
+	end
+	 -- DECOMPILER ERROR: unhandled construct in 'if'
+
+	if l_2_0._state1 == l_0_1 and l_2_0._playhead1:get_stop_time() < l_2_0._time_ctrl:time() then
+		local l_2_3 = l_2_0._song:pick_transition(l_2_0._next_node, l_2_0._rule)
+		if l_2_3.action == "fade_to_end" then
+			l_2_0._playhead1:set_fadeout(l_2_3.wait_fadeout, l_2_3.fadeout)
+			l_2_0._state1 = l_0_3
+		end
+	elseif l_2_3.action == "continue" then
+		l_2_0._playhead1:continue_playing(l_2_3.new_stop_pos, l_2_3.new_section, l_2_3.new_section_change_pos)
+		l_2_0._next_node = l_2_3.new_next_node
+	elseif l_2_3.action == "crossfade" then
+		l_2_0._playhead2 = l_2_0._playhead1
+		l_2_0._playhead2:set_fadeout(l_2_3.wait_fadeout, l_2_3.fadeout)
+		local l_2_4, l_2_5 = CoreSoundPlayHead.SoundPlayHead:new, CoreSoundPlayHead.SoundPlayHead
+		local l_2_6 = l_2_3.soundbank_name
+		local l_2_7 = l_2_3.sound_name
+		local l_2_8 = l_2_3.bar_offset
+		local l_2_9 = l_2_0._time_ctrl
+		local l_2_10 = l_2_0._volume * l_2_0._master_volume
+		l_2_4 = l_2_4(l_2_5, l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_0._state2 == l_0_7)
+		l_2_0._playhead1 = l_2_4
+		l_2_4 = l_2_0._playhead1
+		l_2_4, l_2_5 = l_2_4:play_synchronized, l_2_4
+		l_2_6 = l_2_3.start_pos
+		l_2_7 = l_2_3.stop_pos
+		l_2_8 = l_2_0._playhead2
+		l_2_8, l_2_9 = l_2_8:get_stop_time, l_2_8
+		l_2_8 = l_2_8(l_2_9)
+		l_2_9 = l_2_3.wait_fadein
+		l_2_10 = l_2_3.fadein
+		l_2_4(l_2_5, l_2_6, l_2_7, l_2_8, l_2_9, l_2_10, l_2_3.new_section, l_2_3.section_change_pos)
+		l_2_4 = l_2_3.new_mode
+		l_2_0._mode_name = l_2_4
+		l_2_4 = l_2_3.next_node
+		l_2_0._next_node = l_2_4
+		l_2_4 = l_0_2
+		l_2_0._state1 = l_2_4
 	else
-		L3_10 = A0_7._state1
-		if L3_10 == _UPVALUE1_ then
-			L3_10 = A0_7._time_ctrl
-			L3_10 = L3_10.time
-			L3_10 = L3_10(L3_10)
-			if L3_10 > A0_7._playhead1:get_stop_time() then
-				L3_10 = A0_7._song
-				L3_10 = L3_10.pick_transition
-				L3_10 = L3_10(L3_10, A0_7._next_node, A0_7._rule)
-				if L3_10.action == "fade_to_end" then
-					A0_7._playhead1:set_fadeout(L3_10.wait_fadeout, L3_10.fadeout)
-					A0_7._state1 = _UPVALUE2_
-				elseif L3_10.action == "continue" then
-					A0_7._playhead1:continue_playing(L3_10.new_stop_pos, L3_10.new_section, L3_10.new_section_change_pos)
-					A0_7._next_node = L3_10.new_next_node
-				elseif L3_10.action == "crossfade" then
-					A0_7._playhead2 = A0_7._playhead1
-					A0_7._playhead2:set_fadeout(L3_10.wait_fadeout, L3_10.fadeout)
-					A0_7._playhead1 = CoreSoundPlayHead.SoundPlayHead:new(L3_10.soundbank_name, L3_10.sound_name, L3_10.bar_offset, A0_7._time_ctrl, A0_7._volume * A0_7._master_volume, A0_7._state2 == _UPVALUE3_)
-					A0_7._playhead1:play_synchronized(L3_10.start_pos, L3_10.stop_pos, A0_7._playhead2:get_stop_time(), L3_10.wait_fadein, L3_10.fadein, L3_10.new_section, L3_10.section_change_pos)
-					A0_7._mode_name = L3_10.new_mode
-					A0_7._next_node = L3_10.next_node
-					A0_7._state1 = _UPVALUE4_
-				else
-					error("unknown transition action")
-				end
+		error("unknown transition action")
+	end
+	do return end
+	if l_2_0._state1 == l_0_2 and l_2_0._playhead2:is_stopped() then
+		l_2_0._playhead2 = nil
+		l_2_0._state1 = l_0_1
+	end
+	do return end
+	if l_2_0._state1 == l_0_3 then
+		local l_2_13 = l_2_0._playhead1:is_stopped()
+		if l_2_0._playhead2 then
+			local l_2_14 = not not l_2_0._playhead2:is_stopped()
+			l_2_14 = l_2_14
+			do
+				local l_2_15, l_2_16, l_2_17 = nil
+			end
+			if l_2_13 and l_2_14 then
+				l_2_0._stopped_cb(l_2_0)
+				l_2_0._playhead1 = nil
+				l_2_0._playhead2 = nil
+				l_2_0._state1 = l_0_4
+				l_2_0._state2 = l_0_5
 			end
 		else
-			L3_10 = A0_7._state1
-			if L3_10 == _UPVALUE4_ then
-				L3_10 = A0_7._playhead2
-				L3_10 = L3_10.is_stopped
-				L3_10 = L3_10(L3_10)
-				if L3_10 then
-					A0_7._playhead2 = nil
-					L3_10 = _UPVALUE1_
-					A0_7._state1 = L3_10
-				end
-			else
-				L3_10 = A0_7._state1
-				if L3_10 == _UPVALUE2_ then
-					L3_10 = A0_7._playhead1
-					L3_10 = L3_10.is_stopped
-					L3_10 = L3_10(L3_10)
-					if L3_10 and (not A0_7._playhead2 or not not A0_7._playhead2:is_stopped()) then
-						A0_7._stopped_cb(A0_7)
-						A0_7._playhead1 = nil
-						A0_7._playhead2 = nil
-						A0_7._state1 = _UPVALUE5_
-						A0_7._state2 = _UPVALUE6_
-					end
-				else
-					L3_10 = A0_7._state1
-					if L3_10 == _UPVALUE5_ then
-					end
-				end
+			l_2_13 = l_2_0._state1
+		if l_2_13 == l_0_4 then
 			end
 		end
-	end
-	L3_10 = A0_7._state2
-	if L3_10 == _UPVALUE6_ then
-	else
-		L3_10 = A0_7._state2
-		if L3_10 == _UPVALUE7_ then
-			L3_10 = A0_7._time_ctrl
-			L3_10 = L3_10.time
-			L3_10 = L3_10(L3_10)
-			if L3_10 > A0_7._start_fade_time then
-				L3_10 = math
-				L3_10 = L3_10.min
-				L3_10 = L3_10(A0_7._volume + A0_7._slope * A2_9, 1)
-				A0_7._volume = L3_10
-				L3_10 = A0_7._playhead1
-				if L3_10 then
-					L3_10 = A0_7._playhead1
-					L3_10 = L3_10.set_master_volume
-					L3_10(L3_10, A0_7._volume * A0_7._master_volume)
+		l_2_13 = l_2_0._state2
+		if l_2_13 == l_0_5 then
+			do return end
+		end
+		l_2_13 = l_2_0._state2
+		if l_2_13 == l_0_6 then
+			l_2_13 = l_2_0._time_ctrl
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_2_0._start_fade_time < l_2_13 then
+				l_2_0._volume = l_2_13
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_2_13 then
+					l_2_13(l_2_13, l_2_0._volume * l_2_0._master_volume)
 				end
-				L3_10 = A0_7._playhead2
-				if L3_10 then
-					L3_10 = A0_7._playhead2
-					L3_10 = L3_10.set_master_volume
-					L3_10(L3_10, A0_7._volume * A0_7._master_volume)
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_2_13 then
+					l_2_13(l_2_13, l_2_0._volume * l_2_0._master_volume)
 				end
-				L3_10 = A0_7._volume
-				if L3_10 == 1 then
-					L3_10 = _UPVALUE6_
-					A0_7._state2 = L3_10
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_2_13 == 1 then
 				end
+				l_2_0._state2 = l_2_13
 			end
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
 		else
-			L3_10 = A0_7._state2
-			if L3_10 == _UPVALUE3_ then
-				L3_10 = A0_7._time_ctrl
-				L3_10 = L3_10.time
-				L3_10 = L3_10(L3_10)
-				if L3_10 > A0_7._start_fade_time then
-					L3_10 = math
-					L3_10 = L3_10.max
-					L3_10 = L3_10(A0_7._volume + A0_7._slope * A2_9, 0)
-					A0_7._volume = L3_10
-					L3_10 = A0_7._playhead1
-					if L3_10 then
-						L3_10 = A0_7._playhead1
-						L3_10 = L3_10.set_master_volume
-						L3_10(L3_10, A0_7._volume * A0_7._master_volume)
-					end
-					L3_10 = A0_7._playhead2
-					if L3_10 then
-						L3_10 = A0_7._playhead2
-						L3_10 = L3_10.set_master_volume
-						L3_10(L3_10, A0_7._volume * A0_7._master_volume)
-					end
-					L3_10 = A0_7._volume
-					if L3_10 == 0 then
-						L3_10 = A0_7._playhead1
-						if L3_10 then
-							L3_10 = A0_7._playhead1
-							L3_10 = L3_10.stop_now
-							L3_10(L3_10)
-						end
-						L3_10 = A0_7._playhead2
-						if L3_10 then
-							L3_10 = A0_7._playhead2
-							L3_10 = L3_10.stop_now
-							L3_10(L3_10)
-						end
-						L3_10 = _UPVALUE2_
-						A0_7._state1 = L3_10
-						L3_10 = _UPVALUE6_
-						A0_7._state2 = L3_10
-					end
+			if l_2_13 == l_0_7 and l_2_0._start_fade_time < l_2_13 then
+				l_2_0._volume = l_2_13
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_2_13 then
+					l_2_13(l_2_13, l_2_0._volume * l_2_0._master_volume)
 				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_2_13 then
+					l_2_13(l_2_13, l_2_0._volume * l_2_0._master_volume)
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+			if l_2_13 == 0 then
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_2_13 then
+					l_2_13(l_2_13)
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				if l_2_13 then
+					l_2_13(l_2_13)
+				end
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				l_2_0._state1 = l_2_13
+				 -- DECOMPILER ERROR: Overwrote pending register.
+
+				l_2_0._state2 = l_2_13
 			end
 		end
-	end
-	L3_10 = A0_7._time_ctrl
-	L3_10 = L3_10.time
-	L3_10 = L3_10(L3_10)
-	if A0_7._playhead1 then
-		A0_7._playhead1:update(A1_8, A2_9, L3_10)
-	end
-	if A0_7._playhead2 then
-		A0_7._playhead2:update(A1_8, A2_9, L3_10)
-	end
-end
-function ModePlayHead.play(A0_11, A1_12)
-	local L2_13
-	L2_13 = A0_11._state1
-	if L2_13 == _UPVALUE0_ then
-		if A1_12 == 0 then
-			L2_13 = A0_11._master_volume
-			A0_11._volume = L2_13
-			L2_13 = _UPVALUE1_
-			A0_11._state2 = L2_13
-		else
-			A0_11._volume = 0
-			L2_13 = A0_11._time_ctrl
-			L2_13 = L2_13.time
-			L2_13 = L2_13(L2_13)
-			A0_11._start_fade_time = L2_13
-			L2_13 = math
-			L2_13 = L2_13.max
-			L2_13 = L2_13(A1_12, 0.01)
-			L2_13 = 1 / L2_13
-			A0_11._slope = L2_13
-			L2_13 = _UPVALUE2_
-			A0_11._state2 = L2_13
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		local l_2_18 = nil
+		l_2_18 = l_2_0._playhead1
+		if l_2_18 then
+			l_2_18 = l_2_0._playhead1
+			l_2_18(l_2_18, l_2_1, l_2_2, l_2_13)
 		end
-		L2_13 = A0_11._song
-		L2_13 = L2_13.get_default_start_node
-		L2_13 = L2_13(L2_13, A0_11._mode_name)
-		A0_11._playhead1 = CoreSoundPlayHead.SoundPlayHead:new(A0_11._song:pick_start_transition(L2_13).soundbank_name, A0_11._song:pick_start_transition(L2_13).sound_name, A0_11._song:pick_start_transition(L2_13).bar_offset, A0_11._time_ctrl, A0_11._volume * A0_11._master_volume, false)
-		A0_11._playhead1:play(A0_11._song:pick_start_transition(L2_13).start_pos, A0_11._song:pick_start_transition(L2_13).stop_pos, A0_11._song:pick_start_transition(L2_13).fadein, A0_11._song:pick_start_transition(L2_13).new_section, A0_11._song:pick_start_transition(L2_13).section_change_pos)
-		A0_11._mode_name = A0_11._song:pick_start_transition(L2_13).new_mode
-		A0_11._next_node = A0_11._song:pick_start_transition(L2_13).next_node
-		A0_11._state1 = _UPVALUE3_
-	else
-		L2_13 = error
-		L2_13("Can only play fresh ModePlayHead")
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		if l_2_18 then
+			l_2_18(l_2_18, l_2_1, l_2_2, l_2_13)
+		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 127 
 end
-function ModePlayHead.play_synchronized(A0_14, A1_15, A2_16, A3_17, A4_18, A5_19, A6_20)
-	if A0_14._state1 == _UPVALUE0_ then
-		A0_14._volume = 0
-		A0_14._start_fade_time = A0_14._time_ctrl:time() + A5_19
-		A0_14._slope = 1 / math.max(A6_20, 0.01)
-		A0_14._state2 = _UPVALUE1_
-		A0_14._playhead1 = CoreSoundPlayHead.SoundPlayHead:new(A0_14._song:pick_start_transition(A1_15).soundbank_name, A0_14._song:pick_start_transition(A1_15).sound_name, A0_14._song:pick_start_transition(A1_15).bar_offset, A0_14._time_ctrl, A0_14._volume * A0_14._master_volume, false)
-		A0_14._playhead1:play_synchronized(A0_14._song:pick_start_transition(A1_15).start_pos, A0_14._song:pick_start_transition(A1_15).stop_pos, A0_14._time_ctrl:time() - A2_16 - ((A4_18 - (A0_14._song:pick_start_transition(A1_15).start_pos + (A3_17 - (A0_14._time_ctrl:time() - A2_16)) - A0_14._song:pick_start_transition(A1_15).bar_offset) % (tonumber(A0_14._song:get_mode(A0_14._mode_name).time_signature) * 60 / tonumber(A0_14._song:get_mode(A0_14._mode_name).bpm)) / (tonumber(A0_14._song:get_mode(A0_14._mode_name).time_signature) * 60 / tonumber(A0_14._song:get_mode(A0_14._mode_name).bpm)) + CoreSong.ENGINE_WAIT / 2 / (tonumber(A0_14._song:get_mode(A0_14._mode_name).time_signature) * 60 / tonumber(A0_14._song:get_mode(A0_14._mode_name).bpm))) % 1 - CoreSong.ENGINE_WAIT / 2 / (tonumber(A0_14._song:get_mode(A0_14._mode_name).time_signature) * 60 / tonumber(A0_14._song:get_mode(A0_14._mode_name).bpm))) * (tonumber(A0_14._song:get_mode(A0_14._mode_name).time_signature) * 60 / tonumber(A0_14._song:get_mode(A0_14._mode_name).bpm)), A0_14._song:pick_start_transition(A1_15).wait_fadein, A0_14._song:pick_start_transition(A1_15).fadein, A0_14._song:pick_start_transition(A1_15).new_section, A0_14._song:pick_start_transition(A1_15).section_change_pos)
-		A0_14._mode_name = A0_14._song:pick_start_transition(A1_15).new_mode
-		A0_14._next_node = A0_14._song:pick_start_transition(A1_15).next_node
-		A0_14._state1 = _UPVALUE2_
+
+ModePlayHead.play = function(l_3_0, l_3_1)
+	-- upvalues: l_0_0 , l_0_5 , l_0_6 , l_0_1
+	if l_3_0._state1 == l_0_0 then
+		if l_3_1 == 0 then
+			l_3_0._volume = l_3_0._master_volume
+			l_3_0._state2 = l_0_5
+		else
+			l_3_0._volume = 0
+			l_3_0._start_fade_time = l_3_0._time_ctrl:time()
+			l_3_0._slope = 1 / math.max(l_3_1, 0.01)
+			l_3_0._state2 = l_0_6
+		end
+		local l_3_2 = l_3_0._song:get_default_start_node(l_3_0._mode_name)
+		local l_3_3 = l_3_0._song:pick_start_transition(l_3_2)
+		l_3_0._playhead1 = CoreSoundPlayHead.SoundPlayHead:new(l_3_3.soundbank_name, l_3_3.sound_name, l_3_3.bar_offset, l_3_0._time_ctrl, l_3_0._volume * l_3_0._master_volume, false)
+		l_3_0._playhead1:play(l_3_3.start_pos, l_3_3.stop_pos, l_3_3.fadein, l_3_3.new_section, l_3_3.section_change_pos)
+		l_3_0._mode_name = l_3_3.new_mode
+		l_3_0._next_node = l_3_3.next_node
+		l_3_0._state1 = l_0_1
 	else
 		error("Can only play fresh ModePlayHead")
 	end
 end
-function ModePlayHead.stop_nice(A0_21)
-	local L1_22
-	L1_22 = A0_21._state1
-	if L1_22 == _UPVALUE0_ then
-		L1_22 = A0_21._stopped_cb
-		L1_22(A0_21)
-		L1_22 = _UPVALUE1_
-		A0_21._state1 = L1_22
+
+ModePlayHead.play_synchronized = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6)
+	-- upvalues: l_0_0 , l_0_6 , l_0_1
+	if l_4_0._state1 == l_0_0 then
+		local l_4_7 = l_4_0._song:pick_start_transition(l_4_1)
+		l_4_0._volume = 0
+		l_4_0._start_fade_time = l_4_0._time_ctrl:time() + l_4_5
+		l_4_0._slope = 1 / math.max(l_4_6, 0.01)
+		l_4_0._state2 = l_0_6
+		local l_4_8 = l_4_0._time_ctrl:time() - l_4_2
+		local l_4_9 = l_4_0._song:get_mode(l_4_0._mode_name)
+		local l_4_10 = tonumber(l_4_9.time_signature) * 60 / tonumber(l_4_9.bpm)
+		local l_4_11 = l_4_7.start_pos + (l_4_3 - l_4_8)
+		local l_4_12 = (l_4_11 - l_4_7.bar_offset) % l_4_10 / l_4_10
+		local l_4_13 = l_4_4 - l_4_12
+		local l_4_14 = (l_4_13 + CoreSong.ENGINE_WAIT / 2 / l_4_10) % 1 - CoreSong.ENGINE_WAIT / 2 / l_4_10
+		local l_4_15 = l_4_14 * l_4_10
+		l_4_0._playhead1 = CoreSoundPlayHead.SoundPlayHead:new(l_4_7.soundbank_name, l_4_7.sound_name, l_4_7.bar_offset, l_4_0._time_ctrl, l_4_0._volume * l_4_0._master_volume, false)
+		l_4_0._playhead1:play_synchronized(l_4_7.start_pos, l_4_7.stop_pos, l_4_8 - l_4_15, l_4_7.wait_fadein, l_4_7.fadein, l_4_7.new_section, l_4_7.section_change_pos)
+		l_4_0._mode_name = l_4_7.new_mode
+		l_4_0._next_node = l_4_7.next_node
+		l_4_0._state1 = l_0_1
 	else
-		L1_22 = A0_21._state1
-		if L1_22 == _UPVALUE2_ then
-			L1_22 = A0_21._song
-			L1_22 = L1_22.get_use_fadeout_to_stop_mode
-			L1_22 = L1_22(L1_22, A0_21._mode_name)
-			if L1_22 then
-				A0_21:stop_with_fadeout(0, L1_22)
-			else
-				A0_21._rule = A0_21._song:get_stop_rule()
+		error("Can only play fresh ModePlayHead")
+	end
+end
+
+ModePlayHead.stop_nice = function(l_5_0)
+	-- upvalues: l_0_0 , l_0_4 , l_0_1 , l_0_2 , l_0_3
+	if l_5_0._state1 == l_0_0 then
+		l_5_0._stopped_cb(l_5_0)
+		l_5_0._state1 = l_0_4
+	else
+		if l_5_0._state1 == l_0_1 then
+			local l_5_1 = l_5_0._song:get_use_fadeout_to_stop_mode(l_5_0._mode_name)
+			if l_5_1 then
+				l_5_0:stop_with_fadeout(0, l_5_1)
 			end
 		else
-			L1_22 = A0_21._state1
-			if L1_22 == _UPVALUE3_ then
-				L1_22 = A0_21._song
-				L1_22 = L1_22.get_use_fadeout_to_stop_mode
-				L1_22 = L1_22(L1_22, A0_21._mode_name)
-				if L1_22 then
-					A0_21:stop_with_fadeout(0, L1_22)
-				else
-					A0_21._rule = A0_21._song:get_stop_rule()
-				end
-			else
-				L1_22 = A0_21._state1
-				if L1_22 == _UPVALUE4_ then
-				else
-					L1_22 = A0_21._state1
-					if L1_22 == _UPVALUE1_ then
-					end
-				end
-			end
-		end
-	end
-end
-function ModePlayHead.stop_with_fadeout(A0_23, A1_24, A2_25)
-	if A0_23._state1 == _UPVALUE0_ then
-		A0_23._stopped_cb(A0_23)
-		A0_23._state1 = _UPVALUE1_
-	elseif A0_23._state1 == _UPVALUE1_ then
-	else
-		A0_23._start_fade_time = A0_23._time_ctrl:time() + A1_24
-		A0_23._slope = math.min(-1 / math.max(A2_25, 0.01), A0_23._slope)
-		A0_23._state2 = _UPVALUE2_
-	end
-end
-function ModePlayHead.set_rule(A0_26, A1_27)
-	A0_26._rule = A1_27
-end
-function ModePlayHead.set_master_volume(A0_28, A1_29)
-	A0_28._master_volume = A1_29
-	if A0_28._playhead1 then
-		A0_28._playhead1:set_master_volume(A0_28._volume * A0_28._master_volume)
-	end
-	if A0_28._playhead2 then
-		A0_28._playhead2:set_master_volume(A0_28._volume * A0_28._master_volume)
-	end
-end
-function ModePlayHead.get_mode(A0_30)
-	local L1_31
-	L1_31 = A0_30._mode_name
-	return L1_31
-end
-function ModePlayHead.get_section_info(A0_32)
-	local L1_33, L2_34
-	L1_33 = A0_32._state1
-	L2_34 = _UPVALUE0_
-	if L1_33 ~= L2_34 then
-		L1_33 = A0_32._state1
-		L2_34 = _UPVALUE1_
-		if L1_33 ~= L2_34 then
-			L1_33 = A0_32._state1
-			L2_34 = _UPVALUE2_
+			l_5_0._rule = l_5_0._song:get_stop_rule()
 		end
 	else
-		if L1_33 == L2_34 then
-			L1_33 = A0_32._playhead1
-			L2_34 = L1_33
-			L1_33 = L1_33.get_section_info
-			L2_34 = L1_33(L2_34)
-			if L2_34 < 0 and A0_32.playhead2 then
-				L1_33, L2_34 = A0_32._playhead2:get_section_info()
+		if l_5_0._state1 == l_0_2 then
+			local l_5_2 = l_5_0._song:get_use_fadeout_to_stop_mode(l_5_0._mode_name)
+			if l_5_2 then
+				l_5_0:stop_with_fadeout(0, l_5_2)
 			end
-			L2_34 = math.max(0, L2_34)
-			return {section = L1_33, time_since_jump = L2_34}
-	end
+		else
+			l_5_0._rule = l_5_0._song:get_stop_rule()
+		end
 	else
-		L1_33 = error
-		L2_34 = "ModePlayHead:get_section_info() called in wrong state, contact core team..."
-		L1_33(L2_34)
+		if l_5_0._state1 == l_0_3 then
+			do return end
+		end
+	end
+	if l_5_0._state1 == l_0_4 then
+		 -- WARNING: missing end command somewhere! Added here
+	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 60 
+end
+
+ModePlayHead.stop_with_fadeout = function(l_6_0, l_6_1, l_6_2)
+	-- upvalues: l_0_0 , l_0_4 , l_0_7
+	if l_6_0._state1 == l_0_0 then
+		l_6_0._stopped_cb(l_6_0)
+		l_6_0._state1 = l_0_4
+	else
+		if l_6_0._state1 == l_0_4 then
+			do return end
+		end
+	end
+	l_6_0._start_fade_time = l_6_0._time_ctrl:time() + l_6_1
+	l_6_0._slope = math.min(-1 / math.max(l_6_2, 0.01), l_6_0._slope)
+	l_6_0._state2 = l_0_7
+end
+
+ModePlayHead.set_rule = function(l_7_0, l_7_1)
+	l_7_0._rule = l_7_1
+end
+
+ModePlayHead.set_master_volume = function(l_8_0, l_8_1)
+	l_8_0._master_volume = l_8_1
+	if l_8_0._playhead1 then
+		l_8_0._playhead1:set_master_volume(l_8_0._volume * l_8_0._master_volume)
+	end
+	if l_8_0._playhead2 then
+		l_8_0._playhead2:set_master_volume(l_8_0._volume * l_8_0._master_volume)
 	end
 end
-function ModePlayHead.get_timing_info(A0_35, A1_36)
-	if A0_35._state1 == _UPVALUE0_ or A0_35._state1 == _UPVALUE1_ or A0_35._state1 == _UPVALUE2_ then
-		return {
-			mode_name = A0_35._mode_name,
-			bpm = A0_35._song:get_mode(A0_35._mode_name).bpm,
-			time_signature = A0_35._song:get_mode(A0_35._mode_name).time_signature,
-			bar_pos = (A0_35._playhead1:get_timing_info().start_pos + (A1_36 - A0_35._playhead1:get_timing_info().start_time) - A0_35._playhead1:get_timing_info().bar_offset) / (A0_35._song:get_mode(A0_35._mode_name).time_signature * 60 / A0_35._song:get_mode(A0_35._mode_name).bpm) % 1,
-			bar_len = A0_35._song:get_mode(A0_35._mode_name).time_signature * 60 / A0_35._song:get_mode(A0_35._mode_name).bpm
-		}
+
+ModePlayHead.get_mode = function(l_9_0)
+	return l_9_0._mode_name
+end
+
+ModePlayHead.get_section_info = function(l_10_0)
+	-- upvalues: l_0_1 , l_0_2 , l_0_3
+	if l_10_0._state1 == l_0_1 or l_10_0._state1 == l_0_2 or l_10_0._state1 == l_0_3 then
+		local l_10_1 = l_10_0._playhead1:get_section_info()
+		if l_10_0._playhead1 < 0 and l_10_0.playhead2 then
+			local l_10_2 = R2_PC24
+			l_10_1 = l_10_0._playhead2:get_section_info()
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		local l_10_3 = math.max(0, l_10_2)
+		local l_10_4 = {}
+		l_10_4.section = l_10_1
+		l_10_4.time_since_jump = l_10_3
+		return l_10_4
+	else
+		error("ModePlayHead:get_section_info() called in wrong state, contact core team...")
+	end
+end
+
+ModePlayHead.get_timing_info = function(l_11_0, l_11_1)
+	-- upvalues: l_0_1 , l_0_2 , l_0_3
+	if l_11_0._state1 == l_0_1 or l_11_0._state1 == l_0_2 or l_11_0._state1 == l_0_3 then
+		local l_11_2 = l_11_0._playhead1:get_timing_info()
+		local l_11_3 = l_11_0._song:get_mode(l_11_0._mode_name)
+		local l_11_4 = l_11_3.time_signature * 60 / l_11_3.bpm
+		local l_11_5 = l_11_2.start_pos + (l_11_1 - l_11_2.start_time)
+		local l_11_6 = (l_11_5 - l_11_2.bar_offset) / l_11_4 % 1
+		local l_11_7 = {}
+		l_11_7.mode_name = l_11_0._mode_name
+		l_11_7.bpm = l_11_3.bpm
+		l_11_7.time_signature = l_11_3.time_signature
+		l_11_7.bar_pos = l_11_6
+		l_11_7.bar_len = l_11_4
+		return l_11_7
 	else
 		error("ModePlayHead:get_now_playing() called in wrong state, contact core team...")
 	end
 end
-function ModePlayHead.is_playing(A0_37)
-	local L1_38, L2_39
-	L1_38 = A0_37._state1
-	L2_39 = _UPVALUE0_
-	if L1_38 ~= L2_39 then
-		L1_38 = A0_37._state1
-		L2_39 = _UPVALUE1_
-		if L1_38 ~= L2_39 then
-			L1_38 = A0_37._state1
-			L2_39 = _UPVALUE2_
-		end
+
+ModePlayHead.is_playing = function(l_12_0)
+	-- upvalues: l_0_1 , l_0_2 , l_0_3
+	if l_12_0._state1 == l_0_1 or l_12_0._state1 == l_0_2 or l_12_0._state1 == l_0_3 then
+		return true
 	else
-		if L1_38 == L2_39 then
-			L1_38 = true
-			return L1_38
-	end
-	else
-		L1_38 = false
-		return L1_38
+		return false
 	end
 end
+
+

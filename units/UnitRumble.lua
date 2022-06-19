@@ -1,59 +1,83 @@
-UnitRumble = UnitRumble or class()
-function UnitRumble.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._state = nil
-	A0_0._loop_cnt = 0
-	A0_0._rumble_time = nil
-	A0_0._exit_state_time = nil
-	A0_0._playing = false
+if not UnitRumble then
+	UnitRumble = class()
 end
-function UnitRumble.play(A0_2)
-	A0_2._playing = true
-	A0_2:_enter_state(A0_2._rumble_start_state)
+UnitRumble.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._state = nil
+	l_1_0._loop_cnt = 0
+	l_1_0._rumble_time = nil
+	l_1_0._exit_state_time = nil
+	l_1_0._playing = false
 end
-function UnitRumble.stop(A0_3)
-	local L1_4
-	A0_3._playing = false
+
+UnitRumble.play = function(l_2_0)
+	l_2_0._playing = true
+	l_2_0:_enter_state(l_2_0._rumble_start_state)
 end
-function UnitRumble.is_playing(A0_5)
-	local L1_6
-	L1_6 = A0_5._playing
-	return L1_6
+
+UnitRumble.stop = function(l_3_0)
+	l_3_0._playing = false
 end
-function UnitRumble._enter_state(A0_7, A1_8)
-	A0_7._state = A0_7._rumble_states[A1_8]
-	A0_7._loop_cnt = 0
-	A0_7._rumble_time = Application:time()
+
+UnitRumble.is_playing = function(l_4_0)
+	return l_4_0._playing
 end
-function UnitRumble.update(A0_9, A1_10, A2_11, A3_12)
-	local L4_13, L5_14, L6_15, L7_16, L8_17
-	L4_13 = A0_9._playing
-	if L4_13 then
-		L4_13 = A0_9._state
-		L4_13 = L4_13.loop
-		L4_13 = L4_13 or 1
-		L5_14 = A0_9._state
-		L5_14 = L5_14.loop_delay_min
-		L5_14 = L5_14 or 0
-		L6_15 = A0_9._state
-		L6_15 = L6_15.loop_delay_max
-		L6_15 = L6_15 or 0
-		L7_16 = A0_9._state
-		L7_16 = L7_16.exit_delay_min
-		L7_16 = L7_16 or 0
-		L8_17 = A0_9._state
-		L8_17 = L8_17.exit_delay_max
-		L8_17 = L8_17 or 0
-		if L4_13 > A0_9._loop_cnt and Application:time() >= A0_9._rumble_time then
-			managers.rumble:play_preset(A0_9._state.effect, A0_9._unit:get_object(A0_9._rumble_object):position())
-			A0_9._loop_cnt = A0_9._loop_cnt + 1
-			if L4_13 > A0_9._loop_cnt then
-				A0_9._rumble_time = Application:time() + (L5_14 + math.random() * (L6_15 - L5_14))
-			else
-				A0_9._exit_state_time = Application:time() + (L7_16 + math.random() * (L8_17 - L7_16))
-			end
-		elseif L4_13 <= A0_9._loop_cnt and Application:time() >= A0_9._exit_state_time then
-			A0_9:_enter_state(A0_9._state.exit_to)
+
+UnitRumble._enter_state = function(l_5_0, l_5_1)
+	l_5_0._state = l_5_0._rumble_states[l_5_1]
+	l_5_0._loop_cnt = 0
+	l_5_0._rumble_time = Application:time()
+end
+
+UnitRumble.update = function(l_6_0, l_6_1, l_6_2, l_6_3)
+	if not l_6_0._state.loop then
+		local l_6_4, l_6_9, l_6_14, l_6_15, l_6_18, l_6_20, l_6_26, l_6_31, l_6_35, l_6_41, l_6_42 = not l_6_0._playing or 1
+	end
+	do
+		local l_6_5, l_6_10, l_6_16, l_6_19, l_6_21, l_6_27, l_6_32, l_6_36, l_6_43 = , l_6_0._state.loop_delay_min or 0
+	do
 		end
+		local l_6_6, l_6_11, l_6_17, l_6_22, l_6_28, l_6_33, l_6_37, l_6_44 = , l_6_0._state.loop_delay_max or 0
+	do
+		end
+		local l_6_7, l_6_12, l_6_23, l_6_29, l_6_34, l_6_38, l_6_45 = , l_6_0._state.exit_delay_min or 0
+	do
+		end
+		local l_6_8, l_6_13, l_6_24, l_6_30, l_6_39, l_6_46 = , l_6_0._state.exit_delay_max or 0
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_6_0._loop_cnt < l_6_8 and l_6_0._rumble_time <= Application:time() then
+		managers.rumble:play_preset(l_6_0._state.effect, l_6_0._unit:get_object(l_6_0._rumble_object):position())
+		l_6_0._loop_cnt = l_6_0._loop_cnt + 1
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		do
+			if l_6_0._loop_cnt < l_6_8 then
+				local l_6_25 = nil
+				l_6_0._rumble_time = Application:time() + (l_6_13 + math.random() * (l_6_24 - l_6_13))
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		else
+			local l_6_40 = nil
+			l_6_0._exit_state_time = Application:time() + (l_6_30 + math.random() * (l_6_39 - l_6_30))
+		end
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	elseif l_6_40 <= l_6_0._loop_cnt and l_6_0._exit_state_time <= Application:time() then
+		l_6_0:_enter_state(l_6_0._state.exit_to)
 	end
 end
+
+

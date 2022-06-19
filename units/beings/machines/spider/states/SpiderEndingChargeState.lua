@@ -1,15 +1,23 @@
 require("units/beings/machines/spider/states/SpiderState")
 require("units/beings/machines/spider/states/SpiderNormalState")
-SpiderEndingChargeState = SpiderEndingChargeState or class(SpiderState)
-function SpiderEndingChargeState.init(A0_0, A1_1)
-	SpiderState.init(A0_0, A1_1)
-	A0_0._enemy_data = A0_0._unit:enemy_data()
+if not SpiderEndingChargeState then
+	SpiderEndingChargeState = class(SpiderState)
 end
-function SpiderEndingChargeState.update(A0_2, A1_3)
-	if A0_2._base:check_fully_damaged() then
-		return (A0_2._base:check_fully_damaged())
+SpiderEndingChargeState.init = function(l_1_0, l_1_1)
+	SpiderState.init(l_1_0, l_1_1)
+	l_1_0._enemy_data = l_1_0._unit:enemy_data()
+end
+
+SpiderEndingChargeState.update = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_0._base:check_fully_damaged()
+	if l_2_2 then
+		return l_2_2
 	end
-	if not A0_2._enemy_data.ending_charge then
-		return SpiderNormalState:new(A0_2._unit)
+	if not l_2_0._enemy_data.ending_charge then
+		local l_2_3, l_2_4 = SpiderNormalState:new, SpiderNormalState
+		local l_2_5 = l_2_0._unit
+		return l_2_3(l_2_4, l_2_5)
 	end
 end
+
+

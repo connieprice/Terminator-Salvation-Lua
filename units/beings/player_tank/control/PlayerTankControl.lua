@@ -1,14 +1,21 @@
 require("network/control/UnitControl")
-PlayerTankControl = PlayerTankControl or class(UnitControl)
-function PlayerTankControl.init(A0_0, A1_1)
-	UnitControl.init(A0_0, A1_1)
-	managers.player:register_player_unit(A1_1)
+if not PlayerTankControl then
+	PlayerTankControl = class(UnitControl)
 end
-function PlayerTankControl.destroy(A0_2, A1_3)
-	UnitControl.destroy(A0_2, A1_3)
-	managers.player:unregister_player_unit(A1_3)
+PlayerTankControl.init = function(l_1_0, l_1_1)
+	UnitControl.init(l_1_0, l_1_1)
+	managers.player:register_player_unit(l_1_1)
 end
-function PlayerTankControl.send_input(A0_4, A1_5)
+
+PlayerTankControl.destroy = function(l_2_0, l_2_1)
+	UnitControl.destroy(l_2_0, l_2_1)
+	managers.player:unregister_player_unit(l_2_1)
 end
-function PlayerTankControl.receive_input(A0_6, A1_7)
+
+PlayerTankControl.send_input = function(l_3_0, l_3_1)
 end
+
+PlayerTankControl.receive_input = function(l_4_0, l_4_1)
+end
+
+

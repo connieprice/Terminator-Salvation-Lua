@@ -1,20 +1,17 @@
-local L0_0
-L0_0 = CommonAiLogicSwitch
-L0_0 = L0_0 or {}
-CommonAiLogicSwitch = L0_0
-L0_0 = CommonAiLogicSwitch
-function L0_0.evaluate_switch(A0_1, A1_2)
-	local L2_3, L3_4, L4_5, L5_6, L6_7, L7_8, L8_9
-	for L5_6, L6_7 in L2_3(L3_4) do
-		L7_8 = loadstring
-		L8_9 = L6_7.expression
-		L7_8 = L7_8(L8_9)
-		L8_9 = {}
-		L8_9.ai_data = A1_2
-		setfenv(L7_8, L8_9)
-		if L7_8() then
-			return L6_7.value
+if not CommonAiLogicSwitch then
+	CommonAiLogicSwitch = {}
+end
+CommonAiLogicSwitch.evaluate_switch = function(l_1_0, l_1_1)
+	local l_1_5, l_1_6, l_1_7, l_1_8 = nil
+	for i_0,i_1 in ipairs(l_1_0) do
+		setfenv(loadstring(i_1.expression), {ai_data = l_1_1})
+		if loadstring(i_1.expression)() then
+			return l_1_10.value
 		end
 	end
-	return L2_3
+	return nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

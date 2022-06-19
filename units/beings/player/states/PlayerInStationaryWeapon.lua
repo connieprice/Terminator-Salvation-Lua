@@ -1,187 +1,115 @@
 require("units/beings/player/states/PlayerMountedWeaponState.lua")
 require("shared/InterpolatorLinear")
 require("shared/Angle")
-PlayerInStationaryWeapon = PlayerInStationaryWeapon or class(PlayerMountedWeaponState)
+if not PlayerInStationaryWeapon then
+	PlayerInStationaryWeapon = class(PlayerMountedWeaponState)
+end
 PlayerInStationaryWeapon._AIM_ANIM = "stationary_weapon"
 PlayerInStationaryWeapon._AIM_FIRE_ANIM = "stationary_weapon_fire"
-function PlayerInStationaryWeapon.init(A0_0, A1_1)
-	PlayerMountedWeaponState.init(A0_0, A1_1, "PlayerInStationaryWeapon")
-	A0_0._last_position = A1_1:position()
-	A0_0._current_anim = nil
-	A0_0._last_rotation_diff = 360
-	A0_0._current_anim = PlayerInStationaryWeapon._AIM_ANIM
-	A0_0._weapon_unit = A0_0._player_data._mounted_weapon
-	assert(A0_0._weapon_unit)
-	A0_0._weapon_data = A0_0._weapon_unit:weapon_data()
-	A0_0._offset = Vector3(0, 0, -100)
-	A0_0._input = A1_1:input()
+PlayerInStationaryWeapon.init = function(l_1_0, l_1_1)
+	PlayerMountedWeaponState.init(l_1_0, l_1_1, "PlayerInStationaryWeapon")
+	l_1_0._last_position = l_1_1:position()
+	l_1_0._current_anim = nil
+	l_1_0._last_rotation_diff = 360
+	l_1_0._current_anim = PlayerInStationaryWeapon._AIM_ANIM
+	l_1_0._weapon_unit = l_1_0._player_data._mounted_weapon
+	assert(l_1_0._weapon_unit)
+	l_1_0._weapon_data = l_1_0._weapon_unit:weapon_data()
+	l_1_0._offset = Vector3(0, 0, -100)
+	l_1_0._input = l_1_1:input()
 end
-function PlayerInStationaryWeapon.destroy(A0_2)
-	PlayerMountedWeaponState.destroy(A0_2)
+
+PlayerInStationaryWeapon.destroy = function(l_2_0)
+	PlayerMountedWeaponState.destroy(l_2_0)
 end
-function PlayerInStationaryWeapon.enter(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8
-	L1_4 = PlayerMovementState
-	L1_4 = L1_4.enter
-	L2_5 = A0_3
-	L1_4(L2_5)
-	L1_4 = A0_3._player_data
-	L1_4._in_stationary_weapon = true
-	L1_4 = PlayerMountedWeaponState
-	L1_4 = L1_4.enter
-	L2_5 = A0_3
-	L1_4(L2_5)
-	L2_5 = A0_3
-	L1_4 = A0_3.set_weapon
-	L3_6 = A0_3._weapon_unit
-	L1_4(L2_5, L3_6)
-	L1_4 = A0_3._weapon_unit
-	L2_5 = L1_4
-	L1_4 = L1_4.base
-	L1_4 = L1_4(L2_5)
-	L2_5 = L1_4
-	L1_4 = L1_4.setup
-	L3_6 = A0_3._unit
-	L1_4(L2_5, L3_6)
-	L1_4 = A0_3._weapon_unit
-	L2_5 = L1_4
-	L1_4 = L1_4.base
-	L1_4 = L1_4(L2_5)
-	L2_5 = L1_4
-	L1_4 = L1_4.set_equiped
-	L3_6 = true
-	L1_4(L2_5, L3_6)
-	L1_4 = A0_3._unit
-	L2_5 = L1_4
-	L1_4 = L1_4.play_redirect
-	L3_6 = A0_3._current_anim
-	L1_4(L2_5, L3_6)
-	L1_4 = A0_3._unit
-	L2_5 = L1_4
-	L1_4 = L1_4.set_rotation
-	L3_6 = A0_3._weapon
-	L4_7 = L3_6
-	L3_6 = L3_6.rotation
-	L5_8 = L3_6(L4_7)
-	L1_4(L2_5, L3_6, L4_7, L5_8, L3_6(L4_7))
-	L1_4 = assert
-	L2_5 = A0_3._weapon_unit
-	L3_6 = L2_5
-	L2_5 = L2_5.interact
-	L5_8 = L2_5(L3_6)
-	L1_4(L2_5, L3_6, L4_7, L5_8, L2_5(L3_6))
-	L1_4 = A0_3._weapon_unit
-	L2_5 = L1_4
-	L1_4 = L1_4.interact
-	L1_4 = L1_4(L2_5)
-	L1_4 = L1_4._x_offset
-	L1_4 = L1_4 or 0
-	L2_5 = A0_3._weapon_unit
-	L3_6 = L2_5
-	L2_5 = L2_5.interact
-	L2_5 = L2_5(L3_6)
-	L2_5 = L2_5._y_offset
-	L2_5 = L2_5 or 0
-	L3_6 = A0_3._weapon_unit
-	L4_7 = L3_6
-	L3_6 = L3_6.interact
-	L3_6 = L3_6(L4_7)
-	L3_6 = L3_6._z_offset
-	L3_6 = L3_6 or 0
-	L4_7 = A0_3._weapon_unit
-	L5_8 = L4_7
-	L4_7 = L4_7.position
-	L4_7 = L4_7(L5_8)
-	L5_8 = A0_3._weapon_unit
-	L5_8 = L5_8.rotation
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8.x
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8.normalized
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8 * L1_4
-	L4_7 = L4_7 + L5_8
-	L5_8 = A0_3._weapon_unit
-	L5_8 = L5_8.rotation
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8.y
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8.normalized
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8 * L2_5
-	L4_7 = L4_7 + L5_8
-	L5_8 = A0_3._weapon_unit
-	L5_8 = L5_8.rotation
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8.z
-	L5_8 = L5_8(L5_8)
-	L5_8 = L5_8 * L3_6
-	L4_7 = L4_7 + L5_8
-	L5_8 = A0_3._unit
-	L5_8 = L5_8.set_position
-	L5_8(L5_8, L4_7)
-	L5_8 = A0_3._unit
-	L5_8 = L5_8.set_moving
-	L5_8(L5_8)
-	L5_8 = A0_3._weapon_unit
-	L5_8 = L5_8.turret
-	L5_8 = L5_8(L5_8)
-	assert(L5_8)
-	A0_3._unit:look():set_yaw_constraints(A0_3._weapon_unit:rotation():roll(), L5_8.yaw_neg_angle, L5_8.yaw_pos_angle)
-	A0_3._unit:look():set_pitch_constraints(-L5_8.pitch_neg_angle, L5_8.pitch_pos_angle)
-end
-function PlayerInStationaryWeapon.leave(A0_9)
-	PlayerMovementState.leave(A0_9)
-	A0_9._player_data._in_stationary_weapon = false
-	A0_9._player_data._mounted_weapon = nil
-	A0_9._weapon_unit:base():setup(nil)
-	A0_9._weapon_unit:base():set_equiped(false)
-	PlayerMountedWeaponState.leave(A0_9)
-	A0_9._unit:look():reset_constraints()
-	A0_9._player_data.is_precision_aiming = false
-end
-function PlayerInStationaryWeapon._link_player_to_turret(A0_10)
-	local L1_11
-end
-function PlayerInStationaryWeapon.wants_to_leave(A0_12)
-	return A0_12._input:leave_mounted_weapon()
-end
-function PlayerInStationaryWeapon._update_fire_animation(A0_13)
-	local L1_14
-	L1_14 = A0_13._weapon_data
-	L1_14 = L1_14._firing
-	if L1_14 then
-		L1_14 = PlayerInStationaryWeapon
-		L1_14 = L1_14._AIM_FIRE_ANIM
-	elseif not L1_14 then
-		L1_14 = PlayerInStationaryWeapon
-		L1_14 = L1_14._AIM_ANIM
+
+PlayerInStationaryWeapon.enter = function(l_3_0)
+	PlayerMovementState.enter(l_3_0)
+	l_3_0._player_data._in_stationary_weapon = true
+	PlayerMountedWeaponState.enter(l_3_0)
+	l_3_0:set_weapon(l_3_0._weapon_unit)
+	l_3_0._weapon_unit:base():setup(l_3_0._unit)
+	l_3_0._weapon_unit:base():set_equiped(true)
+	l_3_0._unit:play_redirect(l_3_0._current_anim)
+	l_3_0._unit:set_rotation(l_3_0._weapon:rotation())
+	assert(l_3_0._weapon_unit:interact())
+	do
+		local l_3_1 = l_3_0._weapon_unit:interact()._x_offset or 0
+	do
+		end
+		local l_3_2 = nil
+	do
+		end
+		local l_3_3 = nil
 	end
-	A0_13._current_anim = L1_14
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	local l_3_4 = nil
+	l_3_0._unit:set_position(l_3_0._weapon_unit:position() + l_3_0._weapon_unit:rotation():x():normalized() * l_3_3 + l_3_0._weapon_unit:rotation():y():normalized() * (l_3_0._weapon_unit:interact()._y_offset or 0) + l_3_0._weapon_unit:rotation():z() * (l_3_0._weapon_unit:interact()._z_offset or 0))
+	l_3_0._unit:set_moving()
+	local l_3_5 = nil
+	assert(l_3_0._weapon_unit:turret())
+	l_3_0._unit:look():set_yaw_constraints(l_3_0._weapon_unit:rotation():roll(), l_3_0._weapon_unit:turret().yaw_neg_angle, l_3_0._weapon_unit:turret().yaw_pos_angle)
+	l_3_0._unit:look():set_pitch_constraints(-l_3_0._weapon_unit:turret().pitch_neg_angle, l_3_0._weapon_unit:turret().pitch_pos_angle)
 end
-function PlayerInStationaryWeapon.transition(A0_15)
-	if A0_15._base:check_fully_damaged() then
-		return (A0_15._base:check_fully_damaged())
-	end
-	if A0_15:wants_to_leave() then
-		A0_15._unit:set_position(A0_15._last_position)
-		A0_15._unit:play_redirect("idle_std")
-		A0_15._unit:play_redirect("exit_stationary_weapon")
-		return PlayerOnGround:new(A0_15._unit)
+
+PlayerInStationaryWeapon.leave = function(l_4_0)
+	PlayerMovementState.leave(l_4_0)
+	l_4_0._player_data._in_stationary_weapon = false
+	l_4_0._player_data._mounted_weapon = nil
+	l_4_0._weapon_unit:base():setup(nil)
+	l_4_0._weapon_unit:base():set_equiped(false)
+	PlayerMountedWeaponState.leave(l_4_0)
+	l_4_0._unit:look():reset_constraints()
+	l_4_0._player_data.is_precision_aiming = false
+end
+
+PlayerInStationaryWeapon._link_player_to_turret = function(l_5_0)
+end
+
+PlayerInStationaryWeapon.wants_to_leave = function(l_6_0)
+	local l_6_1, l_6_2 = l_6_0._input:leave_mounted_weapon, l_6_0._input
+	return l_6_1(l_6_2)
+end
+
+PlayerInStationaryWeapon._update_fire_animation = function(l_7_0)
+	if not l_7_0._weapon_data._firing or not PlayerInStationaryWeapon._AIM_FIRE_ANIM then
+		l_7_0._current_anim = PlayerInStationaryWeapon._AIM_ANIM
 	end
 end
-function PlayerInStationaryWeapon.update(A0_16, A1_17, A2_18)
-	if A0_16:transition() then
-		return (A0_16:transition())
+
+PlayerInStationaryWeapon.transition = function(l_8_0)
+	local l_8_1 = l_8_0._base:check_fully_damaged()
+	if l_8_1 then
+		return l_8_1
 	end
-	PlayerMountedWeaponState.update(A0_16, A1_17, A2_18)
+	if l_8_0:wants_to_leave() then
+		l_8_0._unit:set_position(l_8_0._last_position)
+		l_8_0._unit:play_redirect("idle_std")
+		l_8_0._unit:play_redirect("exit_stationary_weapon")
+		local l_8_2, l_8_3 = PlayerOnGround:new, PlayerOnGround
+		local l_8_4 = l_8_0._unit
+		return l_8_2(l_8_3, l_8_4)
+	end
 end
-function PlayerInStationaryWeapon.variable_frequency_post_update(A0_19, A1_20)
-	PlayerMovementState.variable_frequency_post_update(A0_19, A1_20)
-	A0_19:_update_fire_animation()
-	A0_19._unit:play_redirect(A0_19._current_anim)
-	A0_19._player_data.is_precision_aiming = A0_19._unit:input():precision_aiming()
+
+PlayerInStationaryWeapon.update = function(l_9_0, l_9_1, l_9_2)
+	local l_9_3 = l_9_0:transition()
+	if l_9_3 then
+		return l_9_3
+	end
+	PlayerMountedWeaponState.update(l_9_0, l_9_1, l_9_2)
 end
-function PlayerInStationaryWeapon._update_turret(A0_21, A1_22, A2_23)
-	PlayerMountedWeaponState._update_turret(A0_21, A1_22, A2_23)
+
+PlayerInStationaryWeapon.variable_frequency_post_update = function(l_10_0, l_10_1)
+	PlayerMovementState.variable_frequency_post_update(l_10_0, l_10_1)
+	l_10_0:_update_fire_animation()
+	l_10_0._unit:play_redirect(l_10_0._current_anim)
+	l_10_0._player_data.is_precision_aiming = l_10_0._unit:input():precision_aiming()
 end
+
+PlayerInStationaryWeapon._update_turret = function(l_11_0, l_11_1, l_11_2)
+	PlayerMountedWeaponState._update_turret(l_11_0, l_11_1, l_11_2)
+end
+
+

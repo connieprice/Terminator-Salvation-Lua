@@ -1,82 +1,84 @@
-BikerInput = BikerInput or class()
-function BikerInput.init(A0_0, A1_1)
-	A0_0:clear()
+if not BikerInput then
+	BikerInput = class()
 end
-function BikerInput.clear(A0_2)
-	A0_2._aim_target_position = Vector3(0, 0, 100)
-	A0_2._primary_fire = false
-	A0_2._secondary_fire = false
-	A0_2._primary_damage = nil
-	A0_2._secondary_damage = nil
-	A0_2._speed = nil
-	A0_2._warp = false
-	A0_2._warp_distance = nil
-	A0_2._target_unit = nil
+BikerInput.init = function(l_1_0, l_1_1)
+	l_1_0:clear()
 end
-function BikerInput.primary_fire(A0_3)
-	local L1_4
-	L1_4 = A0_3._primary_fire
-	return L1_4
+
+BikerInput.clear = function(l_2_0)
+	l_2_0._aim_target_position = Vector3(0, 0, 100)
+	l_2_0._primary_fire = false
+	l_2_0._secondary_fire = false
+	l_2_0._primary_damage = nil
+	l_2_0._secondary_damage = nil
+	l_2_0._speed = nil
+	l_2_0._warp = false
+	l_2_0._warp_distance = nil
+	l_2_0._target_unit = nil
 end
-function BikerInput.secondary_fire(A0_5)
-	local L1_6
-	L1_6 = A0_5._secondary_fire
-	return L1_6
+
+BikerInput.primary_fire = function(l_3_0)
+	return l_3_0._primary_fire
 end
-function BikerInput.set_primary_fire(A0_7)
-	local L1_8
-	A0_7._primary_fire = true
+
+BikerInput.secondary_fire = function(l_4_0)
+	return l_4_0._secondary_fire
 end
-function BikerInput.set_secondary_fire(A0_9)
-	local L1_10
-	A0_9._secondary_fire = true
+
+BikerInput.set_primary_fire = function(l_5_0)
+	l_5_0._primary_fire = true
 end
-function BikerInput.primary_damage(A0_11)
-	local L1_12
-	L1_12 = A0_11._primary_damage
-	return L1_12
+
+BikerInput.set_secondary_fire = function(l_6_0)
+	l_6_0._secondary_fire = true
 end
-function BikerInput.set_primary_damage(A0_13, A1_14)
-	A0_13._primary_damage = A1_14
+
+BikerInput.primary_damage = function(l_7_0)
+	return l_7_0._primary_damage
 end
-function BikerInput.secondary_damage(A0_15)
-	local L1_16
-	L1_16 = A0_15._secondary_damage
-	return L1_16
+
+BikerInput.set_primary_damage = function(l_8_0, l_8_1)
+	l_8_0._primary_damage = l_8_1
 end
-function BikerInput.set_secondary_damage(A0_17, A1_18)
-	A0_17._secondary_damage = A1_18
+
+BikerInput.secondary_damage = function(l_9_0)
+	return l_9_0._secondary_damage
 end
-function BikerInput.speed(A0_19)
-	local L1_20
-	L1_20 = A0_19._speed
-	return L1_20
+
+BikerInput.set_secondary_damage = function(l_10_0, l_10_1)
+	l_10_0._secondary_damage = l_10_1
 end
-function BikerInput.set_speed(A0_21, A1_22)
-	A0_21._speed = A1_22
+
+BikerInput.speed = function(l_11_0)
+	return l_11_0._speed
 end
-function BikerInput.warp(A0_23)
-	local L1_24
-	L1_24 = A0_23._warp
-	return L1_24
+
+BikerInput.set_speed = function(l_12_0, l_12_1)
+	l_12_0._speed = l_12_1
 end
-function BikerInput.set_warp(A0_25)
-	local L1_26
-	A0_25._warp = true
+
+BikerInput.warp = function(l_13_0)
+	return l_13_0._warp
 end
-function BikerInput.warp_distance(A0_27)
-	local L1_28
-	L1_28 = A0_27._warp_distance
-	return L1_28
+
+BikerInput.set_warp = function(l_14_0)
+	l_14_0._warp = true
 end
-function BikerInput.set_warp_distance(A0_29, A1_30)
-	A0_29._warp_distance = A1_30
+
+BikerInput.warp_distance = function(l_15_0)
+	return l_15_0._warp_distance
 end
-function BikerInput.target_unit(A0_31)
-	local L1_32
-	L1_32 = A0_31._target_unit
-	return L1_32
+
+BikerInput.set_warp_distance = function(l_16_0, l_16_1)
+	l_16_0._warp_distance = l_16_1
 end
-function BikerInput.set_target_unit(A0_33, A1_34)
-	A0_33._target_unit = A1_34
+
+BikerInput.target_unit = function(l_17_0)
+	return l_17_0._target_unit
 end
+
+BikerInput.set_target_unit = function(l_18_0, l_18_1)
+	l_18_0._target_unit = l_18_1
+end
+
+

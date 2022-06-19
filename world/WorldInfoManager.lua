@@ -1,102 +1,95 @@
-local L0_0
-L0_0 = require
-L0_0("world/WorldInfo")
-function L0_0()
-	local L0_1, L1_2, L2_3, L3_4, L4_5, L5_6, L6_7, L7_8
-	L0_1 = File
-	L1_2 = L0_1
-	L0_1 = L0_1.new_parse_xml
-	L2_3 = "data/lib/menu/levelnames.xml"
-	L0_1 = L0_1(L1_2, L2_3)
-	L2_3 = L0_1
-	L1_2 = L0_1.children
-	L1_2 = L1_2(L2_3)
-	L2_3 = {}
-	for L6_7 in L1_2, nil, nil do
-		L7_8 = tonumber
-		L7_8 = L7_8(L6_7:parameter("start_id"))
-		table.insert(L2_3, L7_8)
+require("world/WorldInfo")
+local l_0_0 = function()
+	local l_1_6, l_1_7 = nil
+	local l_1_0 = File:new_parse_xml("data/lib/menu/levelnames.xml")
+	local l_1_1 = l_1_0:children()
+	local l_1_2 = {}
+	local l_1_3 = l_1_1
+	for i_0 in l_1_3 do
+		table.insert(l_1_2, tonumber(i_0:parameter("start_id")))
 	end
-	return L2_3
+	return l_1_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-WorldInfoManager = WorldInfoManager or class()
-function WorldInfoManager.init(A0_9)
-	local L1_10, L2_11
-	L1_10 = {}
-	A0_9._id_to_level_info = L1_10
-	L1_10 = {}
-	A0_9._name_to_level_info = L1_10
-	L1_10 = {}
-	A0_9._index_to_id = L1_10
-	L1_10 = File
-	L2_11 = L1_10
-	L1_10 = L1_10.exists
-	L1_10 = L1_10(L2_11, "data/videos/enable_debug_levels.hack")
-	A0_9._is_show_case_build = L1_10
-	L1_10 = File
-	L2_11 = L1_10
-	L1_10 = L1_10.new_parse_xml
-	L1_10 = L1_10(L2_11, "data/levels/levels.xml")
-	L2_11 = _UPVALUE0_
-	L2_11 = L2_11()
-	A0_9:load_world_infos(L1_10:children(), L2_11)
+
+if not WorldInfoManager then
+	WorldInfoManager = class()
 end
-function WorldInfoManager.load_world_infos(A0_12, A1_13, A2_14)
-	local L3_15, L4_16, L5_17, L6_18, L7_19, L8_20, L9_21
-	for L6_18 in A1_13, nil, nil do
-		L7_19 = tonumber
-		L9_21 = L6_18
-		L8_20 = L6_18.parameter
-		L9_21 = L8_20(L9_21, "id")
-		L7_19 = L7_19(L8_20, L9_21, L8_20(L9_21, "id"))
-		L9_21 = L6_18
-		L8_20 = L6_18.parameter
-		L8_20 = L8_20(L9_21, "name")
-		L9_21 = _UPVALUE0_
-		L9_21 = L9_21(L7_19, A2_14)
-		assert(L9_21)
-		if not A0_12._is_show_case_build or L6_18:parameter("enabled") == "true" then
-			A0_12._id_to_level_info[L7_19] = WorldInfo:new(L7_19, L8_20, L9_21)
-			A0_12._name_to_level_info[L8_20] = WorldInfo:new(L7_19, L8_20, L9_21)
-			if not A0_12._first_world_info then
-				A0_12._first_world_info = WorldInfo:new(L7_19, L8_20, L9_21)
+WorldInfoManager.init = function(l_2_0)
+	-- upvalues: l_0_0
+	l_2_0._id_to_level_info = {}
+	l_2_0._name_to_level_info = {}
+	l_2_0._index_to_id = {}
+	l_2_0._is_show_case_build = File:exists("data/videos/enable_debug_levels.hack")
+	local l_2_1 = File:new_parse_xml("data/levels/levels.xml")
+	local l_2_2 = l_0_0()
+	l_2_0:load_world_infos(l_2_1:children(), l_2_2)
+end
+
+local l_0_1 = function(l_3_0, l_3_1)
+	local l_3_2 = #l_3_1
+	for l_3_6 = l_3_2, 1, -1 do
+		if l_3_1[l_3_6] <= l_3_0 then
+			return l_3_6
+		end
+	end
+	assert(false)
+end
+
+WorldInfoManager.load_world_infos = function(l_4_0, l_4_1, l_4_2)
+	-- upvalues: l_0_1
+	local l_4_6, l_4_7, l_4_8 = nil
+	local l_4_3 = l_4_1
+	for i_0 in l_4_3 do
+		local l_4_10 = tonumber(i_0:parameter("id"))
+		local l_4_11 = l_4_9:parameter("name")
+		assert(l_0_1(l_4_10, l_4_2))
+		if not l_4_0._is_show_case_build or l_4_9:parameter("enabled") == "true" then
+			local l_4_12 = nil
+			l_4_0._id_to_level_info[l_4_10] = WorldInfo:new(l_4_10, l_4_11, l_0_1(l_4_10, l_4_2))
+			l_4_0._name_to_level_info[l_4_11] = WorldInfo:new(l_4_10, l_4_11, l_0_1(l_4_10, l_4_2))
+		if not l_4_0._first_world_info then
 			end
+			l_4_0._first_world_info = WorldInfo:new(l_4_10, l_4_11, l_0_1(l_4_10, l_4_2))
 		end
-		if not A0_12._is_show_case_build then
-			A0_12._first_world_info = A0_12:info_from_id(1)
+		if not l_4_0._is_show_case_build then
+			l_4_0._first_world_info = l_4_0:info_from_id(1)
+		end
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+WorldInfoManager.info_from_id = function(l_5_0, l_5_1)
+	return l_5_0._id_to_level_info[l_5_1]
+end
+
+WorldInfoManager.info_from_name = function(l_6_0, l_6_1)
+	return l_6_0._name_to_level_info[l_6_1]
+end
+
+WorldInfoManager.has_info_for_name = function(l_7_0, l_7_1)
+	return l_7_0._name_to_level_info[l_7_1] ~= nil
+end
+
+WorldInfoManager.level_infos = function(l_8_0)
+	return l_8_0._id_to_level_info
+end
+
+WorldInfoManager.first_world_info = function(l_9_0)
+	return l_9_0._first_world_info
+end
+
+WorldInfoManager.next_world_info = function(l_10_0, l_10_1)
+	local l_10_2 = l_10_1.id
+	local l_10_3 = 20
+	for l_10_7 = l_10_2 + 1, l_10_3 do
+		local l_10_8 = l_10_0:info_from_id(l_10_7)
+		if l_10_8 then
+			return l_10_8
 		end
 	end
 end
-function WorldInfoManager.info_from_id(A0_22, A1_23)
-	return A0_22._id_to_level_info[A1_23]
-end
-function WorldInfoManager.info_from_name(A0_24, A1_25)
-	return A0_24._name_to_level_info[A1_25]
-end
-function WorldInfoManager.has_info_for_name(A0_26, A1_27)
-	local L2_28
-	L2_28 = A0_26._name_to_level_info
-	L2_28 = L2_28[A1_27]
-	L2_28 = L2_28 ~= nil
-	return L2_28
-end
-function WorldInfoManager.level_infos(A0_29)
-	local L1_30
-	L1_30 = A0_29._id_to_level_info
-	return L1_30
-end
-function WorldInfoManager.first_world_info(A0_31)
-	local L1_32
-	L1_32 = A0_31._first_world_info
-	return L1_32
-end
-function WorldInfoManager.next_world_info(A0_33, A1_34)
-	local L2_35, L3_36, L4_37, L5_38, L6_39, L7_40
-	L2_35 = A1_34.id
-	L3_36 = 20
-	for L7_40 = L2_35 + 1, L3_36 do
-		if A0_33:info_from_id(L7_40) then
-			return (A0_33:info_from_id(L7_40))
-		end
-	end
-end
+
+

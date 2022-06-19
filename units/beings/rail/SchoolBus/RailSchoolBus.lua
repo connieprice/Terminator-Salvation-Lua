@@ -1,20 +1,20 @@
-RailSchoolBus = RailSchoolBus or class(RailWheeledVehicle)
-function RailSchoolBus.init(A0_0, A1_1)
-	local L2_2
-	L2_2 = RailWheeledVehicle
-	L2_2 = L2_2.init
-	L2_2(A0_0, A1_1)
-	L2_2 = managers
-	L2_2 = L2_2.unit_scripting
-	L2_2 = L2_2.get_unit_by_name
-	L2_2 = L2_2(L2_2, "character_slot1")
-	if alive(L2_2) then
-		L2_2:difficulty_level():register_unmounted_rail_vehicle(A1_1)
+if not RailSchoolBus then
+	RailSchoolBus = class(RailWheeledVehicle)
+end
+RailSchoolBus.init = function(l_1_0, l_1_1)
+	RailWheeledVehicle.init(l_1_0, l_1_1)
+	local l_1_2 = managers.unit_scripting:get_unit_by_name("character_slot1")
+	if alive(l_1_2) then
+		l_1_2:difficulty_level():register_unmounted_rail_vehicle(l_1_1)
 	end
 end
-function RailSchoolBus.update(A0_3, A1_4, A2_5, A3_6)
-	RailWheeledVehicle.update(A0_3, A1_4, A2_5, A3_6)
+
+RailSchoolBus.update = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	RailWheeledVehicle.update(l_2_0, l_2_1, l_2_2, l_2_3)
 end
-function RailSchoolBus.destroy(A0_7)
-	RailWheeledVehicle.destroy(A0_7)
+
+RailSchoolBus.destroy = function(l_3_0)
+	RailWheeledVehicle.destroy(l_3_0)
 end
+
+

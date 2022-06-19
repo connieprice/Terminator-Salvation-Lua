@@ -1,9 +1,12 @@
-InteractQuery = InteractQuery or class()
-function InteractQuery.init(A0_0, A1_1)
-	A0_0._unit = A1_1
+if not InteractQuery then
+	InteractQuery = class()
 end
-function InteractQuery.can_interact_with(A0_2, A1_3)
-	local L2_4
-	L2_4 = true
-	return L2_4
+InteractQuery.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
 end
+
+InteractQuery.can_interact_with = function(l_2_0, l_2_1)
+	return true
+end
+
+

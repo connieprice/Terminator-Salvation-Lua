@@ -1,69 +1,104 @@
-FlyerWeaponEffects = FlyerWeaponEffects or class()
-function FlyerWeaponEffects.init(A0_0, A1_1)
-	local L2_2
-	A0_0._unit = A1_1
-	L2_2 = A0_0._unit
-	L2_2 = L2_2.orientation_object
-	L2_2 = L2_2(L2_2)
-	A0_0._obj_fire = L2_2
-	A0_0._fire_started = false
-	L2_2 = managers
-	L2_2 = L2_2.sensory_events
-	L2_2 = L2_2.is_defined
-	L2_2 = L2_2(L2_2, "FLYERWEAPON_SHOOT")
-	if not L2_2 then
-		L2_2 = managers
-		L2_2 = L2_2.sensory_events
-		L2_2 = L2_2.define_event
-		L2_2(L2_2, "FLYERWEAPON_SHOOT", managers.sensory_events.source_types.MACHINE_WEAPON_ID, tweak_data.sensory_events.weapons.DEFAULT_SHOOT_VISIBLE_RANGE, tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL, tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL_REFERENCE_DISTANCE)
-	end
-	A0_0._fire_sound_instance = nil
-	L2_2 = "rp_empty"
-	A0_0._fire_sound_instance = nil
-	if A0_0._num_sound_variants and A0_0._num_sound_variants > 0 then
-		A0_0._sound_variant = "_" .. math.random(A0_0._num_sound_variants)
-	end
-	A0_0._fire_sound_object, A0_0._fire_end_sound_object = WeaponUtilities.sound_objects(A0_0._unit, A0_0._sound_prefix, A0_0._sound_variant, A0_0._sound_bank, A0_0._is_once_sound, L2_2)
-	managers.action_event:register_listener(A0_0, A1_1, A1_1)
-	A0_0._bullets_fired = 0
-	A0_0._muzzleflash_rate = 2
+if not FlyerWeaponEffects then
+	FlyerWeaponEffects = class()
 end
-function FlyerWeaponEffects.destroy(A0_3, A1_4)
-	managers.action_event:unregister_listener(A0_3)
-	if A0_3._fire_sound_object and A0_3._fire_sound_object:is_playing() then
-		A0_3._fire_sound_object:stop()
+FlyerWeaponEffects.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._obj_fire = l_1_0._unit:orientation_object()
+	l_1_0._fire_started = false
+	if not managers.sensory_events:is_defined("FLYERWEAPON_SHOOT") then
+		managers.sensory_events:define_event("FLYERWEAPON_SHOOT", managers.sensory_events.source_types.MACHINE_WEAPON_ID, tweak_data.sensory_events.weapons.DEFAULT_SHOOT_VISIBLE_RANGE, tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL, tweak_data.sensory_events.weapons.DEFAULT_SHOOT_SOUND_LEVEL_REFERENCE_DISTANCE)
 	end
-	managers.sensory_events:destroy_continuous_event_handle(A0_3._firing_event_handle)
-end
-function FlyerWeaponEffects.unit_weapon_fire_start(A0_5, A1_6, A2_7)
-	assert(A2_7 == A0_5._unit)
-	assert(A1_6._firing_event_handle == nil)
-	assert(not A0_5._fire_started)
-	A0_5._fire_started = true
-	A0_5._firing_event_handle = managers.sensory_events:begin_continuous_event(managers.sensory_events.event_types.FLYERWEAPON_SHOOT_ID, A0_5._unit)
-	A1_6._firing_event_handle = A0_5._firing_event_handle
-	A0_5._fire_sound_instance = A0_5._fire_sound_object:play("offset", 0)
-	A0_5._bullets_fired = 0
-end
-function FlyerWeaponEffects.unit_weapon_fire_change(A0_8, A1_9, A2_10, A3_11, A4_12, A5_13)
-	assert(A0_8._unit == A2_10)
-	assert(A0_8._fire_started)
-	if A0_8._bullets_fired % A0_8._muzzleflash_rate == 0 then
-		World:effect_manager():spawn({
-			effect = A0_8._fire_effect_name,
-			parent = A5_13:orientation_object(),
-			normal = Vector3(0, 0, 1),
-			force_synch = true
-		})
+	l_1_0._fire_sound_instance = nil
+	local l_1_2 = "rp_empty"
+	l_1_0._fire_sound_instance = nil
+	if l_1_0._num_sound_variants and l_1_0._num_sound_variants > 0 then
+		l_1_0._sound_variant = "_" .. math.random(l_1_0._num_sound_variants)
 	end
-	A0_8._bullets_fired = A0_8._bullets_fired + 1
+	local l_1_3 = WeaponUtilities.sound_objects(l_1_0._unit, l_1_0._sound_prefix, l_1_0._sound_variant, l_1_0._sound_bank, l_1_0._is_once_sound, l_1_2)
+	l_1_0._fire_end_sound_object = l_1_0._unit
+	l_1_0._fire_sound_object = l_1_3
+	l_1_3 = managers
+	l_1_3 = l_1_3.action_event
+	l_1_3(l_1_3, l_1_0, l_1_1, l_1_1)
+	l_1_0._bullets_fired = 0
+	l_1_0._muzzleflash_rate = 2
 end
-function FlyerWeaponEffects.unit_weapon_fire_stop(A0_14, A1_15)
-	assert(A1_15._firing_event_handle == A0_14._firing_event_handle)
-	assert(A0_14._fire_started)
-	A0_14._fire_started = false
-	managers.sensory_events:end_continuous_event(A0_14._firing_event_handle)
-	if A0_14._is_once_sound == false and A0_14._fire_end_sound_object and A0_14._fire_sound_instance then
-		A0_14._fire_end_sound_object:play("crossfade_with", A0_14._fire_sound_instance, "crossfade_time", 0)
+
+FlyerWeaponEffects.destroy = function(l_2_0, l_2_1)
+	managers.action_event:unregister_listener(l_2_0)
+	if l_2_0._fire_sound_object and l_2_0._fire_sound_object:is_playing() then
+		l_2_0._fire_sound_object:stop()
+	end
+	managers.sensory_events:destroy_continuous_event_handle(l_2_0._firing_event_handle)
+end
+
+FlyerWeaponEffects.unit_weapon_fire_start = function(l_3_0, l_3_1, l_3_2)
+	local l_3_3 = assert
+	l_3_3(l_3_2 == l_3_0._unit)
+	l_3_3 = assert
+	l_3_3(l_3_1._firing_event_handle == nil)
+	l_3_3 = assert
+	l_3_3(not l_3_0._fire_started)
+	l_3_0._fire_started = true
+	l_3_3 = managers
+	l_3_3 = l_3_3.sensory_events
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_0._firing_event_handle = l_3_3
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_1._firing_event_handle = l_3_3
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_3_0._fire_sound_instance = l_3_3
+	l_3_0._bullets_fired = 0
+end
+
+FlyerWeaponEffects.unit_weapon_fire_change = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5)
+	local l_4_6 = assert
+	l_4_6(l_4_0._unit == l_4_2)
+	l_4_6 = assert
+	l_4_6(l_4_0._fire_started)
+	l_4_6 = l_4_0._bullets_fired
+	l_4_6 = l_4_6 % l_4_0._muzzleflash_rate
+	if l_4_6 == 0 then
+		local l_4_9, l_4_10 = World:effect_manager():spawn, World:effect_manager()
+		local l_4_11 = {}
+		l_4_11.effect = l_4_0._fire_effect_name
+		l_4_11.parent = l_4_5:orientation_object()
+		l_4_11.normal = Vector3(0, 0, 1)
+		l_4_11.force_synch = true
+		l_4_9(l_4_10, l_4_11)
+	end
+	l_4_0._bullets_fired = l_4_0._bullets_fired + 1
+end
+
+FlyerWeaponEffects.unit_weapon_fire_stop = function(l_5_0, l_5_1)
+	local l_5_2 = assert
+	l_5_2(l_5_1._firing_event_handle == l_5_0._firing_event_handle)
+	l_5_2 = assert
+	l_5_2(l_5_0._fire_started)
+	l_5_0._fire_started = false
+	l_5_2 = managers
+	l_5_2 = l_5_2.sensory_events
+	l_5_2(l_5_2, l_5_0._firing_event_handle)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	if l_5_2 == false and l_5_2 and l_5_2 then
+		l_5_2(l_5_2, "crossfade_with", l_5_0._fire_sound_instance, "crossfade_time", 0)
 	end
 end
+
+

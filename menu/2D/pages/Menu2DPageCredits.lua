@@ -1,53 +1,68 @@
 require("menu/2D/Menu2DPage")
 require("menu/CreditsScroller.lua")
-Menu2DPageCredits = Menu2DPageCredits or class(Menu2DPage)
-function Menu2DPageCredits.init(A0_0, A1_1, A2_2)
-	Menu2DPage.init(A0_0, A1_1, A2_2)
+if not Menu2DPageCredits then
+	Menu2DPageCredits = class(Menu2DPage)
 end
-function Menu2DPageCredits.update(A0_3, A1_4)
-	Menu2DPage.update(A0_3, A1_4)
-	if not A0_3._done then
-		A0_3._credits_scroller:update(A1_4)
-		if A0_3._credits_scroller:is_done() then
-			managers.menu2d:menu_island_instance_data().credits_done = true
-			A0_3._done = true
+Menu2DPageCredits.init = function(l_1_0, l_1_1, l_1_2)
+	Menu2DPage.init(l_1_0, l_1_1, l_1_2)
+end
+
+Menu2DPageCredits.update = function(l_2_0, l_2_1)
+	Menu2DPage.update(l_2_0, l_2_1)
+	if not l_2_0._done then
+		l_2_0._credits_scroller:update(l_2_1)
+	if l_2_0._credits_scroller:is_done() then
 		end
+		managers.menu2d:menu_island_instance_data().credits_done = true
+		l_2_0._done = true
 	end
 end
-function Menu2DPageCredits.input(A0_5, A1_6, A2_7)
-	if managers.menu_input:any_user_pressed(managers.local_user:users(), "menu_select") or managers.menu_input:any_user_pressed(managers.local_user:users(), "menu_start") then
-		A0_5:exit()
-	elseif A1_6.back then
-		A0_5:exit()
+
+Menu2DPageCredits.input = function(l_3_0, l_3_1, l_3_2)
+	if not managers.menu_input:any_user_pressed(managers.local_user:users(), "menu_select") then
+		local l_3_3, l_3_4, l_3_5, l_3_6 = managers.menu_input:any_user_pressed(managers.local_user:users(), "menu_start")
 	end
-	if A0_5._done and managers.menu2d:can_go_back() then
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_3_3 then
+		l_3_0:exit()
+	elseif l_3_1.back then
+		l_3_0:exit()
+	end
+	if l_3_0._done and managers.menu2d:can_go_back() then
 		managers.menu2d:back()
 	end
-	if not A0_5._done then
-		A0_5._credits_scroller:input_update(A1_6.move_axis.y)
+	if not l_3_0._done then
+		l_3_0._credits_scroller:input_update(l_3_1.move_axis.y)
 	end
 end
-function Menu2DPageCredits.open(A0_8, A1_9, A2_10, A3_11)
-	Menu2DPage.open(A0_8, A1_9, A2_10, A3_11)
-	A0_8._credits_scroller = CreditsScroller:new(A0_8._panel, "data/gui/end_credits.xml")
-	A0_8._done = false
+
+Menu2DPageCredits.open = function(l_4_0, l_4_1, l_4_2, l_4_3)
+	Menu2DPage.open(l_4_0, l_4_1, l_4_2, l_4_3)
+	l_4_0._credits_scroller = CreditsScroller:new(l_4_0._panel, "data/gui/end_credits.xml")
+	l_4_0._done = false
 	managers.menu2d:menu_island_instance_data().credits_done = false
 end
-function Menu2DPageCredits.destroy(A0_12)
-	A0_12._credits_scroller:destroy()
-	A0_12._credits_scroller = nil
-	Menu2DPage.destroy(A0_12)
+
+Menu2DPageCredits.destroy = function(l_5_0)
+	l_5_0._credits_scroller:destroy()
+	l_5_0._credits_scroller = nil
+	Menu2DPage.destroy(l_5_0)
 end
-function Menu2DPageCredits.credits_done(A0_13)
-	local L1_14
-	L1_14 = A0_13._done
-	return L1_14
+
+Menu2DPageCredits.credits_done = function(l_6_0)
+	return l_6_0._done
 end
-function Menu2DPageCredits.exit(A0_15)
-	local L1_16
-	A0_15._done = true
+
+Menu2DPageCredits.exit = function(l_7_0)
+	l_7_0._done = true
 end
-function Menu2DPageCredits.confirm_mode(A0_17)
-	local L1_18
-	return L1_18
+
+Menu2DPageCredits.confirm_mode = function(l_8_0)
+	local l_8_1 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	return l_8_1
 end
+
+

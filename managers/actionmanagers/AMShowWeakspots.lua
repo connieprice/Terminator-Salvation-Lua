@@ -1,61 +1,55 @@
 require("shared/TableAlgorithms")
-AMShowWeakspots = AMShowWeakspots or class(CoreActionElement)
-function AMShowWeakspots.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMShowWeakspots then
+	AMShowWeakspots = class(CoreActionElement)
 end
-function AMShowWeakspots.activate_now(A0_3)
-	local L1_4, L2_5, L3_6, L4_7, L5_8, L6_9, L7_10, L8_11, L9_12, L10_13, L11_14, L12_15, L13_16
-	L1_4 = Application
-	L1_4 = L1_4.debug
-	L5_8 = "range="
-	L6_9 = A0_3.range
-	L1_4(L2_5, L3_6, L4_7, L5_8, L6_9)
-	L1_4 = A0_3.targets
-	if L1_4 then
-		L1_4 = A0_3._get_units_by_names
-		L1_4 = L1_4(L2_5, L3_6)
-		for L5_8, L6_9 in L2_5(L3_6) do
-			L8_11 = L6_9
-			L7_10 = L6_9.damage
-			L7_10 = L7_10(L8_11)
-			L8_11 = L7_10
-			L7_10 = L7_10.set_show_weakspots
-			L7_10(L8_11, L9_12, L10_13)
+AMShowWeakspots.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
+end
+
+AMShowWeakspots.activate_now = function(l_2_0)
+	local l_2_12, l_2_13, l_2_14, l_2_15 = nil
+	local l_2_5 = Application:debug
+	local l_2_6 = Application
+	l_2_5(l_2_6, "ShowWeakspots ACTIVATED: duration=", l_2_0.duration, "range=", l_2_0.range)
+	l_2_5 = l_2_0.targets
+	if l_2_5 then
+		l_2_5, l_2_6 = l_2_0:_get_units_by_names, l_2_0
+		l_2_5 = l_2_5(l_2_6, l_2_0.targets)
+		local l_2_1 = nil
+		l_2_6 = ipairs
+		l_2_1 = l_2_5
+		l_2_6 = l_2_6(l_2_1)
+		for i_0,i_1 in l_2_6 do
+			l_2_4:damage():set_show_weakspots(l_2_0.duration, l_2_0.range)
 		end
-		for L5_8 = 1, 2 do
-			L6_9 = managers
-			L6_9 = L6_9.player_slot
-			L7_10 = L6_9
-			L6_9 = L6_9.slot
-			L8_11 = L5_8
-			L6_9 = L6_9(L7_10, L8_11)
-			if L6_9 then
-				L8_11 = L6_9
-				L7_10 = L6_9.spawned_unit
-				L7_10 = L7_10(L8_11)
-				if L7_10 then
-					L8_11 = L7_10.player_data
-					L8_11 = L8_11(L9_12)
-					L8_11 = L8_11.weakspot_unit_list
-					for L12_15, L13_16 in L9_12(L10_13) do
-						table.insert(L8_11, L13_16)
-					end
+		for i = 1, 2 do
+			if managers.player_slot:slot(i) then
+				local l_2_7 = managers.player_slot:slot(i):spawned_unit()
+			if l_2_7 then
+				end
+				local l_2_8 = l_2_7:player_data().weakspot_unit_list
+				for i_0,i_1 in ipairs(l_2_5) do
+					table.insert(l_2_8, i_1)
 				end
 			end
 		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
-	L1_4 = A0_3.deactivate_now
-	L1_4(L2_5)
+	l_2_5(l_2_0)
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function AMShowWeakspots._get_units_by_names(A0_17, A1_18)
-	local L2_19, L3_20, L4_21, L5_22, L6_23, L7_24, L8_25
-	L2_19 = {}
-	for L6_23, L7_24 in L3_20(L4_21) do
-		L8_25 = managers
-		L8_25 = L8_25.unit_scripting
-		L8_25 = L8_25.get_unit_by_name
-		L8_25 = L8_25(L8_25, L7_24.script_name)
-		table.insert(L2_19, L8_25)
+
+AMShowWeakspots._get_units_by_names = function(l_3_0, l_3_1)
+	local l_3_6, l_3_7, l_3_8, l_3_9 = nil
+	local l_3_2 = {}
+	for i_0,i_1 in pairs(l_3_1) do
+		table.insert(l_3_2, managers.unit_scripting:get_unit_by_name(i_1.script_name))
 	end
-	return L2_19
+	return l_3_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

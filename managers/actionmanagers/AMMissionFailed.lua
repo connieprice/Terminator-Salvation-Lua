@@ -1,4 +1,8 @@
-AMMissionFailed = AMMissionFailed or class(CoreActionElement)
-function AMMissionFailed.activate_now(A0_0)
+if not AMMissionFailed then
+	AMMissionFailed = class(CoreActionElement)
+end
+AMMissionFailed.activate_now = function(l_1_0)
 	managers.game_transition:game_over()
 end
+
+

@@ -1,35 +1,35 @@
-Rectangle = Rectangle or class()
-function Rectangle.init(A0_0)
-	local L1_1
-	A0_0.left = 0
-	A0_0.bottom = 0
-	A0_0.right = 0
-	A0_0.top = 0
+if not Rectangle then
+	Rectangle = class()
 end
-function Rectangle.height(A0_2)
-	return A0_2.bottom - A0_2.top
+Rectangle.init = function(l_1_0)
+	l_1_0.left = 0
+	l_1_0.bottom = 0
+	l_1_0.right = 0
+	l_1_0.top = 0
 end
-function Rectangle.width(A0_3)
-	return A0_3.right - A0_3.left
+
+Rectangle.height = function(l_2_0)
+	return l_2_0.bottom - l_2_0.top
 end
-function Rectangle.move(A0_4, A1_5, A2_6)
-	local L3_7
-	L3_7 = A0_4.left
-	L3_7 = L3_7 + A1_5
-	A0_4.left = L3_7
-	L3_7 = A0_4.top
-	L3_7 = L3_7 + A2_6
-	A0_4.top = L3_7
-	L3_7 = A0_4.right
-	L3_7 = L3_7 + A1_5
-	A0_4.right = L3_7
-	L3_7 = A0_4.bottom
-	L3_7 = L3_7 + A2_6
-	A0_4.bottom = L3_7
+
+Rectangle.width = function(l_3_0)
+	return l_3_0.right - l_3_0.left
 end
-function Rectangle.set_position(A0_8, A1_9, A2_10)
-	A0_8.left = A1_9
-	A0_8.top = A2_10
-	A0_8.bottom = A0_8.top + A0_8:height()
-	A0_8.right = A0_8.left + A0_8:width()
+
+Rectangle.move = function(l_4_0, l_4_1, l_4_2)
+	l_4_0.left = l_4_0.left + l_4_1
+	l_4_0.top = l_4_0.top + l_4_2
+	l_4_0.right = l_4_0.right + l_4_1
+	l_4_0.bottom = l_4_0.bottom + l_4_2
 end
+
+Rectangle.set_position = function(l_5_0, l_5_1, l_5_2)
+	local l_5_3 = l_5_0:width()
+	local l_5_4 = l_5_0:height()
+	l_5_0.left = l_5_1
+	l_5_0.top = l_5_2
+	l_5_0.bottom = l_5_0.top + l_5_4
+	l_5_0.right = l_5_0.left + l_5_3
+end
+
+

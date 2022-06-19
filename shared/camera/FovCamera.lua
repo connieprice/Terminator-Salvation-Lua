@@ -1,19 +1,20 @@
 require("shared/camera/SharedCamera")
-FovCamera = FovCamera or class(SharedCamera)
-function FovCamera.parse_parameters(A0_0, A1_1)
-	local L2_2
-	L2_2 = SharedCamera
-	L2_2 = L2_2.parse_parameters
-	L2_2(A0_0, A1_1)
-	L2_2 = A1_1.fov
-	assert(L2_2)
-	A0_0:set_fov(L2_2)
+if not FovCamera then
+	FovCamera = class(SharedCamera)
 end
-function FovCamera.set_fov(A0_3, A1_4)
-	A0_3._fov = A1_4
+FovCamera.parse_parameters = function(l_1_0, l_1_1)
+	SharedCamera.parse_parameters(l_1_0, l_1_1)
+	local l_1_2 = l_1_1.fov
+	assert(l_1_2)
+	l_1_0:set_fov(l_1_2)
 end
-function FovCamera.fov(A0_5)
-	local L1_6
-	L1_6 = A0_5._fov
-	return L1_6
+
+FovCamera.set_fov = function(l_2_0, l_2_1)
+	l_2_0._fov = l_2_1
 end
+
+FovCamera.fov = function(l_3_0)
+	return l_3_0._fov
+end
+
+

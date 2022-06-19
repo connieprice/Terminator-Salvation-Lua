@@ -16,31 +16,35 @@ require("menu/2D/Menu2DCameraNoise")
 require("units/beings/player/new_gui/TeammateNamePanel")
 require("units/beings/player/new_gui/FlashPanel")
 require("units/beings/player/new_gui/WeakspotsPanel")
-NewPlayerHud = NewPlayerHud or class()
-function NewPlayerHud.init(A0_0, A1_1)
-	A0_0._player_unit = A1_1
-	A0_0._player_data = A0_0._player_unit:player_data()
-	if A0_0._player_unit:base() then
-		A0_0._inventory = A0_0._player_unit:base():inventory()
-	end
-	A0_0._preload_textures()
-	A0_0.user_viewport = nil
-	managers.post_update_manager:register(A1_1, A0_0)
-	A0_0._dt = 0
-	A0_0._ammo_queue_list = {}
+if not NewPlayerHud then
+	NewPlayerHud = class()
 end
-function NewPlayerHud.post_update(A0_2)
-	if A0_2._hud_is_hidden then
-		return
+NewPlayerHud.init = function(l_1_0, l_1_1)
+	l_1_0._player_unit = l_1_1
+	l_1_0._player_data = l_1_0._player_unit:player_data()
+	if l_1_0._player_unit:base() then
+		l_1_0._inventory = l_1_0._player_unit:base():inventory()
 	end
-	if alive(A0_2._player_unit) and A0_2._weakspots_panel and alive(A0_2._weakspots_panel:panel()) then
-		A0_2._weakspots_panel:update(A0_2._dt)
+	l_1_0._preload_textures()
+	l_1_0.user_viewport = nil
+	managers.post_update_manager:register(l_1_1, l_1_0)
+	l_1_0._dt = 0
+	l_1_0._ammo_queue_list = {}
+end
+
+NewPlayerHud.post_update = function(l_2_0)
+	if l_2_0._hud_is_hidden then
+		return 
 	end
-	if alive(A0_2._player_unit) and A0_2._teammate_name_panel and alive(A0_2._teammate_name_panel:panel()) then
-		A0_2._teammate_name_panel:update(A0_2._dt)
+	if alive(l_2_0._player_unit) and l_2_0._weakspots_panel and alive(l_2_0._weakspots_panel:panel()) then
+		l_2_0._weakspots_panel:update(l_2_0._dt)
+	end
+	if alive(l_2_0._player_unit) and l_2_0._teammate_name_panel and alive(l_2_0._teammate_name_panel:panel()) then
+		l_2_0._teammate_name_panel:update(l_2_0._dt)
 	end
 end
-function NewPlayerHud._preload_textures(A0_3)
+
+NewPlayerHud._preload_textures = function(l_3_0)
 	Overlay:gui():preload_texture("gui_damage_indicator")
 	Overlay:gui():preload_texture("gui_weaponselection_gradient")
 	Overlay:gui():preload_texture("gui_coverdirection_icon")
@@ -88,947 +92,793 @@ function NewPlayerHud._preload_textures(A0_3)
 	Overlay:gui():preload_texture("security_camera_noise_3")
 	Overlay:gui():preload_texture("security_camera_noise_4")
 end
-function NewPlayerHud.destroy(A0_4)
-	if alive(A0_4._panel) then
-		A0_4._panel:clear()
+
+NewPlayerHud.destroy = function(l_4_0)
+	if alive(l_4_0._panel) then
+		l_4_0._panel:clear()
 	end
-	if A0_4._debug_text then
-		A0_4._debug_text:destroy()
+	if l_4_0._debug_text then
+		l_4_0._debug_text:destroy()
 	end
-	if A0_4._context_panel ~= nil then
-		managers.action_event:unregister_listener(A0_4)
+	if l_4_0._context_panel ~= nil then
+		managers.action_event:unregister_listener(l_4_0)
 	end
 end
-function NewPlayerHud.has_panel(A0_5)
-	local L1_6
-	L1_6 = A0_5._panel
-	return L1_6
+
+NewPlayerHud.has_panel = function(l_5_0)
+	return l_5_0._panel
 end
-function NewPlayerHud.release_gui_panel(A0_7)
-	if A0_7._panel then
-		A0_7._panel:clear()
+
+NewPlayerHud.release_gui_panel = function(l_6_0)
+	if l_6_0._panel then
+		l_6_0._panel:clear()
 	end
-	A0_7._panel = nil
+	l_6_0._panel = nil
 end
-function NewPlayerHud.set_gui_panel(A0_8, A1_9, A2_10)
-	A0_8._user_viewport = A2_10
-	A0_8._last_frame_battle_area_timer = -1
-	A0_8._panel = A1_9:panel({
-		name = "root_panel",
-		valign = "grow",
-		halign = "grow"
-	})
-	A0_8._panel:set_size(A1_9:size())
-	A0_8._safe_panel = A0_8._panel:panel({
-		name = "safe_panel",
-		valign = "grow",
-		halign = "grow"
-	})
-	A0_8._safe_panel:set_shape(managers.menu:ingame_gui():safe_rect().x, managers.menu:ingame_gui():safe_rect().y, managers.menu:ingame_gui():safe_rect().w, managers.menu:ingame_gui():safe_rect().h)
-	A0_8._weapon_selection_panel = WeaponSelectionPanel:new(A0_8._panel, A0_8._player_unit, A0_8._inventory_icons)
-	A0_8._health_panel = HealthPanel:new(A0_8._panel, A0_8._safe_panel, A0_8._player_unit)
-	A0_8._hurt_direction_indicator_panel = HurtDirectionIndicatorPanel:new(A0_8._panel, A0_8._player_unit)
-	A0_8._next_cover_indicator_panel = NextCoverIndicatorPanel:new(A0_8._panel, A0_8._player_unit)
-	A0_8._reticule_panel = ReticulePanel:new(A0_8._panel, A0_8._player_unit)
-	A0_8._stick_direction_panel = StickDirectionPanel:new(A0_8._panel, A0_8._player_unit)
-	A0_8._context_panel = ContextPanel:new(A0_8._safe_panel, A0_8._player_unit)
-	A0_8._ammo_panel = AmmoPanel:new(A0_8._safe_panel, A0_8._player_unit)
-	A0_8._weakspots_panel = WeakspotsPanel:new(A0_8._panel, A0_8._player_unit, A0_8._user_viewport)
-	A0_8._dust_panel = DustPanel:new(A0_8._panel, A0_8._player_unit)
-	A0_8._gun_flash_panel = FlashPanel:new(A0_8._panel, A0_8._player_unit)
-	A0_8._noice = Menu2DCameraNoise:new(A0_8._panel, A0_8._player_unit)
-	A0_8._noice:start(true, "ingame")
-	A0_8._battle_area_panel = BattleAreaPanel:new(A0_8._safe_panel, A0_8._player_unit)
-	A0_8._teammate_name_panel = TeammateNamePanel:new(A0_8._panel, A0_8._player_unit, A0_8._user_viewport)
-	A0_8._debug_text = DebugText:new(A0_8._safe_panel:panel({
-		y = A0_8._safe_panel:height() * 0.65
-	}))
-	A0_8._overheat_hud = OverHeatHud:new(A0_8._safe_panel, A0_8._player_unit, true, true)
-	managers.action_event:register_listener(A0_8, A0_8._player_unit, A0_8._player_unit)
-	A0_8:_hide_player_hud()
-	A0_8._is_split_screen = HudUtility.is_split_screen()
-	A0_8:_set_localizer_mapping()
+
+NewPlayerHud.set_gui_panel = function(l_7_0, l_7_1, l_7_2)
+	l_7_0._user_viewport = l_7_2
+	l_7_0._last_frame_battle_area_timer = -1
+	local l_7_3, l_7_4 = l_7_1:panel, l_7_1
+	local l_7_5 = {}
+	l_7_5.name = "root_panel"
+	l_7_5.valign = "grow"
+	l_7_5.halign = "grow"
+	l_7_3 = l_7_3(l_7_4, l_7_5)
+	l_7_0._panel = l_7_3
+	l_7_3 = l_7_0._panel
+	l_7_3, l_7_4 = l_7_3:set_size, l_7_3
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_3(l_7_4, l_7_5)
+	l_7_3 = managers
+	l_7_3 = l_7_3.menu
+	l_7_3, l_7_4 = l_7_3:ingame_gui, l_7_3
+	l_7_3 = l_7_3(l_7_4)
+	l_7_3, l_7_4 = l_7_3:safe_rect, l_7_3
+	l_7_3 = l_7_3(l_7_4)
+	l_7_4 = l_7_0._panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:panel
+	local l_7_6 = {}
+	l_7_6.name = "safe_panel"
+	l_7_6.valign = "grow"
+	l_7_6.halign = "grow"
+	l_7_4 = l_7_4(l_7_5, l_7_6)
+	l_7_0._safe_panel = l_7_4
+	l_7_4 = l_7_0._safe_panel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:set_shape
+	l_7_6 = l_7_3.x
+	l_7_4(l_7_5, l_7_6, l_7_3.y, l_7_3.w, l_7_3.h)
+	l_7_4 = WeaponSelectionPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit, l_7_0._inventory_icons)
+	l_7_0._weapon_selection_panel = l_7_4
+	l_7_4 = HealthPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._safe_panel, l_7_0._player_unit)
+	l_7_0._health_panel = l_7_4
+	l_7_4 = HurtDirectionIndicatorPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._hurt_direction_indicator_panel = l_7_4
+	l_7_4 = NextCoverIndicatorPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._next_cover_indicator_panel = l_7_4
+	l_7_4 = ReticulePanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._reticule_panel = l_7_4
+	l_7_4 = StickDirectionPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._stick_direction_panel = l_7_4
+	l_7_4 = ContextPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._safe_panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._context_panel = l_7_4
+	l_7_4 = AmmoPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._safe_panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._ammo_panel = l_7_4
+	l_7_4 = WeakspotsPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit, l_7_0._user_viewport)
+	l_7_0._weakspots_panel = l_7_4
+	l_7_4 = DustPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._dust_panel = l_7_4
+	l_7_4 = FlashPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._gun_flash_panel = l_7_4
+	l_7_4 = Menu2DCameraNoise
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._noice = l_7_4
+	l_7_4 = l_7_0._noice
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:start
+	l_7_6 = true
+	l_7_4(l_7_5, l_7_6, "ingame")
+	l_7_4 = BattleAreaPanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._safe_panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit)
+	l_7_0._battle_area_panel = l_7_4
+	l_7_4 = TeammateNamePanel
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._panel
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_0._player_unit, l_7_0._user_viewport)
+	l_7_0._teammate_name_panel = l_7_4
+	l_7_4 = DebugText
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	l_7_6 = l_7_0._safe_panel
+	local l_7_7 = l_7_6
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_7 = .end
+	local l_7_8 = nil
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_7, l_7_8)
+	l_7_0._debug_text = l_7_4
+	l_7_4 = OverHeatHud
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:new
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_7 = l_7_0._player_unit
+	l_7_8 = true
+	l_7_4 = l_7_4(l_7_5, l_7_6, l_7_7, l_7_8, true)
+	l_7_0._overheat_hud = l_7_4
+	l_7_4 = managers
+	l_7_4 = l_7_4.action_event
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_4:register_listener
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_7 = l_7_0._player_unit
+	l_7_8 = l_7_0._player_unit
+	l_7_4(l_7_5, l_7_6, l_7_7, l_7_8)
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_0:_hide_player_hud
+	l_7_4(l_7_5)
+	l_7_4 = HudUtility
+	l_7_4 = l_7_4.is_split_screen
+	l_7_4 = l_7_4()
+	l_7_0._is_split_screen = l_7_4
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_7_4 = l_7_0:_set_localizer_mapping
+	l_7_4(l_7_5)
 end
-function NewPlayerHud.update(A0_11, A1_12, A2_13, A3_14)
-	A0_11._dt = A3_14
-	A0_11._t = A2_13
-	if A0_11:has_panel() then
-		if managers.game:is_paused() or managers.worldcamera:current_world_camera() then
-			if not A0_11._hud_is_hidden then
-				Application:debug("hiding hud for ", A0_11._player_unit)
-				A0_11:_hide_player_hud()
+
+NewPlayerHud.update = function(l_8_0, l_8_1, l_8_2, l_8_3)
+	l_8_0._dt = l_8_3
+	l_8_0._t = l_8_2
+	if l_8_0:has_panel() then
+		if (managers.game:is_paused() or managers.worldcamera:current_world_camera()) and not l_8_0._hud_is_hidden then
+			Application:debug("hiding hud for ", l_8_0._player_unit)
+			l_8_0:_hide_player_hud()
+		end
+		return 
+		l_8_0:_show_player_hud()
+		if not l_8_0._player_data.on_destroyed_rail_vehicle then
+			l_8_0:_update_weapon_selection_panel(l_8_3)
+			l_8_0:_update_hurt_direction_indicator_panel(l_8_3)
+			l_8_0:_update_next_cover_indicator_panel(l_8_3)
+			l_8_0:_update_reticule_panel(l_8_3)
+			l_8_0:_update_context_panel(l_8_2, l_8_3)
+			l_8_0:_update_ammo_panel(l_8_2, l_8_3)
+			l_8_0:_update_dust_panel(l_8_3)
+			l_8_0:_update_stick_direction_panel(l_8_3)
+			l_8_0._debug_text:update(l_8_3)
+			l_8_0:_update_subtitles_font_size(l_8_3)
+			l_8_0:_update_gun_flash_panel(l_8_3)
+			l_8_0:_update_noice(l_8_3)
+			l_8_0:_update_battle_area_panel(l_8_3)
+		else
+			l_8_0:_hide_player_hud()
+		end
+		l_8_0:_update_health_panel(l_8_2, l_8_3)
+	end
+end
+
+NewPlayerHud._update_battle_area_panel = function(l_9_0, l_9_1)
+	if l_9_0._battle_area_panel:next_update(l_9_1) then
+		local l_9_2 = l_9_0._player_data.has_left_battle_area_timer
+		local l_9_3 = l_9_0._player_data.has_left_battle_area_time_out
+		if l_9_2 ~= -1 or l_9_3 then
+			if not l_9_0._battle_area_panel:visible() then
+				l_9_0._battle_area_panel:show()
 			end
-			return
-		end
-		A0_11:_show_player_hud()
-		if not A0_11._player_data.on_destroyed_rail_vehicle then
-			A0_11:_update_weapon_selection_panel(A3_14)
-			A0_11:_update_hurt_direction_indicator_panel(A3_14)
-			A0_11:_update_next_cover_indicator_panel(A3_14)
-			A0_11:_update_reticule_panel(A3_14)
-			A0_11:_update_context_panel(A2_13, A3_14)
-			A0_11:_update_ammo_panel(A2_13, A3_14)
-			A0_11:_update_dust_panel(A3_14)
-			A0_11:_update_stick_direction_panel(A3_14)
-			A0_11._debug_text:update(A3_14)
-			A0_11:_update_subtitles_font_size(A3_14)
-			A0_11:_update_gun_flash_panel(A3_14)
-			A0_11:_update_noice(A3_14)
-			A0_11:_update_battle_area_panel(A3_14)
-		else
-			A0_11:_hide_player_hud()
-		end
-		A0_11:_update_health_panel(A2_13, A3_14)
-	end
-end
-function NewPlayerHud._update_battle_area_panel(A0_15, A1_16)
-	if A0_15._battle_area_panel:next_update(A1_16) then
-		if A0_15._player_data.has_left_battle_area_timer ~= -1 or A0_15._player_data.has_left_battle_area_time_out then
-			if not A0_15._battle_area_panel:visible() then
-				A0_15._battle_area_panel:show()
-			end
-			A0_15._battle_area_panel:update(A1_16)
-		elseif A0_15._battle_area_panel:visible() then
-			A0_15._battle_area_panel:hide()
-			A0_15._battle_area_panel:update(A1_16)
-		else
-			A0_15._battle_area_panel:use_low_frequency_update()
-		end
-	end
-end
-function NewPlayerHud._update_weapon_selection_panel(A0_17, A1_18)
-	if A0_17._weapon_selection_panel:next_update(A1_18) then
-		if A0_17._player_data.hud_inventory_show and not A0_17._player_data._in_stationary_weapon then
-			if not A0_17._weapon_selection_panel:visible() then
-				A0_17._weapon_selection_panel:show()
-			end
-			A0_17._weapon_selection_panel:update(A1_18, true)
-		elseif A0_17._weapon_selection_panel:visible() then
-			A0_17._weapon_selection_panel:hide()
-			A0_17._weapon_selection_panel:update(A1_18, false)
-		else
-			A0_17._weapon_selection_panel:use_low_frequency_update()
-		end
-	end
-end
-function NewPlayerHud._update_hurt_direction_indicator_panel(A0_19, A1_20)
-	local L2_21, L3_22
-	L2_21 = A0_19._hurt_direction_indicator_panel
-	L3_22 = L2_21
-	L2_21 = L2_21.next_update
-	L2_21 = L2_21(L3_22, A1_20)
-	if L2_21 then
-		L2_21, L3_22 = nil, nil
-		if A0_19._player_data.on_rail_vehicle and tweak_data.player.new_hud.hurt_direction_indicator_panel.USE_HURT_DIRECTION_ON_RAIL_VEHICLE then
-			L2_21 = A0_19._player_data.on_rail_vehicle:damage()._time_since_damage
-			L3_22 = A0_19._player_data.on_rail_vehicle:damage()._last_hit_direction
-		else
-			L2_21 = A0_19._player_data.time_since_damage
-			L3_22 = A0_19._player_data.last_hit_direction
-		end
-		if L2_21 and L2_21 < tweak_data.player.hud.DAMAGE_INDICATOR_STAY_TIME then
-			A0_19._hurt_direction_indicator_panel:update(A1_20, L2_21, L3_22)
-		elseif A0_19._hurt_direction_indicator_panel:visible() then
-			A0_19._hurt_direction_indicator_panel:update(A1_20)
-		else
-			A0_19._hurt_direction_indicator_panel:use_low_frequency_update()
-		end
-	end
-end
-function NewPlayerHud._update_next_cover_indicator_panel(A0_23, A1_24)
-	if A0_23._next_cover_indicator_panel:next_update(A1_24) then
-		if A0_23._player_data.quick_move_info_index > 0 and not A0_23._player_data.is_precision_aiming then
-			A0_23._next_cover_indicator_panel:show()
-			A0_23._next_cover_indicator_panel:update(A1_24)
-		elseif A0_23._next_cover_indicator_panel:visible() then
-			A0_23._next_cover_indicator_panel:hide()
-			A0_23._next_cover_indicator_panel:update(A1_24)
-		else
-			A0_23._next_cover_indicator_panel:use_low_frequency_update()
-		end
-	end
-end
-function NewPlayerHud._update_reticule_panel(A0_25, A1_26)
-	if A0_25._player_data.is_precision_aiming and not A0_25._reticule_panel:visible() then
-		A0_25._reticule_panel:use_high_frequency_update()
-	end
-	if A0_25._reticule_panel:next_update(A1_26) then
-		if A0_25._player_data.is_precision_aiming or A0_25._player_data._in_stationary_weapon or A0_25:_on_rail_vehicle() then
-			A0_25:_update_reticule_type()
-			A0_25._reticule_panel:show()
-			A0_25._reticule_panel:update(A1_26, A0_25._player_data.aim_target_unit)
-		elseif A0_25._reticule_panel:visible() then
-			A0_25._reticule_panel:hide()
-			A0_25._reticule_panel:update(A1_26, A0_25._player_data.aim_target_unit)
-		else
-			A0_25._reticule_panel:use_low_frequency_update()
-		end
-	end
-end
-function NewPlayerHud._update_weakspots_panel(A0_27, A1_28)
-	if A0_27._player_data.weakspot_unit_list and #A0_27._player_data.weakspot_unit_list > 0 then
-		A0_27._weakspots_panel:show()
-		A0_27._weakspots_panel:update(A1_28)
-	elseif A0_27._weakspots_panel:visible() then
-		A0_27._weakspots_panel:hide()
-	end
-end
-function NewPlayerHud._update_reticule_type(A0_29)
-	local L1_30
-	if A0_29._player_unit:base():weapon() and A0_29._player_unit:base():weapon():hud() then
-		L1_30 = A0_29._player_unit:base():weapon():hud()
-	end
-	if L1_30 then
-		if L1_30:reticule_type() == "circular_trajectory_reticule" then
-			A0_29._reticule_panel:use_circular_trajectory_reticule()
-		elseif L1_30:reticule_type() == "trajectory_reticule" then
-			A0_29._reticule_panel:use_trajectory_reticule()
-		else
-			A0_29._reticule_panel:use_circle_reticule()
+			l_9_0._battle_area_panel:update(l_9_1)
 		end
 	else
-		A0_29._reticule_panel:use_circle_reticule()
+		if l_9_0._battle_area_panel:visible() then
+			l_9_0._battle_area_panel:hide()
+			l_9_0._battle_area_panel:update(l_9_1)
+		end
+	else
+		l_9_0._battle_area_panel:use_low_frequency_update()
 	end
 end
-function NewPlayerHud._update_context_panel(A0_31, A1_32, A2_33)
-	local L3_34, L4_35, L5_36, L6_37, L7_38
-	L3_34 = A0_31._player_data
-	L3_34 = L3_34.interact_will_only_pick_up_ammo
-	if L3_34 then
-		L3_34 = A0_31._context_panel
-		L4_35 = L3_34
-		L3_34 = L3_34.use_high_frequency_update
-		L3_34(L4_35)
+
+NewPlayerHud._update_weapon_selection_panel = function(l_10_0, l_10_1)
+	if l_10_0._weapon_selection_panel:next_update(l_10_1) then
+		if l_10_0._player_data.hud_inventory_show and not l_10_0._player_data._in_stationary_weapon then
+			if not l_10_0._weapon_selection_panel:visible() then
+				l_10_0._weapon_selection_panel:show()
+			end
+			l_10_0._weapon_selection_panel:update(l_10_1, true)
+		end
+	else
+		if l_10_0._weapon_selection_panel:visible() then
+			l_10_0._weapon_selection_panel:hide()
+			l_10_0._weapon_selection_panel:update(l_10_1, false)
+		end
+	else
+		l_10_0._weapon_selection_panel:use_low_frequency_update()
 	end
-	L3_34 = A0_31._context_panel
-	L4_35 = L3_34
-	L3_34 = L3_34.next_update
-	L5_36 = A2_33
-	L3_34 = L3_34(L4_35, L5_36)
-	if L3_34 then
-		L3_34 = A0_31._is_split_screen
-		if L3_34 then
-			L3_34 = A0_31._weapon_selection_panel
-			L4_35 = L3_34
-			L3_34 = L3_34.visible
-			L3_34 = L3_34(L4_35)
-			if not L3_34 then
-				L3_34 = A0_31._last_frame_battle_area_timer
-			elseif L3_34 > 0 then
-				L3_34 = A0_31._context_panel
-				L4_35 = L3_34
-				L3_34 = L3_34.is_visible
-				L5_36 = "cover"
-				L3_34 = L3_34(L4_35, L5_36)
-				if L3_34 then
-					L3_34 = A0_31._context_panel
-					L4_35 = L3_34
-					L3_34 = L3_34.instant_hide
-					L5_36 = "cover"
-					L3_34(L4_35, L5_36)
-				end
-				L3_34 = A0_31._context_panel
-				L4_35 = L3_34
-				L3_34 = L3_34.is_visible
-				L5_36 = "action"
-				L3_34 = L3_34(L4_35, L5_36)
-				if L3_34 then
-					L3_34 = A0_31._context_panel
-					L4_35 = L3_34
-					L3_34 = L3_34.instant_hide
-					L5_36 = "action"
-					L3_34(L4_35, L5_36)
-				end
-				L3_34 = A0_31._context_panel
-				L4_35 = L3_34
-				L3_34 = L3_34.is_visible
-				L5_36 = "message"
-				L3_34 = L3_34(L4_35, L5_36)
-				if L3_34 then
-					L3_34 = A0_31._context_panel
-					L4_35 = L3_34
-					L3_34 = L3_34.instant_hide
-					L5_36 = "message"
-					L3_34(L4_35, L5_36)
-				end
-				return
+end
+
+NewPlayerHud._update_hurt_direction_indicator_panel = function(l_11_0, l_11_1)
+	if l_11_0._hurt_direction_indicator_panel:next_update(l_11_1) then
+		local l_11_2, l_11_3 = nil, nil
+		if l_11_0._player_data.on_rail_vehicle and tweak_data.player.new_hud.hurt_direction_indicator_panel.USE_HURT_DIRECTION_ON_RAIL_VEHICLE then
+			local l_11_4 = l_11_0._player_data.on_rail_vehicle:damage()
+			l_11_2 = l_11_4._time_since_damage
+			l_11_3 = l_11_4._last_hit_direction
+		else
+			l_11_2 = l_11_0._player_data.time_since_damage
+			l_11_3 = l_11_0._player_data.last_hit_direction
+		end
+		if l_11_2 and l_11_2 < tweak_data.player.hud.DAMAGE_INDICATOR_STAY_TIME then
+			l_11_0._hurt_direction_indicator_panel:update(l_11_1, l_11_2, l_11_3)
+		end
+	else
+		if l_11_0._hurt_direction_indicator_panel:visible() then
+			l_11_0._hurt_direction_indicator_panel:update(l_11_1)
+		end
+	else
+		l_11_0._hurt_direction_indicator_panel:use_low_frequency_update()
+	end
+end
+
+NewPlayerHud._update_next_cover_indicator_panel = function(l_12_0, l_12_1)
+	if l_12_0._next_cover_indicator_panel:next_update(l_12_1) then
+		local l_12_2 = l_12_0._player_data.quick_move_info_index
+		if l_12_2 > 0 and not l_12_0._player_data.is_precision_aiming then
+			l_12_0._next_cover_indicator_panel:show()
+			l_12_0._next_cover_indicator_panel:update(l_12_1)
+		end
+	else
+		if l_12_0._next_cover_indicator_panel:visible() then
+			l_12_0._next_cover_indicator_panel:hide()
+			l_12_0._next_cover_indicator_panel:update(l_12_1)
+		end
+	else
+		l_12_0._next_cover_indicator_panel:use_low_frequency_update()
+	end
+end
+
+NewPlayerHud._update_reticule_panel = function(l_13_0, l_13_1)
+	if l_13_0._player_data.is_precision_aiming and not l_13_0._reticule_panel:visible() then
+		l_13_0._reticule_panel:use_high_frequency_update()
+	end
+	if l_13_0._reticule_panel:next_update(l_13_1) then
+		if l_13_0._player_data.is_precision_aiming or l_13_0._player_data._in_stationary_weapon or l_13_0:_on_rail_vehicle() then
+			l_13_0:_update_reticule_type()
+			l_13_0._reticule_panel:show()
+			l_13_0._reticule_panel:update(l_13_1, l_13_0._player_data.aim_target_unit)
+		end
+	else
+		if l_13_0._reticule_panel:visible() then
+			l_13_0._reticule_panel:hide()
+			l_13_0._reticule_panel:update(l_13_1, l_13_0._player_data.aim_target_unit)
+		end
+	else
+		l_13_0._reticule_panel:use_low_frequency_update()
+	end
+end
+
+NewPlayerHud._update_weakspots_panel = function(l_14_0, l_14_1)
+	if l_14_0._player_data.weakspot_unit_list and #l_14_0._player_data.weakspot_unit_list > 0 then
+		l_14_0._weakspots_panel:show()
+		l_14_0._weakspots_panel:update(l_14_1)
+	else
+		if l_14_0._weakspots_panel:visible() then
+			l_14_0._weakspots_panel:hide()
+		end
+	end
+end
+
+NewPlayerHud._update_reticule_type = function(l_15_0)
+	local l_15_1 = nil
+	if l_15_0._player_unit:base():weapon() and l_15_0._player_unit:base():weapon():hud() then
+		l_15_1 = l_15_0._player_unit:base():weapon():hud()
+	end
+	if l_15_1 then
+		if l_15_1:reticule_type() == "circular_trajectory_reticule" then
+			l_15_0._reticule_panel:use_circular_trajectory_reticule()
+		elseif l_15_1:reticule_type() == "trajectory_reticule" then
+			l_15_0._reticule_panel:use_trajectory_reticule()
+		else
+			l_15_0._reticule_panel:use_circle_reticule()
+		end
+	else
+		l_15_0._reticule_panel:use_circle_reticule()
+	end
+end
+
+NewPlayerHud._update_context_panel = function(l_16_0, l_16_1, l_16_2)
+	if l_16_0._player_data.interact_will_only_pick_up_ammo then
+		l_16_0._context_panel:use_high_frequency_update()
+	end
+	if l_16_0._context_panel:next_update(l_16_2) then
+		if l_16_0._is_split_screen and (l_16_0._weapon_selection_panel:visible() or l_16_0._last_frame_battle_area_timer > 0) then
+			if l_16_0._context_panel:is_visible("cover") then
+				l_16_0._context_panel:instant_hide("cover")
+			end
+			if l_16_0._context_panel:is_visible("action") then
+				l_16_0._context_panel:instant_hide("action")
+			end
+			if l_16_0._context_panel:is_visible("message") then
+				l_16_0._context_panel:instant_hide("message")
+			end
+			return 
+		end
+		local l_16_3 = false
+		local l_16_4 = l_16_0._player_data.current_interactable
+		if l_16_0._player_data.can_enter_cover then
+			l_16_0._context_panel:display("cover", "context_cover_new")
+			l_16_3 = true
+		else
+			if l_16_0._context_panel:is_visible("cover") then
+				l_16_0._context_panel:hide("cover")
+				l_16_3 = true
 			end
 		end
-		L3_34 = false
-		L4_35 = A0_31._player_data
-		L4_35 = L4_35.current_interactable
-		L5_36 = A0_31._player_data
-		L5_36 = L5_36.can_enter_cover
-		if L5_36 then
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.display
-			L7_38 = "cover"
-			L5_36(L6_37, L7_38, "context_cover_new")
-			L3_34 = true
-		else
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.is_visible
-			L7_38 = "cover"
-			L5_36 = L5_36(L6_37, L7_38)
-			if L5_36 then
-				L5_36 = A0_31._context_panel
-				L6_37 = L5_36
-				L5_36 = L5_36.hide
-				L7_38 = "cover"
-				L5_36(L6_37, L7_38)
-				L3_34 = true
-			end
-		end
-		L5_36 = alive
-		L6_37 = L4_35
-		L5_36 = L5_36(L6_37)
-		if L5_36 then
-			L5_36 = A0_31._player_data
-			L5_36 = L5_36.interact_will_only_pick_up_ammo
-			if not L5_36 then
-				L5_36 = A0_31._player_data
-				L5_36 = L5_36.in_cover
-				if not L5_36 then
-					L5_36 = A0_31._player_data
-					L5_36 = L5_36.quick_moving
-					if not L5_36 then
-						L5_36 = nil
-						L7_38 = L4_35
-						L6_37 = L4_35.hud
-						L6_37 = L6_37(L7_38)
-						if L6_37 then
-							L7_38 = L6_37.small_texture_name
-							L7_38 = L7_38(L6_37)
-							L5_36 = L7_38
-						else
-							L7_38 = L4_35.name
-							L7_38 = L7_38(L4_35)
-							L5_36 = L7_38
-						end
-						L7_38 = A0_31._player_data
-						L7_38 = L7_38.interact_will_only_pick_up_ammo
-						if not L7_38 then
-							L7_38 = A0_31._player_data
-							L7_38 = L7_38.interact_use
-							if L7_38 then
-								L7_38 = A0_31._stationary_weapon_texture
-								if L7_38 then
-									L7_38 = A0_31._stationary_weapon_texture
-								elseif L7_38 ~= L5_36 then
-									L7_38 = Localizer
-									L7_38 = L7_38.lookup
-									L7_38 = L7_38(L7_38, L5_36)
-									A0_31._stationary_weapon_string = L7_38
-									A0_31._stationary_weapon_texture = L5_36
-								end
-								L7_38 = A0_31._context_panel
-								L7_38 = L7_38.display
-								L7_38(L7_38, "action", "context_use_new", A0_31._stationary_weapon_string)
-								L7_38 = A0_31._context_panel
-								L7_38 = L7_38.set_minimum_display_time
-								L7_38(L7_38, "action", 0, A1_32)
-							else
-								L7_38 = A0_31._context_panel
-								L7_38 = L7_38.display
-								L7_38(L7_38, "action", "context_pick_up_new", L5_36)
-								L7_38 = A0_31._context_panel
-								L7_38 = L7_38.set_minimum_display_time
-								L7_38(L7_38, "action", 0, A1_32)
-							end
-						end
-						L3_34 = true
-					end
-				end
-			end
-		else
-			L5_36 = A0_31._player_data
-			L5_36 = L5_36.look_at_position
-			if L5_36 then
-				L5_36 = A0_31._context_panel
-				L6_37 = L5_36
-				L5_36 = L5_36.display
-				L7_38 = "action"
-				L5_36(L6_37, L7_38, "context_look_at_new")
-				L5_36 = A0_31._context_panel
-				L6_37 = L5_36
-				L5_36 = L5_36.set_minimum_display_time
-				L7_38 = "action"
-				L5_36(L6_37, L7_38, 0, A1_32)
-				L3_34 = true
+		if alive(l_16_4) and not l_16_0._player_data.interact_will_only_pick_up_ammo and not l_16_0._player_data.in_cover and not l_16_0._player_data.quick_moving then
+			local l_16_5 = nil
+			local l_16_6 = l_16_4:hud()
+			if l_16_6 then
+				l_16_5 = l_16_6:small_texture_name()
 			else
-				L5_36 = A0_31._player_data
-				L5_36 = L5_36.can_revive
-				if L5_36 then
-					L5_36 = A0_31._player_data
-					L5_36 = L5_36.is_down
-					if not L5_36 then
-						L5_36 = alive
-						L6_37 = A0_31._player_unit
-						L5_36 = L5_36(L6_37)
-						if L5_36 then
-							L5_36 = A0_31._player_data
-							L5_36 = L5_36.in_cover
-							if not L5_36 then
-								L5_36 = A0_31._player_data
-								L5_36 = L5_36.quick_moving
-								if not L5_36 then
-									L5_36 = A0_31._context_panel
-									L6_37 = L5_36
-									L5_36 = L5_36.display
-									L7_38 = "action"
-									L5_36(L6_37, L7_38, "context_revive_new")
-									L5_36 = A0_31._context_panel
-									L6_37 = L5_36
-									L5_36 = L5_36.set_minimum_display_time
-									L7_38 = "action"
-									L5_36(L6_37, L7_38, 0, A1_32)
-									L3_34 = true
-								end
-							end
-						end
+				l_16_5 = l_16_4:name()
+			end
+			if not l_16_0._player_data.interact_will_only_pick_up_ammo then
+				if l_16_0._player_data.interact_use then
+					if not l_16_0._stationary_weapon_texture or l_16_0._stationary_weapon_texture ~= l_16_5 then
+						l_16_0._stationary_weapon_string = Localizer:lookup(l_16_5)
+						l_16_0._stationary_weapon_texture = l_16_5
 					end
-				else
-					L5_36 = A0_31._player_data
-					L5_36 = L5_36._in_stationary_weapon
-					if L5_36 then
-						L5_36 = A0_31._stationary_weapon_texture
-						if L5_36 then
-							L5_36 = A0_31._context_panel
-							L6_37 = L5_36
-							L5_36 = L5_36.display
-							L7_38 = "action"
-							L5_36(L6_37, L7_38, "context_leave_new", A0_31._stationary_weapon_string)
-							L5_36 = A0_31._context_panel
-							L6_37 = L5_36
-							L5_36 = L5_36.set_minimum_display_time
-							L7_38 = "action"
-							L5_36(L6_37, L7_38, 5, A1_32)
-							A0_31._stationary_weapon_texture = nil
-							L3_34 = true
-						end
-					else
-						L5_36 = A0_31._context_panel
-						L6_37 = L5_36
-						L5_36 = L5_36.is_visible
-						L7_38 = "action"
-						L5_36 = L5_36(L6_37, L7_38)
-						if not L5_36 then
-							L5_36 = A0_31._context_panel
-							L6_37 = L5_36
-							L5_36 = L5_36.timed_out
-							L7_38 = "action"
-							L5_36 = L5_36(L6_37, L7_38)
-						elseif L5_36 then
-							L5_36 = A0_31._context_panel
-							L6_37 = L5_36
-							L5_36 = L5_36.hide
-							L7_38 = "action"
-							L5_36(L6_37, L7_38)
-							L3_34 = true
-						end
-					end
-				end
-			end
-		end
-		L5_36 = A0_31._ammo_queue_list
-		L5_36 = L5_36[1]
-		if L5_36 then
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.is_visible
-			L7_38 = "message"
-			L5_36 = L5_36(L6_37, L7_38)
-			if L5_36 then
-				L5_36 = A0_31._context_panel
-				L5_36 = L5_36._context_items
-				L5_36 = L5_36.message
-				L6_37 = L5_36
-				L5_36 = L5_36.wants_to_fade_out
-				L5_36 = L5_36(L6_37)
-				if L5_36 then
-					L5_36 = A0_31._context_panel
-					L5_36 = L5_36._context_items
-					L5_36 = L5_36.message
-					L5_36 = L5_36._alpha
-				end
-			elseif L5_36 < 0.1 then
-				L5_36 = TableAlgorithms
-				L5_36 = L5_36.count
-				L6_37 = A0_31._ammo_queue_list
-				L5_36 = L5_36(L6_37)
-				if L5_36 > 1 then
-					L6_37 = A0_31
-					L5_36 = A0_31.merge_duplicates_in_queue_list
-					L5_36(L6_37)
-				end
-				L5_36 = A0_31._ammo_queue_list
-				L5_36 = L5_36[1]
-				L5_36 = L5_36.ammo_icon_texture
-				L6_37 = A0_31._ammo_queue_list
-				L6_37 = L6_37[1]
-				L6_37 = L6_37.weapon_icon_texture
-				L7_38 = A0_31._ammo_queue_list
-				L7_38 = L7_38[1]
-				L7_38 = L7_38.bullets
-				if L5_36 then
-					A0_31._context_panel:display("message", "context_fill_ammo_new", L5_36, L7_38, L6_37)
-					A0_31._context_panel:set_minimum_display_time("message", 2, A0_31._t)
-				else
-					A0_31._context_panel:display("message", "context_fill_ammo_no_weapon_new", L6_37, L7_38)
-					A0_31._context_panel:set_minimum_display_time("message", 2, A0_31._t)
-				end
-				table.remove(A0_31._ammo_queue_list, 1)
-				L3_34 = true
-			end
-		end
-		L5_36 = A0_31._context_panel
-		L6_37 = L5_36
-		L5_36 = L5_36.is_visible
-		L7_38 = "message"
-		L5_36 = L5_36(L6_37, L7_38)
-		if not L5_36 then
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.timed_out
-			L7_38 = "message"
-			L5_36 = L5_36(L6_37, L7_38)
-		elseif L5_36 then
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.hide
-			L7_38 = "message"
-			L5_36(L6_37, L7_38)
-			L3_34 = true
-		end
-		if not L3_34 then
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.active_context
-			L5_36 = L5_36(L6_37)
-		else
-			if L5_36 then
-				L5_36 = A0_31._context_panel
-				L6_37 = L5_36
-				L5_36 = L5_36.update
-				L7_38 = A1_32
-				L5_36(L6_37, L7_38, A2_33)
-		end
-		else
-			L5_36 = A0_31._context_panel
-			L6_37 = L5_36
-			L5_36 = L5_36.use_low_frequency_update
-			L5_36(L6_37)
-		end
-	end
-end
-function NewPlayerHud.merge_duplicates_in_queue_list(A0_39)
-	local L1_40, L2_41, L3_42, L4_43, L5_44
-	L1_40 = TableAlgorithms
-	L1_40 = L1_40.count
-	L1_40 = L1_40(L2_41)
-	for L5_44 = 2, L1_40 do
-		if A0_39._ammo_queue_list[1].weapon_icon_texture == A0_39._ammo_queue_list[L5_44].weapon_icon_texture and A0_39._ammo_queue_list[1].ammo_icon_texture == A0_39._ammo_queue_list[L5_44].ammo_icon_texture then
-			A0_39._ammo_queue_list[1].bullets = A0_39._ammo_queue_list[1].bullets + A0_39._ammo_queue_list[L5_44].bullets
-			A0_39._ammo_queue_list[L5_44].bullets = 0
-		end
-	end
-	for L5_44 = L1_40, 1, -1 do
-		if A0_39._ammo_queue_list[L5_44].bullets == 0 then
-			table.remove(A0_39._ammo_queue_list, L5_44)
-		end
-	end
-end
-function NewPlayerHud.unit_ammo_fill(A0_45, A1_46, A2_47, A3_48)
-	local L4_49, L5_50, L6_51, L7_52
-	if A2_47 > 0 then
-		L4_49 = A3_48._unit
-		L5_50, L6_51, L7_52 = nil, nil, nil
-		if L4_49:hud() then
-			L5_50 = L4_49:hud():small_texture_name()
-		else
-			L5_50 = interactable:name()
-		end
-		if L4_49:base()._projectile_spawner then
-			L7_52 = L4_49:base()._projectile_spawner:hud()
-		end
-		if L7_52 then
-			L6_51 = L7_52:texture_name()
-		end
-		if L5_50 then
-			table.insert(A0_45._ammo_queue_list, {
-				weapon_icon_texture = L5_50,
-				ammo_icon_texture = L6_51,
-				bullets = A2_47
-			})
-		end
-	end
-end
-function NewPlayerHud._update_ammo_panel(A0_53, A1_54, A2_55)
-	local L3_56, L4_57, L5_58, L6_59, L7_60, L8_61, L9_62, L10_63, L11_64
-	L3_56 = A0_53._ammo_panel
-	L4_57 = L3_56
-	L3_56 = L3_56.next_update
-	L5_58 = A2_55
-	L3_56 = L3_56(L4_57, L5_58)
-	if L3_56 then
-		L3_56 = A0_53._player_unit
-		L4_57 = L3_56
-		L3_56 = L3_56.base
-		L3_56 = L3_56(L4_57)
-		L4_57 = L3_56
-		L3_56 = L3_56.weapon
-		L3_56 = L3_56(L4_57)
-		L5_58 = A0_53
-		L4_57 = A0_53._on_rail_vehicle
-		L4_57 = L4_57(L5_58)
-		if L4_57 then
-			L4_57 = A0_53._ammo_panel
-			L5_58 = L4_57
-			L4_57 = L4_57.visible
-			L4_57 = L4_57(L5_58)
-			if L4_57 then
-				L4_57 = A0_53._ammo_panel
-				L5_58 = L4_57
-				L4_57 = L4_57.hide
-				L4_57(L5_58)
-				L4_57 = A0_53._ammo_panel
-				L5_58 = L4_57
-				L4_57 = L4_57.update
-				L6_59 = A2_55
-				L4_57(L5_58, L6_59)
-			end
-			L5_58 = L3_56
-			L4_57 = L3_56.logic
-			L4_57 = L4_57(L5_58)
-			L5_58 = L4_57
-			L4_57 = L4_57.has_overheat
-			L4_57 = L4_57(L5_58)
-			if L4_57 then
-				L5_58 = L3_56
-				L4_57 = L3_56.logic
-				L4_57 = L4_57(L5_58)
-				L5_58 = L4_57
-				L4_57 = L4_57.show_overheat_hud
-				L4_57 = L4_57(L5_58)
-				if L4_57 then
-					L4_57 = A0_53._ammo_panel
-					L5_58 = L4_57
-					L4_57 = L4_57.use_high_frequency_update
-					L4_57(L5_58)
-					L4_57 = A0_53._overheat_hud
-					L5_58 = L4_57
-					L4_57 = L4_57.show
-					L6_59 = L3_56
-					L4_57(L5_58, L6_59)
-					L4_57 = A0_53._overheat_hud
-					L5_58 = L4_57
-					L4_57 = L4_57.update
-					L6_59 = A2_55
-					L4_57(L5_58, L6_59)
+					l_16_0._context_panel:display("action", "context_use_new", l_16_0._stationary_weapon_string)
+					l_16_0._context_panel:set_minimum_display_time("action", 0, l_16_1)
 				end
 			else
-				L4_57 = A0_53._overheat_hud
-				L5_58 = L4_57
-				L4_57 = L4_57.visible
-				L4_57 = L4_57(L5_58)
-				if L4_57 then
-					L4_57 = A0_53._overheat_hud
-					L5_58 = L4_57
-					L4_57 = L4_57.hide
-					L4_57(L5_58)
-					L4_57 = A0_53._overheat_hud
-					L5_58 = L4_57
-					L4_57 = L4_57.update
-					L6_59 = A2_55
-					L4_57(L5_58, L6_59)
-				else
-					L4_57 = A0_53._ammo_panel
-					L5_58 = L4_57
-					L4_57 = L4_57.use_low_frequency_update
-					L4_57(L5_58)
-				end
+				l_16_0._context_panel:display("action", "context_pick_up_new", l_16_5)
+				l_16_0._context_panel:set_minimum_display_time("action", 0, l_16_1)
 			end
-			return
-		end
-		L4_57 = A0_53._player_unit
-		L5_58 = L4_57
-		L4_57 = L4_57.base
-		L4_57 = L4_57(L5_58)
-		L5_58 = L4_57
-		L4_57 = L4_57.weapon_data
-		L4_57 = L4_57(L5_58)
-		if not L4_57 then
-			return
-		end
-		L6_59 = L4_57
-		L5_58 = L4_57.ammo_pool
-		L5_58 = L5_58(L6_59)
-		L7_60 = L4_57
-		L6_59 = L4_57.bullets_in_clip
-		L6_59 = L6_59(L7_60)
-		L7_60 = A0_53._player_data
-		L7_60 = L7_60.hud_inventory_secondary_active_slot
-		L8_61, L9_62, L10_63 = nil, nil, nil
-		if L7_60 then
-			L11_64 = A0_53._inventory
-			L11_64 = L11_64.item_by_index
-			L11_64 = L11_64(L11_64, L7_60)
-			L8_61 = L11_64
-			L11_64 = alive
-			L11_64 = L11_64(L8_61)
-			if L11_64 then
-				L11_64 = L8_61.weapon_data
-				L11_64 = L11_64(L8_61)
-				L9_62 = L11_64
-				L11_64 = L9_62.ammo_pool
-				L11_64 = L11_64(L9_62)
-				L10_63 = L11_64
+			l_16_3 = true
+		else
+			if l_16_0._player_data.look_at_position then
+				l_16_0._context_panel:display("action", "context_look_at_new")
+				l_16_0._context_panel:set_minimum_display_time("action", 0, l_16_1)
+				l_16_3 = true
+			end
+		else
+			if l_16_0._player_data.can_revive and not l_16_0._player_data.is_down and alive(l_16_0._player_unit) and not l_16_0._player_data.in_cover and not l_16_0._player_data.quick_moving then
+				l_16_0._context_panel:display("action", "context_revive_new")
+				l_16_0._context_panel:set_minimum_display_time("action", 0, l_16_1)
+				l_16_3 = true
+			end
+		else
+			if l_16_0._player_data._in_stationary_weapon and l_16_0._stationary_weapon_texture then
+				l_16_0._context_panel:display("action", "context_leave_new", l_16_0._stationary_weapon_string)
+				l_16_0._context_panel:set_minimum_display_time("action", 5, l_16_1)
+				l_16_0._stationary_weapon_texture = nil
+				l_16_3 = true
+			end
+		else
+			if l_16_0._context_panel:is_visible("action") or l_16_0._context_panel:timed_out("action") then
+				l_16_0._context_panel:hide("action")
+				l_16_3 = true
 			end
 		end
-		L11_64 = A0_53._player_data
-		L11_64 = L11_64.firing
-		if A0_53._previous_bullets_in_clip and L6_59 ~= A0_53._previous_bullets_in_clip then
-			L11_64 = true
-		elseif A0_53._player_data.throwing_grenade then
-			L11_64 = true
+		if l_16_0._ammo_queue_list[1] and (not l_16_0._context_panel:is_visible("message") or not l_16_0._context_panel._context_items.message:wants_to_fade_out() or l_16_0._context_panel._context_items.message._alpha < 0.1) then
+			if TableAlgorithms.count(l_16_0._ammo_queue_list) > 1 then
+				l_16_0:merge_duplicates_in_queue_list()
+			end
+			local l_16_7 = l_16_0._ammo_queue_list[1].ammo_icon_texture
+			local l_16_8 = l_16_0._ammo_queue_list[1].weapon_icon_texture
+			local l_16_9 = l_16_0._ammo_queue_list[1].bullets
+			if l_16_7 then
+				l_16_0._context_panel:display("message", "context_fill_ammo_new", l_16_7, l_16_9, l_16_8)
+				l_16_0._context_panel:set_minimum_display_time("message", 2, l_16_0._t)
+			else
+				l_16_0._context_panel:display("message", "context_fill_ammo_no_weapon_new", l_16_8, l_16_9)
+				l_16_0._context_panel:set_minimum_display_time("message", 2, l_16_0._t)
+			end
+			table.remove(l_16_0._ammo_queue_list, 1)
+			l_16_3 = true
 		end
-		if A0_53._primary_ammo and L5_58 ~= A0_53._primary_ammo then
-		else
+		if l_16_0._context_panel:is_visible("message") or l_16_0._context_panel:timed_out("message") then
+			l_16_0._context_panel:hide("message")
+			l_16_3 = true
 		end
-		if A0_53._player_data.switching_weapon then
-		else
+		if l_16_3 or l_16_0._context_panel:active_context() then
+			l_16_0._context_panel:update(l_16_1, l_16_2)
 		end
-		A0_53._previous_bullets_in_clip = L6_59
-		A0_53._primary_ammo = L5_58
-		A0_53._secondary_ammo = L10_63
-		A0_53._previous_secondary_weapon_slot = L7_60
-		A0_53._ammo_panel_showing = false
-		if A0_53._player_data.is_precision_aiming or L11_64 or true or true or A0_53._player_data.reloading or A0_53._player_data.hud_inventory_show then
-			A0_53._ammo_panel:show()
-			A0_53._ammo_panel:update(A1_54, A2_55, L3_56, L8_61, L11_64)
-			A0_53._ammo_panel_showing = true
-		elseif A0_53._ammo_panel:visible() then
-			A0_53._ammo_panel:hide()
-			A0_53._ammo_panel:update(A1_54, A2_55)
-		else
-			A0_53._ammo_panel:use_low_frequency_update()
+	else
+		l_16_0._context_panel:use_low_frequency_update()
+	end
+end
+
+NewPlayerHud.merge_duplicates_in_queue_list = function(l_17_0)
+	local l_17_1 = TableAlgorithms.count(l_17_0._ammo_queue_list)
+	for l_17_5 = 2, l_17_1 do
+		if l_17_0._ammo_queue_list[1].weapon_icon_texture == l_17_0._ammo_queue_list[l_17_5].weapon_icon_texture and l_17_0._ammo_queue_list[1].ammo_icon_texture == l_17_0._ammo_queue_list[l_17_5].ammo_icon_texture then
+			l_17_0._ammo_queue_list[1].bullets = l_17_0._ammo_queue_list[1].bullets + l_17_0._ammo_queue_list[l_17_5].bullets
+			l_17_0._ammo_queue_list[l_17_5].bullets = 0
+		end
+	end
+	for l_17_9 = l_17_1, 1, -1 do
+		if l_17_0._ammo_queue_list[l_17_9].bullets == 0 then
+			table.remove(l_17_0._ammo_queue_list, l_17_9)
 		end
 	end
 end
-function NewPlayerHud._update_health_panel(A0_65, A1_66, A2_67)
-	if A0_65._health_panel:next_update(A2_67) then
-		if A0_65._player_data.on_rail_vehicle then
-			if A0_65._player_data.rail_player_escort_unit then
-				if alive(A0_65._player_data.rail_player_escort_unit) then
-				else
+
+NewPlayerHud.unit_ammo_fill = function(l_18_0, l_18_1, l_18_2, l_18_3)
+	if l_18_2 > 0 then
+		local l_18_4 = l_18_3._unit
+		local l_18_5, l_18_6, l_18_7 = nil, nil, nil
+		local l_18_8 = l_18_4:hud()
+		if l_18_8 then
+			l_18_5 = l_18_8:small_texture_name()
+		else
+			l_18_5 = interactable:name()
+		end
+		if l_18_4:base()._projectile_spawner then
+			l_18_7 = l_18_4:base()._projectile_spawner:hud()
+		end
+		if l_18_7 then
+			l_18_6 = l_18_7:texture_name()
+		end
+	if l_18_5 then
+		end
+		local l_18_9 = table.insert
+		local l_18_10 = l_18_0._ammo_queue_list
+		local l_18_11 = {}
+		l_18_11.weapon_icon_texture = l_18_5
+		l_18_11.ammo_icon_texture = l_18_6
+		l_18_11.bullets = l_18_2
+		l_18_9(l_18_10, l_18_11)
+	end
+end
+
+NewPlayerHud._update_ammo_panel = function(l_19_0, l_19_1, l_19_2)
+	if l_19_0._ammo_panel:next_update(l_19_2) then
+		local l_19_3 = l_19_0._player_unit:base():weapon()
+		if l_19_0:_on_rail_vehicle() then
+			if l_19_0._ammo_panel:visible() then
+				l_19_0._ammo_panel:hide()
+				l_19_0._ammo_panel:update(l_19_2)
+			end
+			if l_19_3:logic():has_overheat() and l_19_3:logic():show_overheat_hud() then
+				l_19_0._ammo_panel:use_high_frequency_update()
+				l_19_0._overheat_hud:show(l_19_3)
+				l_19_0._overheat_hud:update(l_19_2)
+			else
+				if l_19_0._overheat_hud:visible() then
+					l_19_0._overheat_hud:hide()
+					l_19_0._overheat_hud:update(l_19_2)
 				end
 			else
+				l_19_0._ammo_panel:use_low_frequency_update()
+				return 
 			end
-		elseif A0_65._player_data.on_destroyed_rail_vehicle then
+			local l_19_4 = l_19_0._player_unit:base():weapon_data()
+			if not l_19_4 then
+				return 
+			end
+			local l_19_5 = l_19_4:ammo_pool()
+			local l_19_6 = l_19_4:bullets_in_clip()
+			local l_19_7 = l_19_0._player_data.hud_inventory_secondary_active_slot
+			local l_19_8, l_19_9, l_19_10 = nil, nil, nil
+			if l_19_7 then
+				l_19_8 = l_19_0._inventory:item_by_index(l_19_7)
+			if alive(l_19_8) then
+				end
+				l_19_9 = l_19_8:weapon_data()
+				l_19_10 = l_19_9:ammo_pool()
+			end
+			local l_19_11 = l_19_0._player_data.firing
+			local l_19_12 = false
+			local l_19_13 = false
+			local l_19_14 = l_19_0._player_data.reloading
+			if l_19_0._previous_bullets_in_clip and l_19_6 ~= l_19_0._previous_bullets_in_clip then
+				l_19_11 = true
+			else
+				if l_19_0._player_data.throwing_grenade then
+					l_19_11 = true
+				end
+			end
+			if l_19_0._primary_ammo and l_19_5 ~= l_19_0._primary_ammo then
+				l_19_12 = true
+			elseif l_19_0._secondary_ammo and l_19_10 ~= l_19_0._secondary_ammo then
+				l_19_12 = true
+			end
+			if l_19_0._player_data.switching_weapon then
+				l_19_13 = true
+			elseif l_19_0._previous_secondary_weapon_slot and l_19_7 ~= l_19_0._previous_secondary_weapon_slot then
+				l_19_13 = true
+			end
+			l_19_0._previous_bullets_in_clip = l_19_6
+			l_19_0._primary_ammo = l_19_5
+			l_19_0._secondary_ammo = l_19_10
+			l_19_0._previous_secondary_weapon_slot = l_19_7
+			l_19_0._ammo_panel_showing = false
+			if l_19_0._player_data.is_precision_aiming or l_19_11 or l_19_12 or l_19_13 or l_19_14 or l_19_0._player_data.hud_inventory_show then
+				l_19_0._ammo_panel:show()
+				l_19_0._ammo_panel:update(l_19_1, l_19_2, l_19_3, l_19_8, l_19_11)
+				l_19_0._ammo_panel_showing = true
+			end
 		else
-		end
-		if 0 < A0_65._player_unit:damage_data().damage then
-			A0_65._health_panel:show()
-			A0_65._health_panel:update(A1_66, A2_67)
-		elseif A0_65._health_panel:visible() or A0_65._health_panel:hidden() then
-			A0_65._health_panel:update(A1_66, A2_67)
+			if l_19_0._ammo_panel:visible() then
+				l_19_0._ammo_panel:hide()
+				l_19_0._ammo_panel:update(l_19_1, l_19_2)
+			end
 		else
-			A0_65._health_panel:use_low_frequency_update()
+			l_19_0._ammo_panel:use_low_frequency_update()
 		end
+		 -- WARNING: missing end command somewhere! Added here
 	end
 end
-function NewPlayerHud._update_damage_overlay_panel(A0_68, A1_69)
-	local L2_70
-	if A0_68._player_data.on_rail_vehicle then
-		L2_70 = A0_68._player_data.on_rail_vehicle:damage_data()
-	else
-		L2_70 = A0_68._player_unit:damage_data()
-	end
-	A0_68._damage_overlay_panel:update(A1_69, L2_70)
-end
-function NewPlayerHud.set_debug_text(A0_71, A1_72)
-	if A0_71._debug_text then
-		A0_71._debug_text:show_next_line(A1_72)
-	end
-end
-function NewPlayerHud.unit_explode(A0_73, A1_74, A2_75, A3_76)
-	if not A0_73._dust_panel then
-		return
-	end
-	if not A0_73._dust_panel:done() then
-		A0_73._dust_panel:show(A2_75)
-		A0_73._dust_panel:use_high_frequency_update()
-	end
-end
-function NewPlayerHud.unit_player_received_ammo_from_player(A0_77, A1_78, A2_79)
-	local L3_80, L4_81, L5_82, L6_83, L7_84, L8_85
-	L3_80 = A0_77._player_unit
-	L4_81 = L3_80
-	L3_80 = L3_80.base
-	L3_80 = L3_80(L4_81)
-	L4_81 = L3_80
-	L3_80 = L3_80.weapon
-	L3_80 = L3_80(L4_81)
-	L4_81 = A0_77._player_unit
-	L5_82 = L4_81
-	L4_81 = L4_81.base
-	L4_81 = L4_81(L5_82)
-	L5_82 = L4_81
-	L4_81 = L4_81.weapon_data
-	L4_81 = L4_81(L5_82)
-	L5_82 = L4_81._clip_size
-	L6_83 = tweak_data
-	L6_83 = L6_83.player
-	L6_83 = L6_83.RECEIVE_AMMO_SIZE_MULTIPLIER
-	L5_82 = L5_82 * L6_83
-	L6_83 = nil
-	L8_85 = L3_80
-	L7_84 = L3_80.hud
-	L7_84 = L7_84(L8_85)
-	if L7_84 then
-		L8_85 = L7_84.small_texture_name
-		L8_85 = L8_85(L7_84)
-		L6_83 = L8_85
-	else
-		L8_85 = L3_80.name
-		L8_85 = L8_85(L3_80)
-		L6_83 = L8_85
-	end
-	L8_85 = nil
-	if L3_80:base()._projectile_spawner:hud() then
-		L8_85 = L3_80:base()._projectile_spawner:hud():texture_name()
-	else
-		L8_85 = tweak_data.player.new_hud.ammo_panel.DEFAULT_ICON_PRIMARY_WEAPON
-	end
-	table.insert(A0_77._ammo_queue_list, {
-		weapon_icon_texture = L6_83,
-		ammo_icon_texture = L8_85,
-		bullets = L5_82
-	})
-end
-function NewPlayerHud._update_dust_panel(A0_86, A1_87)
-	local L2_88
-	L2_88 = A0_86._dust_panel
-	L2_88 = L2_88.next_update
-	L2_88 = L2_88(L2_88, A1_87)
-	if L2_88 then
-		L2_88 = A0_86._dust_panel
-		L2_88 = L2_88.visible
-		L2_88 = L2_88(L2_88)
-		if L2_88 then
-			L2_88 = managers
-			L2_88 = L2_88.worldcamera
-			L2_88 = L2_88.current_world_camera
-			L2_88 = L2_88(L2_88)
-			A0_86._dust_panel:update(A1_87, L2_88)
+
+NewPlayerHud._update_health_panel = function(l_20_0, l_20_1, l_20_2)
+	if l_20_0._health_panel:next_update(l_20_2) then
+		local l_20_3 = false
+		if l_20_0._player_data.rail_player_escort_unit then
+			if alive(l_20_0._player_data.rail_player_escort_unit) then
+				if l_20_0._player_data.rail_player_escort_unit:damage_data().damage <= 0 then
+					l_20_3 = not l_20_0._player_data.on_rail_vehicle
+			else
+				end
+			end
+			l_20_3 = true
 		else
-			L2_88 = A0_86._dust_panel
-			L2_88 = L2_88.use_low_frequency_update
-			L2_88(L2_88, A1_87)
+			l_20_3 = l_20_0._player_data.on_rail_vehicle:damage_data().damage > 0
 		end
+		do return end
+		if l_20_0._player_data.on_destroyed_rail_vehicle then
+			l_20_3 = true
+		else
+			l_20_3 = l_20_0._player_unit:damage_data().damage > 0
+		end
+		if l_20_3 then
+			l_20_0._health_panel:show()
+			l_20_0._health_panel:update(l_20_1, l_20_2)
+		end
+	else
+		if l_20_0._health_panel:visible() or l_20_0._health_panel:hidden() then
+			l_20_0._health_panel:update(l_20_1, l_20_2)
+		end
+	else
+		l_20_0._health_panel:use_low_frequency_update()
 	end
 end
-function NewPlayerHud._update_subtitles_font_size(A0_89, A1_90)
-	if A0_89._panel:width() <= tweak_data.player.new_hud.TEXTPANEL_RESOLUTION_FOR_SMALL_FONT then
+
+NewPlayerHud._update_damage_overlay_panel = function(l_21_0, l_21_1)
+	local l_21_2 = nil
+	if l_21_0._player_data.on_rail_vehicle then
+		l_21_2 = l_21_0._player_data.on_rail_vehicle:damage_data()
+	else
+		l_21_2 = l_21_0._player_unit:damage_data()
+	end
+	l_21_0._damage_overlay_panel:update(l_21_1, l_21_2)
+end
+
+NewPlayerHud.set_debug_text = function(l_22_0, l_22_1)
+	if l_22_0._debug_text then
+		l_22_0._debug_text:show_next_line(l_22_1)
+	end
+end
+
+NewPlayerHud.unit_explode = function(l_23_0, l_23_1, l_23_2, l_23_3)
+	if not l_23_0._dust_panel then
+		return 
+	end
+	if not l_23_0._dust_panel:done() then
+		l_23_0._dust_panel:show(l_23_2)
+		l_23_0._dust_panel:use_high_frequency_update()
+	end
+end
+
+NewPlayerHud.unit_player_received_ammo_from_player = function(l_24_0, l_24_1, l_24_2)
+	local l_24_3 = l_24_0._player_unit:base():weapon()
+	local l_24_4 = l_24_0._player_unit:base():weapon_data()
+	local l_24_5 = l_24_4._clip_size * tweak_data.player.RECEIVE_AMMO_SIZE_MULTIPLIER
+	local l_24_6 = nil
+	local l_24_7 = l_24_3:hud()
+	if l_24_7 then
+		l_24_6 = l_24_7:small_texture_name()
+	else
+		l_24_6 = l_24_3:name()
+	end
+	local l_24_8 = nil
+	local l_24_9 = l_24_3:base()._projectile_spawner:hud()
+	if l_24_9 then
+		l_24_8 = l_24_9:texture_name()
+	else
+		l_24_8 = tweak_data.player.new_hud.ammo_panel.DEFAULT_ICON_PRIMARY_WEAPON
+	end
+	local l_24_10 = table.insert
+	local l_24_11 = l_24_0._ammo_queue_list
+	local l_24_12 = {}
+	l_24_12.weapon_icon_texture = l_24_6
+	l_24_12.ammo_icon_texture = l_24_8
+	l_24_12.bullets = l_24_5
+	l_24_10(l_24_11, l_24_12)
+end
+
+NewPlayerHud._update_dust_panel = function(l_25_0, l_25_1)
+	if l_25_0._dust_panel:next_update(l_25_1) then
+		if l_25_0._dust_panel:visible() then
+			local l_25_2 = managers.worldcamera:current_world_camera()
+			l_25_0._dust_panel:update(l_25_1, l_25_2)
+		end
+	else
+		l_25_0._dust_panel:use_low_frequency_update(l_25_1)
+	end
+end
+
+NewPlayerHud._update_subtitles_font_size = function(l_26_0, l_26_1)
+	if l_26_0._panel:width() <= tweak_data.player.new_hud.TEXTPANEL_RESOLUTION_FOR_SMALL_FONT then
 		managers.menu:ingame_gui():use_small_font()
 	else
 		managers.menu:ingame_gui():use_normal_font()
 	end
 end
-function NewPlayerHud._update_stick_direction_panel(A0_91, A1_92)
-	if A0_91._stick_direction_panel:next_update(A1_92) then
-		if A0_91._player_data.hud_move_stick_angle and not A0_91._player_data._in_stationary_weapon then
-			A0_91._stick_direction_panel:show()
-			A0_91._stick_direction_panel:use_high_frequency_update(A1_92)
-			A0_91._stick_direction_panel:update(A1_92, A0_91._player_data.hud_move_stick_angle, A0_91._player_data.hud_move_stick_radius)
-		elseif A0_91._player_data.hud_move_stick_cover_angle and A0_91._player_data.quick_move_info_index > 0 and not A0_91._player_data.is_precision_aiming then
-			A0_91._stick_direction_panel:show()
-			A0_91._stick_direction_panel:use_high_frequency_update(A1_92)
-			A0_91._stick_direction_panel:update(A1_92, A0_91._player_data.hud_move_stick_cover_angle, A0_91._player_data.hud_move_stick_cover_radius)
-		elseif A0_91._stick_direction_panel:visible() then
-			A0_91._stick_direction_panel:hide()
-			A0_91._stick_direction_panel:update(A1_92)
-		else
-			A0_91._stick_direction_panel:use_low_frequency_update(A1_92)
+
+NewPlayerHud._update_stick_direction_panel = function(l_27_0, l_27_1)
+	if l_27_0._stick_direction_panel:next_update(l_27_1) then
+		if l_27_0._player_data.hud_move_stick_angle and not l_27_0._player_data._in_stationary_weapon then
+			l_27_0._stick_direction_panel:show()
+			l_27_0._stick_direction_panel:use_high_frequency_update(l_27_1)
+			l_27_0._stick_direction_panel:update(l_27_1, l_27_0._player_data.hud_move_stick_angle, l_27_0._player_data.hud_move_stick_radius)
 		end
-	end
-end
-function NewPlayerHud._update_noice(A0_93, A1_94)
-	if A0_93._last_frame_battle_area_timer ~= A0_93._player_data.has_left_battle_area_timer then
-		A0_93._noice:update_ingame(A1_94)
-		A0_93._last_frame_battle_area_timer = A0_93._player_data.has_left_battle_area_timer
-	end
-end
-function NewPlayerHud._update_gun_flash_panel(A0_95, A1_96)
-	local L2_97, L3_98
-	L2_97 = A0_95._player_unit
-	L3_98 = L2_97
-	L2_97 = L2_97.base
-	L2_97 = L2_97(L3_98)
-	L3_98 = L2_97
-	L2_97 = L2_97.weapon
-	L2_97 = L2_97(L3_98)
-	L3_98 = alive
-	L3_98 = L3_98(L2_97)
-	if L3_98 then
-		L3_98 = L2_97.weapon_data
-		L3_98 = L3_98(L2_97)
-		if L3_98._show_gun_flash_overlay then
-			A0_95._gun_flash_panel:update(A1_96, L3_98)
+	else
+		if l_27_0._player_data.hud_move_stick_cover_angle and l_27_0._player_data.quick_move_info_index > 0 and not l_27_0._player_data.is_precision_aiming then
+			l_27_0._stick_direction_panel:show()
+			l_27_0._stick_direction_panel:use_high_frequency_update(l_27_1)
+			l_27_0._stick_direction_panel:update(l_27_1, l_27_0._player_data.hud_move_stick_cover_angle, l_27_0._player_data.hud_move_stick_cover_radius)
 		end
+	else
+		if l_27_0._stick_direction_panel:visible() then
+			l_27_0._stick_direction_panel:hide()
+			l_27_0._stick_direction_panel:update(l_27_1)
+		end
+	else
+		l_27_0._stick_direction_panel:use_low_frequency_update(l_27_1)
 	end
 end
-function NewPlayerHud._on_rail_vehicle(A0_99)
-	local L1_100
-	L1_100 = A0_99._player_data
-	L1_100 = L1_100.on_rail_vehicle
-	if not L1_100 then
-		L1_100 = A0_99._player_data
-		L1_100 = L1_100.on_destroyed_rail_vehicle
-	elseif L1_100 then
-		L1_100 = true
-		return L1_100
-	end
-	L1_100 = false
-	return L1_100
-end
-function NewPlayerHud._hide_player_hud(A0_101)
-	A0_101._weapon_selection_panel:panel():hide()
-	A0_101._hurt_direction_indicator_panel:panel():hide()
-	A0_101._next_cover_indicator_panel:panel():hide()
-	A0_101._reticule_panel:panel():hide()
-	A0_101._stick_direction_panel:panel():hide()
-	A0_101._context_panel:panel():hide()
-	A0_101._dust_panel:panel():hide()
-	A0_101._overheat_hud:panel():hide()
-	A0_101._weakspots_panel:hide()
-	A0_101._noice:panel():hide()
-	A0_101._battle_area_panel:panel():hide()
-	A0_101._gun_flash_panel:hide()
-	A0_101._ammo_panel:instant_hide()
-	A0_101._health_panel:instant_hide()
-	A0_101._teammate_name_panel:instant_hide()
-	A0_101._hud_is_hidden = true
-end
-function NewPlayerHud._show_player_hud(A0_102)
-	if A0_102._hud_is_hidden then
-		A0_102._noice:panel():show()
-		A0_102._reticule_panel:instant_show()
-		A0_102._is_split_screen = HudUtility.is_split_screen()
-		A0_102:_set_localizer_mapping()
-	end
-	A0_102._hud_is_hidden = false
-end
-function NewPlayerHud.set_extension_enabled(A0_103, A1_104)
-	A0_103._extension_enabled = A1_104
-	if not A1_104 and A0_103:has_panel() then
-		A0_103:_hide_player_hud()
+
+NewPlayerHud._update_noice = function(l_28_0, l_28_1)
+	if l_28_0._last_frame_battle_area_timer ~= l_28_0._player_data.has_left_battle_area_timer then
+		l_28_0._noice:update_ingame(l_28_1)
+		l_28_0._last_frame_battle_area_timer = l_28_0._player_data.has_left_battle_area_timer
 	end
 end
-function NewPlayerHud._set_localizer_mapping(A0_105)
+
+NewPlayerHud._update_gun_flash_panel = function(l_29_0, l_29_1)
+	local l_29_2 = l_29_0._player_unit:base():weapon()
+	if alive(l_29_2) then
+		local l_29_3 = l_29_2:weapon_data()
+	if l_29_3._show_gun_flash_overlay then
+		end
+		l_29_0._gun_flash_panel:update(l_29_1, l_29_3)
+	end
+end
+
+NewPlayerHud._on_rail_vehicle = function(l_30_0)
+	if l_30_0._player_data.on_rail_vehicle or l_30_0._player_data.on_destroyed_rail_vehicle then
+		return true
+	end
+	return false
+end
+
+NewPlayerHud._hide_player_hud = function(l_31_0)
+	l_31_0._weapon_selection_panel:panel():hide()
+	l_31_0._hurt_direction_indicator_panel:panel():hide()
+	l_31_0._next_cover_indicator_panel:panel():hide()
+	l_31_0._reticule_panel:panel():hide()
+	l_31_0._stick_direction_panel:panel():hide()
+	l_31_0._context_panel:panel():hide()
+	l_31_0._dust_panel:panel():hide()
+	l_31_0._overheat_hud:panel():hide()
+	l_31_0._weakspots_panel:hide()
+	l_31_0._noice:panel():hide()
+	l_31_0._battle_area_panel:panel():hide()
+	l_31_0._gun_flash_panel:hide()
+	l_31_0._ammo_panel:instant_hide()
+	l_31_0._health_panel:instant_hide()
+	l_31_0._teammate_name_panel:instant_hide()
+	l_31_0._hud_is_hidden = true
+end
+
+NewPlayerHud._show_player_hud = function(l_32_0)
+	if l_32_0._hud_is_hidden then
+		l_32_0._noice:panel():show()
+		l_32_0._reticule_panel:instant_show()
+		l_32_0._is_split_screen = HudUtility.is_split_screen()
+		l_32_0:_set_localizer_mapping()
+	end
+	l_32_0._hud_is_hidden = false
+end
+
+NewPlayerHud.set_extension_enabled = function(l_33_0, l_33_1)
+	l_33_0._extension_enabled = l_33_1
+	if not l_33_1 and l_33_0:has_panel() then
+		l_33_0:_hide_player_hud()
+	end
+end
+
+NewPlayerHud._set_localizer_mapping = function(l_34_0)
 	managers.localizer_mapping:update_mapping()
-	A0_105._localizer_mapping = managers.localizer_mapping:get_localizer_mapping_by_unit(A0_105._player_unit)
-	A0_105._context_panel:set_localizer_mapping(A0_105._localizer_mapping)
+	l_34_0._localizer_mapping = managers.localizer_mapping:get_localizer_mapping_by_unit(l_34_0._player_unit)
+	l_34_0._context_panel:set_localizer_mapping(l_34_0._localizer_mapping)
 end
+
+

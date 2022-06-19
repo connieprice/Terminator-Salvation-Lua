@@ -1,20 +1,25 @@
 require("managers/actionmanagers/AiMachineSpawn")
-AMSpiderStart = AMSpiderStart or class(AiMachineSpawn)
-function AMSpiderStart.init(A0_0, A1_1, A2_2)
-	AiUnitSpawn.init(A0_0, A1_1, A2_2)
-	A0_0:setup("spider")
+if not AMSpiderStart then
+	AMSpiderStart = class(AiMachineSpawn)
 end
-function AMSpiderStart._setup_ai(A0_3, A1_4)
-	local L2_5, L3_6
-	L3_6 = A1_4
-	L2_5 = A1_4.ai_data
-	L2_5 = L2_5(L3_6)
-	L3_6 = A0_3.brain_name
-	L3_6 = L3_6 or SpiderStartHubElementData.brain_names[1]
-	A1_4:ai_nerve_system():setup(L3_6)
-	if not A0_3.units then
-		return
+AMSpiderStart.init = function(l_1_0, l_1_1, l_1_2)
+	AiUnitSpawn.init(l_1_0, l_1_1, l_1_2)
+	l_1_0:setup("spider")
+end
+
+AMSpiderStart._setup_ai = function(l_2_0, l_2_1)
+	local l_2_2 = l_2_1:ai_data()
+	if not l_2_0.brain_name then
+		local l_2_3, l_2_4, l_2_5, l_2_6 = SpiderStartHubElementData.brain_names[1]
 	end
-	A0_3:_apply_behavior_options(A1_4)
-	AiMachineSpawn._setup_ai(A0_3, A1_4)
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	l_2_1:ai_nerve_system():setup(l_2_3)
+	if not l_2_0.units then
+		return 
+	end
+	l_2_0:_apply_behavior_options(l_2_1)
+	AiMachineSpawn._setup_ai(l_2_0, l_2_1)
 end
+
+

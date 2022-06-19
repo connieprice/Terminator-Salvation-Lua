@@ -1,41 +1,48 @@
 core:module("CoreSubtitleSequencePlayer")
 core:require_module("CoreClass")
-SubtitleSequencePlayer = SubtitleSequencePlayer or CoreClass.class()
-function SubtitleSequencePlayer.init(A0_0, A1_1, A2_2)
-	assert(A1_1, "Invalid sequence.")
-	assert(A2_2, "Invalid presenter.")
-	A0_0.__presenter = A2_2
-	A0_0.__sequence = A0_0.__presenter:preprocess_sequence(A1_1)
+if not SubtitleSequencePlayer then
+	SubtitleSequencePlayer = CoreClass.class()
 end
-function SubtitleSequencePlayer.is_done(A0_3)
-	local L1_4
-	L1_4 = A0_3.__time
-	L1_4 = L1_4 or 0
-	L1_4 = L1_4 >= A0_3.__sequence:duration()
-	return L1_4
+SubtitleSequencePlayer.init = function(l_1_0, l_1_1, l_1_2)
+	assert(l_1_1, "Invalid sequence.")
+	assert(l_1_2, "Invalid presenter.")
+	l_1_0.__presenter = l_1_2
+	l_1_0.__sequence = l_1_0.__presenter:preprocess_sequence(l_1_1)
 end
-function SubtitleSequencePlayer.update(A0_5, A1_6, A2_7)
-	A0_5.__time = (A0_5.__time or 0) + A2_7
-	A0_5:evaluate_at_time(A0_5.__time)
+
+SubtitleSequencePlayer.is_done = function(l_2_0)
+	return l_2_0.__sequence:duration() <= l_2_0.__time or 0
 end
-function SubtitleSequencePlayer.evaluate_at_time(A0_8, A1_9)
-	if A1_9 ~= A0_8._last_evaluated_time then
-		if table.inject(A0_8.__sequence:subtitles(), nil, function(A0_10, A1_11)
-			return A1_11:is_active_at_time(_UPVALUE0_) and A1_11 or A0_10
-		end) ~= A0_8.__previous_subtitle then
-			A0_8.__presenter:show_text(table.inject(A0_8.__sequence:subtitles(), nil, function(A0_12, A1_13)
-				return A1_13:is_active_at_time(_UPVALUE0_) and A1_13 or A0_12
-			end) and table.inject(A0_8.__sequence:subtitles(), nil, function(A0_14, A1_15)
-				return A1_15:is_active_at_time(_UPVALUE0_) and A1_15 or A0_14
-			end):string() or "", table.inject(A0_8.__sequence:subtitles(), nil, function(A0_16, A1_17)
-				return A1_17:is_active_at_time(_UPVALUE0_) and A1_17 or A0_16
-			end) and table.inject(A0_8.__sequence:subtitles(), nil, function(A0_18, A1_19)
-				return A1_19:is_active_at_time(_UPVALUE0_) and A1_19 or A0_18
-			end):duration())
-			A0_8.__previous_subtitle = table.inject(A0_8.__sequence:subtitles(), nil, function(A0_20, A1_21)
-				return A1_21:is_active_at_time(_UPVALUE0_) and A1_21 or A0_20
-			end)
+
+SubtitleSequencePlayer.update = function(l_3_0, l_3_1, l_3_2)
+	l_3_0.__time = (l_3_0.__time or 0) + l_3_2
+	l_3_0:evaluate_at_time(l_3_0.__time)
+end
+
+SubtitleSequencePlayer.evaluate_at_time = function(l_4_0, l_4_1)
+	do
+		if l_4_1 ~= l_4_0._last_evaluated_time then
+			local l_4_2 = table.inject((l_4_0.__sequence:subtitles()), nil, function(l_5_0, l_5_1)
+		-- upvalues: l_4_1
+		return l_5_1:is_active_at_time(l_4_1) and l_5_1 or l_5_0
+  end)
+			if l_4_2 ~= l_4_0.__previous_subtitle then
+				local l_4_3, l_4_4 = l_4_0.__presenter:show_text, l_4_0.__presenter
+				do
+					local l_4_5 = l_4_2 and l_4_2:string() or ""
+				end
+				 -- DECOMPILER ERROR: Confused about usage of registers!
+
+				if l_4_2 then
+					l_4_3(l_4_4, l_4_5, l_4_2:duration())
+				end
+				l_4_0.__previous_subtitle = l_4_2
+			end
+			l_4_0._last_evaluated_time = l_4_1
 		end
-		A0_8._last_evaluated_time = A1_9
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 	end
 end
+
+

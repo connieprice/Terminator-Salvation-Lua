@@ -1,5 +1,9 @@
-AMResistanceMale02Set2Start = AMResistanceMale02Set2Start or class(AMNpcStart)
-AMResistanceMale02Set2Start.unit_type = "resistance_male_02_set2"
-function AMResistanceMale02Set2Start.init(A0_0, A1_1, A2_2)
-	AMNpcStart.init(A0_0, A1_1, A2_2, "resistance_male_02_set2")
+if not AMResistanceMale02Set2Start then
+	AMResistanceMale02Set2Start = class(AMNpcStart)
 end
+AMResistanceMale02Set2Start.unit_type = "resistance_male_02_set2"
+AMResistanceMale02Set2Start.init = function(l_1_0, l_1_1, l_1_2)
+	AMNpcStart.init(l_1_0, l_1_1, l_1_2, "resistance_male_02_set2")
+end
+
+

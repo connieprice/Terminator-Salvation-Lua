@@ -1,136 +1,124 @@
 require("shared/Angle")
 require("units/beings/player/new_gui/HudPanel")
-HurtDirectionIndicatorPanel = HurtDirectionIndicatorPanel or class(HudPanel)
-function HurtDirectionIndicatorPanel.init(A0_0, A1_1, A2_2)
-	HudPanel.init(A0_0, false)
-	A0_0._parent_panel = A1_1
-	A0_0._player_unit = A2_2
-	A0_0._player_data = A2_2:player_data()
-	A0_0._width = A0_0._parent_panel:width()
-	A0_0._height = A0_0._parent_panel:height()
-	A0_0._centre_x = A0_0._width / 2
-	A0_0._centre_y = A0_0._height / 2
-	A0_0._radius = tweak_data.player.new_hud.hurt_direction_indicator_panel.RADIUS
-	A0_0._panel = A0_0._parent_panel:panel({
-		name = "hurt_direction_indicator_panel",
-		width = A0_0._width,
-		height = A0_0._height,
-		valign = "center",
-		halign = "center"
-	})
-	A0_0._hurt_direction_indicator_texture = A0_0._panel:bitmap({
-		name = "gui_damage_indicator",
-		texture = "gui_damage_indicator"
-	})
-	A0_0._hurt_direction_indicator_texture:set_center(A0_0._centre_x, A0_0._centre_y)
-	A0_0._alpha = 0
-	A0_0._alpha_interpolator = Interpolator:new(0, tweak_data.player.new_hud.hurt_direction_indicator_panel.FADE_OUT_SPEED)
-	A0_0._alpha_interpolator:set_target(0)
-	A0_0._hurt_direction_indicator_texture:set_color(A0_0._hurt_direction_indicator_texture:color():with_alpha(A0_0._alpha))
-	A0_0:set_alpha(0)
+if not HurtDirectionIndicatorPanel then
+	HurtDirectionIndicatorPanel = class(HudPanel)
 end
-function HurtDirectionIndicatorPanel.panel(A0_3)
-	local L1_4
-	L1_4 = A0_3._panel
-	return L1_4
+HurtDirectionIndicatorPanel.init = function(l_1_0, l_1_1, l_1_2)
+	HudPanel.init(l_1_0, false)
+	l_1_0._parent_panel = l_1_1
+	l_1_0._player_unit = l_1_2
+	l_1_0._player_data = l_1_2:player_data()
+	l_1_0._width = l_1_0._parent_panel:width()
+	l_1_0._height = l_1_0._parent_panel:height()
+	l_1_0._centre_x = l_1_0._width / 2
+	l_1_0._centre_y = l_1_0._height / 2
+	l_1_0._radius = tweak_data.player.new_hud.hurt_direction_indicator_panel.RADIUS
+	local l_1_3, l_1_4 = l_1_0._parent_panel:panel, l_1_0._parent_panel
+	local l_1_5 = {}
+	l_1_5.name = "hurt_direction_indicator_panel"
+	l_1_5.width = l_1_0._width
+	l_1_5.height = l_1_0._height
+	l_1_5.valign = "center"
+	l_1_5.halign = "center"
+	l_1_3 = l_1_3(l_1_4, l_1_5)
+	l_1_0._panel = l_1_3
+	l_1_3 = l_1_0._panel
+	l_1_3, l_1_4 = l_1_3:bitmap, l_1_3
+	l_1_3, l_1_5 = l_1_3(l_1_4, l_1_5), {name = "gui_damage_indicator", texture = "gui_damage_indicator"}
+	l_1_0._hurt_direction_indicator_texture = l_1_3
+	l_1_3 = l_1_0._hurt_direction_indicator_texture
+	l_1_3, l_1_4 = l_1_3:set_center, l_1_3
+	l_1_5 = l_1_0._centre_x
+	l_1_3(l_1_4, l_1_5, l_1_0._centre_y)
+	l_1_0._alpha = 0
+	l_1_3 = Interpolator
+	l_1_3, l_1_4 = l_1_3:new, l_1_3
+	l_1_5 = 0
+	l_1_3 = l_1_3(l_1_4, l_1_5, tweak_data.player.new_hud.hurt_direction_indicator_panel.FADE_OUT_SPEED)
+	l_1_0._alpha_interpolator = l_1_3
+	l_1_3 = l_1_0._alpha_interpolator
+	l_1_3, l_1_4 = l_1_3:set_target, l_1_3
+	l_1_5 = 0
+	l_1_3(l_1_4, l_1_5)
+	l_1_3 = l_1_0._hurt_direction_indicator_texture
+	l_1_3, l_1_4 = l_1_3:set_color, l_1_3
+	l_1_5 = l_1_0._hurt_direction_indicator_texture
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5)
+	l_1_3, l_1_4 = l_1_0:set_alpha, l_1_0
+	 -- DECOMPILER ERROR: Overwrote pending register.
+
+	l_1_3(l_1_4, l_1_5)
 end
-function HurtDirectionIndicatorPanel.visible(A0_5)
-	return A0_5._alpha > 0
+
+HurtDirectionIndicatorPanel.panel = function(l_2_0)
+	return l_2_0._panel
 end
-function HurtDirectionIndicatorPanel.set_angle(A0_6, A1_7)
-	local L2_8, L3_9, L4_10
-	L2_8 = A0_6._centre_x
-	L3_9 = A0_6._radius
-	L4_10 = math
-	L4_10 = L4_10.cos
-	L4_10 = L4_10(A1_7 - 90)
-	L3_9 = L3_9 * L4_10
-	L2_8 = L2_8 + L3_9
-	L3_9 = A0_6._centre_y
-	L4_10 = A0_6._radius
-	L4_10 = L4_10 * math.sin(A1_7 - 90)
-	L3_9 = L3_9 + L4_10
-	L4_10 = 0
-	if A0_6._current_angle then
-		L4_10 = angle_diff(A0_6._current_angle, A1_7)
+
+HurtDirectionIndicatorPanel.visible = function(l_3_0)
+	return l_3_0._alpha > 0
+end
+
+HurtDirectionIndicatorPanel.set_angle = function(l_4_0, l_4_1)
+	local l_4_2 = l_4_0._centre_x + l_4_0._radius * math.cos(l_4_1 - 90)
+	local l_4_3 = l_4_0._centre_y + l_4_0._radius * math.sin(l_4_1 - 90)
+	local l_4_4 = 0
+	if l_4_0._current_angle then
+		l_4_4 = angle_diff(l_4_0._current_angle, l_4_1)
 	end
-	if L4_10 > 5 or not A0_6._current_angle then
-		A0_6._current_angle = A1_7
-		A0_6._hurt_direction_indicator_texture:set_rotation(A1_7)
-		A0_6._hurt_direction_indicator_texture:set_center(L2_8, L3_9)
-	end
-end
-function HurtDirectionIndicatorPanel.update_hurt_direction(A0_11, A1_12)
-	local L2_13, L3_14, L4_15, L5_16
-	if A1_12 then
-		L2_13 = A0_11._player_unit
-		L3_14 = L2_13
-		L2_13 = L2_13.camera_data
-		L2_13 = L2_13(L3_14)
-		L2_13 = L2_13.camera_rotation
-		L3_14 = L2_13
-		L2_13 = L2_13.y
-		L2_13 = L2_13(L3_14)
-		L3_14 = Rotation
-		L4_15 = A1_12
-		L5_16 = Vector3
-		L5_16 = L5_16(0, 0, 1)
-		L3_14 = L3_14(L4_15, L5_16, L5_16(0, 0, 1))
-		L4_15 = L3_14
-		L3_14 = L3_14.roll
-		L3_14 = L3_14(L4_15)
-		L4_15 = Rotation
-		L5_16 = L2_13
-		L4_15 = L4_15(L5_16, Vector3(0, 0, 1))
-		L5_16 = L4_15
-		L4_15 = L4_15.roll
-		L4_15 = L4_15(L5_16)
-		L5_16 = L4_15 - L3_14
-		L5_16 = L5_16 + 180
-		A0_11:set_angle(L5_16)
+	if l_4_4 > 5 or not l_4_0._current_angle then
+		l_4_0._current_angle = l_4_1
+		l_4_0._hurt_direction_indicator_texture:set_rotation(l_4_1)
+		l_4_0._hurt_direction_indicator_texture:set_center(l_4_2, l_4_3)
 	end
 end
-function HurtDirectionIndicatorPanel.update_alpha(A0_17, A1_18, A2_19)
-	local L3_20
-	if A2_19 then
-		L3_20 = tweak_data
-		L3_20 = L3_20.player
-		L3_20 = L3_20.hud
-		L3_20 = L3_20.DAMAGE_INDICATOR_STAY_TIME
-		if A2_19 < L3_20 then
-			L3_20 = A0_17._alpha_interpolator
-			L3_20 = L3_20.set_value
-			L3_20(L3_20, 1)
-			L3_20 = A0_17._alpha_interpolator
-			L3_20 = L3_20.set_target
-			L3_20(L3_20, 0)
-			L3_20 = A0_17.use_low_frequency_update
-			L3_20(A0_17)
-		end
+
+HurtDirectionIndicatorPanel.update_hurt_direction = function(l_5_0, l_5_1)
+	if l_5_1 then
+		local l_5_2 = l_5_0._player_unit:camera_data().camera_rotation:y()
+		local l_5_3 = Rotation(l_5_1, Vector3(0, 0, 1)):roll()
+		local l_5_4 = Rotation(l_5_2, Vector3(0, 0, 1)):roll()
+		local l_5_5 = l_5_4 - l_5_3 + 180
+		l_5_0:set_angle(l_5_5)
+	end
+end
+
+HurtDirectionIndicatorPanel.update_alpha = function(l_6_0, l_6_1, l_6_2)
+	if l_6_2 and l_6_2 < tweak_data.player.hud.DAMAGE_INDICATOR_STAY_TIME then
+		l_6_0._alpha_interpolator:set_value(1)
+		l_6_0._alpha_interpolator:set_target(0)
+		l_6_0:use_low_frequency_update()
 	else
-		L3_20 = A0_17._alpha_interpolator
-		L3_20 = L3_20.update
-		L3_20(L3_20, A1_18)
-		L3_20 = A0_17.use_high_frequency_update
-		L3_20(A0_17)
+		l_6_0._alpha_interpolator:update(l_6_1)
+		l_6_0:use_high_frequency_update()
 	end
-	L3_20 = A0_17._alpha_interpolator
-	L3_20 = L3_20.value
-	L3_20 = L3_20(L3_20)
-	A0_17:set_alpha(L3_20)
+	local l_6_3 = l_6_0._alpha_interpolator:value()
+	l_6_0:set_alpha(l_6_3)
 end
-function HurtDirectionIndicatorPanel.instant_hide(A0_21)
-	A0_21._alpha_interpolator:set_value(0)
-	A0_21._alpha_interpolator:set_target(0)
-	A0_21._hurt_direction_indicator_texture:set_color(A0_21._hurt_direction_indicator_texture:color():with_alpha(0))
+
+HurtDirectionIndicatorPanel.instant_hide = function(l_7_0)
+	l_7_0._alpha_interpolator:set_value(0)
+	l_7_0._alpha_interpolator:set_target(0)
+	l_7_0._hurt_direction_indicator_texture:set_color(l_7_0._hurt_direction_indicator_texture:color():with_alpha(0))
 end
-function HurtDirectionIndicatorPanel.update(A0_22, A1_23, A2_24, A3_25)
-	A0_22:update_hurt_direction(A3_25)
-	A0_22:update_alpha(A1_23, A2_24)
-	if A3_25 then
+
+HurtDirectionIndicatorPanel.update = function(l_8_0, l_8_1, l_8_2, l_8_3)
+	l_8_0:update_hurt_direction(l_8_3)
+	l_8_0:update_alpha(l_8_1, l_8_2)
+	if l_8_3 then
+		 -- WARNING: missing end command somewhere! Added here
 	end
+	-- WARNING: F->nextEndif is not empty. Unhandled nextEndif->addr = 10 
 end
-function HurtDirectionIndicatorPanel.set_alpha(A0_26, A1_27)
-	HudPanel.set_alpha(A0_26, A1_27)
-	A0_26._hurt_direction_indicator_texture:set_color(A0_26._hurt_direction_indicator_texture:color():with_alpha(A0_26._alpha))
+
+HurtDirectionIndicatorPanel.set_alpha = function(l_9_0, l_9_1)
+	HudPanel.set_alpha(l_9_0, l_9_1)
+	l_9_0._hurt_direction_indicator_texture:set_color(l_9_0._hurt_direction_indicator_texture:color():with_alpha(l_9_0._alpha))
 end
+
+

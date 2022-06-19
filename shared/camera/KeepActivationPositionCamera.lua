@@ -1,16 +1,22 @@
 require("shared/camera/SharedCamera")
-KeepActivationPositionCamera = KeepActivationPositionCamera or class(SharedCamera)
-function KeepActivationPositionCamera.init(A0_0, A1_1)
-	SharedCamera.init(A0_0, A1_1)
-	A0_0._activation_position = Vector3()
+if not KeepActivationPositionCamera then
+	KeepActivationPositionCamera = class(SharedCamera)
 end
-function KeepActivationPositionCamera.on_activate(A0_2, A1_3)
-	SharedCamera.on_activate(A0_2, A1_3)
-	if A1_3 then
-		A0_2._activation_position = A0_2._root_unit:camera()._camera_data.position
+KeepActivationPositionCamera.init = function(l_1_0, l_1_1)
+	SharedCamera.init(l_1_0, l_1_1)
+	l_1_0._activation_position = Vector3()
+end
+
+KeepActivationPositionCamera.on_activate = function(l_2_0, l_2_1)
+	SharedCamera.on_activate(l_2_0, l_2_1)
+	if l_2_1 then
+		l_2_0._activation_position = l_2_0._root_unit:camera()._camera_data.position
 	end
 end
-function KeepActivationPositionCamera.update(A0_4, A1_5, A2_6, A3_7, A4_8)
-	A0_4:set_local_position_from_world_position(A0_4._activation_position)
-	SharedCamera.update(A0_4, A1_5, A2_6, A3_7, A4_8)
+
+KeepActivationPositionCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
+	l_3_0:set_local_position_from_world_position(l_3_0._activation_position)
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4)
 end
+
+

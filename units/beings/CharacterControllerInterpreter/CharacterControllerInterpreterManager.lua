@@ -1,65 +1,67 @@
-CharacterControllerInterpreterManager = CharacterControllerInterpreterManager or class()
+if not CharacterControllerInterpreterManager then
+	CharacterControllerInterpreterManager = class()
+end
 assert(controller_interpreter_extension_available, "Update you exe")
-function CharacterControllerInterpreterManager.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	A0_0._current_state_interpreter = nil
-	A0_0:_create_state_interpreters()
-	A0_0._base = nil
+CharacterControllerInterpreterManager.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	l_1_0._current_state_interpreter = nil
+	l_1_0:_create_state_interpreters()
+	l_1_0._base = nil
 end
-function CharacterControllerInterpreterManager.enable(A0_2, A1_3)
-	A0_2._controller = A1_3
-	A0_2._base = A0_2._unit:base()
+
+CharacterControllerInterpreterManager.enable = function(l_2_0, l_2_1)
+	l_2_0._controller = l_2_1
+	l_2_0._base = l_2_0._unit:base()
 end
-function CharacterControllerInterpreterManager.disable(A0_4)
-	A0_4._controller = nil
-	if A0_4._current_state_interpreter and A0_4._current_state_interpreter.deactivate then
-		A0_4._current_state_interpreter:deactivate()
+
+CharacterControllerInterpreterManager.disable = function(l_3_0)
+	l_3_0._controller = nil
+	if l_3_0._current_state_interpreter and l_3_0._current_state_interpreter.deactivate then
+		l_3_0._current_state_interpreter:deactivate()
 	end
-	A0_4._current_state_interpreter = nil
+	l_3_0._current_state_interpreter = nil
 end
-function CharacterControllerInterpreterManager._create_state_interpreters(A0_5, A1_6)
-	local L2_7, L3_8, L4_9, L5_10, L6_11, L7_12
-	A0_5._state_interpreters = L2_7
-	for L5_10, L6_11 in L2_7(L3_8) do
-		L7_12 = _G
-		L7_12 = L7_12[L6_11]
-		assert(L7_12, "Controller interpreter class not found '" .. L6_11 .. "'")
-		assert(L7_12.new, "new function missing in class '" .. L6_11 .. "'")
-		A0_5._state_interpreters[L5_10] = L7_12:new(A0_5._unit)
+
+CharacterControllerInterpreterManager._create_state_interpreters = function(l_4_0, l_4_1)
+	local l_4_5, l_4_6, l_4_7, l_4_8 = nil
+	l_4_0._state_interpreters = {}
+	for i_0,i_1 in pairs(l_4_0.interpreters) do
+		assert(_G[i_1], "Controller interpreter class not found '" .. i_1 .. "'")
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		assert(_G[i_1].new, "new function missing in class '" .. i_1 .. "'")
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_4_0._state_interpreters[l_4_9] = _G[i_1]:new(l_4_0._unit)
 	end
 end
-function CharacterControllerInterpreterManager.update(A0_13, A1_14, A2_15, A3_16)
-	local L4_17, L5_18
-	L4_17 = assert
-	L5_18 = A0_13._controller
-	L4_17(L5_18)
-	L4_17 = assert
-	L5_18 = A0_13._base
-	L4_17(L5_18)
-	L4_17 = A0_13._base
-	L5_18 = L4_17
-	L4_17 = L4_17.current_state_name
-	L4_17 = L4_17(L5_18)
-	L5_18 = assert
-	L5_18(L4_17, "current state-name for unit:" .. A1_14:name() .. " is illegal")
-	L5_18 = A0_13._state_interpreters
-	L5_18 = L5_18[L4_17]
-	assert(L5_18, "State: '" .. L4_17 .. "' for unit:" .. A1_14:name() .. " is illegal")
-	if L5_18 ~= A0_13._current_state_interpreter then
-		if A0_13._current_state_interpreter and A0_13._current_state_interpreter.deactivate then
-			A0_13._current_state_interpreter:deactivate()
+
+CharacterControllerInterpreterManager.update = function(l_5_0, l_5_1, l_5_2, l_5_3)
+	assert(l_5_0._controller)
+	assert(l_5_0._base)
+	local l_5_4 = l_5_0._base:current_state_name()
+	assert(l_5_4, "current state-name for unit:" .. l_5_1:name() .. " is illegal")
+	local l_5_5 = l_5_0._state_interpreters[l_5_4]
+	assert(l_5_5, "State: '" .. l_5_4 .. "' for unit:" .. l_5_1:name() .. " is illegal")
+	if l_5_5 ~= l_5_0._current_state_interpreter then
+		if l_5_0._current_state_interpreter and l_5_0._current_state_interpreter.deactivate then
+			l_5_0._current_state_interpreter:deactivate()
 		end
-		A0_13._current_state_interpreter = L5_18
-		assert(A0_13._current_state_interpreter)
-		if A0_13._current_state_interpreter.activate then
-			A0_13._current_state_interpreter:activate()
+		l_5_0._current_state_interpreter = l_5_5
+		assert(l_5_0._current_state_interpreter)
+		if l_5_0._current_state_interpreter.activate then
+			l_5_0._current_state_interpreter:activate()
 		end
-		Application:debug("Changing controller interpreter from ", L4_17)
+		Application:debug("Changing controller interpreter from ", l_5_4)
 	end
-	assert(A0_13._current_state_interpreter)
-	A0_13._current_state_interpreter:update(A0_13._controller, A3_16)
+	assert(l_5_0._current_state_interpreter)
+	l_5_0._current_state_interpreter:update(l_5_0._controller, l_5_3)
 end
-function CharacterControllerInterpreterManager.save(A0_19, A1_20)
+
+CharacterControllerInterpreterManager.save = function(l_6_0, l_6_1)
 end
-function CharacterControllerInterpreterManager.load(A0_21, A1_22)
+
+CharacterControllerInterpreterManager.load = function(l_7_0, l_7_1)
 end
+
+

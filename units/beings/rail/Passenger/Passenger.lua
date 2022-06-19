@@ -1,4 +1,8 @@
-Passenger = Passenger or class(RailNpc)
-function Passenger.init(A0_0, A1_1)
-	RailNpc.init(A0_0, A1_1)
+if not Passenger then
+	Passenger = class(RailNpc)
 end
+Passenger.init = function(l_1_0, l_1_1)
+	RailNpc.init(l_1_0, l_1_1)
+end
+
+

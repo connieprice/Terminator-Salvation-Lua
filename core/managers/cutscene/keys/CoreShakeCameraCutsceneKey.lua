@@ -1,25 +1,31 @@
 require("core/managers/cutscene/keys/CoreCutsceneKeyBase")
-CoreShakeCameraCutsceneKey = CoreShakeCameraCutsceneKey or class(CoreCutsceneKeyBase)
+if not CoreShakeCameraCutsceneKey then
+	CoreShakeCameraCutsceneKey = class(CoreCutsceneKeyBase)
+end
 CoreShakeCameraCutsceneKey.ELEMENT_NAME = "camera_shaker"
 CoreShakeCameraCutsceneKey.NAME = "Camera Shake"
 CoreShakeCameraCutsceneKey:register_serialized_attribute("name", "")
 CoreShakeCameraCutsceneKey:register_serialized_attribute("amplitude", 1, tonumber)
 CoreShakeCameraCutsceneKey:register_serialized_attribute("frequency", 1, tonumber)
 CoreShakeCameraCutsceneKey:register_serialized_attribute("offset", 0, tonumber)
-function CoreShakeCameraCutsceneKey.__tostring(A0_0)
-	return "Trigger camera shake \"" .. A0_0:name() .. "\"."
+CoreShakeCameraCutsceneKey.__tostring = function(l_1_0)
+	return "Trigger camera shake \"" .. l_1_0:name() .. "\"."
 end
-function CoreShakeCameraCutsceneKey.play(A0_1, A1_2, A2_3, A3_4)
-	if A2_3 then
-		A0_1:stop()
-	elseif not A3_4 then
-		A0_1:stop()
-		A0_1._shake_abort_func = A1_2:play_camera_shake(A0_1:name(), A0_1:amplitude(), A0_1:frequency(), A0_1:offset())
+
+CoreShakeCameraCutsceneKey.play = function(l_2_0, l_2_1, l_2_2, l_2_3)
+	if l_2_2 then
+		l_2_0:stop()
+	elseif not l_2_3 then
+		l_2_0:stop()
+		l_2_0._shake_abort_func = l_2_1:play_camera_shake(l_2_0:name(), l_2_0:amplitude(), l_2_0:frequency(), l_2_0:offset())
 	end
 end
-function CoreShakeCameraCutsceneKey.stop(A0_5)
-	if A0_5._shake_abort_func then
-		A0_5._shake_abort_func()
-		A0_5._shake_abort_func = nil
+
+CoreShakeCameraCutsceneKey.stop = function(l_3_0)
+	if l_3_0._shake_abort_func then
+		l_3_0._shake_abort_func()
+		l_3_0._shake_abort_func = nil
 	end
 end
+
+

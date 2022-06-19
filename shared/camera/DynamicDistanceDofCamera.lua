@@ -1,70 +1,61 @@
 require("shared/camera/SharedCamera")
 require("shared/Interpolator")
-DynamicDistanceDofCamera = DynamicDistanceDofCamera or class(SharedCamera)
-function DynamicDistanceDofCamera.parse_parameters(A0_0, A1_1)
-	local L2_2
-	L2_2 = SharedCamera
-	L2_2 = L2_2.parse_parameters
-	L2_2(A0_0, A1_1)
-	L2_2 = A1_1.parameters
-	L2_2 = L2_2(A1_1)
-	A0_0:parse_settings(L2_2)
-	A0_0._dof_distance = Interpolator:new(0, A0_0._dof_distance_interpolation_speed)
+if not DynamicDistanceDofCamera then
+	DynamicDistanceDofCamera = class(SharedCamera)
 end
-function DynamicDistanceDofCamera.parse_settings(A0_3, A1_4)
-	A0_3._full_focus_distance = A1_4.full_focus_distance
-	assert(A0_3._full_focus_distance)
-	A0_3._blur_distance = A1_4.blur_distance
-	assert(A0_3._blur_distance)
-	A0_3._amount = A1_4.amount
-	assert(A0_3._amount)
-	A0_3._dof_distance_interpolation_speed = A1_4.dof_distance_interpolation_speed
-	assert(A0_3._dof_distance_interpolation_speed)
-	A0_3._min_distance = A1_4.min_distance
-	assert(A0_3._min_distance)
-	A0_3._max_distance = A1_4.max_distance
-	assert(A0_3._max_distance)
+DynamicDistanceDofCamera.parse_parameters = function(l_1_0, l_1_1)
+	SharedCamera.parse_parameters(l_1_0, l_1_1)
+	local l_1_2 = l_1_1:parameters()
+	l_1_0:parse_settings(l_1_2)
+	l_1_0._dof_distance = Interpolator:new(0, l_1_0._dof_distance_interpolation_speed)
 end
-function DynamicDistanceDofCamera.update(A0_5, A1_6, A2_7, A3_8)
-	SharedCamera.update(A0_5, A1_6, A2_7, A3_8)
-	A0_5:_update_dof(A3_8)
+
+DynamicDistanceDofCamera.parse_settings = function(l_2_0, l_2_1)
+	l_2_0._full_focus_distance = l_2_1.full_focus_distance
+	assert(l_2_0._full_focus_distance)
+	l_2_0._blur_distance = l_2_1.blur_distance
+	assert(l_2_0._blur_distance)
+	l_2_0._amount = l_2_1.amount
+	assert(l_2_0._amount)
+	l_2_0._dof_distance_interpolation_speed = l_2_1.dof_distance_interpolation_speed
+	assert(l_2_0._dof_distance_interpolation_speed)
+	l_2_0._min_distance = l_2_1.min_distance
+	assert(l_2_0._min_distance)
+	l_2_0._max_distance = l_2_1.max_distance
+	assert(l_2_0._max_distance)
 end
-function DynamicDistanceDofCamera._update_dof(A0_9, A1_10)
-	local L2_11, L3_12, L4_13, L5_14, L6_15, L7_16, L8_17, L9_18
-	L3_12 = A0_9._camera_data
-	L4_13 = L3_12.dof_target_position
-	if L4_13 then
-		L6_15 = A0_9
-		L5_14 = A0_9.camera_position
-		L5_14 = L5_14(L6_15)
-		L5_14 = L5_14 - L4_13
-		L6_15 = L5_14
-		L5_14 = L5_14.length
-		L5_14 = L5_14(L6_15)
-		L6_15 = A0_9._dof_distance
-		L7_16 = L6_15
-		L6_15 = L6_15.set_target
-		L8_17 = L5_14
-		L6_15(L7_16, L8_17)
-		L6_15 = A0_9._dof_distance
-		L7_16 = L6_15
-		L6_15 = L6_15.update
-		L8_17 = A1_10
-		L6_15(L7_16, L8_17)
-		L6_15 = A0_9._dof_distance
-		L7_16 = L6_15
-		L6_15 = L6_15.value
-		L6_15 = L6_15(L7_16)
-		L7_16 = A0_9._full_focus_distance
-		L7_16 = L7_16 / 2
-		L8_17 = A0_9._min_distance
-		L9_18 = A0_9._max_distance
-		L2_11 = {}
-		L2_11.near_min = math.clamp(L6_15 - L7_16, L8_17, L9_18)
-		L2_11.near_max = math.clamp(L2_11.near_min - A0_9._blur_distance, L8_17, L9_18)
-		L2_11.far_min = math.clamp(L6_15 + L7_16, L8_17, L9_18)
-		L2_11.far_max = math.clamp(L2_11.far_min + A0_9._blur_distance, L8_17, L9_18)
-		L2_11.amount = A0_9._amount
+
+DynamicDistanceDofCamera.update = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	SharedCamera.update(l_3_0, l_3_1, l_3_2, l_3_3)
+	l_3_0:_update_dof(l_3_3)
+end
+
+DynamicDistanceDofCamera._update_dof = function(l_4_0, l_4_1)
+	local l_4_2 = nil
+	local l_4_3 = nil
+	 -- DECOMPILER ERROR: Confused about usage of registers!
+
+	if l_4_0._camera_data.dof_target_position then
+		local l_4_4 = nil
+		l_4_0._dof_distance:set_target(l_4_0:camera_position() - l_4_0._camera_data.dof_target_position:length())
+		l_4_0._dof_distance:update(l_4_1)
+		local l_4_5 = nil
+		local l_4_6 = l_4_0._dof_distance:value()
+		local l_4_7 = l_4_0._full_focus_distance / 2
+		local l_4_8 = l_4_0._min_distance
+		l_4_2.near_min = math.clamp(l_4_6 - l_4_7, l_4_8, l_4_0._max_distance)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_4_2.near_max = math.clamp(l_4_2.near_min - l_4_0._blur_distance, l_4_8, l_4_0._max_distance)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_4_2.far_min = math.clamp(l_4_6 + l_4_7, l_4_8, l_4_0._max_distance)
+		 -- DECOMPILER ERROR: Confused about usage of registers!
+
+		l_4_2.far_max = math.clamp(l_4_2.far_min + l_4_0._blur_distance, l_4_8, l_4_0._max_distance)
+		l_4_2.amount = l_4_0._amount
 	end
-	A0_9.dof = L2_11
+	l_4_0.dof = l_4_2
 end
+
+

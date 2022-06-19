@@ -1,69 +1,84 @@
 require("shared/FiniteStateMachineState")
-LocalUserSignInIdle = LocalUserSignInIdle or class(FiniteStateMachineState)
-function LocalUserSignInIdle.init(A0_0)
-	A0_0.signin._user_callback:clear_user_canceled_sign_in()
+if not LocalUserSignInIdle then
+	LocalUserSignInIdle = class(FiniteStateMachineState)
 end
-function LocalUserSignInIdle.transition(A0_1)
-	if A0_1.signin:wants_to_show_sign_in_ui() and not A0_1.signin:should_ignore_sign_in_ui() then
-		if A0_1.signin._user_callback:is_signed_in() then
+LocalUserSignInIdle.init = function(l_1_0)
+	l_1_0.signin._user_callback:clear_user_canceled_sign_in()
+end
+
+LocalUserSignInIdle.transition = function(l_2_0)
+	if l_2_0.signin:wants_to_show_sign_in_ui() and not l_2_0.signin:should_ignore_sign_in_ui() then
+		if l_2_0.signin._user_callback:is_signed_in() then
 			return LocalUserShowSignInDone
-		else
-			return LocalUserShowSignInUiStarted
 		end
+	else
+		return LocalUserShowSignInUiStarted
 	end
 end
-function LocalUserSignInIdle.exit(A0_2)
-	A0_2.signin:clear_show_sign_in_ui()
+
+LocalUserSignInIdle.exit = function(l_3_0)
+	l_3_0.signin:clear_show_sign_in_ui()
 end
-LocalUserShowSignInDone = LocalUserShowSignInDone or class(FiniteStateMachineState)
-function LocalUserShowSignInDone.transition(A0_3)
-	local L1_4
-	L1_4 = LocalUserSignInIdle
-	return L1_4
+
+if not LocalUserShowSignInDone then
+	LocalUserShowSignInDone = class(FiniteStateMachineState)
 end
-LocalUserShowSignInUiStarted = LocalUserShowSignInUiStarted or class(FiniteStateMachineState)
-function LocalUserShowSignInUiStarted.init(A0_5)
-	local L1_6
-	L1_6 = A0_5.signin
-	L1_6._request_user_to_signin = true
-	L1_6 = A0_5.signin
-	L1_6 = L1_6._user_callback
-	L1_6 = L1_6.wanted_player_slot_id
-	L1_6 = L1_6(L1_6)
-	assert(L1_6 == 1 or L1_6 == 2, "User does not want to play, why are we showing a sign in ui?")
-	A0_5.signin:show_signin_ui(L1_6)
+LocalUserShowSignInDone.transition = function(l_4_0)
+	return LocalUserSignInIdle
 end
-function LocalUserShowSignInUiStarted.transition(A0_7)
-	if A0_7.signin:signin_ui_active() then
+
+if not LocalUserShowSignInUiStarted then
+	LocalUserShowSignInUiStarted = class(FiniteStateMachineState)
+end
+LocalUserShowSignInUiStarted.init = function(l_5_0)
+	l_5_0.signin._request_user_to_signin = true
+	local l_5_1 = l_5_0.signin._user_callback:wanted_player_slot_id()
+	local l_5_2 = assert
+	l_5_2(l_5_1 == 1 or l_5_1 == 2, "User does not want to play, why are we showing a sign in ui?")
+	l_5_2 = l_5_0.signin
+	l_5_2(l_5_2, l_5_1)
+end
+
+LocalUserShowSignInUiStarted.transition = function(l_6_0)
+	if l_6_0.signin:signin_ui_active() then
 		return LocalUserSignInUiActive
 	end
 end
-LocalUserSignInUiActive = LocalUserSignInUiActive or class(FiniteStateMachineState)
-function LocalUserSignInUiActive.transition(A0_8)
-	if A0_8.signin:signin_ui_active() then
-		return
+
+if not LocalUserSignInUiActive then
+	LocalUserSignInUiActive = class(FiniteStateMachineState)
+end
+LocalUserSignInUiActive.transition = function(l_7_0)
+	if l_7_0.signin:signin_ui_active() then
+		return 
 	end
-	if A0_8.signin:query_is_signed_in() then
+	if l_7_0.signin:query_is_signed_in() then
 		return LocalUserSignInUiAccepted
 	else
 		return LocalUserSignInUiCanceled
 	end
 end
-function LocalUserSignInUiActive.exit(A0_9)
-	A0_9.signin._request_user_to_signin = false
+
+LocalUserSignInUiActive.exit = function(l_8_0)
+	l_8_0.signin._request_user_to_signin = false
 end
-LocalUserSignInUiAccepted = LocalUserSignInUiAccepted or class(FiniteStateMachineState)
-function LocalUserSignInUiAccepted.transition(A0_10)
-	local L1_11
-	L1_11 = LocalUserSignInIdle
-	return L1_11
+
+if not LocalUserSignInUiAccepted then
+	LocalUserSignInUiAccepted = class(FiniteStateMachineState)
 end
-LocalUserSignInUiCanceled = LocalUserSignInUiCanceled or class(FiniteStateMachineState)
-function LocalUserSignInUiCanceled.init(A0_12)
-	A0_12.signin._user_callback:user_canceled_sign_in()
+LocalUserSignInUiAccepted.transition = function(l_9_0)
+	return LocalUserSignInIdle
 end
-function LocalUserSignInUiCanceled.transition(A0_13)
-	local L1_14
-	L1_14 = LocalUserSignInIdle
-	return L1_14
+
+if not LocalUserSignInUiCanceled then
+	LocalUserSignInUiCanceled = class(FiniteStateMachineState)
 end
+LocalUserSignInUiCanceled.init = function(l_10_0)
+	l_10_0.signin._user_callback:user_canceled_sign_in()
+end
+
+LocalUserSignInUiCanceled.transition = function(l_11_0)
+	return LocalUserSignInIdle
+end
+
+

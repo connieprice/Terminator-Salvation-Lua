@@ -1,64 +1,73 @@
-local L0_0
-L0_0 = core
-L0_0 = L0_0.module
-L0_0(L0_0, "CoreEnvironmentManager2")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "CoreClass")
-L0_0 = core
-L0_0 = L0_0.require_module
-L0_0(L0_0, "RadialBlurManager")
-L0_0 = core
-L0_0 = L0_0.require_core_module
-L0_0 = L0_0(L0_0, "CoreEnvironmentManager2")
-EnvironmentManager = EnvironmentManager or CoreClass.class(L0_0.EnvironmentManager)
-function EnvironmentManager.init(A0_1, A1_2)
-	_UPVALUE0_.EnvironmentManager.init(A0_1, A1_2)
-	if not A1_2 then
-		A0_1._radial_blur_manager = RadialBlurManager.RadialBlurManager:new()
+core:module("CoreEnvironmentManager2")
+core:require_module("CoreClass")
+core:require_module("RadialBlurManager")
+local l_0_0 = core:require_core_module("CoreEnvironmentManager2")
+if not EnvironmentManager then
+	EnvironmentManager = CoreClass.class(l_0_0.EnvironmentManager)
+end
+EnvironmentManager.init = function(l_1_0, l_1_1)
+	-- upvalues: l_0_0
+	l_0_0.EnvironmentManager.init(l_1_0, l_1_1)
+	if not l_1_1 then
+		l_1_0._radial_blur_manager = RadialBlurManager.RadialBlurManager:new()
 		Application:global_material():set_variable("effect_hdr_scale", 7)
 	end
-	A0_1._dirty = true
-	A0_1._pain_post_effect = nil
-	A0_1._pain_post_effect_time = 0
+	l_1_0._dirty = true
+	l_1_0._pain_post_effect = nil
+	l_1_0._pain_post_effect_time = 0
 end
-function EnvironmentManager.paused_update(A0_3, A1_4, A2_5)
-	A0_3:update(A1_4, A2_5)
+
+EnvironmentManager.paused_update = function(l_2_0, l_2_1, l_2_2)
+	l_2_0:update(l_2_1, l_2_2)
 end
-function EnvironmentManager.update(A0_6, A1_7, A2_8)
-	_UPVALUE0_.EnvironmentManager.update(A0_6, A1_7, A2_8)
-	A0_6._radial_blur_manager:update(A1_7, A2_8)
+
+EnvironmentManager.update = function(l_3_0, l_3_1, l_3_2)
+	-- upvalues: l_0_0
+	l_0_0.EnvironmentManager.update(l_3_0, l_3_1, l_3_2)
+	l_3_0._radial_blur_manager:update(l_3_1, l_3_2)
 end
-function EnvironmentManager.set(A0_9, A1_10, A2_11)
+
+EnvironmentManager.set = function(l_4_0, l_4_1, l_4_2)
 end
-function EnvironmentManager.set_visualization(A0_12, A1_13)
-	A0_12._visualization = A1_13
+
+EnvironmentManager.set_visualization = function(l_5_0, l_5_1)
+	l_5_0._visualization = l_5_1
 end
-function EnvironmentManager.change_environment(A0_14, A1_15, A2_16)
+
+EnvironmentManager.change_environment = function(l_6_0, l_6_1, l_6_2)
 end
-function EnvironmentManager.set_pain_progress(A0_17, A1_18)
-	A0_17._pain_post_effect_time = A1_18
+
+EnvironmentManager.set_pain_progress = function(l_7_0, l_7_1)
+	l_7_0._pain_post_effect_time = l_7_1
 end
-function EnvironmentManager.set_pain_effect(A0_19, A1_20)
-	A0_19._pain_post_effect = A1_20
+
+EnvironmentManager.set_pain_effect = function(l_8_0, l_8_1)
+	l_8_0._pain_post_effect = l_8_1
 end
-function EnvironmentManager.create_blur(A0_21, A1_22, A2_23)
-	A0_21._radial_blur_manager:create_blur(TimerManager:game(), A1_22, A2_23)
+
+EnvironmentManager.create_blur = function(l_9_0, l_9_1, l_9_2)
+	l_9_0._radial_blur_manager:create_blur(TimerManager:game(), l_9_1, l_9_2)
 end
-function EnvironmentManager.set_velocity_blur(A0_24, A1_25, A2_26, A3_27)
-	A0_24._radial_blur_manager:set_velocity_blur(A1_25, A2_26, A3_27)
+
+EnvironmentManager.set_velocity_blur = function(l_10_0, l_10_1, l_10_2, l_10_3)
+	l_10_0._radial_blur_manager:set_velocity_blur(l_10_1, l_10_2, l_10_3)
 end
-function EnvironmentManager.set_radial_blur_visible(A0_28, A1_29, A2_30)
-	A0_28._radial_blur_manager:set_visible(A1_29, A2_30)
+
+EnvironmentManager.set_radial_blur_visible = function(l_11_0, l_11_1, l_11_2)
+	l_11_0._radial_blur_manager:set_visible(l_11_1, l_11_2)
 end
-function EnvironmentManager.radial_blur_manager(A0_31)
-	local L1_32
-	L1_32 = A0_31._radial_blur_manager
-	return L1_32
+
+EnvironmentManager.radial_blur_manager = function(l_12_0)
+	return l_12_0._radial_blur_manager
 end
-EnvironmentDefinition = EnvironmentDefinition or CoreClass.class()
-function EnvironmentDefinition.init(A0_33, A1_34, A2_35, A3_36)
-	A0_33._sky = A1_34
-	A0_33._post_effect = A2_35
-	A0_33._underlay_effect = A3_36
+
+if not EnvironmentDefinition then
+	EnvironmentDefinition = CoreClass.class()
 end
+EnvironmentDefinition.init = function(l_13_0, l_13_1, l_13_2, l_13_3)
+	l_13_0._sky = l_13_1
+	l_13_0._post_effect = l_13_2
+	l_13_0._underlay_effect = l_13_3
+end
+
+

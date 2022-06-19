@@ -1,128 +1,192 @@
 core:module("CoreShadowManager")
 core:require_module("CoreClass")
 core:require_module("CoreCode")
-ShadowBlock = ShadowBlock or CoreClass.class()
-function ShadowBlock.init(A0_0)
-	A0_0._parameters = {}
+if not ShadowBlock then
+	ShadowBlock = CoreClass.class()
 end
-function ShadowBlock.map(A0_1)
-	local L1_2
-	L1_2 = A0_1._parameters
-	return L1_2
+ShadowBlock.init = function(l_1_0)
+	l_1_0._parameters = {}
 end
-function ShadowBlock.set(A0_3, A1_4, A2_5)
-	A0_3._parameters[A1_4] = A2_5
+
+ShadowBlock.map = function(l_2_0)
+	return l_2_0._parameters
 end
-function ShadowBlock.get(A0_6, A1_7)
-	return A0_6._parameters[A1_7]
+
+ShadowBlock.set = function(l_3_0, l_3_1, l_3_2)
+	l_3_0._parameters[l_3_1] = l_3_2
 end
-ShadowManager = ShadowManager or CoreClass.class()
-function ShadowManager.init(A0_8)
-	local L1_9
-	L1_9 = {}
-	A0_8._preloaded_shadow_blocks = L1_9
-	L1_9 = {}
-	A0_8._stack = L1_9
-	A0_8._shadow_mul = 1
-	A0_8._needs_update = false
+
+ShadowBlock.get = function(l_4_0, l_4_1)
+	return l_4_0._parameters[l_4_1]
 end
-function ShadowManager.update(A0_10, A1_11, A2_12)
+
+if not ShadowManager then
+	ShadowManager = CoreClass.class()
 end
-function ShadowManager.paused_update(A0_13, A1_14, A2_15)
-	A0_13:update(A1_14, A2_15)
+ShadowManager.init = function(l_5_0)
+	l_5_0._preloaded_shadow_blocks = {}
+	l_5_0._stack = {}
+	l_5_0._shadow_mul = 1
+	l_5_0._needs_update = false
 end
-function ShadowManager.load(A0_16, A1_17)
-	if not A0_16._preloaded_shadow_blocks[A1_17] then
-		Application:stack_dump_error("[ShadowManager] Shadow block not preloaded: ", A1_17)
-		A0_16:preload(A1_17)
+
+ShadowManager.update = function(l_6_0, l_6_1, l_6_2)
+end
+
+ShadowManager.paused_update = function(l_7_0, l_7_1, l_7_2)
+	l_7_0:update(l_7_1, l_7_2)
+end
+
+ShadowManager.load = function(l_8_0, l_8_1)
+	if not l_8_0._preloaded_shadow_blocks[l_8_1] then
+		Application:stack_dump_error("[ShadowManager] Shadow block not preloaded: ", l_8_1)
+		l_8_0:preload(l_8_1)
 	end
-	return A0_16._preloaded_shadow_blocks[A1_17]
+	return l_8_0._preloaded_shadow_blocks[l_8_1]
 end
-function ShadowManager.list(A0_18, A1_19)
-	local L2_20, L3_21, L4_22, L5_23, L6_24, L7_25, L8_26, L9_27
-	L2_20 = {}
-	L3_21 = Database
-	L3_21 = L3_21.all
-	L3_21 = L3_21(L4_22, L5_23, L6_24)
-	for L7_25, L8_26 in L4_22(L5_23) do
-		L9_27 = L8_26.name
-		L9_27 = L9_27(L8_26)
-		if not A1_19 or string.find(L9_27, A1_19) then
-			table.insert(L2_20, L9_27)
+
+ShadowManager.list = function(l_9_0, l_9_1)
+	local l_9_7, l_9_8, l_9_9, l_9_10 = nil
+	local l_9_2 = {}
+	local l_9_3 = Database:all(false, "shadow_setting")
+	for i_0,i_1 in ipairs(l_9_3) do
+		if not l_9_1 or string.find(i_1:name(), l_9_1) then
+			table.insert(l_9_2, i_1:name())
 		end
 	end
-	return L2_20
+	return l_9_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function ShadowManager.get(A0_28)
-	local L1_29
-	L1_29 = A0_28._current_shadow_block
-	return L1_29
+
+ShadowManager.get = function(l_10_0)
+	return l_10_0._current_shadow_block
 end
-function ShadowManager.stack_size(A0_30)
-	return #A0_30._stack
+
+ShadowManager.stack_size = function(l_11_0)
+	return #l_11_0._stack
 end
-function ShadowManager.push(A0_31, A1_32)
-	local L2_33
-	if type(A1_32) == "string" then
-		L2_33 = assert(A0_31._preloaded_shadow_blocks[A1_32], "Shadow settings are not preloaded!")
+
+ShadowManager.push = function(l_12_0, l_12_1)
+	local l_12_2 = nil
+	if type(l_12_1) == "string" then
+		l_12_2 = assert(l_12_0._preloaded_shadow_blocks[l_12_1], "Shadow settings are not preloaded!")
 	else
-		L2_33 = A1_32
+		l_12_2 = l_12_1
 	end
-	if A0_31._current_shadow_block then
-		table.insert(A0_31._stack, A0_31._current_shadow_block)
+	if l_12_0._current_shadow_block then
+		table.insert(l_12_0._stack, l_12_0._current_shadow_block)
 	end
-	A0_31:set(L2_33)
-	return A0_31:stack_size()
+	local l_12_4 = l_12_0:set
+	l_12_4(l_12_0, l_12_2)
+	local l_12_3 = l_12_0
+	return l_12_4(l_12_3)
 end
-function ShadowManager.pop(A0_34)
-	if A0_34:stack_size() > 0 then
-		A0_34:set(A0_34._stack[A0_34:stack_size()])
-		table.remove(A0_34._stack)
+
+ShadowManager.pop = function(l_13_0)
+	local l_13_1 = l_13_0:stack_size()
+	if l_13_1 > 0 then
+		l_13_0:set(l_13_0._stack[l_13_1])
+		table.remove(l_13_0._stack)
+		l_13_1 = l_13_1 - 1
 	end
-	return A0_34:stack_size() - 1
+	return l_13_1
 end
-function ShadowManager.set(A0_35, A1_36)
-	A0_35._needs_update = true
-	if type(A1_36) == "string" then
-		A0_35._current_shadow_block = assert(A0_35._preloaded_shadow_blocks[A1_36], "Shadow settings are not preloaded!")
+
+ShadowManager.set = function(l_14_0, l_14_1)
+	l_14_0._needs_update = true
+	if type(l_14_1) == "string" then
+		l_14_0._current_shadow_block = assert(l_14_0._preloaded_shadow_blocks[l_14_1], "Shadow settings are not preloaded!")
 	else
-		A0_35._current_shadow_block = A1_36
+		l_14_0._current_shadow_block = l_14_1
 	end
-	A0_35:feed_now()
+	l_14_0:feed_now()
 end
-function ShadowManager.feed_now(A0_37)
-	local L1_38, L2_39, L3_40
-	L1_38 = A0_37._current_shadow_block
-	if L1_38 then
-		L1_38 = A0_37._current_shadow_block
-		L3_40 = A0_37
-		L2_39 = A0_37._set_split_depths
-		L2_39(L3_40, L1_38:get("d0"), L1_38:get("d1"), L1_38:get("d2"), L1_38:get("d3"), L1_38:get("o1"), L1_38:get("o2"), L1_38:get("o3"), L1_38:get("f"))
-		A0_37._needs_update = false
+
+ShadowManager.feed_now = function(l_15_0)
+	if l_15_0._current_shadow_block then
+		local l_15_1 = l_15_0._current_shadow_block
+		l_15_0:_set_split_depths(l_15_1:get("d0"), l_15_1:get("d1"), l_15_1:get("d2"), l_15_1:get("d3"), l_15_1:get("o1"), l_15_1:get("o2"), l_15_1:get("o3"), l_15_1:get("f"))
+		l_15_0._needs_update = false
 	end
 end
-function ShadowManager.set_now(A0_41, A1_42)
-	A0_41:set(A1_42)
-	A0_41:feed_now()
+
+ShadowManager.set_now = function(l_16_0, l_16_1)
+	l_16_0:set(l_16_1)
+	l_16_0:feed_now()
 end
-function ShadowManager.set_shadow_mul(A0_43, A1_44)
-	A0_43._shadow_mul = A1_44
-	A0_43:feed_now()
+
+ShadowManager.set_shadow_mul = function(l_17_0, l_17_1)
+	l_17_0._shadow_mul = l_17_1
+	l_17_0:feed_now()
 end
-function ShadowManager.preload(A0_45, A1_46, A2_47)
-	local L3_48, L4_49
-	if not A2_47 then
-		L3_48 = A0_45._preloaded_shadow_blocks
-		L3_48 = L3_48[A1_46]
-	elseif not L3_48 then
-		L3_48 = ShadowBlock
-		L4_49 = L3_48
-		L3_48 = L3_48.new
-		L3_48 = L3_48(L4_49)
-		L4_49 = A0_45._preloaded_shadow_blocks
-		L4_49[A1_46] = L3_48
-		L4_49 = Database
-		L4_49 = L4_49.lookup
-		L4_49 = L4_49(L4_49, "shadow_setting", A1_46)
-		assert(L4_49:valid())
-		for 
+
+ShadowManager.preload = function(l_18_0, l_18_1, l_18_2)
+	if l_18_2 or not l_18_0._preloaded_shadow_blocks[l_18_1] then
+		local l_18_3 = ShadowBlock:new()
+		l_18_0._preloaded_shadow_blocks[l_18_1] = l_18_3
+		local l_18_4 = Database:lookup("shadow_setting", l_18_1)
+		assert(l_18_4:valid())
+		local l_18_9 = assert
+		l_18_9 = l_18_9(Database:load_node(l_18_4))
+		local l_18_5 = nil
+		 -- DECOMPILER ERROR: Overwrote pending register.
+
+		for i_0 in l_18_5 do
+			local l_18_10 = l_18_8:parameter("type")
+			if l_18_10 == "Vector3" then
+				l_18_3:set(l_18_8:name(), math.string_to_vector(l_18_8:parameter("value")))
+			elseif l_18_10 == "number" then
+				l_18_3:set(l_18_8:name(), tonumber(l_18_8:parameter("value")))
+			else
+				l_18_3:set(l_18_8:name(), l_18_8:parameter("value"))
+			end
+		end
+		 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+	end
+end
+
+ShadowManager._set_split_depths = function(l_19_0, l_19_1, l_19_2, l_19_3, l_19_4, l_19_5, l_19_6, l_19_7, l_19_8)
+	local l_19_12, l_19_13 = ipairs, managers.viewport:active_viewports()
+	l_19_12 = l_19_12(l_19_13)
+	for i_0,i_1 in l_19_12 do
+		if not CoreCode.alive(l_19_11.__shadow_material) then
+			l_19_11.__shadow_material = l_19_11._vp:get_post_processor_effect(l_19_11._render_params[1], "shadow_processor"):modifier("shadow_modifier"):material()
+		end
+		l_19_0._shadow_material = l_19_11.__shadow_material
+		if RenderSettings.split_screen then
+			local l_19_14 = Vector3(0, 0, 0)
+			local l_19_15 = Vector3(0, 0, 0)
+			local l_19_16 = Vector3(0, 1600, 0)
+			local l_19_17 = Vector3(1300, 5000, 0)
+			local l_19_18 = Vector3(0, 0, 1600)
+			local l_19_19 = Vector3(0, 0, 300)
+			l_19_0._shadow_material:set_variable("slice0", l_19_14)
+			l_19_0._shadow_material:set_variable("slice1", l_19_15)
+			l_19_0._shadow_material:set_variable("slice2", l_19_16)
+			l_19_0._shadow_material:set_variable("slice3", l_19_17)
+			l_19_0._shadow_material:set_variable("shadow_slice_depths", l_19_18)
+			l_19_0._shadow_material:set_variable("shadow_slice_overlap", l_19_19)
+			l_19_0._shadow_material:set_variable("shadow_fadeout", Vector3(4500, 5000, 0))
+		else
+			local l_19_20 = Vector3(0, l_19_1, 0)
+			local l_19_21 = Vector3(l_19_1 - l_19_5, l_19_2, 0)
+			local l_19_22 = Vector3(l_19_2 - l_19_6, l_19_3, 0)
+			local l_19_23 = Vector3(l_19_3 - l_19_7, l_19_4, 0)
+			local l_19_24 = Vector3(l_19_1, l_19_2, l_19_3)
+			local l_19_25 = Vector3(l_19_5, l_19_6, l_19_7)
+			l_19_0._shadow_material:set_variable("slice0", l_19_20 * l_19_0._shadow_mul)
+			l_19_0._shadow_material:set_variable("slice1", l_19_21 * l_19_0._shadow_mul)
+			l_19_0._shadow_material:set_variable("slice2", l_19_22 * l_19_0._shadow_mul)
+			l_19_0._shadow_material:set_variable("slice3", l_19_23 * l_19_0._shadow_mul)
+			l_19_0._shadow_material:set_variable("shadow_slice_depths", l_19_24 * l_19_0._shadow_mul)
+			l_19_0._shadow_material:set_variable("shadow_slice_overlap", l_19_25 * l_19_0._shadow_mul)
+			l_19_0._shadow_material:set_variable("shadow_fadeout", Vector3(l_19_4 - l_19_8, l_19_4, 0) * l_19_0._shadow_mul)
+		end
+	end
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
+end
+
+

@@ -1,29 +1,39 @@
 require("menu/2D/widgets/Menu2DWidgetBase.lua")
-Menu2DWidgetBitmap = Menu2DWidgetBitmap or class(Menu2DWidgetBase)
-function Menu2DWidgetBitmap.init(A0_0, A1_1)
-	Menu2DWidgetBase.init(A0_0, A1_1)
+if not Menu2DWidgetBitmap then
+	Menu2DWidgetBitmap = class(Menu2DWidgetBase)
 end
-function Menu2DWidgetBitmap.parse(A0_2, A1_3)
-	local L2_4
-	L2_4 = A0_2._params
-	L2_4.texture = A1_3.texture
-	L2_4 = A0_2._params
-	L2_4.x = tonumber(A1_3.x)
-	L2_4 = A0_2._params
-	L2_4.y = tonumber(A1_3.y)
+Menu2DWidgetBitmap.init = function(l_1_0, l_1_1)
+	Menu2DWidgetBase.init(l_1_0, l_1_1)
 end
-function Menu2DWidgetBitmap.create_gui(A0_5)
-	Menu2DWidgetBase.create_gui(A0_5)
-	A0_5._bmp = A0_5._params.panel:bitmap({
-		texture = A0_5._params.texture,
-		w = A0_5._params.panel:w(),
-		h = A0_5._params.panel:h(),
-		layer = tweak_data.menu2d.layer_normal
-	})
-	A0_5._bmp:set_texture_rect(A0_5._params.x * Menu2DWidgetBase._tile_size, A0_5._params.y * Menu2DWidgetBase._tile_size, Menu2DWidgetBase._tile_size, Menu2DWidgetBase._tile_size)
+
+Menu2DWidgetBitmap.parse = function(l_2_0, l_2_1)
+	l_2_0._params.texture = l_2_1.texture
+	l_2_0._params.x = tonumber(l_2_1.x)
+	l_2_0._params.y = tonumber(l_2_1.y)
 end
-function Menu2DWidgetBitmap.destroy(A0_6)
-	local L1_7
+
+Menu2DWidgetBitmap.create_gui = function(l_3_0)
+	Menu2DWidgetBase.create_gui(l_3_0)
+	local l_3_1, l_3_2 = l_3_0._params.panel:bitmap, l_3_0._params.panel
+	local l_3_3 = {}
+	l_3_3.texture = l_3_0._params.texture
+	l_3_3.w = l_3_0._params.panel:w()
+	l_3_3.h = l_3_0._params.panel:h()
+	l_3_3.layer = tweak_data.menu2d.layer_normal
+	l_3_1 = l_3_1(l_3_2, l_3_3)
+	l_3_0._bmp = l_3_1
+	l_3_1 = l_3_0._bmp
+	l_3_1, l_3_2 = l_3_1:set_texture_rect, l_3_1
+	l_3_3 = l_3_0._params
+	l_3_3 = l_3_3.x
+	l_3_3 = l_3_3 * Menu2DWidgetBase._tile_size
+	l_3_1(l_3_2, l_3_3, l_3_0._params.y * Menu2DWidgetBase._tile_size, Menu2DWidgetBase._tile_size, Menu2DWidgetBase._tile_size)
 end
-function Menu2DWidgetBitmap.mouse_input(A0_8, A1_9)
+
+Menu2DWidgetBitmap.destroy = function(l_4_0)
 end
+
+Menu2DWidgetBitmap.mouse_input = function(l_5_0, l_5_1)
+end
+
+

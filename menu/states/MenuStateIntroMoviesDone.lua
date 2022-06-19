@@ -1,12 +1,16 @@
-MenuStateIntroMoviesDone = MenuStateIntroMoviesDone or class(FiniteStateMachineState)
-function MenuStateIntroMoviesDone.init(A0_0)
-	A0_0._menu:set_intro_movies_done()
+if not MenuStateIntroMoviesDone then
+	MenuStateIntroMoviesDone = class(FiniteStateMachineState)
 end
-function MenuStateIntroMoviesDone.exit(A0_1)
-	A0_1._menu:clear_intro_movies_done()
+MenuStateIntroMoviesDone.init = function(l_1_0)
+	l_1_0._menu:set_intro_movies_done()
 end
-function MenuStateIntroMoviesDone.transition(A0_2)
-	local L1_3
-	L1_3 = MenuStateMainMenuTitle
-	return L1_3
+
+MenuStateIntroMoviesDone.exit = function(l_2_0)
+	l_2_0._menu:clear_intro_movies_done()
 end
+
+MenuStateIntroMoviesDone.transition = function(l_3_0)
+	return MenuStateMainMenuTitle
+end
+
+

@@ -1,1 +1,4 @@
-FiniteStateMachineState = FiniteStateMachineState or class()
+if not FiniteStateMachineState then
+	FiniteStateMachineState = class()
+end
+

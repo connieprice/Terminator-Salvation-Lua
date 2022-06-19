@@ -71,3 +71,4 @@ core:register_core_module("core/managers/environment/CoreLightEnvironment")
 core:register_core_module("core/managers/environment/CoreSky")
 core:register_core_module("core/managers/environment/CoreUnderlayEffect")
 core:register_core_module("core/managers/environment/CorePostEffect")
+

@@ -1,95 +1,82 @@
-SkynetDefenceTurretAiCombat = SkynetDefenceTurretAiCombat or class()
-function SkynetDefenceTurretAiCombat.init_data(A0_0, A1_1)
-	A1_1._combat = {}
+if not SkynetDefenceTurretAiCombat then
+	SkynetDefenceTurretAiCombat = class()
 end
-function SkynetDefenceTurretAiCombat.logic_skynet_defence_turret_combat_init(A0_2, A1_3, A2_4, A3_5, A4_6, A5_7, A6_8, A7_9)
-	local L8_10
-	A0_2._start_time = A1_3
-	L8_10 = 0
-	return L8_10
+SkynetDefenceTurretAiCombat.init_data = function(l_1_0, l_1_1)
+	l_1_1._combat = {}
 end
-function SkynetDefenceTurretAiCombat.logic_skynet_defence_turret_combat_passive(A0_11, A1_12, A2_13, A3_14, A4_15, A5_16, A6_17, A7_18)
-	if #A2_13:ai_data().input.forced_target_units > 0 and A1_12 - A0_11._start_time > A2_13:ai_data().input.attack_delay then
+
+SkynetDefenceTurretAiCombat.logic_skynet_defence_turret_combat_init = function(l_2_0, l_2_1, l_2_2, l_2_3, l_2_4, l_2_5, l_2_6, l_2_7)
+	l_2_0._start_time = l_2_1
+	return 0
+end
+
+SkynetDefenceTurretAiCombat.logic_skynet_defence_turret_combat_passive = function(l_3_0, l_3_1, l_3_2, l_3_3, l_3_4, l_3_5, l_3_6, l_3_7)
+	local l_3_8 = l_3_2:ai_data()
+	if #l_3_8.input.forced_target_units > 0 and l_3_8.input.attack_delay < l_3_1 - l_3_0._start_time then
 		return 0
 	end
-	A2_13:ai_data().output.allowed_to_fire = false
+	l_3_8.output.allowed_to_fire = false
 	return nil
 end
-function SkynetDefenceTurretAiCombat.logic_skynet_defence_turret_combat_forced_targets(A0_19, A1_20, A2_21, A3_22, A4_23, A5_24, A6_25, A7_26)
-	local L8_27, L9_28, L10_29, L11_30, L12_31, L13_32, L14_33
-	L9_28 = A2_21
-	L8_27 = A2_21.ai_data
-	L8_27 = L8_27(L9_28)
-	L10_29 = A0_19
-	L9_28 = A0_19._closest_target
-	L11_30 = A2_21
-	L12_31 = L8_27.input
-	L12_31 = L12_31.forced_target_units
-	L9_28 = L9_28(L10_29, L11_30, L12_31)
-	if L9_28 then
-		L10_29 = nil
-		L12_31 = L9_28
-		L11_30 = L9_28.targeting_info
-		L11_30 = L11_30(L12_31)
-		if L11_30 then
-			L13_32 = L11_30
-			L12_31 = L11_30.primary_target_position
-			L12_31 = L12_31(L13_32)
-			L10_29 = L12_31
+
+SkynetDefenceTurretAiCombat.logic_skynet_defence_turret_combat_forced_targets = function(l_4_0, l_4_1, l_4_2, l_4_3, l_4_4, l_4_5, l_4_6, l_4_7)
+	local l_4_8 = l_4_2:ai_data()
+	local l_4_9 = l_4_0:_closest_target(l_4_2, l_4_8.input.forced_target_units)
+	if l_4_9 then
+		local l_4_10 = nil
+		local l_4_11 = l_4_9:targeting_info()
+		if l_4_11 then
+			l_4_10 = l_4_11:primary_target_position()
 		else
-			L13_32 = L9_28
-			L12_31 = L9_28.oobb
-			L12_31 = L12_31(L13_32)
-			L14_33 = L12_31
-			L13_32 = L12_31.center
-			L13_32 = L13_32(L14_33)
-			L10_29 = L13_32
+			local l_4_12 = l_4_9:oobb()
+			l_4_10 = l_4_12:center()
 		end
-		L12_31 = L8_27.input
-		L12_31 = L12_31.attack_range
-		L13_32 = L8_27.input
-		L13_32 = L13_32.attack_range
-		L14_33 = A2_21.get_object
-		L14_33 = L14_33(A2_21, SkynetDefenceTurretBase._CENTER_OBJECT_NAME)
-		L14_33 = L14_33.position
-		L14_33 = L14_33(L14_33)
-		L14_33 = L14_33 - A2_21:position()
-		if IntelUtilities.have_line_of_fire(A2_21, L13_32, L8_27.UNIT_WEAPONS, L9_28, L10_29, L14_33, L8_27.LINE_OF_FIRE_SLOT_MASK, L8_27.FRIENDLY_UNITS_SLOT_MASK) then
-			L8_27.output.firing_target = L9_28
-			L8_27.output.firing_target_position = L10_29
-			L8_27.output.allowed_to_fire = true
-			return nil
+		local l_4_13 = l_4_8.input.attack_range
+		local l_4_14 = l_4_8.input.attack_range
+		local l_4_15 = l_4_2:get_object(SkynetDefenceTurretBase._CENTER_OBJECT_NAME):position() - l_4_2:position()
+		local l_4_16 = IntelUtilities.have_line_of_fire(l_4_2, l_4_14, l_4_8.UNIT_WEAPONS, l_4_9, l_4_10, l_4_15, l_4_8.LINE_OF_FIRE_SLOT_MASK, l_4_8.FRIENDLY_UNITS_SLOT_MASK)
+	if l_4_16 then
+		end
+		l_4_8.output.firing_target = l_4_9
+		l_4_8.output.firing_target_position = l_4_10
+		l_4_8.output.allowed_to_fire = true
+		return nil
+	end
+	l_4_8.output.allowed_to_fire = false
+	return nil
+end
+
+SkynetDefenceTurretAiCombat._targets_alive_cnt = function(l_5_0, l_5_1)
+	local l_5_6, l_5_7 = nil
+	local l_5_2 = 0
+	for i_0,i_1 in ipairs(l_5_1) do
+		if alive(i_1) then
+			l_5_2 = l_5_2 + 1
 		end
 	end
-	L10_29 = L8_27.output
-	L10_29.allowed_to_fire = false
-	L10_29 = nil
-	return L10_29
+	return l_5_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function SkynetDefenceTurretAiCombat._targets_alive_cnt(A0_34, A1_35)
-	local L2_36, L3_37, L4_38, L5_39, L6_40, L7_41
-	L2_36 = 0
-	for L6_40, L7_41 in L3_37(L4_38) do
-		if alive(L7_41) then
-			L2_36 = L2_36 + 1
-		end
-	end
-	return L2_36
-end
-function SkynetDefenceTurretAiCombat._closest_target(A0_42, A1_43, A2_44)
-	local L3_45, L4_46, L5_47, L6_48, L7_49, L8_50, L9_51
-	L4_46 = A1_43
-	L3_45 = A1_43.ai_data
-	L3_45 = L3_45(L4_46)
-	L4_46 = nil
-	for L8_50, L9_51 in L5_47(L6_48) do
-		if alive(L9_51) then
-			if not L4_46 then
-				L4_46 = L9_51
-			elseif (L9_51:position() - A1_43:position()):length() < (L4_46:position() - A1_43:position()):length() then
-				L4_46 = L9_51
+
+SkynetDefenceTurretAiCombat._closest_target = function(l_6_0, l_6_1, l_6_2)
+	local l_6_8, l_6_9, l_6_10, l_6_11, l_6_12, l_6_13, l_6_14, l_6_15 = nil
+	local l_6_3 = (l_6_1:ai_data())
+	local l_6_4 = nil
+	for i_0,i_1 in pairs(l_6_2) do
+		if alive(i_1) then
+			if not l_6_4 then
+				l_6_4 = i_1
+			end
+		else
+			if i_1:position() - l_6_1:position():length() < l_6_4:position() - l_6_1:position():length() then
+				l_6_4 = i_1
 			end
 		end
 	end
-	return L4_46
+	return l_6_4
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
+
+

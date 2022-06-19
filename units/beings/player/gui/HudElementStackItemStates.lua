@@ -1,68 +1,91 @@
 require("units/beings/player/gui/PanelFader")
-HudElementStackItemStateFading = HudElementStackItemStateFading or class(FiniteStateMachineState)
-function HudElementStackItemStateFading.update(A0_0, A1_1)
-	if A0_0._fader then
-		A0_0._fader:update(A1_1)
+if not HudElementStackItemStateFading then
+	HudElementStackItemStateFading = class(FiniteStateMachineState)
+end
+HudElementStackItemStateFading.update = function(l_1_0, l_1_1)
+	if l_1_0._fader then
+		l_1_0._fader:update(l_1_1)
 	end
 end
-HudElementStackItemStateInvisible = HudElementStackItemStateInvisible or class(HudElementStackItemStateFading)
-function HudElementStackItemStateInvisible.init(A0_2)
-	A0_2._fader = PanelFader:new(A0_2.item._panel)
+
+if not HudElementStackItemStateInvisible then
+	HudElementStackItemStateInvisible = class(HudElementStackItemStateFading)
 end
-function HudElementStackItemStateInvisible.transition(A0_3)
-	if A0_3.item:should_show() then
+HudElementStackItemStateInvisible.init = function(l_2_0)
+	l_2_0._fader = PanelFader:new(l_2_0.item._panel)
+end
+
+HudElementStackItemStateInvisible.transition = function(l_3_0)
+	if l_3_0.item:should_show() then
 		return HudElementStackItemStateFadingIn
 	end
 end
-HudElementStackItemStateFadingIn = HudElementStackItemStateFadingIn or class(HudElementStackItemStateFading)
-function HudElementStackItemStateFadingIn.init(A0_4)
-	A0_4._fader = PanelFader:new(A0_4.item._panel)
-	A0_4._fader:set_target(1)
+
+if not HudElementStackItemStateFadingIn then
+	HudElementStackItemStateFadingIn = class(HudElementStackItemStateFading)
 end
-function HudElementStackItemStateFadingIn.transition(A0_5)
-	if not A0_5._fader:has_reached_target() then
-		return
+HudElementStackItemStateFadingIn.init = function(l_4_0)
+	l_4_0._fader = PanelFader:new(l_4_0.item._panel)
+	l_4_0._fader:set_target(1)
+end
+
+HudElementStackItemStateFadingIn.transition = function(l_5_0)
+	if not l_5_0._fader:has_reached_target() then
+		return 
 	end
 	return HudElementStackItemStateIdle
 end
-HudElementStackItemStateIdle = HudElementStackItemStateIdle or class(FiniteStateMachineState)
-function HudElementStackItemStateIdle.transition(A0_6)
-	if A0_6.item:is_done() then
+
+if not HudElementStackItemStateIdle then
+	HudElementStackItemStateIdle = class(FiniteStateMachineState)
+end
+HudElementStackItemStateIdle.transition = function(l_6_0)
+	if l_6_0.item:is_done() then
 		return HudElementStackItemStateTimeout
 	end
 end
-HudElementStackItemStateTimeout = HudElementStackItemStateTimeout or class(FiniteStateMachineState)
-function HudElementStackItemStateTimeout.init(A0_7)
-	local L1_8
-	A0_7._timer = 0
+
+if not HudElementStackItemStateTimeout then
+	HudElementStackItemStateTimeout = class(FiniteStateMachineState)
 end
-function HudElementStackItemStateTimeout.update(A0_9, A1_10)
-	local L2_11
-	L2_11 = A0_9._timer
-	L2_11 = L2_11 + A1_10
-	A0_9._timer = L2_11
+HudElementStackItemStateTimeout.init = function(l_7_0)
+	l_7_0._timer = 0
 end
-function HudElementStackItemStateTimeout.transition(A0_12)
-	if A0_12.item:show_timeout() == nil or A0_12._timer > A0_12.item:show_timeout() then
+
+HudElementStackItemStateTimeout.update = function(l_8_0, l_8_1)
+	l_8_0._timer = l_8_0._timer + l_8_1
+end
+
+HudElementStackItemStateTimeout.transition = function(l_9_0)
+	if l_9_0.item:show_timeout() == nil or l_9_0.item:show_timeout() < l_9_0._timer then
 		return HudElementStackItemStateFadingOut
 	end
 end
-HudElementStackItemStateFadingOut = HudElementStackItemStateFadingOut or class(HudElementStackItemStateFading)
-function HudElementStackItemStateFadingOut.init(A0_13)
-	A0_13._fader = PanelFader:new(A0_13.item._panel, 1)
-	A0_13._fader:set_target(0)
-	A0_13.item:mark_fading_out()
+
+if not HudElementStackItemStateFadingOut then
+	HudElementStackItemStateFadingOut = class(HudElementStackItemStateFading)
 end
-function HudElementStackItemStateFadingOut.transition(A0_14)
-	if not A0_14._fader:has_reached_target() then
-		return
+HudElementStackItemStateFadingOut.init = function(l_10_0)
+	l_10_0._fader = PanelFader:new(l_10_0.item._panel, 1)
+	l_10_0._fader:set_target(0)
+	l_10_0.item:mark_fading_out()
+end
+
+HudElementStackItemStateFadingOut.transition = function(l_11_0)
+	if not l_11_0._fader:has_reached_target() then
+		return 
 	end
 	return HudElementStackItemStateDone
 end
-HudElementStackItemStateDone = HudElementStackItemStateDone or class(FiniteStateMachineState)
-function HudElementStackItemStateDone.init(A0_15)
-	A0_15.item:set_wants_to_be_removed()
+
+if not HudElementStackItemStateDone then
+	HudElementStackItemStateDone = class(FiniteStateMachineState)
 end
-function HudElementStackItemStateDone.transition(A0_16)
-	local L1_17
+HudElementStackItemStateDone.init = function(l_12_0)
+	l_12_0.item:set_wants_to_be_removed()
 end
+
+HudElementStackItemStateDone.transition = function(l_13_0)
+end
+
+

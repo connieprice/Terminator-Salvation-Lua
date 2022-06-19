@@ -1,53 +1,85 @@
-TargetingInfo = TargetingInfo or class()
-function TargetingInfo.init(A0_0, A1_1)
-	A0_0._unit = A1_1
-	assert(A0_0.default)
-	A0_0._default_objects = A0_0:_get_objects(A0_0.default)
+if not TargetingInfo then
+	TargetingInfo = class()
 end
-function TargetingInfo.is_visible(A0_2, A1_3, A2_4)
-	return A0_2:_target_object(A1_3, A2_4, A0_2._default_objects) ~= nil
+TargetingInfo.init = function(l_1_0, l_1_1)
+	l_1_0._unit = l_1_1
+	assert(l_1_0.default)
+	l_1_0._default_objects = l_1_0:_get_objects(l_1_0.default)
 end
-function TargetingInfo.target_position(A0_5, A1_6, A2_7, A3_8)
-	if not A0_5:_target_object(A1_6, A2_7, A0_5._default_objects, A3_8) then
-		return nil
+
+TargetingInfo.is_visible = function(l_2_0, l_2_1, l_2_2)
+	return l_2_0:_target_object(l_2_1, l_2_2, l_2_0._default_objects) ~= nil
+end
+
+TargetingInfo.target_position = function(l_3_0, l_3_1, l_3_2, l_3_3)
+	local l_3_7 = l_3_0:_target_object
+	local l_3_8 = l_3_0
+	local l_3_9 = l_3_1
+	l_3_7 = l_3_7(l_3_8, l_3_9, l_3_2, l_3_0._default_objects, l_3_3)
+	local l_3_4 = nil
+	if not l_3_7 then
+		l_3_8 = nil
+		return l_3_8
 	end
-	return A0_5:_target_object(A1_6, A2_7, A0_5._default_objects, A3_8):position()
+	l_3_8, l_3_9 = l_3_7:position, l_3_7
+	local l_3_5, l_3_6 = nil
+	return l_3_8(l_3_9)
 end
-function TargetingInfo.primary_target_position(A0_9)
-	local L1_10
-	L1_10 = A0_9._default_objects
-	L1_10 = L1_10[1]
-	return L1_10:position()
+
+TargetingInfo.primary_target_position = function(l_4_0)
+	local l_4_1 = l_4_0._default_objects[1]
+	local l_4_2, l_4_3 = l_4_1:position, l_4_1
+	return l_4_2(l_4_3)
 end
-function TargetingInfo.target_objects(A0_11)
-	local L1_12
-	L1_12 = A0_11._default_objects
-	return L1_12
+
+TargetingInfo.target_objects = function(l_5_0)
+	return l_5_0._default_objects
 end
-function TargetingInfo._get_objects(A0_13, A1_14)
-	local L2_15, L3_16, L4_17, L5_18, L6_19, L7_20, L8_21
-	L2_15 = {}
-	for L6_19, L7_20 in L3_16(L4_17) do
-		L8_21 = A0_13._unit
-		L8_21 = L8_21.get_object
-		L8_21 = L8_21(L8_21, L7_20)
-		assert(L8_21, "Unit '" .. A0_13._unit:name() .. "' has no object named '" .. L7_20 .. "'")
-		table.insert(L2_15, L8_21)
+
+TargetingInfo._get_objects = function(l_6_0, l_6_1)
+	local l_6_6, l_6_7, l_6_8, l_6_9 = nil
+	local l_6_2 = {}
+	for i_0,i_1 in ipairs(l_6_1) do
+		assert(l_6_0._unit:get_object(i_1), "Unit '" .. l_6_0._unit:name() .. "' has no object named '" .. i_1 .. "'")
+		table.insert(l_6_2, l_6_0._unit:get_object(i_1))
 	end
-	return L2_15
+	return l_6_2
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function TargetingInfo._target_object(A0_22, A1_23, A2_24, A3_25, A4_26)
-	local L5_27, L6_28, L7_29, L8_30, L9_31
-	for L8_30, L9_31 in L5_27(L6_28) do
-		if not A0_22:_raycast(A1_23, L9_31, A2_24, A4_26) then
-			return L9_31
+
+TargetingInfo._target_object = function(l_7_0, l_7_1, l_7_2, l_7_3, l_7_4)
+	local l_7_8, l_7_9, l_7_10, l_7_11 = nil
+	for i_0,i_1 in ipairs(l_7_3) do
+		if not l_7_0:_raycast(l_7_1, i_1, l_7_2, l_7_4) then
+			return i_1
 		end
 	end
-	return L5_27
+	return nil
+	 -- DECOMPILER ERROR: Confused about usage of registers for local variables.
+
 end
-function TargetingInfo._raycast(A0_32, A1_33, A2_34, A3_35, A4_36)
-	if A4_36 then
-		return A0_32._unit:raycast("ray", A1_33, A2_34:position(), "slot_mask", A3_35, "ignore_unit", A4_36)
+
+TargetingInfo._raycast = function(l_8_0, l_8_1, l_8_2, l_8_3, l_8_4)
+	if l_8_4 then
+		local l_8_5, l_8_6 = l_8_0._unit:raycast, l_8_0._unit
+		local l_8_7 = "ray"
+		local l_8_8 = l_8_1
+		local l_8_9 = l_8_2:position()
+		local l_8_10 = "slot_mask"
+		local l_8_11 = l_8_3
+		local l_8_12, l_8_21 = "ignore_unit"
+		l_8_21 = l_8_4
+		local l_8_13, l_8_22 = nil
+		return l_8_5(l_8_6, l_8_7, l_8_8, l_8_9, l_8_10, l_8_11, l_8_12, l_8_21)
 	end
-	return A0_32._unit:raycast("ray", A1_33, A2_34:position(), "slot_mask", A3_35)
+	local l_8_14, l_8_15 = l_8_0._unit:raycast, l_8_0._unit
+	local l_8_16 = "ray"
+	local l_8_17 = l_8_1
+	local l_8_18 = l_8_2:position()
+	local l_8_19 = "slot_mask"
+	local l_8_20 = l_8_3
+	return l_8_14(l_8_15, l_8_16, l_8_17, l_8_18, l_8_19, l_8_20)
 end
+
+

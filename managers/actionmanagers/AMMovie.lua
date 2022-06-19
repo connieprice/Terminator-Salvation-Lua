@@ -1,12 +1,14 @@
-AMMovie = AMMovie or class(CoreActionElement)
-function AMMovie.init(A0_0, A1_1, A2_2)
-	CoreActionElement.init(A0_0, A1_1, A2_2)
+if not AMMovie then
+	AMMovie = class(CoreActionElement)
 end
-function AMMovie.activate_now(A0_3)
-	local L1_4
-	L1_4 = string
-	L1_4 = L1_4.lower
-	L1_4 = L1_4(A0_3.movie_id)
-	managers.game_transition:request_cutscene(L1_4)
-	A0_3:deactivate_now()
+AMMovie.init = function(l_1_0, l_1_1, l_1_2)
+	CoreActionElement.init(l_1_0, l_1_1, l_1_2)
 end
+
+AMMovie.activate_now = function(l_2_0)
+	local l_2_1 = string.lower(l_2_0.movie_id)
+	managers.game_transition:request_cutscene(l_2_1)
+	l_2_0:deactivate_now()
+end
+
+
